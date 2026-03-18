@@ -522,9 +522,7 @@ Example:
             <div class="preview-header">
               <span>Preview</span>
             </div>
-            <div class="preview-body" id="preview-body">
-              <p class="preview-empty">Your post preview will appear here as you write...</p>
-            </div>
+            <iframe id="preview-frame" style="flex:1;width:100%;min-height:400px;border:none;border-radius:0 0 14px 14px;background:#f9f7f2;"></iframe>
           </div>
         </div>
 
@@ -1046,19 +1044,44 @@ function insertHR() {
 /* ================================================================
    BLOG — PREVIEW
 ================================================================ */
+const PREVIEW_CSS = `
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.8; color: #1a1917; background: #f9f7f2; padding: 28px 24px; -webkit-font-smoothing: antialiased; }
+  h3 { font-family: 'DM Serif Display', Georgia, serif; font-size: 1.4rem; font-weight: 400; letter-spacing: -0.01em; color: #1a1917; margin: 2rem 0 0.8rem; line-height: 1.25; }
+  h3:first-child { margin-top: 0; }
+  p { margin-bottom: 1.2rem; color: #1a1917; }
+  p:last-child { margin-bottom: 0; }
+  blockquote { border-left: 3px solid #1d6bbf; background: #edf4fc; padding: 1rem 1.2rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; font-style: italic; color: #0c3e72; }
+  blockquote p { margin: 0; color: #0c3e72; }
+  ul, ol { margin: 0.5rem 0 1.2rem 1.5rem; color: #1a1917; }
+  li { margin-bottom: 0.4rem; line-height: 1.7; }
+  strong { color: #1a1917; font-weight: 500; }
+  em { font-style: italic; }
+  a { color: #1d6bbf; text-decoration: underline; text-underline-offset: 2px; }
+  hr { border: none; height: 2px; background: rgba(26,25,23,0.1); margin: 2rem 0; border-radius: 2px; }
+  .empty { color: #b0ada6; font-style: italic; font-size: 14px; }
+`;
+
 let previewDebounce;
 function updatePreview() {
   clearTimeout(previewDebounce);
   previewDebounce = setTimeout(() => {
     const content = document.getElementById('e-content').value.trim();
-    const body = document.getElementById('preview-body');
-    if (!content) {
-      body.innerHTML = '<p class="preview-empty">Your post preview will appear here as you write...</p>';
-      return;
-    }
-    // Sanitize: strip script tags for safety
-    const safe = content.replace(/<script[\s\S]*?<\/script>/gi, '');
-    body.innerHTML = safe;
+    const frame = document.getElementById('preview-frame');
+
+    const safeContent = content
+      ? content.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<link[^>]*>/gi, '')
+      : '<p class="empty">Your post preview will appear here as you write...</p>';
+
+    const doc = frame.contentDocument || frame.contentWindow.document;
+    doc.open();
+    doc.write('<!DOCTYPE html><html><head>' +
+      '<link rel="preconnect" href="https://fonts.googleapis.com">' +
+      '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+      '<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">' +
+      '<style>' + PREVIEW_CSS + '</style>' +
+      '</head><body>' + safeContent + '</body></html>');
+    doc.close();
   }, 300);
 }
 

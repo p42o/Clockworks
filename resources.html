@@ -601,7 +601,7 @@ function renderPosts() {
         </header>
         <h2 class="resource-title">${escapeHtml(post.title)}</h2>
         <p class="resource-excerpt">${escapeHtml(post.excerpt)}</p>
-        <div class="resource-content">${post.content}</div>
+        <div class="resource-content">${sanitizeContent(post.content)}</div>
       </article>
     `;
   }).join('');
@@ -629,6 +629,14 @@ function renderEmptyState() {
       <a href="index.html#booking" class="btn-primary">Book Free Strategy Session &rarr;</a>
     </div>
   `;
+}
+
+function sanitizeContent(html) {
+  if (!html) return '';
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<link[^>]*>/gi, '');
 }
 
 function escapeHtml(str) {
