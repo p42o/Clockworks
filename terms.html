@@ -1,0 +1,425 @@
+<!--
+  CLOCKWORKS — TERMS.HTML
+  Terms & Conditions for Clockworks (PGS Ventures LLC)
+  Last updated: March 2026
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="canonical" href="https://clockworksai.com/terms.html" />
+  <link rel="icon" type="image/png" href="logos/clockworks-small-light.png" />
+  <title>Terms &amp; Conditions | Clockworks</title>
+  <meta name="description" content="Terms and Conditions for Clockworks (PGS Ventures LLC). Review the terms governing our AI and automation consulting services." />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+    body { background: #fff; color: #334155; font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.6; }
+    ::selection { background: rgba(196,131,74,0.2); color: #1C2333; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ── CSS VARIABLES ── */
+    :root {
+      --orange: #C4834A;
+      --orange-dark: #A86C35;
+      --navy: #1C2333;
+      --navy-mid: #3A4560;
+      --bg: #ffffff;
+      --bg-off: #f8f9fc;
+      --bg-subtle: #eff6ff;
+      --border: rgba(28,35,51,0.08);
+      --border-strong: rgba(28,35,51,0.18);
+      --text: #334155;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      --shadow-sm: 0 1px 4px rgba(28,35,51,0.06), 0 2px 12px rgba(28,35,51,0.04);
+      --shadow-md: 0 4px 16px rgba(28,35,51,0.10), 0 2px 8px rgba(28,35,51,0.06);
+      --shadow-lg: 0 8px 32px rgba(28,35,51,0.12), 0 4px 16px rgba(28,35,51,0.08);
+    }
+
+    /* ── DARK MODE ── */
+    html[data-theme="dark"] {
+      --navy: #dde6f0; --navy-mid: #8fa8c4;
+      --bg: #0c0f1a; --bg-off: #0f1320; --bg-subtle: #111827;
+      --border: rgba(255,255,255,0.07); --border-strong: rgba(255,255,255,0.13);
+      --text: #c2d0df; --text-muted: #8fa3bb; --text-dim: #566a7f;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,0.4), 0 2px 12px rgba(0,0,0,0.25);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.35);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.45);
+      color-scheme: dark;
+    }
+    html[data-theme="dark"] body { background: #0c0f1a; color: #c2d0df; }
+    html[data-theme="dark"] ::selection { background: rgba(196,131,74,0.3); color: #fff; }
+    html[data-theme="dark"] .navbar.scrolled { background: rgba(10,13,22,0.97); box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 2px 12px rgba(0,0,0,0.3); }
+    html[data-theme="dark"] .hamburger span { background: #c2d0df; }
+    html[data-theme="dark"] .mobile-menu { background: rgba(10,13,22,0.98); }
+    html[data-theme="dark"] .mobile-link { color: #dde6f0; border-bottom-color: rgba(255,255,255,0.06); }
+    html[data-theme="dark"] .footer { background: #080a14; }
+    html[data-theme="dark"] .footer-logo-text { color: #dde6f0; }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border-strong); background: transparent; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: background 0.2s, color 0.2s; }
+    .theme-toggle:hover { background: var(--bg-off); color: var(--navy); }
+    .theme-icon-sun { display: none; }
+    html[data-theme="dark"] .theme-icon-moon { display: none; }
+    html[data-theme="dark"] .theme-icon-sun { display: block; }
+
+    /* ── SKIP LINK ── */
+    .skip-link { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+    .skip-link:focus { position: fixed; top: 8px; left: 8px; width: auto; height: auto; background: var(--orange); color: #fff; padding: 8px 16px; border-radius: 8px; z-index: 9999; }
+
+    /* ── NAVBAR ── */
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 200; transition: background 0.3s, box-shadow 0.3s; }
+    .navbar.scrolled { background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(28,35,51,0.06); }
+    .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 68px; }
+    .logo-img { height: 36px; width: auto; }
+    .logo-img-dark { display: none; }
+    html[data-theme="dark"] .logo-img-light { display: none; }
+    html[data-theme="dark"] .logo-img-dark { display: block; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-link { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: color 0.2s; }
+    .nav-link:hover { color: var(--navy); }
+    .nav-cta { font-size: 13px; font-weight: 700; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; padding: 9px 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(196,131,74,0.25); transition: filter 0.2s; }
+    .nav-cta:hover { filter: brightness(1.08); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--navy); border-radius: 2px; transition: all 0.25s; }
+
+    /* ── MOBILE MENU ── */
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .mobile-menu { display: none; position: fixed; top: 68px; left: 0; right: 0; z-index: 199; background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); flex-direction: column; padding: 16px 24px 24px; animation: slideDown 0.2s ease; box-shadow: 0 8px 24px rgba(28,35,51,0.10); }
+    .mobile-menu.open { display: flex; }
+    .mobile-link { font-size: 16px; font-weight: 500; color: var(--navy); padding: 13px 0; border-bottom: 1px solid var(--border); }
+    .mobile-cta { margin-top: 16px; text-align: center; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 15px; }
+
+    /* ── PAGE CONTENT ── */
+    .legal-page { max-width: 800px; margin: 0 auto; padding: 120px 24px 80px; }
+    .legal-title { font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(32px, 5vw, 48px); color: var(--navy); line-height: 1.15; margin-bottom: 8px; }
+    .legal-updated { font-size: 14px; color: var(--text-muted); margin-bottom: 48px; }
+    .legal-content h2 { font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(22px, 3vw, 28px); color: var(--navy); margin-top: 48px; margin-bottom: 16px; line-height: 1.2; }
+    .legal-content h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin-top: 32px; margin-bottom: 12px; }
+    .legal-content p { color: var(--text); margin-bottom: 16px; line-height: 1.75; font-size: 15.5px; }
+    .legal-content ul, .legal-content ol { margin-bottom: 16px; padding-left: 24px; }
+    .legal-content li { color: var(--text); margin-bottom: 8px; line-height: 1.7; font-size: 15.5px; }
+    .legal-content a { color: var(--orange); text-decoration: underline; text-underline-offset: 2px; transition: color 0.2s; }
+    .legal-content a:hover { color: var(--orange-dark); }
+    .legal-content strong { color: var(--navy); font-weight: 600; }
+    .legal-content .disclaimer-box { background: var(--bg-off); border: 1px solid var(--border-strong); border-left: 4px solid var(--orange); border-radius: 8px; padding: 20px 24px; margin: 24px 0; }
+    .legal-content .disclaimer-box p { margin-bottom: 8px; }
+    .legal-content .disclaimer-box p:last-child { margin-bottom: 0; }
+
+    /* ── FOOTER ── */
+    .footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.06); padding: 48px 24px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+    .footer-logo-text { font-family: 'Instrument Serif', serif; font-size: 20px; color: #fff; }
+    .footer-logo-text span { color: var(--orange); }
+    .footer-logo-sub { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 5px; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-link { font-size: 12px; color: rgba(255,255,255,0.45); transition: color 0.2s; }
+    .footer-link:hover { color: rgba(255,255,255,0.75); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-copy { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .footer-links { display: none; }
+      .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
+      .legal-page { padding-top: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="navbar-inner">
+    <a href="index.html" class="logo" aria-label="Clockworks — Home">
+      <img src="logos/clockworks-large-light.png" alt="Clockworks" class="logo-img logo-img-light" />
+      <img src="logos/clockworks-large-dark.png" alt="Clockworks" class="logo-img logo-img-dark" />
+    </a>
+    <div class="nav-links" role="list">
+      <a href="index.html#what-i-build" class="nav-link" role="listitem">What I Build</a>
+      <a href="index.html#how-it-works" class="nav-link" role="listitem">How It Works</a>
+      <a href="index.html#pricing" class="nav-link" role="listitem">Pricing</a>
+      <a href="resources.html" class="nav-link" role="listitem">Resources</a>
+      <a href="index.html#about" class="nav-link" role="listitem">About</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="index.html#booking" class="nav-cta">Free Strategy Session &rarr;</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Mobile navigation">
+  <a href="index.html#what-i-build" class="mobile-link">What I Build</a>
+  <a href="index.html#how-it-works" class="mobile-link">How It Works</a>
+  <a href="index.html#pricing" class="mobile-link">Pricing</a>
+  <a href="resources.html" class="mobile-link">Resources</a>
+  <a href="index.html#about" class="mobile-link">About</a>
+  <a href="index.html#booking" class="mobile-cta">Book Free Strategy Session &rarr;</a>
+</div>
+
+<main id="main-content">
+
+<div class="legal-page">
+  <h1 class="legal-title">Terms &amp; Conditions</h1>
+  <p class="legal-updated" id="legal-updated">Last updated: March 18, 2026</p>
+
+  <div class="legal-content" id="legal-content">
+
+    <p>These Terms and Conditions ("Terms") govern your use of the services provided by <strong>Clockworks</strong>, a doing-business-as name of <strong>PGS Ventures LLC</strong>, located in Maple Grove, Minnesota. By engaging our services, you agree to these Terms in full.</p>
+
+    <p>If you have any questions about these Terms, please contact us at <a href="mailto:hello@clockworksai.com">hello@clockworksai.com</a>.</p>
+
+    <h2>1. Services Description</h2>
+
+    <p>Clockworks provides done-for-you AI and automation consulting services for small businesses. Our services include:</p>
+    <ul>
+      <li>Free strategy sessions to assess your business needs and identify automation opportunities</li>
+      <li>Custom automation builds tailored to your specific workflows</li>
+      <li>Training and documentation for your team to understand the systems we build</li>
+      <li>Ongoing maintenance and optimization of automation systems</li>
+    </ul>
+    <p>All automations are built on third-party platforms. Clockworks does not host its own infrastructure or servers for client automations.</p>
+
+    <h2>2. Third-Party Costs and Transparency</h2>
+
+    <div class="disclaimer-box">
+      <p><strong>Our Commitment to Transparency:</strong> All third-party tool costs will be quoted upfront during the strategy session. Clients pay third-party providers directly at their listed price. <strong>Clockworks does not mark up or add pass-through fees to any third-party tool costs.</strong></p>
+    </div>
+
+    <p>The automation solutions we build may require subscriptions or usage-based payments to third-party platforms. These costs are separate from Clockworks' service fees and are paid by you directly to the respective providers.</p>
+
+    <p>Third-party pricing is subject to change by the respective providers at any time. Clockworks is not responsible for price changes, feature changes, or terms of service changes enacted by third-party providers. We will notify you of any changes we become aware of that may affect your automations, but ultimate responsibility for monitoring your third-party subscriptions rests with you.</p>
+
+    <h2>3. Payment Terms</h2>
+
+    <h3>One-Time Project Fees</h3>
+    <p>One-time project fees (including The Starter and The System tiers) are due upon agreement to proceed with the project. Work begins after payment is received.</p>
+
+    <h3>Installment Option</h3>
+    <p>The $999 System tier offers optional installment payments of $167 per month for 6 months. Installment payments are due on the same date each month and must be maintained throughout the payment period.</p>
+
+    <h3>Recurring Fees</h3>
+    <p>Growth Partner monthly fees are billed on a recurring basis. Billing occurs on the same date each month, beginning from the start of the engagement.</p>
+
+    <h3>Refund Policy</h3>
+    <p>All payments are non-refundable once work has begun, except as covered by the guarantee described in Section 4 below. If a project has not yet started, a full refund may be issued at Clockworks' discretion.</p>
+
+    <h2>4. The Guarantee</h2>
+
+    <div class="disclaimer-box">
+      <p><strong>Our Promise:</strong> If you do not save at least 8 hours per week within 60 days of your automations going live, your next month of service is free.</p>
+    </div>
+
+    <p>This guarantee applies to The System and Growth Partner service tiers. Key details:</p>
+    <ul>
+      <li>The 60-day period begins on the date your automations are deployed and confirmed operational</li>
+      <li>Hours saved are measured through documented workflow execution logs provided by the automation platforms</li>
+      <li>To claim the guarantee, you must notify Clockworks within 70 days of your go-live date</li>
+      <li>The guarantee covers one month of service at no charge; it does not include third-party tool costs</li>
+    </ul>
+
+    <h2>5. Limitation of Liability</h2>
+
+    <p>To the maximum extent permitted by law, Clockworks (PGS Ventures LLC) is <strong>not responsible</strong> for:</p>
+    <ul>
+      <li>Data breaches, security incidents, or unauthorized access caused by third-party providers</li>
+      <li>Service outages, downtime, or failures of third-party platforms</li>
+      <li>Changes in third-party provider pricing, features, or terms of service</li>
+      <li>Business losses, lost revenue, or lost opportunities resulting from automation workflows</li>
+      <li>Interruptions in service caused by third-party platform changes, API deprecations, or integration breaking changes</li>
+      <li>Data loss or corruption occurring on third-party platforms</li>
+    </ul>
+    <p><strong>Maximum liability:</strong> In no event shall Clockworks' total liability exceed the fees actually paid by you for the specific service in question. This limitation applies to all claims, whether based in contract, tort, or any other legal theory.</p>
+
+    <h2>6. Client Responsibilities</h2>
+
+    <p>By engaging Clockworks' services, you agree to:</p>
+    <ul>
+      <li>Provide accurate and complete business information during the strategy session and throughout the engagement</li>
+      <li>Maintain active subscriptions to all required third-party tools and platforms</li>
+      <li>Notify Clockworks promptly of any changes to account credentials, API keys, or access permissions that may affect your integrations</li>
+      <li>Review and test all automations during the handoff process, and report any issues before final sign-off</li>
+      <li>Ensure your use of automations complies with applicable laws, regulations, and the terms of service of each third-party platform</li>
+    </ul>
+
+    <h2>7. Access and Credentials</h2>
+
+    <p>During the implementation of automation solutions, Clockworks may require login credentials or administrative access to your accounts in order to configure integrations. All access is used solely for the purpose of building and maintaining the agreed-upon automations.</p>
+
+    <h3>Security</h3>
+    <p>You are responsible for maintaining the security of your own accounts, including using strong passwords, enabling two-factor authentication, and revoking access for former employees or contractors. Clockworks access should be revoked immediately upon termination of services if not handled through the standard offboarding process.</p>
+
+    <h3>Offboarding</h3>
+    <p>Upon completion of services, termination of the engagement, or at your request, Clockworks will:</p>
+    <ul>
+      <li>Remove all Clockworks access from your accounts</li>
+      <li>Delete any stored credentials related to your accounts</li>
+      <li>Provide documentation of all integrations and automations configured</li>
+      <li>Transfer full ownership and control of all systems to you</li>
+    </ul>
+    <p>You may request offboarding at any time by contacting <a href="mailto:hello@clockworksai.com">hello@clockworksai.com</a>.</p>
+
+    <h2>8. Intellectual Property</h2>
+
+    <p>Custom automations, workflows, and configurations built specifically for you are <strong>owned by you</strong> upon full payment of the applicable service fees. You receive complete ownership of all client-specific implementations.</p>
+
+    <p>Clockworks retains the right to reuse general automation patterns, methodologies, templates, and knowledge gained during the engagement. This does not include your specific data, business logic, configurations, or any information that could identify your business.</p>
+
+    <h2>9. Termination</h2>
+
+    <ul>
+      <li><strong>Either party</strong> may terminate services at any time by providing written notice via email</li>
+      <li><strong>Growth Partner clients</strong> can cancel their monthly engagement at any time with no penalty or early termination fee</li>
+      <li><strong>One-time projects</strong> that have already begun are non-refundable, but remaining work will be completed as agreed upon</li>
+      <li>Upon termination, standard offboarding procedures (described in Section 7) will be initiated</li>
+    </ul>
+
+    <h2>10. Governing Law and Disputes</h2>
+
+    <p>These Terms are governed by and construed in accordance with the laws of the <strong>State of Minnesota</strong>, without regard to its conflict of law provisions.</p>
+
+    <p>Any disputes arising from or related to these Terms or the services provided by Clockworks shall be resolved in the state or federal courts located in <strong>Hennepin County, Minnesota</strong>. Both parties consent to the exclusive jurisdiction of these courts.</p>
+
+    <p>Before initiating any legal action, both parties agree to attempt to resolve disputes through good-faith negotiation for a period of at least 30 days.</p>
+
+    <h2>11. Changes to These Terms</h2>
+
+    <p>Clockworks reserves the right to update or modify these Terms at any time. Changes will be reflected in the "Last updated" date at the top of this page. Continued use of our services after changes constitutes acceptance of the updated Terms.</p>
+
+    <p>For material changes that significantly affect your rights or obligations, we will make reasonable efforts to notify active clients via email.</p>
+
+    <h2>12. Contact Us</h2>
+
+    <p>If you have any questions, concerns, or requests related to these Terms and Conditions, please contact us:</p>
+    <ul>
+      <li><strong>Email:</strong> <a href="mailto:hello@clockworksai.com">hello@clockworksai.com</a></li>
+      <li><strong>Business:</strong> Clockworks (PGS Ventures LLC)</li>
+      <li><strong>Location:</strong> Maple Grove, Minnesota</li>
+    </ul>
+
+  </div>
+</div>
+
+</main>
+
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo-text">Clockworks</div>
+        <div class="footer-logo-sub">AI & Automation for Small Business</div>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="index.html#what-i-build" class="footer-link">What I Build</a>
+        <a href="index.html#how-it-works" class="footer-link">How It Works</a>
+        <a href="index.html#pricing" class="footer-link">Pricing</a>
+        <a href="resources.html" class="footer-link">Resources</a>
+        <a href="index.html#about" class="footer-link">About</a>
+        <a href="index.html#booking" class="footer-link">Book Session</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; <span id="yr"></span> Clockworks. Maple Grove, MN. All rights reserved.</span>
+      <span class="footer-copy"><a href="privacy.html" class="footer-link" style="margin-right:12px;">Privacy Policy</a><a href="terms.html" class="footer-link">Terms &amp; Conditions</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ── FIREBASE ──
+const firebaseConfig = {
+  apiKey:            "AIzaSyAgYsFRypLXu5yym-KIRS9GXqcRWGwrtkA",
+  authDomain:        "stonearchai.firebaseapp.com",
+  projectId:         "stonearchai",
+  storageBucket:     "stonearchai.firebasestorage.app",
+  messagingSenderId: "815481121273",
+  appId:             "1:815481121273:web:182d13a485f645c9bdf528"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ── YEAR ──
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ── THEME TOGGLE ──
+const html = document.documentElement;
+const themeBtn = document.getElementById('theme-toggle');
+const saved = localStorage.getItem('theme');
+if (saved === 'dark') html.setAttribute('data-theme', 'dark');
+themeBtn.addEventListener('click', () => {
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+});
+
+// ── NAVBAR SCROLL ──
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// ── HAMBURGER ──
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  hamburger.setAttribute('aria-expanded', isOpen);
+});
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+  });
+});
+
+// ── LOAD CONTENT FROM FIRESTORE ──
+(async function loadContent() {
+  try {
+    const doc = await db.collection('siteContent').doc('terms').get();
+    if (doc.exists) {
+      const data = doc.data();
+      if (data.content) {
+        document.getElementById('legal-content').innerHTML = data.content;
+      }
+      if (data.updatedAt) {
+        const date = data.updatedAt.toDate();
+        const formatted = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('legal-updated').textContent = 'Last updated: ' + formatted;
+      }
+    }
+  } catch (err) {
+    // Silently fall back to hardcoded defaults
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,796 @@
+<!--
+  CLOCKWORKS — RESOURCES.HTML
+  Last updated: March 2026
+
+  Clockworks: AI & Automation Knowledge Base
+  Blog posts, guides, case studies, and tips for small business automation.
+  Built by Parker in Maple Grove, MN.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="canonical" href="https://clockworksai.com/resources" />
+  <link rel="icon" type="image/png" href="logos/clockworks-small-light.png" />
+  <title>Resources | Clockworks — AI & Automation Knowledge Base</title>
+  <meta name="description" content="Automation guides, case studies, tips, and insights for small businesses. Learn how to save 10+ hours a week with AI-powered workflows for invoicing, scheduling, lead follow-up, and more." />
+  <meta name="keywords" content="business automation guide, AI automation tips, small business case study, workflow automation how-to, automation for small business, invoicing automation, lead follow-up automation, scheduling automation, Twin Cities business automation" />
+  <meta name="author" content="Parker, Clockworks" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Resources | Clockworks — AI & Automation Knowledge Base" />
+  <meta property="og:description" content="Guides, case studies, and tips to help small businesses automate invoicing, scheduling, lead follow-up, and more. Save 10+ hours a week." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://clockworksai.com/resources" />
+  <meta property="og:image" content="https://clockworksai.com/og-image.jpg" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Clockworks" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Resources | Clockworks — AI & Automation Knowledge Base" />
+  <meta name="twitter:description" content="Guides, case studies, and tips to help small businesses automate and save 10+ hours a week." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+  <!-- Schema.org JSON-LD (base — dynamically enriched with BlogPosting items) -->
+  <script type="application/ld+json" id="schema-jsonld">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "The Automation Playbook",
+    "description": "Guides, case studies, and insights to help your business run itself. Automation tips for small businesses from Clockworks.",
+    "url": "https://clockworksai.com/resources",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Clockworks",
+      "url": "https://clockworksai.com"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Parker",
+      "jobTitle": "AI & Automation Consultant"
+    },
+    "hasPart": []
+  }
+  </script>
+
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+    body { background: #fff; color: #334155; font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.6; }
+    ::selection { background: rgba(196,131,74,0.2); color: #1C2333; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ── CSS VARIABLES ── */
+    :root {
+      --orange: #C4834A;
+      --orange-dark: #A86C35;
+      --navy: #1C2333;
+      --navy-mid: #3A4560;
+      --bg: #ffffff;
+      --bg-off: #f8f9fc;
+      --bg-subtle: #eff6ff;
+      --border: rgba(28,35,51,0.08);
+      --border-strong: rgba(28,35,51,0.18);
+      --text: #334155;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      --shadow-sm: 0 1px 4px rgba(28,35,51,0.06), 0 2px 12px rgba(28,35,51,0.04);
+      --shadow-md: 0 4px 16px rgba(28,35,51,0.10), 0 2px 8px rgba(28,35,51,0.06);
+      --shadow-lg: 0 8px 32px rgba(28,35,51,0.12), 0 4px 16px rgba(28,35,51,0.08);
+    }
+
+    /* ── DARK MODE ── */
+    html[data-theme="dark"] {
+      --navy: #dde6f0; --navy-mid: #8fa8c4;
+      --bg: #0c0f1a; --bg-off: #0f1320; --bg-subtle: #111827;
+      --border: rgba(255,255,255,0.07); --border-strong: rgba(255,255,255,0.13);
+      --text: #c2d0df; --text-muted: #8fa3bb; --text-dim: #566a7f;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,0.4), 0 2px 12px rgba(0,0,0,0.25);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.35);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.45);
+      color-scheme: dark;
+    }
+    html[data-theme="dark"] body { background: #0c0f1a; color: #c2d0df; }
+    html[data-theme="dark"] ::selection { background: rgba(196,131,74,0.3); color: #fff; }
+    html[data-theme="dark"] .navbar.scrolled { background: rgba(10,13,22,0.97); box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 2px 12px rgba(0,0,0,0.3); }
+    html[data-theme="dark"] .hamburger span { background: #c2d0df; }
+    html[data-theme="dark"] .mobile-menu { background: rgba(10,13,22,0.98); }
+    html[data-theme="dark"] .mobile-link { color: #dde6f0; border-bottom-color: rgba(255,255,255,0.06); }
+    html[data-theme="dark"] .footer { background: #080a14; }
+    html[data-theme="dark"] .footer-logo-text { color: #dde6f0; }
+
+    /* Dark mode — resource cards */
+    html[data-theme="dark"] .resource-article { background: #0f1320; }
+    html[data-theme="dark"] .resource-content { color: var(--text-muted); }
+    html[data-theme="dark"] .filter-btn { background: transparent; border-color: var(--border-strong); color: var(--text-muted); }
+    html[data-theme="dark"] .filter-btn:hover { background: rgba(255,255,255,0.04); }
+    html[data-theme="dark"] .filter-btn.active { background: linear-gradient(135deg, #A86C35, #C4834A); border-color: var(--orange); color: #fff; }
+    html[data-theme="dark"] .empty-state { background: #0f1320; }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border-strong); background: transparent; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: background 0.2s, color 0.2s; }
+    .theme-toggle:hover { background: var(--bg-off); color: var(--navy); }
+    .theme-icon-sun { display: none; }
+    html[data-theme="dark"] .theme-icon-moon { display: none; }
+    html[data-theme="dark"] .theme-icon-sun { display: block; }
+
+    /* ── TYPOGRAPHY ── */
+    .serif { font-family: 'Instrument Serif', Georgia, serif; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── BUTTONS ── */
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 15px; border: none; box-shadow: 0 4px 18px rgba(196,131,74,0.30); transition: transform 0.2s, filter 0.2s, box-shadow 0.2s; }
+    .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 6px 24px rgba(196,131,74,0.40); }
+
+    /* ── SKIP LINK ── */
+    .skip-link { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+    .skip-link:focus { position: fixed; top: 8px; left: 8px; width: auto; height: auto; background: var(--orange); color: #fff; padding: 8px 16px; border-radius: 8px; z-index: 9999; }
+
+    /* ── SPINNER ── */
+    .loading-spinner { display: flex; justify-content: center; padding: 60px; }
+    .spinner { width: 28px; height: 28px; border: 2px solid rgba(196,131,74,0.15); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+    /* ══ NAVBAR ══ */
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 200; transition: background 0.3s, box-shadow 0.3s; }
+    .navbar.scrolled { background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(28,35,51,0.06); }
+    .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 68px; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-img { height: 36px; width: auto; }
+    .logo-img-dark { display: none; }
+    html[data-theme="dark"] .logo-img-light { display: none; }
+    html[data-theme="dark"] .logo-img-dark { display: block; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-link { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: color 0.2s; }
+    .nav-link:hover { color: var(--navy); }
+    .nav-cta { font-size: 13px; font-weight: 700; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; padding: 9px 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(196,131,74,0.25); transition: filter 0.2s; }
+    .nav-cta:hover { filter: brightness(1.08); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--navy); border-radius: 2px; transition: all 0.25s; }
+    .mobile-menu { display: none; position: fixed; top: 68px; left: 0; right: 0; z-index: 199; background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); flex-direction: column; padding: 16px 24px 24px; animation: slideDown 0.2s ease; box-shadow: 0 8px 24px rgba(28,35,51,0.10); }
+    .mobile-menu.open { display: flex; }
+    .mobile-link { font-size: 16px; font-weight: 500; color: var(--navy); padding: 13px 0; border-bottom: 1px solid var(--border); }
+    .mobile-cta { margin-top: 16px; text-align: center; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 15px; }
+
+    /* ══ PAGE HERO ══ */
+    .resources-hero {
+      padding: 140px 24px 60px;
+      text-align: center;
+      background: linear-gradient(150deg, #fefefe 0%, #f7f3ef 40%, #fef9f5 80%, #fff 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    html[data-theme="dark"] .resources-hero {
+      background: linear-gradient(150deg, #0c0f1a 0%, #0f1320 50%, #101724 100%);
+    }
+    .resources-hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+    .resources-hero-blob-1 {
+      width: 500px; height: 500px;
+      top: -150px; right: -80px;
+      background: radial-gradient(circle, rgba(196,131,74,0.07) 0%, transparent 70%);
+    }
+    .resources-hero-blob-2 {
+      width: 400px; height: 400px;
+      bottom: -80px; left: -60px;
+      background: radial-gradient(circle, rgba(28,35,51,0.05) 0%, transparent 70%);
+    }
+    .resources-hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      animation: fadeInUp 0.7s ease both;
+    }
+    .resources-hero-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 16px;
+    }
+    .resources-hero-heading {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(32px, 5vw, 52px);
+      color: var(--navy);
+      line-height: 1.1;
+      margin-bottom: 16px;
+      font-weight: 400;
+    }
+    .resources-hero-sub {
+      font-size: clamp(15px, 1.6vw, 18px);
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ══ FILTERS ══ */
+    .filters-bar {
+      padding: 24px 24px 0;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .filters-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .filter-btn:hover {
+      border-color: var(--orange);
+      color: var(--navy);
+      background: rgba(196,131,74,0.05);
+    }
+    .filter-btn.active {
+      background: linear-gradient(135deg, #A86C35, #C4834A);
+      border-color: var(--orange);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(196,131,74,0.25);
+    }
+
+    /* ══ ARTICLES GRID ══ */
+    .resources-section {
+      padding: 40px 24px 80px;
+    }
+    .resources-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    /* ══ ARTICLE CARD ══ */
+    .resource-article {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .resource-article:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .resource-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .resource-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: #fff;
+      line-height: 1.4;
+    }
+    .resource-date {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+    .resource-read-time {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+    .resource-date::after {
+      content: '';
+      display: inline;
+    }
+    .resource-title {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--navy);
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .resource-excerpt {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+    .resource-content {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.8;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+    .resource-content p {
+      margin-bottom: 14px;
+    }
+    .resource-content p:last-child {
+      margin-bottom: 0;
+    }
+    .resource-content h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 20px 0 8px;
+    }
+    .resource-content h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 16px 0 6px;
+    }
+    .resource-content ul, .resource-content ol {
+      margin: 10px 0 14px 20px;
+      color: var(--text);
+    }
+    .resource-content li {
+      margin-bottom: 6px;
+      line-height: 1.7;
+    }
+    .resource-content strong {
+      color: var(--navy);
+    }
+    .resource-content a {
+      color: var(--orange);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .resource-content a:hover {
+      color: var(--orange-dark);
+    }
+    .resource-content blockquote {
+      border-left: 3px solid var(--orange);
+      padding: 12px 18px;
+      margin: 16px 0;
+      background: rgba(196,131,74,0.04);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+    html[data-theme="dark"] .resource-content blockquote {
+      background: rgba(196,131,74,0.06);
+    }
+    .resource-content code {
+      background: var(--bg-off);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+    }
+    html[data-theme="dark"] .resource-content code {
+      background: #111827;
+    }
+
+    /* ══ EMPTY STATE ══ */
+    .empty-state {
+      text-align: center;
+      padding: 64px 32px;
+      background: var(--bg-off);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      grid-column: 1 / -1;
+    }
+    .empty-state-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      border-radius: 16px;
+      background: rgba(196,131,74,0.08);
+      border: 1px solid rgba(196,131,74,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .empty-state-icon svg {
+      width: 28px;
+      height: 28px;
+      color: var(--orange);
+    }
+    .empty-state h3 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 26px;
+      color: var(--navy);
+      margin-bottom: 12px;
+      font-weight: 400;
+    }
+    .empty-state p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 440px;
+      margin: 0 auto 24px;
+    }
+
+    /* ══ FOOTER ══ */
+    .footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.06); padding: 48px 24px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+    .footer-logo-text { font-family: 'Instrument Serif', serif; font-size: 20px; color: #fff; }
+    .footer-logo-sub { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 5px; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-link { font-size: 12px; color: rgba(255,255,255,0.45); transition: color 0.2s; }
+    .footer-link:hover { color: rgba(255,255,255,0.75); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-copy { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .resources-grid { grid-template-columns: 1fr; }
+      .footer-links { display: none; }
+      .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
+      .filters-inner { gap: 8px; }
+      .filter-btn { padding: 7px 14px; font-size: 12px; }
+      .resource-article { padding: 24px 20px; }
+      .resource-title { font-size: 18px; }
+    }
+    @media (max-width: 480px) {
+      .resources-hero { padding: 120px 24px 48px; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="navbar-inner">
+    <a href="index.html" class="logo" aria-label="Clockworks — Home">
+      <img src="logos/clockworks-large-light.png" alt="Clockworks" class="logo-img logo-img-light" />
+      <img src="logos/clockworks-large-dark.png" alt="Clockworks" class="logo-img logo-img-dark" />
+    </a>
+    <div class="nav-links" role="list">
+      <a href="index.html#what-i-build" class="nav-link" role="listitem">What I Build</a>
+      <a href="index.html#how-it-works" class="nav-link" role="listitem">How It Works</a>
+      <a href="index.html#pricing" class="nav-link" role="listitem">Pricing</a>
+      <a href="resources.html" class="nav-link" role="listitem" style="color:var(--orange);">Resources</a>
+      <a href="index.html#about" class="nav-link" role="listitem">About</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="index.html#booking" class="nav-cta">Free Strategy Session &rarr;</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Mobile navigation">
+  <a href="index.html#what-i-build" class="mobile-link">What I Build</a>
+  <a href="index.html#how-it-works" class="mobile-link">How It Works</a>
+  <a href="index.html#pricing" class="mobile-link">Pricing</a>
+  <a href="resources.html" class="mobile-link" style="color:var(--orange);">Resources</a>
+  <a href="index.html#about" class="mobile-link">About</a>
+  <a href="index.html#booking" class="mobile-cta">Book Free Strategy Session &rarr;</a>
+</div>
+
+<main id="main-content">
+
+<!-- PAGE HERO -->
+<section class="resources-hero" aria-label="Resources heading">
+  <div class="resources-hero-blob resources-hero-blob-1" aria-hidden="true"></div>
+  <div class="resources-hero-blob resources-hero-blob-2" aria-hidden="true"></div>
+  <div class="resources-hero-inner">
+    <span class="resources-hero-label">Knowledge Base</span>
+    <h1 class="resources-hero-heading">The Automation Playbook</h1>
+    <p class="resources-hero-sub">Guides, case studies, and insights to help your business run itself.</p>
+  </div>
+</section>
+
+<!-- TAG FILTERS -->
+<div class="filters-bar" role="navigation" aria-label="Filter posts by category">
+  <div class="filters-inner">
+    <button class="filter-btn active" data-tag="all" onclick="filterPosts('all')">All</button>
+    <button class="filter-btn" data-tag="GUIDE" onclick="filterPosts('GUIDE')">Guide</button>
+    <button class="filter-btn" data-tag="CASE STUDY" onclick="filterPosts('CASE STUDY')">Case Study</button>
+    <button class="filter-btn" data-tag="NEWS" onclick="filterPosts('NEWS')">News</button>
+    <button class="filter-btn" data-tag="TIP" onclick="filterPosts('TIP')">Tip</button>
+  </div>
+</div>
+
+<!-- ARTICLES -->
+<section class="resources-section" aria-label="Blog posts">
+  <div class="resources-grid" id="resources-grid">
+    <div class="loading-spinner" id="loading-spinner" style="grid-column:1/-1;">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo-text">Clockworks</div>
+        <div class="footer-logo-sub">AI & Automation for Small Business</div>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="index.html#what-i-build" class="footer-link">What I Build</a>
+        <a href="index.html#how-it-works" class="footer-link">How It Works</a>
+        <a href="index.html#pricing" class="footer-link">Pricing</a>
+        <a href="resources.html" class="footer-link">Resources</a>
+        <a href="index.html#about" class="footer-link">About</a>
+        <a href="index.html#booking" class="footer-link">Book Session</a>
+        <a href="mailto:hello@clockworksai.com" class="footer-link">hello@clockworksai.com</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; <span id="yr"></span> Clockworks. Maple Grove, MN. All rights reserved.</span>
+      <span class="footer-copy"><a href="privacy.html" class="footer-link" style="margin-right:12px;">Privacy Policy</a><a href="terms.html" class="footer-link">Terms &amp; Conditions</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ── FIREBASE ──
+const firebaseConfig = {
+  apiKey:            "AIzaSyAgYsFRypLXu5yym-KIRS9GXqcRWGwrtkA",
+  authDomain:        "stonearchai.firebaseapp.com",
+  projectId:         "stonearchai",
+  storageBucket:     "stonearchai.firebasestorage.app",
+  messagingSenderId: "815481121273",
+  appId:             "1:815481121273:web:182d13a485f645c9bdf528"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ── YEAR ──
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ── THEME TOGGLE ──
+const html = document.documentElement;
+const themeBtn = document.getElementById('theme-toggle');
+const saved = localStorage.getItem('theme');
+if (saved === 'dark') html.setAttribute('data-theme', 'dark');
+themeBtn.addEventListener('click', () => {
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+});
+
+// ── NAVBAR SCROLL ──
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// ── HAMBURGER ──
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  hamburger.setAttribute('aria-expanded', isOpen);
+});
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+  });
+});
+
+// ── TAG COLORS ──
+const TAG_COLORS = { 'GUIDE': '#38bdf8', 'CASE STUDY': '#34d399', 'NEWS': '#C4834A', 'TIP': '#a78bfa' };
+
+// ── BLOG POSTS ──
+let allPosts = [];
+let activeFilter = 'all';
+
+function filterPosts(tag) {
+  activeFilter = tag;
+  // Update button states
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-tag') === tag);
+  });
+  renderPosts();
+}
+
+function renderPosts() {
+  const grid = document.getElementById('resources-grid');
+  const filtered = activeFilter === 'all'
+    ? allPosts
+    : allPosts.filter(p => p.tag === activeFilter);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = renderEmptyState();
+    return;
+  }
+
+  grid.innerHTML = filtered.map(post => {
+    const tagColor = TAG_COLORS[post.tag] || '#C4834A';
+    const isoDate = post.isoDate || '';
+    return `
+      <article class="resource-article" id="post-${post.id}">
+        <header class="resource-header">
+          <span class="resource-tag" style="background:${tagColor};">${escapeHtml(post.tag)}</span>
+          <time class="resource-date" datetime="${isoDate}">${escapeHtml(post.date)}</time>
+          <span class="resource-read-time">${escapeHtml(post.readTime)} read</span>
+        </header>
+        <h2 class="resource-title">${escapeHtml(post.title)}</h2>
+        <p class="resource-excerpt">${escapeHtml(post.excerpt)}</p>
+        <div class="resource-content">${post.content}</div>
+      </article>
+    `;
+  }).join('');
+}
+
+function renderEmptyState() {
+  if (activeFilter !== 'all') {
+    return `
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <h3>No posts in this category yet</h3>
+        <p>Check back soon or explore another category. We are always adding new content.</p>
+      </div>
+    `;
+  }
+  return `
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <h3>New content coming soon</h3>
+      <p>In the meantime, book a free strategy session to learn how automation can save your business 10+ hours a week.</p>
+      <a href="index.html#booking" class="btn-primary">Book Free Strategy Session &rarr;</a>
+    </div>
+  `;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function updateSchemaJsonLd(posts) {
+  const schemaEl = document.getElementById('schema-jsonld');
+  if (!schemaEl || posts.length === 0) return;
+
+  try {
+    const schema = JSON.parse(schemaEl.textContent);
+    schema.hasPart = posts.map(post => ({
+      '@type': 'BlogPosting',
+      'headline': post.title,
+      'datePublished': post.isoDate || '',
+      'description': post.excerpt,
+      'author': {
+        '@type': 'Person',
+        'name': 'Parker'
+      },
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Clockworks',
+        'url': 'https://clockworksai.com'
+      },
+      'url': 'https://clockworksai.com/resources#post-' + post.id
+    }));
+    schemaEl.textContent = JSON.stringify(schema);
+  } catch (e) {
+    // Silently fail — base schema is still valid
+  }
+}
+
+// ── LOAD POSTS FROM FIRESTORE ──
+async function loadPosts() {
+  const spinner = document.getElementById('loading-spinner');
+  try {
+    const snapshot = await db.collection('blogPosts')
+      .orderBy('createdAt', 'desc')
+      .get();
+
+    const now = new Date();
+
+    allPosts = [];
+    snapshot.forEach(doc => {
+      const data = doc.data();
+
+      // Determine visibility:
+      // - No status field = published (backwards compat)
+      // - status === 'published' = visible
+      // - status === 'scheduled' AND publishAt <= now = visible
+      // - status === 'draft' = hidden
+      // - status === 'scheduled' AND publishAt > now = hidden
+      const status = data.status || 'published';
+      if (status === 'draft') return;
+      if (status === 'scheduled') {
+        if (!data.publishAt) return;
+        const publishDate = data.publishAt.toDate ? data.publishAt.toDate() : new Date(data.publishAt);
+        if (publishDate > now) return;
+      }
+
+      // Parse date for ISO format
+      let isoDate = '';
+      if (data.createdAt && data.createdAt.toDate) {
+        isoDate = data.createdAt.toDate().toISOString().split('T')[0];
+      }
+
+      allPosts.push({
+        id: doc.id,
+        title: data.title || '',
+        tag: data.tag || 'NEWS',
+        excerpt: data.excerpt || '',
+        content: data.content || '',
+        date: data.date || '',
+        readTime: data.readTime || '',
+        isoDate: isoDate
+      });
+    });
+
+    // Remove spinner
+    if (spinner) spinner.remove();
+
+    // Update schema
+    updateSchemaJsonLd(allPosts);
+
+    // Render
+    renderPosts();
+
+  } catch (err) {
+    console.error('Error loading blog posts:', err);
+    if (spinner) spinner.remove();
+    // Show empty state on error
+    renderPosts();
+  }
+}
+
+loadPosts();
+</script>
+</body>
+</html>
