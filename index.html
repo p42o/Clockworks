@@ -154,7 +154,7 @@
     .navbar.scrolled { background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(28,35,51,0.06); }
     .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 68px; }
     .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-img { height: 44px; width: auto; }
+    .logo-img { height: 54px; width: auto; }
     .nav-links { display: flex; align-items: center; gap: 28px; }
     .nav-link { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: color 0.2s; }
     .nav-link:hover { color: var(--navy); }
@@ -382,7 +382,7 @@
       .n8n-layout { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
-      .logo-img { height: 38px; }
+      .logo-img { height: 44px; }
       .nav-links, .nav-cta { display: none; }
       .hamburger { display: flex; }
       .steps-grid { grid-template-columns: 1fr; }
@@ -459,7 +459,7 @@
         <a href="#how-it-works" class="btn-ghost">See How It Works</a>
       </div>
       <div class="hero-trust" id="hero-trust">
-        <span class="hero-trust-parker"><img src="Parker.jpg" alt="Parker" class="hero-headshot" /> Parker &middot; Maple Grove, MN</span>
+        <span class="hero-trust-parker"><img src="images/Parker.png" alt="Parker" class="hero-headshot" /> Parker &middot; Maple Grove, MN</span>
         <span>Free roadmap, zero obligation</span>
         <span>Working demo in 48 hours</span>
         <span>8-hr/week guarantee</span>
@@ -839,7 +839,7 @@
 <section id="about" class="section about" aria-labelledby="about-heading">
   <div class="container">
     <div class="about-centered reveal">
-      <img src="Parker.jpg" alt="Parker — Founder of Clockworks" class="about-headshot" />
+      <img src="images/Parker.png" alt="Parker — Founder of Clockworks" class="about-headshot" />
       <p class="section-label" style="color:var(--orange-dark);">About</p>
       <h2 id="about-heading" class="section-heading" style="margin-bottom:20px;">I'm Parker. I build the AI systems that make your business run like clockwork.</h2>
       <div class="about-bio">
@@ -1397,7 +1397,7 @@ function selectIndustry(bucket) {
   const ht = document.getElementById('hero-trust');
   if (ht) {
     const otherTrust = data.trust.filter(t => !t.includes('Maple Grove'));
-    ht.innerHTML = '<span class="hero-trust-parker"><img src="Parker.jpg" alt="Parker" class="hero-headshot" /> Parker \u00b7 Maple Grove, MN</span>' +
+    ht.innerHTML = '<span class="hero-trust-parker"><img src="images/Parker.png" alt="Parker" class="hero-headshot" /> Parker \u00b7 Maple Grove, MN</span>' +
       otherTrust.map(t => `<span>${t}</span>`).join('');
   }
 
