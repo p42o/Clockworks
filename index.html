@@ -36,6 +36,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 
+  <!-- Tabler Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css" rel="stylesheet" />
+
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
   {
@@ -47,7 +50,7 @@
         "name": "Clockworks",
         "description": "Clockworks builds done-for-you AI and automation systems for small businesses. We automate invoicing, scheduling, lead follow-up, reviews, and more — so business owners can focus on what actually grows their business.",
         "url": "https://clockworksai.com",
-        "email": "hello@clockworksai.com",
+        "email": "parker@mnclockworks.com",
         "address": { "@type": "PostalAddress", "addressLocality": "Maple Grove", "addressRegion": "MN", "addressCountry": "US" },
         "areaServed": ["Maple Grove MN","Minneapolis MN","Twin Cities MN","Plymouth MN","Edina MN"],
         "priceRange": "$$",
@@ -172,9 +175,9 @@
     .hero-blob { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
     .hero-blob-1 { width: 600px; height: 600px; top: -200px; right: -100px; background: radial-gradient(circle, rgba(196,131,74,0.07) 0%, transparent 70%); animation: float 8s ease-in-out infinite; }
     .hero-blob-2 { width: 500px; height: 500px; bottom: -100px; left: -100px; background: radial-gradient(circle, rgba(28,35,51,0.05) 0%, transparent 70%); animation: float 10s ease-in-out infinite reverse; }
-    .hero-content { position: relative; z-index: 1; width: 100%; padding: 130px 24px 80px; max-width: 1200px; margin: 0 auto; }
+    .hero-content { position: relative; z-index: 1; width: 100%; padding: 110px 24px 80px; max-width: 1200px; margin: 0 auto; }
     .hero-layout { display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(196,131,74,0.08); border: 1px solid rgba(196,131,74,0.22); border-radius: 100px; padding: 6px 16px; margin-bottom: 28px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(196,131,74,0.08); border: 1px solid rgba(196,131,74,0.22); border-radius: 100px; padding: 6px 16px; margin-bottom: 16px; }
     .hero-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); animation: pulse 2s infinite; }
     .hero-badge-text { color: var(--orange-dark); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
     .hero-h1 { font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(34px, 4.5vw, 58px); font-weight: 400; color: var(--navy); line-height: 1.1; margin-bottom: 22px; max-width: 820px; }
@@ -189,78 +192,99 @@
     .hero-headshot { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; object-position: center top; border: 2px solid rgba(196,131,74,0.3); flex-shrink: 0; }
     .hero-counter { margin-top: 16px; font-size: 13px; color: var(--text-muted); font-weight: 500; }
 
-    /* ══ N8N / WHAT I BUILD SECTION ══ */
+    /* ══ WHAT I BUILD SECTION ══ */
     .n8n-section { background: var(--navy); position: relative; overflow: hidden; }
     .n8n-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(196,131,74,0.12) 0%, transparent 60%); pointer-events: none; }
     .n8n-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
     .n8n-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
     .n8n-heading { font-family: 'Instrument Serif', serif; font-size: clamp(28px, 4vw, 46px); color: #fff; line-height: 1.1; margin-bottom: 16px; }
     .n8n-sub { font-size: 17px; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 520px; margin-bottom: 48px; }
-    .n8n-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: center; }
-    .n8n-connectors { display: flex; flex-direction: column; gap: 16px; }
-    .n8n-connector { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 12px; }
-    .n8n-app { display: flex; align-items: center; gap: 8px; }
-    .n8n-app-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.10); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
-    .n8n-app-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); }
-    .n8n-arrow { font-size: 16px; color: var(--orange); flex-shrink: 0; margin: 0 4px; }
-    .n8n-outcome { font-size: 12px; color: rgba(255,255,255,0.5); margin-left: auto; font-style: italic; }
-    .n8n-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(196,131,74,0.15); border: 1px solid rgba(196,131,74,0.3); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 700; color: var(--orange); margin-top: 24px; }
-    .n8n-promise { margin-top: 32px; }
-    .n8n-promise-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
-    .n8n-promise-check { width: 22px; height: 22px; border-radius: 50%; background: rgba(196,131,74,0.15); border: 1px solid rgba(196,131,74,0.3); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--orange); flex-shrink: 0; margin-top: 2px; }
-    .n8n-promise-text strong { display: block; font-size: 14px; color: rgba(255,255,255,0.9); margin-bottom: 3px; }
-    .n8n-promise-text span { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.55; }
+    .n8n-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(196,131,74,0.15); border: 1px solid rgba(196,131,74,0.3); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 700; color: var(--orange); margin-top: 32px; }
 
-    /* ══ WORKFLOW CARDS ══ */
-    .workflows-sub { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
-    .workflow-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    .workflow-card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 26px; box-shadow: var(--shadow-sm); transition: transform 0.25s, box-shadow 0.25s; }
-    .workflow-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-    .wf-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-    .wf-title { font-weight: 700; font-size: 16px; color: var(--navy); line-height: 1.3; }
-    .wf-save { background: rgba(34,197,94,0.10); border: 1px solid rgba(34,197,94,0.25); color: #15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; margin-left: 12px; }
-    .wf-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
-    .wf-step { background: var(--bg-off); border: 1px solid var(--border); border-radius: 8px; padding: 7px 11px; font-size: 12px; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
-    .wf-step.trigger { background: rgba(196,131,74,0.08); border-color: rgba(196,131,74,0.2); color: var(--orange-dark); font-weight: 600; }
-    .wf-step.result { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); color: #15803d; font-weight: 600; }
-    .wf-arrow { font-size: 14px; color: var(--text-dim); flex-shrink: 0; }
-    .wf-outcome { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding-top: 16px; border-top: 1px solid var(--border); font-style: italic; }
-    .wf-industry { font-size: 11px; color: var(--text-dim); font-weight: 600; margin-top: 10px; }
-    /* Workflow cards inside dark n8n section need overrides for light mode */
-    .n8n-section .workflow-card { background: #fff; border-color: rgba(255,255,255,0.12); }
-    .n8n-section .wf-step { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); }
-    .n8n-section .wf-step.trigger { background: rgba(196,131,74,0.15); border-color: rgba(196,131,74,0.3); color: var(--orange); }
-    .n8n-section .wf-step.result { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.25); color: #22c55e; }
-    .n8n-section .wf-arrow { color: rgba(255,255,255,0.3); }
+    /* ── Filter Pills ── */
+    .filter-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+    .filter-pill { padding: 8px 18px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.18); background: transparent; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.25s ease; font-family: inherit; white-space: nowrap; }
+    .filter-pill:hover { border-color: rgba(196,131,74,0.5); color: rgba(255,255,255,0.85); background: rgba(196,131,74,0.08); }
+    .filter-pill.active { background: linear-gradient(135deg, #A86C35, #C4834A); border-color: var(--orange); color: #fff; box-shadow: 0 2px 12px rgba(196,131,74,0.30); }
 
-    /* ══ BEFORE/AFTER ══ */
-    .beforeafter { background: var(--bg-off); }
-    .ba-grid { display: grid; grid-template-columns: 1fr 56px 1fr; gap: 0; align-items: stretch; }
-    .ba-col { border-radius: 16px; overflow: hidden; }
-    .ba-header { padding: 16px 20px; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; }
-    .ba-before .ba-header { background: #fef2f2; color: #b91c1c; }
-    .ba-after  .ba-header { background: #f0fdf4; color: #15803d; }
-    .ba-items { padding: 20px; background: #fff; border: 1px solid var(--border); border-top: none; height: 100%; }
-    .ba-before .ba-items, .ba-after .ba-items { border-radius: 0 0 16px 16px; }
-    .ba-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
-    .ba-item:last-child { border-bottom: none; }
-    .ba-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; margin-top: 1px; }
-    .ba-before .ba-dot { background: #fee2e2; color: #b91c1c; }
-    .ba-after  .ba-dot { background: #dcfce7; color: #15803d; }
-    .ba-text { font-size: 14px; line-height: 1.6; }
-    .ba-before .ba-text { color: #7f1d1d; }
-    .ba-after  .ba-text { color: #14532d; }
-    .ba-arrow { display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--orange); font-weight: 700; }
+    /* ── Automation Card Grid ── */
+    .auto-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .auto-card { background: #0f1320; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 28px 24px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; position: relative; overflow: hidden; }
+    .auto-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(196,131,74,0.2); border-color: rgba(196,131,74,0.25); }
+    .auto-card.hidden { display: none; }
+    .auto-card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; flex-shrink: 0; }
+    .auto-card-icon i { font-size: 26px; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .auto-card-title { font-weight: 700; font-size: 16px; color: #fff; margin-bottom: 6px; line-height: 1.3; }
+    .auto-card-subtitle { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 14px; line-height: 1.5; }
+    .auto-card-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #22c55e; }
+    .auto-card-badge::before { content: '\2713'; font-weight: 700; }
 
-    /* ══ BEFORE/AFTER MISSING ══ */
-    .ba-missing { margin-top: 20px; border-radius: 16px; overflow: hidden; border: 1.5px solid rgba(196,131,74,0.22); }
-    .ba-missing-intro { padding: 14px 22px 0; font-size: 14px; color: var(--text-muted); line-height: 1.65; font-style: italic; background: rgba(196,131,74,0.05); }
-    .ba-missing-header { padding: 12px 22px 14px; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; background: rgba(196,131,74,0.05); color: var(--orange-dark); border-bottom: 1px solid rgba(196,131,74,0.15); }
-    .ba-missing-items { padding: 8px 20px 12px; background: #fff; }
-    .ba-missing-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-    .ba-missing-item:last-child { border-bottom: none; }
-    .ba-missing-dot { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
-    .ba-missing-text { font-size: 14px; line-height: 1.6; color: var(--text-muted); }
+    /* Icon gradient classes */
+    .grad-copper i { background: linear-gradient(135deg, #C4834A, #E8B87A); background-clip: text; -webkit-background-clip: text; }
+    .grad-blue i { background: linear-gradient(135deg, #3B82F6, #93C5FD); background-clip: text; -webkit-background-clip: text; }
+    .grad-green i { background: linear-gradient(135deg, #22C55E, #86EFAC); background-clip: text; -webkit-background-clip: text; }
+    .grad-rose i { background: linear-gradient(135deg, #F43F5E, #FDA4AF); background-clip: text; -webkit-background-clip: text; }
+    .grad-purple i { background: linear-gradient(135deg, #8B5CF6, #C4B5FD); background-clip: text; -webkit-background-clip: text; }
+    .grad-amber i { background: linear-gradient(135deg, #F59E0B, #FCD34D); background-clip: text; -webkit-background-clip: text; }
+
+    /* Icon background colors */
+    .bg-copper { background: rgba(196,131,74,0.15); }
+    .bg-blue { background: rgba(59,130,246,0.15); }
+    .bg-green { background: rgba(34,197,94,0.15); }
+    .bg-rose { background: rgba(244,63,94,0.15); }
+    .bg-purple { background: rgba(139,92,246,0.15); }
+    .bg-amber { background: rgba(245,158,11,0.15); }
+
+    /* ── Automation Detail Modal ── */
+    .auto-modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    .auto-modal-overlay.open { opacity: 1; visibility: visible; }
+    .auto-modal { background: #fff; border-radius: 20px; max-width: 560px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 36px; position: relative; transform: translateY(20px) scale(0.97); transition: transform 0.3s ease; box-shadow: 0 24px 64px rgba(0,0,0,0.25); }
+    .auto-modal-overlay.open .auto-modal { transform: translateY(0) scale(1); }
+    .auto-modal-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text-muted); cursor: pointer; transition: background 0.2s, color 0.2s; z-index: 2; }
+    .auto-modal-close:hover { background: var(--bg-off); color: var(--navy); }
+    .auto-modal-icon { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .auto-modal-icon i { font-size: 32px; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .auto-modal-title { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--navy); margin-bottom: 8px; line-height: 1.2; }
+    .auto-modal-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: #22c55e; margin-bottom: 24px; }
+    .auto-modal-badge::before { content: '\2713'; font-weight: 700; }
+    .auto-modal-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .auto-modal-flow-step { background: var(--bg-off); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: var(--text-muted); font-weight: 500; }
+    .auto-modal-flow-step:first-child { background: rgba(196,131,74,0.08); border-color: rgba(196,131,74,0.2); color: var(--orange-dark); font-weight: 600; }
+    .auto-modal-flow-step:last-child { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); color: #15803d; font-weight: 600; }
+    .auto-modal-flow-arrow { font-size: 14px; color: var(--text-dim); flex-shrink: 0; }
+    .auto-modal-impact { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 28px; padding: 18px; background: var(--bg-off); border-radius: 12px; border: 1px solid var(--border); }
+    .auto-modal-cta { display: block; width: 100%; text-align: center; padding: 14px 24px; border-radius: 12px; border: none; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; font-weight: 700; font-size: 15px; font-family: inherit; box-shadow: 0 4px 18px rgba(196,131,74,0.30); cursor: pointer; transition: filter 0.2s, transform 0.2s; text-decoration: none; }
+    .auto-modal-cta:hover { filter: brightness(1.07); transform: translateY(-1px); }
+
+    /* ── Bio Card Modal ── */
+    .bio-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    .bio-overlay.bio-card-open { opacity: 1; visibility: visible; }
+    .bio-card { background: #fff; border-radius: 20px; max-width: 400px; width: 100%; padding: 36px; position: relative; text-align: center; transform: translateY(16px) scale(0.95); transition: transform 0.35s ease; box-shadow: 0 24px 64px rgba(0,0,0,0.2); }
+    .bio-overlay.bio-card-open .bio-card { transform: translateY(0) scale(1); }
+    .bio-card-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 17px; color: var(--text-muted); cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .bio-card-close:hover { background: var(--bg-off); color: var(--navy); }
+    .bio-card-photo { width: 120px; height: 120px; border-radius: 16px; object-fit: cover; object-position: center top; margin: 0 auto 18px; display: block; border: 3px solid rgba(196,131,74,0.25); }
+    .bio-card-name { font-family: 'Instrument Serif', serif; font-size: 24px; color: var(--navy); margin-bottom: 4px; }
+    .bio-card-title { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+    .bio-card-text { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 14px; text-align: left; }
+    .bio-card-hobbies { font-size: 13px; color: var(--text-dim); margin-bottom: 20px; text-align: left; }
+    .bio-card-hobbies strong { color: var(--text-muted); }
+    .bio-card-socials { display: flex; gap: 12px; justify-content: center; }
+    .bio-card-socials a { width: 40px; height: 40px; border-radius: 10px; background: var(--bg-off); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 20px; transition: all 0.2s; }
+    .bio-card-socials a:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .hero-headshot, .about-headshot { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hero-headshot:hover, .about-headshot:hover { transform: scale(1.08); box-shadow: 0 0 0 3px rgba(196,131,74,0.25); }
+
+    /* ── Meeting Preference Pills ── */
+    .meeting-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .meeting-pill { padding: 10px 20px; border-radius: 100px; border: 1.5px solid var(--border-strong); background: transparent; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.25s ease; font-family: inherit; }
+    .meeting-pill:hover { border-color: rgba(196,131,74,0.5); color: var(--navy); background: rgba(196,131,74,0.05); }
+    .meeting-pill.active { background: linear-gradient(135deg, #A86C35, #C4834A); border-color: var(--orange); color: #fff; box-shadow: 0 2px 10px rgba(196,131,74,0.25); }
+
+    /* ── Footer Social Icons ── */
+    .footer-socials { display: flex; gap: 10px; margin-top: 10px; }
+    .footer-socials a { color: rgba(255,255,255,0.35); font-size: 20px; transition: color 0.2s; display: flex; align-items: center; justify-content: center; }
+    .footer-socials a:hover { color: rgba(255,255,255,0.8); }
 
     /* ══ MID-PAGE CTA ══ */
     .mid-cta { padding: 60px 24px; background: var(--bg); }
@@ -362,24 +386,12 @@
     .footer-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); }
     .footer-copy { font-size: 11px; color: rgba(255,255,255,0.25); }
 
-    /* ══ INDUSTRY SELECTOR ══ */
-    .ind-selector { background: var(--bg); border-bottom: 1px solid var(--border); padding: 10px 24px; }
-    .ind-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .ind-label { font-size: 12px; font-weight: 600; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
-    .ind-btn { padding: 6px 14px; border-radius: 100px; border: 1.5px solid var(--border-strong); background: transparent; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
-    .ind-btn:hover { border-color: var(--orange); color: var(--navy); background: rgba(196,131,74,0.05); }
-    .ind-btn.active { background: linear-gradient(135deg, #A86C35, #C4834A); border-color: var(--orange); color: #fff; box-shadow: 0 2px 10px rgba(196,131,74,0.25); }
-    .ind-note { font-size: 11px; color: var(--text-dim); text-align: right; max-width: 1100px; margin: 3px auto 0; padding: 0 4px; }
 
     /* ══ RESPONSIVE ══ */
     @media (max-width: 1024px) {
       .steps-grid { grid-template-columns: repeat(2,1fr); }
       .plans-grid { grid-template-columns: repeat(2,1fr); }
       .faq-grid { grid-template-columns: 1fr; }
-      .workflow-grid { grid-template-columns: 1fr; }
-      .ba-grid { grid-template-columns: 1fr; }
-      .ba-arrow { display: none; }
-      .n8n-layout { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
       .logo-img { height: 44px; }
@@ -389,13 +401,15 @@
       .plans-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto 32px; }
       .footer-links { display: none; }
       .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
-      .ind-selector { padding: 8px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-      .ind-inner { flex-wrap: nowrap; min-width: max-content; }
       .mid-cta-row { grid-template-columns: 1fr; }
+      .auto-grid { grid-template-columns: repeat(2, 1fr); }
+      .auto-modal { padding: 28px; margin: 16px; }
     }
     @media (max-width: 480px) {
       .hero-btns { flex-direction: column; align-items: center; }
       .form-row { grid-template-columns: 1fr; }
+      .auto-grid { grid-template-columns: 1fr; }
+      .filter-pills { justify-content: center; }
     }
   </style>
 </head>
@@ -435,6 +449,35 @@
   <a href="#booking"      class="mobile-cta">Book Free Strategy Session &rarr;</a>
 </div>
 
+<!-- Bio Card Modal -->
+<div class="bio-overlay" id="bio-overlay" aria-modal="true" role="dialog" aria-label="About Parker Swanson">
+  <div class="bio-card">
+    <button class="bio-card-close" id="bio-close" aria-label="Close bio card">&times;</button>
+    <img src="images/Parker.png" alt="Parker Swanson" class="bio-card-photo" />
+    <div class="bio-card-name">Parker Swanson</div>
+    <div class="bio-card-title">Founder, Clockworks &middot; Maple Grove, MN</div>
+    <p class="bio-card-text">Married with 2 kids and a German Shepherd. 20 years in technology &mdash; deploying cloud-based solutions to millions of customers and demystifying AI for everyday work.</p>
+    <p class="bio-card-hobbies"><strong>Hobbies:</strong> Anything with my family, 3D Printing, Vibe Coding, and Travelling!</p>
+    <div class="bio-card-socials">
+      <a href="https://x.com/ClockworksMN" target="_blank" rel="noopener noreferrer" aria-label="Follow on X" class="bio-social-x"><i class="ti ti-brand-x"></i></a>
+      <a href="https://www.facebook.com/profile.php?id=61580475420690" target="_blank" rel="noopener noreferrer" aria-label="Follow on Facebook" class="bio-social-fb"><i class="ti ti-brand-facebook"></i></a>
+    </div>
+  </div>
+</div>
+
+<!-- Automation Detail Modal -->
+<div class="auto-modal-overlay" id="auto-modal-overlay" aria-modal="true" role="dialog" aria-label="Automation details">
+  <div class="auto-modal" id="auto-modal">
+    <button class="auto-modal-close" id="auto-modal-close" aria-label="Close">&times;</button>
+    <div class="auto-modal-icon" id="auto-modal-icon"></div>
+    <div class="auto-modal-title" id="auto-modal-title"></div>
+    <div class="auto-modal-badge" id="auto-modal-badge"></div>
+    <div class="auto-modal-flow" id="auto-modal-flow"></div>
+    <div class="auto-modal-impact" id="auto-modal-impact"></div>
+    <a href="#booking" class="auto-modal-cta" id="auto-modal-cta">Book a Free Strategy Session &rarr;</a>
+  </div>
+</div>
+
 <main id="main-content">
 
 <!-- HERO -->
@@ -452,7 +495,7 @@
         <span class="hero-accent">Let's fix that &mdash; for free.</span>
       </h1>
       <p class="hero-desc" id="hero-desc">
-        Book a free 30-minute strategy session. I'll map your biggest time drains, show you exactly what to automate, and give you a written roadmap &mdash; whether you hire me or not. If you do, your first workflow is live within a week.
+        Book a free 30-minute strategy session. I'll map your biggest time drains, show you exactly what to automate, and give you a written roadmap and a free working demo &mdash; whether you hire me or not. If you do, your first workflow is live within a week.
       </p>
       <div class="hero-btns">
         <a href="#booking" class="btn-primary">Book My Free 30-Min Strategy Session &rarr;</a>
@@ -462,212 +505,35 @@
         <span class="hero-trust-parker"><img src="images/Parker.png" alt="Parker" class="hero-headshot" /> Parker &middot; Maple Grove, MN</span>
         <span>Free roadmap, zero obligation</span>
         <span>Working demo in 48 hours</span>
-        <span>8-hr/week guarantee</span>
+        <span>Coffee-bet guarantee</span>
       </div>
       <div class="hero-counter">Currently building for <strong>5</strong> Twin Cities businesses</div>
     </div>
   </div>
 </section>
 
-<!-- INDUSTRY SELECTOR -->
-<div class="ind-selector" id="industry-selector" role="navigation" aria-label="Filter by industry">
-  <div class="ind-inner">
-    <span class="ind-label">Show content for:</span>
-    <button class="ind-btn active" onclick="selectIndustry('general')" id="ind-general">&#9881;&#65039; All Industries</button>
-    <button class="ind-btn" onclick="selectIndustry('trades')" id="ind-trades">&#128295; Plumbers / Electricians / Contractors</button>
-    <button class="ind-btn" onclick="selectIndustry('landscape')" id="ind-landscape">&#127807; Landscaping / Outdoor Services</button>
-    <button class="ind-btn" onclick="selectIndustry('realestate')" id="ind-realestate">&#127968; Real Estate / Property Management</button>
-    <button class="ind-btn" onclick="selectIndustry('cleaning')" id="ind-cleaning">&#129529; Cleaning / Home Services</button>
-  </div>
-  <p class="ind-note">Don't see your industry? Most local service businesses qualify. <a href="#booking" style="color:var(--orange);font-weight:600;">Let's talk &rarr;</a></p>
-</div>
-
-<!-- WHAT I BUILD (merged N8N Explainer + Workflow Examples) -->
+<!-- WHAT I BUILD -->
 <section id="what-i-build" class="n8n-section" aria-labelledby="n8n-heading">
   <div class="n8n-inner">
     <div class="reveal" style="max-width:620px;margin-bottom:48px;">
       <p class="n8n-label">What I Build</p>
       <h2 id="n8n-heading" class="n8n-heading">The Clockworks System.</h2>
-      <p class="n8n-sub" id="n8n-sub">Most small business owners are running their back-office out of their head and a notes app. I change that. I connect the tools you already use and build AI-powered automations that handle the busywork &mdash; so you can focus on the work that actually grows your business.</p>
+      <p class="n8n-sub">Most small business owners are running their back-office out of their head and a notes app. I change that. I connect the tools you already use and build AI-powered automations that handle the busywork &mdash; so you can focus on the work that actually grows your business.</p>
     </div>
-    <div class="n8n-layout">
-      <div class="n8n-connectors reveal">
-        <div class="n8n-connector" id="n8n-con-1">
-          <div class="n8n-app"><div class="n8n-app-icon">&#9989;</div><div class="n8n-app-name">Job Marked Done</div></div>
-          <span class="n8n-arrow">&rarr;</span>
-          <div class="n8n-app"><div class="n8n-app-icon">&#128196;</div><div class="n8n-app-name">Invoice Sent</div></div>
-          <span class="n8n-arrow">&rarr;</span>
-          <div class="n8n-app"><div class="n8n-app-icon">&#11088;</div><div class="n8n-app-name">Review Requested</div></div>
-          <span class="n8n-outcome">~0 minutes of your time</span>
-        </div>
-        <div class="n8n-connector" id="n8n-con-2">
-          <div class="n8n-app"><div class="n8n-app-icon">&#128222;</div><div class="n8n-app-name">Missed Call</div></div>
-          <span class="n8n-arrow">&rarr;</span>
-          <div class="n8n-app"><div class="n8n-app-icon">&#128172;</div><div class="n8n-app-name">Auto-Text Sent</div></div>
-          <span class="n8n-arrow">&rarr;</span>
-          <div class="n8n-app"><div class="n8n-app-icon">&#128197;</div><div class="n8n-app-name">Lead Captured</div></div>
-          <span class="n8n-outcome">No lost leads</span>
-        </div>
-        <div class="n8n-connector" id="n8n-con-3">
-          <div class="n8n-app"><div class="n8n-app-icon">&#128203;</div><div class="n8n-app-name">Form Submitted</div></div>
-          <span class="n8n-arrow">&rarr;</span>
-          <div class="n8n-app"><div class="n8n-app-icon">&#128451;&#65039;</div><div class="n8n-app-name">CRM Updated</div></div>
-          <span class="n8n-arrow">&rarr;</span>
-          <div class="n8n-app"><div class="n8n-app-icon">&#9993;&#65039;</div><div class="n8n-app-name">Welcome Email</div></div>
-          <span class="n8n-outcome">Instant follow-up</span>
-        </div>
-        <div class="n8n-badge" aria-label="Key promise">
-          &#9889; I build it. I deploy it. You just watch it run.
-        </div>
-      </div>
-      <div class="n8n-promise reveal" style="transition-delay:0.15s;">
-        <div class="n8n-promise-item">
-          <div class="n8n-promise-check">&check;</div>
-          <div class="n8n-promise-text">
-            <strong>Done-for-you, not DIY</strong>
-            <span>I handle every step &mdash; setup, testing, deployment, and documentation. You don't touch a thing.</span>
-          </div>
-        </div>
-        <div class="n8n-promise-item">
-          <div class="n8n-promise-check">&check;</div>
-          <div class="n8n-promise-text">
-            <strong>Works with the tools you already use</strong>
-            <span>Gmail, Google Reviews, Nextdoor, Jobber, QuickBooks, Calendly, your CRM &mdash; I connect the tools that actually run your business.</span>
-          </div>
-        </div>
-        <div class="n8n-promise-item">
-          <div class="n8n-promise-check">&check;</div>
-          <div class="n8n-promise-text">
-            <strong>Working demo in 48 hours, deployed within a week</strong>
-            <span>We talk Monday, you see a working demo by Tuesday morning. Your full automation is live within a week, usually less.</span>
-          </div>
-        </div>
-        <div class="n8n-promise-item">
-          <div class="n8n-promise-check">&check;</div>
-          <div class="n8n-promise-text">
-            <strong>Built for local businesses, not enterprise</strong>
-            <span>Priced for small businesses. No IT department or technical team required on your end.</span>
-          </div>
-        </div>
-        <a href="#booking" class="btn-primary" style="margin-top:24px;display:inline-flex;">Book My Free Strategy Session &rarr;</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- Workflow Cards (merged into What I Build) -->
-  <div class="workflows-sub">
-    <p class="n8n-label" style="margin-bottom:24px;">Real Workflows I Build</p>
-    <div class="workflow-grid">
-      <div class="workflow-card reveal">
-        <div class="wf-header">
-          <div class="wf-title" id="wf-title-1">Auto-Invoice + Review Request</div>
-          <div class="wf-save" id="wf-save-1">Saves ~45 min/job</div>
-        </div>
-        <div class="wf-flow" id="wf-flow-1" aria-label="Workflow steps">
-          <span class="wf-step trigger">Job Marked Done</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">Invoice Generated</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">Invoice Emailed</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">2hr Later: Review Text</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step result">&#11088; Reviews Collected</span>
-        </div>
-        <p class="wf-outcome" id="wf-outcome-1">&ldquo;You packed up from your last job. Before you started the truck, the invoice was out and the review request was already in the customer's pocket.&rdquo;</p>
-        <div class="wf-industry" id="wf-ind-1">&#128295; Plumbers &middot; Electricians &middot; Contractors &middot; Landscapers</div>
-      </div>
-      <div class="workflow-card reveal" style="transition-delay:0.1s;">
-        <div class="wf-header">
-          <div class="wf-title" id="wf-title-2">Missed Call Lead Recovery</div>
-          <div class="wf-save" id="wf-save-2">0 lost leads</div>
-        </div>
-        <div class="wf-flow" id="wf-flow-2" aria-label="Workflow steps">
-          <span class="wf-step trigger">Call Missed</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">Auto-Text Sent Instantly</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">Calendar Link Included</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step result">Lead Logged in CRM</span>
-        </div>
-        <p class="wf-outcome" id="wf-outcome-2">&ldquo;A customer called while you were under a sink. They got an instant, professional text back. By the time you finished the job, the booking was already on your calendar.&rdquo;</p>
-        <div class="wf-industry" id="wf-ind-2">&#128295; All field service businesses</div>
-      </div>
-      <div class="workflow-card reveal" style="transition-delay:0.15s;">
-        <div class="wf-header">
-          <div class="wf-title" id="wf-title-3">Auto Job Scheduling + Parts Ordering</div>
-          <div class="wf-save" id="wf-save-3">Saves 4+ hrs/week</div>
-        </div>
-        <div class="wf-flow" id="wf-flow-3" aria-label="Workflow steps">
-          <span class="wf-step trigger">Job Quote Accepted</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">Job Added to Calendar</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">Parts List Generated</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">Supplier Order Drafted</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step result">You Just Show Up</span>
-        </div>
-        <p class="wf-outcome" id="wf-outcome-3">&ldquo;Customer accepts the quote on Tuesday night. By Wednesday morning, the job's on your calendar, your supplier has the parts order, and you've got the customer's address in your GPS. You didn't do any of that.&rdquo;</p>
-        <div class="wf-industry" id="wf-ind-3">&#128295; Plumbers &middot; Electricians &middot; HVAC &middot; Contractors</div>
-      </div>
-      <div class="workflow-card reveal" style="transition-delay:0.2s;">
-        <div class="wf-header">
-          <div class="wf-title" id="wf-title-4">Weekly Competitor Intel Report</div>
-          <div class="wf-save" id="wf-save-4">Always one step ahead</div>
-        </div>
-        <div class="wf-flow" id="wf-flow-4" aria-label="Workflow steps">
-          <span class="wf-step trigger">Every Monday, 7am</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">Scrapes Google Reviews &amp; Nextdoor</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step">Checks Seasonal Trends</span>
-          <span class="wf-arrow" aria-hidden="true">&rarr;</span>
-          <span class="wf-step result">Intel Report in Your Inbox</span>
-        </div>
-        <p class="wf-outcome" id="wf-outcome-4">&ldquo;Every Monday morning you get a tailored briefing: what your competitors are hearing, what locals are asking about on Nextdoor, and what's trending this season in your industry.&rdquo;</p>
-        <div class="wf-industry" id="wf-ind-4">&#128295; Contractors &middot; &#127968; Realtors &middot; &#127807; Landscapers &middot; All local businesses</div>
-      </div>
+    <!-- Filter Pills -->
+    <div class="filter-pills reveal" role="tablist" aria-label="Filter automations">
+      <button class="filter-pill active" data-filter="all" role="tab" aria-selected="true">All</button>
+      <button class="filter-pill" data-filter="social-media" role="tab" aria-selected="false">Social Media</button>
+      <button class="filter-pill" data-filter="operations" role="tab" aria-selected="false">Operations</button>
+      <button class="filter-pill" data-filter="growth" role="tab" aria-selected="false">Growth</button>
     </div>
-  </div>
-</section>
 
-<!-- BEFORE / AFTER -->
-<section class="section beforeafter" aria-labelledby="ba-heading">
-  <div class="container">
-    <div class="reveal" style="text-align:center;margin-bottom:44px;">
-      <p class="section-label" style="color:var(--orange-dark);">The Difference</p>
-      <h2 id="ba-heading" class="section-heading">One afternoon changes the whole workflow.</h2>
-    </div>
-    <div class="ba-grid reveal">
-      <div class="ba-col ba-before">
-        <div class="ba-header">Manual mode (before)</div>
-        <div class="ba-items" id="ba-before-items">
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&#10007;</div><div class="ba-text">Finish a job &rarr; sit down to write the invoice yourself (15&ndash;20 min)</div></div>
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&#10007;</div><div class="ba-text">Miss a call &rarr; customer calls your competitor while you're on a roof</div></div>
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&#10007;</div><div class="ba-text">Write an estimate &rarr; 45 minutes of formatting and math, late at the kitchen table</div></div>
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&#10007;</div><div class="ba-text">Ask for a review &rarr; awkward at the job site, or you forget entirely</div></div>
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&#10007;</div><div class="ba-text">New lead texts at night &rarr; cold by morning because no one responded</div></div>
-        </div>
-      </div>
-      <div class="ba-arrow" aria-hidden="true">&rarr;</div>
-      <div class="ba-col ba-after">
-        <div class="ba-header">Automated (after)</div>
-        <div class="ba-items" id="ba-after-items">
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&check;</div><div class="ba-text">Job marked done &rarr; invoice goes out automatically, no action needed</div></div>
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&check;</div><div class="ba-text">Missed call &rarr; AI answers, captures the lead, texts a callback time</div></div>
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&check;</div><div class="ba-text">Leave a 30-second voice note &rarr; professional estimate drafted and ready to send</div></div>
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&check;</div><div class="ba-text">Job closes &rarr; review request texts automatically 2 hours later</div></div>
-          <div class="ba-item"><div class="ba-dot" aria-hidden="true">&check;</div><div class="ba-text">Lead texts at 11pm &rarr; gets an instant answer and your calendar link</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="ba-missing reveal" id="ba-missing">
-      <p class="ba-missing-intro">Saving time on tasks you're already doing is only half the story. These are things the highest-earning businesses in your space do consistently &mdash; that most competitors aren't doing at all, because they haven't had time.</p>
-      <div class="ba-missing-header" id="ba-missing-header">What now also happens automatically (that wasn't happening before)</div>
-      <div class="ba-missing-items" id="ba-missing-items"></div>
+    <!-- Card Grid -->
+    <div class="auto-grid reveal" id="auto-grid" role="tabpanel"></div>
+
+    <div class="n8n-badge reveal" aria-label="Key promise">
+      &#9889; I build it. I deploy it. You just watch it run.
     </div>
   </div>
 </section>
@@ -742,7 +608,7 @@
     <!-- Guarantee Callout -->
     <div class="guarantee-callout reveal" style="margin-top:40px;">
       <div class="guarantee-callout-title">The Guarantee</div>
-      <p class="guarantee-callout-text">If you don't save at least 8 hours per week within 60 days of going live, your next month is free. No questions asked.</p>
+      <p class="guarantee-callout-text">If we don't find at least one thing that would drastically save you time after our 30-minute session, I'll buy you a coffee.</p>
     </div>
   </div>
 </section>
@@ -768,6 +634,7 @@
         <ul class="plan-features" aria-label="Plan features">
           <li class="plan-feature"><span class="plan-check">&check;</span>30-minute 1-on-1 video or in-person call</li>
           <li class="plan-feature"><span class="plan-check">&check;</span>Written automation roadmap delivered after</li>
+          <li class="plan-feature"><span class="plan-check">&check;</span>Free working demo of your solution delivered after the call</li>
           <li class="plan-feature"><span class="plan-check">&check;</span>Honest assessment &mdash; I'll tell you if automation isn't the right fit</li>
           <li class="plan-feature"><span class="plan-check">&check;</span>No payment info, no commitment</li>
         </ul>
@@ -795,7 +662,7 @@
       <div class="plan-card">
         <div class="plan-name" style="color:var(--text-muted);">The System</div>
         <div class="plan-price">$999</div>
-        <div class="plan-type">one-time &nbsp;&middot;&nbsp; or $167/mo &times; 6</div>
+        <div class="plan-type">one-time</div>
         <p class="plan-desc">The full Clockworks system. Three custom automations that eliminate your biggest time drains &mdash; you pick the workflows that matter most to your business, and I build them all connected and running.</p>
         <div class="plan-anchor">Best for: businesses ready to stop doing admin</div>
         <ul class="plan-features" aria-label="Plan features">
@@ -803,7 +670,7 @@
           <li class="plan-feature"><span class="plan-check">&check;</span>You choose: invoice + review, missed call + lead capture, job scheduling + follow-up, social media automation, and more</li>
           <li class="plan-feature"><span class="plan-check">&check;</span>1-hour in-person or remote training session</li>
           <li class="plan-feature"><span class="plan-check">&check;</span>Full documentation &amp; video walkthrough</li>
-          <li class="plan-feature"><span class="plan-check">&check;</span>60-day support + 8-hr/week guarantee</li>
+          <li class="plan-feature"><span class="plan-check">&check;</span>60-day support included</li>
         </ul>
         <a href="#booking" class="plan-cta btn-ghost" style="border-color:var(--border-strong);color:var(--navy);">Start With Free Session &rarr;</a>
       </div>
@@ -829,7 +696,7 @@
     <!-- Guarantee (identical to How It Works) -->
     <div class="guarantee-callout reveal">
       <div class="guarantee-callout-title">The Guarantee</div>
-      <p class="guarantee-callout-text">If you don't save at least 8 hours per week within 60 days of going live, your next month is free. No questions asked.</p>
+      <p class="guarantee-callout-text">If we don't find at least one thing that would drastically save you time after our 30-minute session, I'll buy you a coffee.</p>
     </div>
     <p style="font-size:13px;color:var(--text-dim);text-align:center;margin-top:16px;">All plans start with a free 30-minute strategy session. Third-party tool costs (e.g., CRM, review platforms) vary by solution and are billed directly by those providers &mdash; I'll give you an honest estimate during your session.</p>
   </div>
@@ -845,7 +712,7 @@
       <div class="about-bio">
         <p>I started Clockworks because I kept seeing the same thing: great business owners &mdash; tradespeople, service providers, local operators &mdash; losing 10+ hours every week to tasks a machine should be handling. Invoices written by hand. Leads going cold overnight. Reviews never requested. All done manually, all costing real money.</p>
         <p>I'm not a big agency. I'm one person in Maple Grove who builds AI-powered automation systems for small businesses. I built Clockworks to give local business owners the kind of back-office automation that big companies pay six figures for &mdash; at a price that actually makes sense.</p>
-        <p>Every client I take on gets my personal attention. You'll have my number. If something breaks at 7am before a job, you're not opening a support ticket &mdash; you're texting me. That's the deal.</p>
+        <p>Every client I take on gets my personal attention. You'll have my number. I work directly with every client &mdash; no support tickets, no runaround. When you need me, I'll always get back to you as fast as I can.</p>
       </div>
       <div class="about-trust">
         <div class="about-trust-item"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="about-trust-label">AI &amp; automation systems builder</span></div>
@@ -958,7 +825,7 @@
     <div class="reveal" style="text-align:center;margin-bottom:40px;">
       <p class="section-label" style="color:rgba(196,131,74,0.8);">Get Started</p>
       <h2 id="cta-heading" class="section-heading" style="color:#fff;margin-bottom:12px;">Book your free 30-minute strategy session.</h2>
-      <p id="cta-desc" style="font-size:16px;color:rgba(255,255,255,0.6);max-width:480px;margin:0 auto;">30 minutes. I'll map your biggest time drains, show you exactly what to automate, and give you a written roadmap &mdash; whether you hire me or not. No pitch, no pressure.</p>
+      <p style="font-size:16px;color:rgba(255,255,255,0.6);max-width:480px;margin:0 auto;">30 minutes. I'll map your biggest time drains, show you exactly what to automate, and give you a written roadmap &mdash; whether you hire me or not. No pitch, no pressure.</p>
     </div>
     <div class="cta-form-wrap reveal" id="form-wrap">
       <form id="audit-form" novalidate>
@@ -997,6 +864,16 @@
           </div>
         </div>
         <div class="form-field">
+          <label class="form-label">Preferred Meeting Type</label>
+          <div class="meeting-pills" id="meeting-pills">
+            <button type="button" class="meeting-pill" data-value="In-Person">In-Person</button>
+            <button type="button" class="meeting-pill" data-value="Zoom">Zoom</button>
+            <button type="button" class="meeting-pill" data-value="Phone Call">Phone Call</button>
+          </div>
+          <input type="hidden" name="meeting-preference" id="f-meeting" value="" />
+          <span class="form-error" id="e-meeting" role="alert"></span>
+        </div>
+        <div class="form-field">
           <label class="form-label" for="f-pain">What's taking the most time in your week?</label>
           <textarea class="form-input" id="f-pain" name="pain" rows="3" placeholder="e.g., Writing invoices, chasing down payments, following up with leads, sending appointment reminders&hellip;" required style="resize:vertical;min-height:90px;"></textarea>
           <span class="form-error" id="e-pain" role="alert"></span>
@@ -1020,6 +897,10 @@
       <div>
         <div class="footer-logo-text">Clockworks</div>
         <div class="footer-logo-sub">AI & Automation for Small Business</div>
+        <div class="footer-socials">
+          <a href="https://x.com/ClockworksMN" target="_blank" rel="noopener noreferrer" aria-label="Follow on X" class="footer-social-x"><i class="ti ti-brand-x"></i></a>
+          <a href="https://www.facebook.com/profile.php?id=61580475420690" target="_blank" rel="noopener noreferrer" aria-label="Follow on Facebook" class="footer-social-fb"><i class="ti ti-brand-facebook"></i></a>
+        </div>
       </div>
       <nav class="footer-links" aria-label="Footer navigation">
         <a href="#what-i-build"  class="footer-link">What I Build</a>
@@ -1028,7 +909,7 @@
         <a href="#about"         class="footer-link">About</a>
         <a href="resources.html" class="footer-link">Resources</a>
         <a href="#booking"       class="footer-link">Book Session</a>
-        <a href="mailto:hello@clockworksai.com" class="footer-link">hello@clockworksai.com</a>
+        <a href="mailto:parker@mnclockworks.com" class="footer-link">parker@mnclockworks.com</a>
       </nav>
     </div>
     <div class="footer-bottom">
@@ -1110,6 +991,18 @@ async function loadSiteContent() {
         });
       }
     }
+
+    // Load social & contact settings from Firestore
+    const settingsDoc = await db.collection('siteContent').doc('settings').get();
+    if (settingsDoc.exists) {
+      const s = settingsDoc.data();
+      if (s.socialX) {
+        document.querySelectorAll('.bio-social-x, .footer-social-x').forEach(a => a.href = s.socialX);
+      }
+      if (s.socialFacebook) {
+        document.querySelectorAll('.bio-social-fb, .footer-social-fb').forEach(a => a.href = s.socialFacebook);
+      }
+    }
   } catch(err) {
     console.log('Could not load site content:', err);
   }
@@ -1180,14 +1073,23 @@ function validate(id, errId, msg) {
   return valid;
 }
 
+function validateMeeting() {
+  const el = document.getElementById('f-meeting');
+  const err = document.getElementById('e-meeting');
+  const valid = el.value.trim() !== '';
+  err.textContent = valid ? '' : 'Please select a preferred meeting type';
+  return valid;
+}
+
 if (form) {
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const v1 = validate('f-name',  'e-name',  'Please enter your name.');
     const v2 = validate('f-email', 'e-email', 'Please enter a valid email address.');
     const v3 = validate('f-type',  'e-type',  'Please select your business type.');
+    const v5 = validateMeeting();
     const v4 = validate('f-pain',  'e-pain',  'Please describe what\'s taking your time.');
-    if (!v1 || !v2 || !v3 || !v4) return;
+    if (!v1 || !v2 || !v3 || !v4 || !v5) return;
 
     const btn = document.getElementById('form-submit');
     btn.disabled = true;
@@ -1195,12 +1097,13 @@ if (form) {
 
     try {
       await db.collection('submissions').add({
-        name:        document.getElementById('f-name').value.trim(),
-        email:       document.getElementById('f-email').value.trim(),
-        biz:         document.getElementById('f-biz').value.trim(),
-        type:        document.getElementById('f-type').value,
-        message:     document.getElementById('f-pain').value.trim(),
-        submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        name:              document.getElementById('f-name').value.trim(),
+        email:             document.getElementById('f-email').value.trim(),
+        biz:               document.getElementById('f-biz').value.trim(),
+        type:              document.getElementById('f-type').value,
+        meetingPreference: document.getElementById('f-meeting').value,
+        message:           document.getElementById('f-pain').value.trim(),
+        submittedAt:       firebase.firestore.FieldValue.serverTimestamp(),
       });
       formWrap.innerHTML = `
         <div class="form-success" role="alert">
@@ -1213,7 +1116,7 @@ if (form) {
     } catch(err) {
       btn.disabled = false;
       btn.textContent = 'Book My Free Strategy Session \u2192';
-      alert('Something went wrong. Please email hello@clockworksai.com directly.');
+      alert('Something went wrong. Please email parker@mnclockworks.com directly.');
     }
   });
 
@@ -1248,224 +1151,125 @@ if (midForm) {
     } catch(err) {
       btn.disabled = false;
       btn.textContent = 'Book My Free Call \u2192';
-      alert('Something went wrong. Please email hello@clockworksai.com directly.');
+      alert('Something went wrong. Please email parker@mnclockworks.com directly.');
     }
   });
 }
 
-// ── INDUSTRY SELECTOR ──
-// Helper: render workflow flow steps
-function _flow(steps) {
-  return steps.map((s, i) => {
-    const cls = i===0 ? 'trigger' : i===steps.length-1 ? 'result' : '';
-    return (i > 0 ? '<span class="wf-arrow" aria-hidden="true">\u2192</span>' : '') +
-      `<span class="wf-step ${cls}">${s}</span>`;
+// ── AUTOMATIONS DATA & RENDERING ──
+const AUTOMATIONS = [
+  { id:'social-media', title:'Social Media Autopilot', icon:'ti-brand-instagram', gradient:'grad-copper', bgClass:'bg-copper', subtitle:'Set it & forget it', badge:'3+ hrs/week saved', category:'social-media', flow:['Content AI','Schedule Posts','Auto-Publish','Track Engagement'], impact:'Businesses that post 3+ times per week see 2\u00d7 more engagement. This runs on autopilot \u2014 pre-written, scheduled, and posted without you touching a thing.' },
+  { id:'listing-social', title:'Listing \u2192 Social Kit', icon:'ti-home-search', gradient:'grad-blue', bgClass:'bg-blue', subtitle:'Listing to post-ready', badge:'World-class marketing', category:'social-media', flow:['New Listing Added','AI Generates Copy & Hashtags','Creates Multi-Platform Posts','Ready to Publish'], impact:'World-class marketing materials for every listing, generated in seconds. Professional captions, platform-optimized formats, and trending hashtags \u2014 all from your listing data.' },
+  { id:'auto-invoice', title:'Auto-Invoice + Review', icon:'ti-file-invoice', gradient:'grad-green', bgClass:'bg-green', subtitle:'Done \u2192 paid \u2192 reviewed', badge:'~45 min/job saved', category:'operations', flow:['Job Marked Done','Invoice Generated & Sent','2hr Later: Review Text','Reviews Collected'], impact:'You packed up from your last job. Before you started the truck, the invoice was out and the review request was already in the customer\u2019s pocket.' },
+  { id:'missed-call', title:'Missed Call Recovery', icon:'ti-phone-incoming', gradient:'grad-rose', bgClass:'bg-rose', subtitle:'Never lose a lead', badge:'0 lost leads', category:'operations', flow:['Call Missed','Auto-Text Sent Instantly','Calendar Link Included','Lead Logged in CRM'], impact:'A customer called while you were on a job. They got an instant, professional text back. By the time you finished, the booking was already on your calendar.' },
+  { id:'auto-scheduling', title:'Auto Scheduling', icon:'ti-calendar-event', gradient:'grad-purple', bgClass:'bg-purple', subtitle:'Quote \u2192 calendar \u2192 parts', badge:'4+ hrs/week saved', category:'operations', flow:['Job Quote Accepted','Job Added to Calendar','Parts List Generated','Supplier Order Drafted'], impact:'Customer accepts the quote Tuesday night. By Wednesday morning, the job\u2019s on your calendar, your supplier has the parts order, and the customer\u2019s address is in your GPS.' },
+  { id:'competitor-intel', title:'Competitor Intel', icon:'ti-target-arrow', gradient:'grad-amber', bgClass:'bg-amber', subtitle:'Weekly market briefing', badge:'Stay one step ahead', category:'growth', flow:['Every Monday, 7am','Scrapes Google Reviews & Nextdoor','Checks Seasonal Trends','Intel Report in Your Inbox'], impact:'Every Monday you get a tailored briefing: what your competitors are hearing, what locals are asking about, and what\u2019s trending this season in your industry.' }
+];
+
+// Render automation cards
+function renderAutoCards(filter) {
+  const grid = document.getElementById('auto-grid');
+  if (!grid) return;
+  grid.innerHTML = AUTOMATIONS.map((a, i) => {
+    const hidden = filter !== 'all' && a.category !== filter ? ' hidden' : '';
+    return `<div class="auto-card${hidden}" data-category="${a.category}" data-index="${i}" role="button" tabindex="0" aria-label="${a.title}" style="animation-delay:${i * 0.06}s">
+      <div class="auto-card-icon ${a.bgClass} ${a.gradient}"><i class="ti ${a.icon}"></i></div>
+      <div class="auto-card-title">${a.title}</div>
+      <div class="auto-card-subtitle">${a.subtitle}</div>
+      <div class="auto-card-badge">${a.badge}</div>
+    </div>`;
   }).join('');
-}
-// Helper: render n8n connector row
-function _con(steps, outcome) {
-  return steps.map((s, i) => (i > 0 ? '<span class="n8n-arrow">\u2192</span>' : '') +
-    `<div class="n8n-app"><div class="n8n-app-icon">${s[0]}</div><div class="n8n-app-name">${s[1]}</div></div>`
-  ).join('') + `<span class="n8n-outcome">${outcome}</span>`;
-}
 
-const IC = {
-  general: {
-    desc: "Book a free 30-minute strategy session. I'll map your biggest time drains, show you exactly what to automate, and give you a written roadmap \u2014 whether you hire me or not. If you do, your first workflow is live within a week.",
-    trust: ['Local to Maple Grove, MN','Free roadmap, zero obligation','Working demo in 48 hours','8-hr/week guarantee'],
-    n8nHeading: 'The Clockworks System.',
-    n8nSub: 'Most small business owners are running their back-office out of their head and a notes app. I change that \u2014 connecting the tools you already use and building AI-powered automations that handle the busywork so you can focus on growth.',
-    cons: [
-      {steps:[['✅','Job Marked Done'],['📄','Invoice Sent'],['⭐','Review Requested']], outcome:'~0 minutes of your time'},
-      {steps:[['📞','Missed Call'],['💬','Auto-Text Sent'],['📅','Lead Captured']], outcome:'No lost leads'},
-      {steps:[['📋','Form Submitted'],['🗂️','CRM Updated'],['✉️','Welcome Email']], outcome:'Instant follow-up'},
-    ],
-    workflows: [
-      {title:'Auto-Invoice + Review Request', save:'Saves ~45 min/job', flow:['Job Marked Done','Invoice Generated','Invoice Emailed','2hr Later: Review Text','⭐ Reviews Collected'], outcome:'You packed up from your last job. Before you started the truck, the invoice was out and the review request was already in the customer\'s pocket.', ind:'🔧 Plumbers · Electricians · Contractors · Landscapers'},
-      {title:'Missed Call Lead Recovery', save:'0 lost leads', flow:['Call Missed','Auto-Text Sent Instantly','Calendar Link Included','Lead Logged in CRM'], outcome:'A customer called while you were under a sink. They got an instant, professional text back. By the time you finished the job, the booking was already on your calendar.', ind:'🔧 All field service businesses'},
-      {title:'Auto Job Scheduling + Parts Ordering', save:'Saves 4+ hrs/week', flow:['Job Quote Accepted','Job Added to Calendar','Parts List Generated','Supplier Order Drafted','You Just Show Up'], outcome:'Customer accepts the quote on Tuesday night. By Wednesday morning, the job\'s on your calendar, your supplier has the parts order, and you\'ve got the customer\'s address in your GPS.', ind:'🔧 Plumbers · Electricians · HVAC · Contractors'},
-      {title:'Weekly Competitor Intel Report', save:'Always one step ahead', flow:['Every Monday, 7am','Scrapes Google Reviews & Nextdoor','Checks Seasonal Trends','Intel Report in Your Inbox'], outcome:'Every Monday morning you get a tailored briefing: what your competitors are hearing, what locals are asking about on Nextdoor, and what\'s trending this season in your industry.', ind:'🔧 Contractors · 🏠 Realtors · 🌿 Landscapers · All local businesses'},
-    ],
-    baBefore: ['Finish a job \u2192 sit down to write the invoice yourself (15\u201320 min)','Miss a call \u2192 customer calls your competitor while you\'re on a roof','Write an estimate \u2192 45 minutes of formatting and math, late at the kitchen table','Ask for a review \u2192 awkward at the job site, or you forget entirely','New lead texts at night \u2192 cold by morning because no one responded'],
-    baAfter:  ['Job marked done \u2192 invoice goes out automatically, no action needed','Missed call \u2192 AI answers, captures the lead, texts a callback time','Leave a 30-second voice note \u2192 professional estimate drafted and ready to send','Job closes \u2192 review request texts automatically 2 hours later','Lead texts at 11pm \u2192 gets an instant answer and your calendar link'],
-    baMissing: {header:'What now also happens automatically (that wasn\'t happening before)', items:['Requesting a review after every single job \u2014 not just the ones you remember','Following up on every unsold quote at 3 days, 7 days, and 14 days','Re-engaging past customers before each slow season to fill the pipeline','Responding to every new lead within 60 seconds \u2014 even at 9pm on a Sunday','Posting to Google Business and social media consistently every single week']},
-    stack: null, form: '',
-    ctaDesc: '30 minutes. I\'ll map your biggest time drains, show you exactly what to automate, and give you a written roadmap. No pitch, no pressure.',
-  },
-  trades: {
-    desc: "I automate the back-office for Twin Cities plumbers, electricians, and contractors \u2014 invoicing, scheduling, missed calls, and reviews, all on autopilot. Working demo in 48 hours. Deployed within a week.",
-    trust: ['Local to Maple Grove, MN','Jobber & QuickBooks connected','100% done for you','8-hr/week guarantee'],
-    n8nHeading: 'Clockworks for Trades.',
-    n8nSub: 'Every hour you spend on invoices, scheduling, or chasing leads is an hour you\'re not billing. I build automations specific to how trades businesses actually operate \u2014 so the back-office runs itself while you\'re on the job.',
-    cons: [
-      {steps:[['📞','Missed Call'],['💬','Auto-Text Fires'],['📅','Booking Link Sent'],['✅','Lead Captured']], outcome:'No lead escapes'},
-      {steps:[['✅','Job Marked Done'],['📄','Invoice Sent'],['⭐','Review Request (2hr)'],['🌟','Rating Goes Up']], outcome:'Zero manual work'},
-      {steps:[['📋','Quote Accepted'],['📅','Job Scheduled'],['📦','Parts Order Drafted'],['🔧','You Just Show Up']], outcome:'Saves 4+ hrs/week'},
-    ],
-    workflows: [
-      {title:'Missed Call \u2192 Auto-Text + Booking', save:'Every lead captured', flow:['Call Missed','Auto-Text Fires in Seconds','Booking Link Included','Lead Captured in CRM'], outcome:'You\'re running pipe in a basement. Phone rings \u2014 can\'t answer. Customer gets a professional text back instantly with your booking link. By the time you surface, it\'s already scheduled.', ind:'🔧 Plumbers · Electricians · Contractors'},
-      {title:'Auto-Invoice + Google Review', save:'Saves ~45 min/job', flow:['Job Marked Done','Invoice Emailed','2hr: Review Text Sent','⭐ Rating Builds'], outcome:'You finish a job, pack your tools, and get in the truck. Invoice is in the customer\'s inbox before you start the engine. The review request fires 2 hours later \u2014 every single time.', ind:'🔧 Plumbers · Electricians · Contractors'},
-      {title:'Quote Follow-Up Sequence', save:'3\u20134\u00d7 more won bids', flow:['Quote Sent','3-Day Follow-Up','7-Day Follow-Up','Booking Won'], outcome:'Most contractors send the quote and wait. The average job closes on touch 3 or 4. This automation follows up on every unsold quote \u2014 every time, without you having to remember.', ind:'🔧 Plumbers · Electricians · Contractors'},
-      {title:'Auto Job Scheduling + Parts Ordering', save:'Saves 4+ hrs/week', flow:['Quote Accepted','Job Scheduled','Parts List Generated','Supplier Order Drafted','You Just Show Up'], outcome:'Quote accepted Tuesday night. Wednesday morning: job on your calendar, parts order sent to your supplier, customer\'s address in your GPS. You didn\'t lift a finger.', ind:'🔧 Plumbers · Electricians · HVAC · Contractors'},
-    ],
-    baBefore: ['Finish a job \u2192 write the invoice by hand that night (15\u201320 min per job)','Miss a call on a roof \u2192 customer calls the next plumber on Google','Win a bid \u2192 45 minutes coordinating parts and scheduling manually','Ask for a review \u2192 forget, or it feels awkward at the job site','Lead texts at 11pm \u2192 cold by morning, already booked someone else'],
-    baAfter:  ['Job marked done \u2192 invoice out automatically, no manual entry ever','Missed call \u2192 auto-text fires instantly with your booking link','Quote accepted \u2192 job scheduled + parts order drafted automatically','Job closes \u2192 review request texts itself 2 hours later, every time','Lead texts at 11pm \u2192 instant professional reply + calendar link'],
-    baMissing: {header:'What now also happens automatically (that wasn\'t happening before)', items:['Following up on every unsold quote at 3 days and 7 days \u2014 most contractors never send even one follow-up','Requesting a Google review after every single job, even when you\'re tired and forget to ask','Texting back every missed call within 60 seconds \u2014 even at 7pm on a Friday','Checking in with past customers before slow season to fill the calendar proactively','Posting job photos to Google Business weekly \u2014 Google rewards consistent activity with higher ranking']},
-    stack: 'stack-trades', form: 'Plumber / Electrician / Contractor',
-    ctaDesc: 'Tell me what trade you\'re in and what\'s eating your time. I\'ll tell you exactly what to automate first, what it saves, and what it costs.',
-  },
-  landscape: {
-    desc: "I automate seasonal campaigns, job scheduling, and review requests for Twin Cities landscapers and outdoor service companies \u2014 so you can stay on job sites and let the back-office run itself.",
-    trust: ['Local to Maple Grove, MN','Seasonal auto-campaigns','100% done for you','8-hr/week guarantee'],
-    n8nHeading: 'Clockworks for Landscaping.',
-    n8nSub: 'The biggest revenue opportunity in landscaping isn\'t finding new customers \u2014 it\'s keeping the ones you already have and filling your schedule before the season hits. I build the automations that do both, automatically.',
-    cons: [
-      {steps:[['🌸','Spring Season Starts'],['📧','Past Clients Emailed'],['📅','Calendar Fills'],['💰','Revenue Up']], outcome:'Before you pick up the phone'},
-      {steps:[['✅','Job Completed'],['📄','Invoice Sent'],['⭐','Review Request (2hr)'],['🌟','Nextdoor Buzz']], outcome:'Zero manual work'},
-      {steps:[['📋','Quote Sent'],['📨','3-Day Follow-Up'],['📨','7-Day Follow-Up'],['✅','Booking Won']], outcome:'3\u20134\u00d7 more accepted quotes'},
-    ],
-    workflows: [
-      {title:'Seasonal Re-Engagement Campaigns', save:'40%+ customer return rate', flow:['Season Trigger Fires','Past Client List Pulled','Campaign Sent','Bookings Come In'], outcome:'Every spring, fall, and before snow season \u2014 your past customers get an automated outreach at exactly the right time. Fill your schedule before you even open your email.', ind:'🌿 Landscapers · Snow Removal · Outdoor Services'},
-      {title:'Auto-Invoice + Review After Every Job', save:'Saves ~30 min/job', flow:['Job Completed','Invoice Sent','2hr: Review Request','⭐ Rating Climbs'], outcome:'Job wraps, crew heads to the next site. Invoice goes out automatically and the review request fires 2 hours later. By the time you\'re home, the money\'s requested and the 5-star ask is done.', ind:'🌿 Landscapers · Lawn Care · Outdoor Services'},
-      {title:'Quote Follow-Up Sequence', save:'3\u20134\u00d7 more accepted bids', flow:['Quote Sent','3-Day Follow-Up','7-Day Follow-Up','Booking Won'], outcome:'Most landscapers send the quote and wait. Homeowners get busy and forget. This automation follows up on every unaccepted quote at 3 days and 7 days \u2014 so the work you already quoted actually closes.', ind:'🌿 Landscapers · Outdoor Services'},
-      {title:'Missed Call + Instant Booking', save:'0 lost leads', flow:['Call Missed','Auto-Text Instantly','Booking Link Included','Lead Captured'], outcome:'Spring is your busiest season and you can\'t answer every call while running a crew. Customer gets a professional text back in seconds. Lead captured, booking link in their hand.', ind:'🌿 Landscaping · Outdoor Services'},
-    ],
-    baBefore: ['Season changes \u2192 manually calling or emailing every past customer to re-book','Miss a call while running crew \u2192 customer schedules with a competitor','Job wraps \u2192 forget to invoice until end of week, cash flow suffers','Forget to ask for reviews \u2192 competitors with more stars win the call','Spring blitz \u2192 scrambling to fill the schedule at the last minute'],
-    baAfter:  ['Season changes \u2192 automated campaign emails every past customer at the right time','Missed call \u2192 instant professional auto-text with booking link, lead captured','Job wraps \u2192 invoice sent automatically, review request fires 2 hours later','Every closed job \u2192 review request sent automatically, every single time','Spring/fall \u2192 schedule fills itself weeks before the season starts'],
-    baMissing: {header:'What now also happens automatically (that wasn\'t happening before)', items:['Proactively reaching out to every past client before spring and fall \u2014 not just the ones you happen to remember','Following up on every unaccepted quote at 3 days and 7 days \u2014 most landscapers never send a second touch','Asking for a Nextdoor recommendation after every completed job \u2014 your best local lead source','Sending a seasonal prep offer (winterization, spring clean-up) at exactly the right time each year','Running a referral prompt to your existing customer base at the start of each season']},
-    stack: 'stack-landscape', form: 'Landscaping / Outdoor Services',
-    ctaDesc: 'Tell me about your landscaping business. I\'ll show you what to automate first \u2014 seasonal campaigns, quotes, or reviews \u2014 and what it\'s worth in revenue.',
-  },
-  realestate: {
-    desc: "I build automation systems for Twin Cities realtors and property managers \u2014 lead capture, instant follow-up, showing workflows, and listing outreach, all on autopilot.",
-    trust: ['Local to Maple Grove, MN','CRM & Calendly connected','100% done for you','8-hr/week guarantee'],
-    n8nHeading: 'Clockworks for Real Estate.',
-    n8nSub: '78% of buyers go with the first agent who responds. 80% of closings happen between touch 5 and 12. Both stats favor the agent with automation running \u2014 not the one checking email when they get a chance.',
-    cons: [
-      {steps:[['🎯','New Lead Comes In'],['💬','Instant Response'],['📅','Showing Booked'],['🗂️','CRM Updated']], outcome:'78% go with first to respond'},
-      {steps:[['😴','Lead Goes Cold'],['📧','Re-Engage (30d)'],['📧','Re-Engage (60d)'],['📅','Appointment Set']], outcome:'80% close at touch 5\u201312'},
-      {steps:[['🏠','Showing Confirmed'],['📧','Buyer Prep Email'],['🔔','Owner Notified'],['✉️','Follow-Up Queued']], outcome:'45 min of admin \u2192 0 min'},
-    ],
-    workflows: [
-      {title:'Instant Lead Response + CRM Entry', save:'21\u00d7 better conversion', flow:['Lead Form Submitted','Instant Response Sent','CRM Logged','Nurture Sequence Started'], outcome:'Lead fills out a form at midnight. Gets an instant professional response with your calendar link. By morning it\'s a scheduled call \u2014 and you were asleep.', ind:'🏠 Realtors · Property Managers'},
-      {title:'Lead Nurture Sequence (Touch 1\u201312)', save:'80% close at touch 5\u201312', flow:['Lead Captured','Touch 1\u20132 Sent','Touches 3\u20135 Sent','Touch 6\u201312: Deal Closes'], outcome:'Most agents stop following up after 1\u20132 touches. This automation nurtures every lead through touch 12 \u2014 the range where 80% of sales actually happen.', ind:'🏠 Real Estate · Property Management'},
-      {title:'Showing Coordination Automation', save:'Saves 45 min/showing', flow:['Showing Confirmed','Buyer Prep Email','Seller Notified','Follow-Up Queued'], outcome:'Showing confirmed \u2192 prep email with property details goes to the buyer automatically. Seller gets notified. You didn\'t send a single email manually.', ind:'🏠 Realtors · Property Managers'},
-      {title:'Past Client Stay-In-Touch System', save:'40% of business = referrals', flow:['Quarterly Trigger','Personalized Check-In Sent','Market Update Included','Referral Prompted'], outcome:'Referrals are 40% of most agents\' business \u2014 but only happen consistently if you stay top-of-mind. This automation reaches every past client quarterly so you never fall off their radar.', ind:'🏠 Realtors · Property Managers'},
-    ],
-    baBefore: ['New lead comes in \u2192 manually log it, write a follow-up, hope to respond fast','Showing confirmed \u2192 15 minutes of emails to buyer, seller, and yourself','Lead goes quiet \u2192 forget to follow up, deal goes cold over a week','New listing \u2192 write the description from scratch, post manually everywhere','Late-night inquiry \u2192 cold by morning because no one responded at 11pm'],
-    baAfter:  ['New lead \u2192 CRM logged, follow-up email sent, nurture sequence started automatically','Showing confirmed \u2192 prep email + owner notification fires instantly, no manual work','Lead goes quiet \u2192 automated follow-up nudges at the right intervals','New listing \u2192 description drafted by AI, ready to post with one click','Late-night inquiry \u2192 instant professional reply + calendar link sent automatically'],
-    baMissing: {header:'What now also happens automatically (that wasn\'t happening before)', items:['Following up with every lead from touch 3 through touch 12 \u2014 most agents stop at touch 2, which is before 80% of deals close','Staying in touch with every past client quarterly \u2014 the source of 40% of most agents\' referrals','Following up with every open house attendee within 24 hours, automatically, every time','Sending market update emails to your entire sphere every month to stay top-of-mind','Re-engaging leads that went cold 30, 60, and 90 days ago \u2014 many are still in the market']},
-    stack: 'stack-realestate', form: 'Real Estate / Property Management',
-    ctaDesc: 'Tell me about your real estate business. I\'ll show you where you\'re losing the most leads and what to automate first.',
-  },
-  cleaning: {
-    desc: "I automate appointment reminders, review requests, missed calls, and seasonal campaigns for Twin Cities cleaning and home service businesses \u2014 so you can focus on the work, not the back-office.",
-    trust: ['Local to Maple Grove, MN','Automated reminders & reviews','100% done for you','8-hr/week guarantee'],
-    n8nHeading: 'Clockworks for Home Services.',
-    n8nSub: 'Cleaning businesses live and die by reviews, no-show rates, and whether past clients remember to call you back. I automate all three \u2014 so your reputation grows and your schedule holds while you work.',
-    cons: [
-      {steps:[['📅','Job Booked'],['🔔','48hr Reminder'],['📱','Day-Of Text'],['✅','Confirmed Arrival']], outcome:'50% fewer no-shows'},
-      {steps:[['✅','Clean Completed'],['💬','Thank-You Text'],['⭐','Review Request (2hr)'],['🌟','Rating Climbs']], outcome:'4.9 ⭐ \u2192 20\u201330% higher rates'},
-      {steps:[['📞','Call Missed'],['💬','Auto-Text Fires'],['📅','Booking Link Sent'],['✅','Job Booked']], outcome:'No lost leads'},
-    ],
-    workflows: [
-      {title:'Appointment Reminder + No-Show Prevention', save:'50% fewer no-shows', flow:['Job Booked','48hr Reminder Sent','Day-Of Reminder Text','Arrival Confirmed'], outcome:'A no-show destroys your whole day. A $0 reminder text prevents it. 50% fewer no-shows means your schedule actually holds \u2014 and your revenue stays predictable.', ind:'🧹 Cleaning · Home Services'},
-      {title:'Auto-Review After Every Clean', save:'4.9 ⭐ \u2192 20\u201330% higher rates', flow:['Clean Completed','Thank-You Text Sent','2hr: Review Request','⭐ New 5-Star Review'], outcome:'Cleaners with 4.9 stars in your zip code charge 20\u201330% more than competitors with 4.6. One automated ask after every job \u2014 sent when the house still smells clean \u2014 compounds into a commanding rating lead.', ind:'🧹 Cleaning Services'},
-      {title:'Missed Call Auto-Text + Booking', save:'0 lost leads', flow:['Call Missed','Auto-Text Instantly','Booking Link Included','Job Booked'], outcome:'You\'re inside someone\'s home, can\'t answer. Customer gets a professional text back in seconds with your booking link. By the time you pack up, the next booking is already on the calendar.', ind:'🧹 All home service businesses'},
-      {title:'Seasonal Upsell Campaigns', save:'Calendar fills itself', flow:['Season Trigger Fires','Past Client List Pulled','Campaign Text/Email Sent','Bookings Come In'], outcome:'Spring deep cleans, move-out cleans, holiday prep \u2014 your past clients get the right message at exactly the right time, every year, without you sending a single text.', ind:'🧹 Cleaning · Home Services'},
-    ],
-    baBefore: ['Client doesn\'t show \u2192 you drove there, waited, lost 2 hours of revenue','Clean wraps up \u2192 forget to ask for a review \u2014 again','Miss a call while cleaning \u2192 customer books the next service on Google','Spring season \u2192 manually texting past clients one by one to fill the calendar','Recurring client \u2192 you forgot to reach out, they booked someone else'],
-    baAfter:  ['Job booked \u2192 48-hour + day-of reminders fire automatically, no-shows cut in half','Every clean \u2192 automated thank-you + review request fires 2 hours after you leave','Missed call \u2192 instant professional text with your booking link, lead captured','Spring/fall \u2192 automated campaign emails every past client at exactly the right time','Recurring slot \u2192 auto re-booking prompt goes out before they think to look elsewhere'],
-    baMissing: {header:'What now also happens automatically (that wasn\'t happening before)', items:['Sending a "how did we do?" text after every first clean \u2014 your highest-leverage moment for referrals','Following up on every quoted job that went quiet at 3 days and 7 days','Asking for a review after every single clean \u2014 not just the ones where the client seemed extra happy','Seasonal check-in texts to past clients (spring deep clean, holiday prep, post-renovation)','Sending a referral prompt to your most loyal clients every 6 months']},
-    stack: null, form: 'Cleaning / Home Services',
-    ctaDesc: 'Tell me about your cleaning business \u2014 residential, commercial, crew size, what\'s taking the most time. I\'ll tell you exactly what to automate first.',
-  },
-};
-
-function selectIndustry(bucket) {
-  const data = IC[bucket];
-  if (!data) return;
-
-  // Selector buttons
-  document.querySelectorAll('.ind-btn').forEach(b => b.classList.remove('active'));
-  const ab = document.getElementById('ind-' + bucket);
-  if (ab) ab.classList.add('active');
-
-  // Hero
-  const hd = document.getElementById('hero-desc');
-  if (hd) hd.textContent = data.desc;
-  const ht = document.getElementById('hero-trust');
-  if (ht) {
-    const otherTrust = data.trust.filter(t => !t.includes('Maple Grove'));
-    ht.innerHTML = '<span class="hero-trust-parker"><img src="images/Parker.png" alt="Parker" class="hero-headshot" /> Parker \u00b7 Maple Grove, MN</span>' +
-      otherTrust.map(t => `<span>${t}</span>`).join('');
-  }
-
-  // N8N section
-  const nh = document.getElementById('n8n-heading');
-  if (nh) nh.textContent = data.n8nHeading;
-  const ns = document.getElementById('n8n-sub');
-  if (ns) ns.textContent = data.n8nSub;
-  [1,2,3].forEach(n => {
-    const el = document.getElementById('n8n-con-' + n);
-    const c  = data.cons[n-1];
-    if (el && c) el.innerHTML = _con(c.steps, c.outcome);
+  // Bind card click events
+  grid.querySelectorAll('.auto-card').forEach(card => {
+    const handler = () => openAutoModal(parseInt(card.dataset.index));
+    card.addEventListener('click', handler);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
   });
-
-  // Workflow cards
-  data.workflows.forEach((wf, i) => {
-    const n = i + 1;
-    const tEl = document.getElementById('wf-title-' + n);
-    const sEl = document.getElementById('wf-save-' + n);
-    const fEl = document.getElementById('wf-flow-' + n);
-    const oEl = document.getElementById('wf-outcome-' + n);
-    const dEl = document.getElementById('wf-ind-' + n);
-    if (tEl) tEl.textContent = wf.title;
-    if (sEl) sEl.textContent = wf.save;
-    if (fEl) fEl.innerHTML   = _flow(wf.flow);
-    if (oEl) oEl.textContent = '\u201c' + wf.outcome + '\u201d';
-    if (dEl) dEl.textContent = wf.ind;
-  });
-
-  // Before / After / Missing
-  const bb  = document.getElementById('ba-before-items');
-  const ba  = document.getElementById('ba-after-items');
-  const bm  = document.getElementById('ba-missing-items');
-  const bmh = document.getElementById('ba-missing-header');
-  if (bb) bb.innerHTML = data.baBefore.map(t =>
-    `<div class="ba-item"><div class="ba-dot" aria-hidden="true">\u2717</div><div class="ba-text">${t}</div></div>`).join('');
-  if (ba) ba.innerHTML = data.baAfter.map(t =>
-    `<div class="ba-item"><div class="ba-dot" aria-hidden="true">\u2713</div><div class="ba-text">${t}</div></div>`).join('');
-  if (bm) bm.innerHTML = data.baMissing.items.map(t =>
-    `<div class="ba-missing-item"><div class="ba-missing-dot">\u2192</div><div class="ba-missing-text">${t}</div></div>`).join('');
-  if (bmh) bmh.textContent = data.baMissing.header;
-
-  // Industry stacks (elements removed but kept for data compatibility)
-  ['stack-trades','stack-landscape','stack-realestate'].forEach(id => {
-    const el   = document.getElementById(id);
-    const card = el ? el.closest('.stack-card') : null;
-    if (!card) return;
-    if (!data.stack) {
-      card.style.opacity = ''; card.style.transform = ''; card.style.boxShadow = '';
-    } else if (id === data.stack) {
-      card.style.opacity = '1'; card.style.transform = 'translateY(-5px)';
-      card.style.boxShadow = '0 0 0 2px var(--orange), 0 8px 32px rgba(196,131,74,0.18)';
-    } else {
-      card.style.opacity = '0.38'; card.style.transform = ''; card.style.boxShadow = '';
-    }
-  });
-
-  // CTA text
-  const cd = document.getElementById('cta-desc');
-  if (cd) cd.textContent = data.ctaDesc;
-
-  // Form pre-fill
-  const ft = document.getElementById('f-type');
-  if (ft) ft.value = data.form;
 }
 
-// Initialize default content
-selectIndustry('general');
+// Filter pills
+document.querySelectorAll('.filter-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.filter-pill').forEach(p => { p.classList.remove('active'); p.setAttribute('aria-selected', 'false'); });
+    pill.classList.add('active');
+    pill.setAttribute('aria-selected', 'true');
+    renderAutoCards(pill.dataset.filter);
+  });
+});
+
+// Initialize cards
+renderAutoCards('all');
+
+// Automation Detail Modal
+const autoOverlay = document.getElementById('auto-modal-overlay');
+const autoModal   = document.getElementById('auto-modal');
+
+function openAutoModal(index) {
+  const a = AUTOMATIONS[index];
+  if (!a) return;
+
+  document.getElementById('auto-modal-icon').className = 'auto-modal-icon ' + a.bgClass + ' ' + a.gradient;
+  document.getElementById('auto-modal-icon').innerHTML = '<i class="ti ' + a.icon + '"></i>';
+  document.getElementById('auto-modal-title').textContent = a.title;
+  document.getElementById('auto-modal-badge').textContent = a.badge;
+
+  const flowHtml = a.flow.map((step, i) => {
+    return (i > 0 ? '<span class="auto-modal-flow-arrow" aria-hidden="true">\u2192</span>' : '') +
+      '<span class="auto-modal-flow-step">' + step + '</span>';
+  }).join('');
+  document.getElementById('auto-modal-flow').innerHTML = flowHtml;
+  document.getElementById('auto-modal-impact').textContent = a.impact;
+
+  autoOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAutoModal() {
+  autoOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('auto-modal-close').addEventListener('click', closeAutoModal);
+autoOverlay.addEventListener('click', e => { if (e.target === autoOverlay) closeAutoModal(); });
+document.getElementById('auto-modal-cta').addEventListener('click', closeAutoModal);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && autoOverlay.classList.contains('open')) closeAutoModal(); });
+
+// ── BIO CARD MODAL ──
+const bioOverlay = document.getElementById('bio-overlay');
+
+function openBioCard() {
+  bioOverlay.classList.add('bio-card-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBioCard() {
+  bioOverlay.classList.remove('bio-card-open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('bio-close').addEventListener('click', closeBioCard);
+bioOverlay.addEventListener('click', e => { if (e.target === bioOverlay) closeBioCard(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && bioOverlay.classList.contains('bio-card-open')) closeBioCard(); });
+
+// Bind headshot clicks
+document.querySelectorAll('.hero-headshot, .about-headshot').forEach(img => {
+  img.addEventListener('click', e => { e.preventDefault(); openBioCard(); });
+});
+
+// ── MEETING PREFERENCE PILLS ──
+const meetingPills = document.getElementById('meeting-pills');
+if (meetingPills) {
+  meetingPills.querySelectorAll('.meeting-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      meetingPills.querySelectorAll('.meeting-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      document.getElementById('f-meeting').value = pill.dataset.value;
+      document.getElementById('e-meeting').textContent = '';
+    });
+  });
+}
+
 </script>
 
 <!-- FLOATING STRATEGY SESSION BUTTON -->

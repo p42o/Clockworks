@@ -457,6 +457,33 @@
         </div>
       </div>
 
+      <div class="settings-section">
+        <div class="settings-section-title">Social & Contact</div>
+        <div class="form-grid">
+          <div class="full">
+            <div class="field">
+              <label>Contact Email</label>
+              <input class="inp" id="s-contact-email" type="text" placeholder="parker@mnclockworks.com" value="parker@mnclockworks.com" />
+              <div class="settings-note">Displayed in footer and bio card</div>
+            </div>
+          </div>
+          <div class="full">
+            <div class="field">
+              <label>X (Twitter) URL</label>
+              <input class="inp" id="s-social-x" type="text" placeholder="https://x.com/ClockworksMN" value="https://x.com/ClockworksMN" />
+              <div class="settings-note">Displayed in footer and bio card</div>
+            </div>
+          </div>
+          <div class="full">
+            <div class="field">
+              <label>Facebook URL</label>
+              <input class="inp" id="s-social-facebook" type="text" placeholder="https://www.facebook.com/profile.php?id=61580475420690" value="https://www.facebook.com/profile.php?id=61580475420690" />
+              <div class="settings-note">Displayed in footer and bio card</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div style="display:flex;gap:10px;margin-top:4px;">
         <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
       </div>
@@ -544,7 +571,10 @@ let adminSettings = {
   provider: 'xAI',
   apiKey: '',
   modelId: '',
-  modelName: ''
+  modelName: '',
+  contactEmail: 'parker@mnclockworks.com',
+  socialX: 'https://x.com/ClockworksMN',
+  socialFacebook: 'https://www.facebook.com/profile.php?id=61580475420690'
 };
 
 let aiConversation = [];
@@ -1229,11 +1259,14 @@ async function saveSettings() {
   const selectedOption = modelSel.options[modelSel.selectedIndex];
 
   adminSettings = {
-    timezone:  document.getElementById('s-timezone').value,
-    provider:  document.getElementById('s-provider').value,
-    apiKey:    document.getElementById('s-apikey').value.trim(),
-    modelId:   modelSel.value,
-    modelName: selectedOption ? selectedOption.textContent : '',
+    timezone:       document.getElementById('s-timezone').value,
+    provider:       document.getElementById('s-provider').value,
+    apiKey:         document.getElementById('s-apikey').value.trim(),
+    modelId:        modelSel.value,
+    modelName:      selectedOption ? selectedOption.textContent : '',
+    contactEmail:   document.getElementById('s-contact-email').value.trim(),
+    socialX:        document.getElementById('s-social-x').value.trim(),
+    socialFacebook: document.getElementById('s-social-facebook').value.trim(),
   };
 
   try {
@@ -1249,15 +1282,21 @@ async function loadSettings() {
     const doc = await db.collection('siteContent').doc('settings').get();
     if (doc.exists) {
       const d = doc.data();
-      adminSettings.timezone  = d.timezone  || 'America/Chicago';
-      adminSettings.provider  = d.provider  || 'xAI';
-      adminSettings.apiKey    = d.apiKey    || '';
-      adminSettings.modelId   = d.modelId   || '';
-      adminSettings.modelName = d.modelName || '';
+      adminSettings.timezone       = d.timezone       || 'America/Chicago';
+      adminSettings.provider       = d.provider       || 'xAI';
+      adminSettings.apiKey         = d.apiKey         || '';
+      adminSettings.modelId        = d.modelId        || '';
+      adminSettings.modelName      = d.modelName      || '';
+      adminSettings.contactEmail   = d.contactEmail   || 'parker@mnclockworks.com';
+      adminSettings.socialX        = d.socialX        || 'https://x.com/ClockworksMN';
+      adminSettings.socialFacebook = d.socialFacebook || 'https://www.facebook.com/profile.php?id=61580475420690';
 
-      document.getElementById('s-timezone').value = adminSettings.timezone;
-      document.getElementById('s-provider').value = adminSettings.provider;
-      document.getElementById('s-apikey').value   = adminSettings.apiKey;
+      document.getElementById('s-timezone').value        = adminSettings.timezone;
+      document.getElementById('s-provider').value        = adminSettings.provider;
+      document.getElementById('s-apikey').value          = adminSettings.apiKey;
+      document.getElementById('s-contact-email').value   = adminSettings.contactEmail;
+      document.getElementById('s-social-x').value        = adminSettings.socialX;
+      document.getElementById('s-social-facebook').value = adminSettings.socialFacebook;
       onProviderChange();
 
       if (adminSettings.modelId && adminSettings.modelName) {
