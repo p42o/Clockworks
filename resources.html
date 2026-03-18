@@ -12,7 +12,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="canonical" href="https://clockworksai.com/resources" />
-  <link rel="icon" type="image/png" href="logos/clockworks-small-light.png" />
+  <link rel="icon" type="image/svg+xml" href="images/logo-small.svg" />
   <title>Resources | Clockworks — AI & Automation Knowledge Base</title>
   <meta name="description" content="Automation guides, case studies, tips, and insights for small businesses. Learn how to save 10+ hours a week with AI-powered workflows for invoicing, scheduling, lead follow-up, and more." />
   <meta name="keywords" content="business automation guide, AI automation tips, small business case study, workflow automation how-to, automation for small business, invoicing automation, lead follow-up automation, scheduling automation, Twin Cities business automation" />
@@ -87,41 +87,6 @@
       --shadow-lg: 0 8px 32px rgba(28,35,51,0.12), 0 4px 16px rgba(28,35,51,0.08);
     }
 
-    /* ── DARK MODE ── */
-    html[data-theme="dark"] {
-      --navy: #dde6f0; --navy-mid: #8fa8c4;
-      --bg: #0c0f1a; --bg-off: #0f1320; --bg-subtle: #111827;
-      --border: rgba(255,255,255,0.07); --border-strong: rgba(255,255,255,0.13);
-      --text: #c2d0df; --text-muted: #8fa3bb; --text-dim: #566a7f;
-      --shadow-sm: 0 1px 4px rgba(0,0,0,0.4), 0 2px 12px rgba(0,0,0,0.25);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.35);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.45);
-      color-scheme: dark;
-    }
-    html[data-theme="dark"] body { background: #0c0f1a; color: #c2d0df; }
-    html[data-theme="dark"] ::selection { background: rgba(196,131,74,0.3); color: #fff; }
-    html[data-theme="dark"] .navbar.scrolled { background: rgba(10,13,22,0.97); box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 2px 12px rgba(0,0,0,0.3); }
-    html[data-theme="dark"] .hamburger span { background: #c2d0df; }
-    html[data-theme="dark"] .mobile-menu { background: rgba(10,13,22,0.98); }
-    html[data-theme="dark"] .mobile-link { color: #dde6f0; border-bottom-color: rgba(255,255,255,0.06); }
-    html[data-theme="dark"] .footer { background: #080a14; }
-    html[data-theme="dark"] .footer-logo-text { color: #dde6f0; }
-
-    /* Dark mode — resource cards */
-    html[data-theme="dark"] .resource-article { background: #0f1320; }
-    html[data-theme="dark"] .resource-content { color: var(--text-muted); }
-    html[data-theme="dark"] .filter-btn { background: transparent; border-color: var(--border-strong); color: var(--text-muted); }
-    html[data-theme="dark"] .filter-btn:hover { background: rgba(255,255,255,0.04); }
-    html[data-theme="dark"] .filter-btn.active { background: linear-gradient(135deg, #A86C35, #C4834A); border-color: var(--orange); color: #fff; }
-    html[data-theme="dark"] .empty-state { background: #0f1320; }
-
-    /* ── THEME TOGGLE ── */
-    .theme-toggle { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border-strong); background: transparent; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: background 0.2s, color 0.2s; }
-    .theme-toggle:hover { background: var(--bg-off); color: var(--navy); }
-    .theme-icon-sun { display: none; }
-    html[data-theme="dark"] .theme-icon-moon { display: none; }
-    html[data-theme="dark"] .theme-icon-sun { display: block; }
-
     /* ── TYPOGRAPHY ── */
     .serif { font-family: 'Instrument Serif', Georgia, serif; }
 
@@ -150,10 +115,7 @@
     .navbar.scrolled { background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(28,35,51,0.06); }
     .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 68px; }
     .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-img { height: 36px; width: auto; }
-    .logo-img-dark { display: none; }
-    html[data-theme="dark"] .logo-img-light { display: none; }
-    html[data-theme="dark"] .logo-img-dark { display: block; }
+    .logo-img { height: 44px; width: auto; }
     .nav-links { display: flex; align-items: center; gap: 28px; }
     .nav-link { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: color 0.2s; }
     .nav-link:hover { color: var(--navy); }
@@ -173,9 +135,6 @@
       background: linear-gradient(150deg, #fefefe 0%, #f7f3ef 40%, #fef9f5 80%, #fff 100%);
       position: relative;
       overflow: hidden;
-    }
-    html[data-theme="dark"] .resources-hero {
-      background: linear-gradient(150deg, #0c0f1a 0%, #0f1320 50%, #101724 100%);
     }
     .resources-hero-blob {
       position: absolute;
@@ -387,18 +346,12 @@
       font-style: italic;
       color: var(--text-muted);
     }
-    html[data-theme="dark"] .resource-content blockquote {
-      background: rgba(196,131,74,0.06);
-    }
     .resource-content code {
       background: var(--bg-off);
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 13px;
       border: 1px solid var(--border);
-    }
-    html[data-theme="dark"] .resource-content code {
-      background: #111827;
     }
 
     /* ══ EMPTY STATE ══ */
@@ -457,6 +410,7 @@
 
     /* ══ RESPONSIVE ══ */
     @media (max-width: 768px) {
+      .logo-img { height: 38px; }
       .nav-links, .nav-cta { display: none; }
       .hamburger { display: flex; }
       .resources-grid { grid-template-columns: 1fr; }
@@ -480,8 +434,7 @@
 <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
   <div class="navbar-inner">
     <a href="index.html" class="logo" aria-label="Clockworks — Home">
-      <img src="logos/clockworks-large-light.png" alt="Clockworks" class="logo-img logo-img-light" />
-      <img src="logos/clockworks-large-dark.png" alt="Clockworks" class="logo-img logo-img-dark" />
+      <img src="images/logo-full.svg" alt="Clockworks" class="logo-img" />
     </a>
     <div class="nav-links" role="list">
       <a href="index.html#what-i-build" class="nav-link" role="listitem">What I Build</a>
@@ -492,10 +445,7 @@
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
       <a href="index.html#booking" class="nav-cta">Free Strategy Session &rarr;</a>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
-        <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <svg class="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-      </button>
+
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -591,17 +541,6 @@ const db = firebase.firestore();
 
 // ── YEAR ──
 document.getElementById('yr').textContent = new Date().getFullYear();
-
-// ── THEME TOGGLE ──
-const html = document.documentElement;
-const themeBtn = document.getElementById('theme-toggle');
-const saved = localStorage.getItem('theme');
-if (saved === 'dark') html.setAttribute('data-theme', 'dark');
-themeBtn.addEventListener('click', () => {
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  localStorage.setItem('theme', isDark ? 'light' : 'dark');
-});
 
 // ── NAVBAR SCROLL ──
 const navbar = document.getElementById('navbar');

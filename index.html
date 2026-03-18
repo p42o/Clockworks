@@ -12,7 +12,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="canonical" href="https://clockworksai.com" />
-  <link rel="icon" type="image/png" href="logos/clockworks-small-light.png" />
+  <link rel="icon" type="image/svg+xml" href="images/logo-small.svg" />
   <title>Clockworks | AI & Automation for Small Business</title>
   <meta name="description" content="Clockworks builds done-for-you AI and automation systems that save small businesses 10+ hours a week. Invoicing, scheduling, lead follow-up, reviews — all on autopilot. Free 30-minute strategy session." />
   <meta name="keywords" content="AI consulting small business, business automation, workflow automation, done-for-you automation, AI solutions small business, invoice automation, lead follow-up automation, automated scheduling, Maple Grove MN, Twin Cities" />
@@ -110,64 +110,6 @@
       --shadow-lg: 0 8px 32px rgba(28,35,51,0.12), 0 4px 16px rgba(28,35,51,0.08);
     }
 
-    /* ── DARK MODE ── */
-    html[data-theme="dark"] {
-      --navy: #dde6f0; --navy-mid: #8fa8c4;
-      --bg: #0c0f1a; --bg-off: #0f1320; --bg-subtle: #111827;
-      --border: rgba(255,255,255,0.07); --border-strong: rgba(255,255,255,0.13);
-      --text: #c2d0df; --text-muted: #8fa3bb; --text-dim: #566a7f;
-      --shadow-sm: 0 1px 4px rgba(0,0,0,0.4), 0 2px 12px rgba(0,0,0,0.25);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.35);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.45);
-      color-scheme: dark;
-    }
-    html[data-theme="dark"] body { background: #0c0f1a; color: #c2d0df; }
-    html[data-theme="dark"] ::selection { background: rgba(196,131,74,0.3); color: #fff; }
-    html[data-theme="dark"] .navbar.scrolled { background: rgba(10,13,22,0.97); box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 2px 12px rgba(0,0,0,0.3); }
-    html[data-theme="dark"] .hamburger span { background: #c2d0df; }
-    html[data-theme="dark"] .mobile-menu { background: rgba(10,13,22,0.98); }
-    html[data-theme="dark"] .mobile-link { color: #dde6f0; border-bottom-color: rgba(255,255,255,0.06); }
-    html[data-theme="dark"] .card,
-    html[data-theme="dark"] .plan-card,
-    html[data-theme="dark"] .about-trust-item,
-    html[data-theme="dark"] .workflow-card,
-    html[data-theme="dark"] .n8n-connector { background: #0f1320; }
-    html[data-theme="dark"] .faq-item { background: #0f1320; }
-    html[data-theme="dark"] .ba-items { background: #0f1320; }
-    html[data-theme="dark"] .cta-form-wrap { background: #0f1320; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
-    html[data-theme="dark"] .form-input,
-    html[data-theme="dark"] .form-select { background: #111827; border-color: rgba(255,255,255,0.10); color: #dde6f0; }
-    html[data-theme="dark"] .form-input::placeholder { color: #566a7f; }
-    html[data-theme="dark"] .form-input:focus,
-    html[data-theme="dark"] .form-select:focus { border-color: var(--orange); background: #111827; }
-    html[data-theme="dark"] .form-success { background: rgba(34,197,94,0.06); border-color: rgba(34,197,94,0.2); }
-    html[data-theme="dark"] .form-success h3 { color: #dde6f0; }
-    html[data-theme="dark"] .ba-before .ba-header { background: rgba(239,68,68,0.10); color: #fca5a5; }
-    html[data-theme="dark"] .ba-after  .ba-header { background: rgba(34,197,94,0.10); color: #86efac; }
-    html[data-theme="dark"] .ba-before .ba-text { color: #fca5a5; }
-    html[data-theme="dark"] .ba-after  .ba-text { color: #86efac; }
-    html[data-theme="dark"] .ba-before .ba-dot { background: rgba(239,68,68,0.15); color: #fca5a5; }
-    html[data-theme="dark"] .ba-after  .ba-dot { background: rgba(34,197,94,0.15); color: #86efac; }
-    html[data-theme="dark"] .plan-anchor { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
-    html[data-theme="dark"] .footer { background: #080a14; }
-    html[data-theme="dark"] .footer-logo-text { color: #dde6f0; }
-    html[data-theme="dark"] .wf-step { background: #111827; }
-    html[data-theme="dark"] .n8n-badge { background: rgba(196,131,74,0.12); }
-    html[data-theme="dark"] .hero { background: linear-gradient(150deg, #0c0f1a 0%, #0f1320 50%, #101724 100%); }
-    html[data-theme="dark"] .n8n-section { background: #080c18; }
-    html[data-theme="dark"] .n8n-section::before { background: radial-gradient(ellipse at 70% 50%, rgba(196,131,74,0.08) 0%, transparent 60%); }
-    html[data-theme="dark"] .mid-cta { background: var(--bg-off); }
-    html[data-theme="dark"] .mid-cta-form-wrap { background: #0f1320; border-color: var(--border); }
-    html[data-theme="dark"] .guarantee-callout { background: rgba(196,131,74,0.08); }
-    html[data-theme="dark"] .ba-missing-items { background: #0f1320; }
-    html[data-theme="dark"] .ba-missing-header, html[data-theme="dark"] .ba-missing-intro { background: rgba(196,131,74,0.06); }
-
-    /* ── THEME TOGGLE ── */
-    .theme-toggle { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border-strong); background: transparent; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: background 0.2s, color 0.2s; }
-    .theme-toggle:hover { background: var(--bg-off); color: var(--navy); }
-    .theme-icon-sun { display: none; }
-    html[data-theme="dark"] .theme-icon-moon { display: none; }
-    html[data-theme="dark"] .theme-icon-sun { display: block; }
 
     /* ── TYPOGRAPHY ── */
     .serif { font-family: 'Instrument Serif', Georgia, serif; }
@@ -212,10 +154,7 @@
     .navbar.scrolled { background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(28,35,51,0.06); }
     .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 68px; }
     .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-img { height: 36px; width: auto; }
-    .logo-img-dark { display: none; }
-    html[data-theme="dark"] .logo-img-light { display: none; }
-    html[data-theme="dark"] .logo-img-dark { display: block; }
+    .logo-img { height: 44px; width: auto; }
     .nav-links { display: flex; align-items: center; gap: 28px; }
     .nav-link { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: color 0.2s; }
     .nav-link:hover { color: var(--navy); }
@@ -280,12 +219,10 @@
     .wf-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
     .wf-title { font-weight: 700; font-size: 16px; color: var(--navy); line-height: 1.3; }
     .wf-save { background: rgba(34,197,94,0.10); border: 1px solid rgba(34,197,94,0.25); color: #15803d; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; margin-left: 12px; }
-    html[data-theme="dark"] .wf-save { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); color: #86efac; }
     .wf-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
     .wf-step { background: var(--bg-off); border: 1px solid var(--border); border-radius: 8px; padding: 7px 11px; font-size: 12px; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
     .wf-step.trigger { background: rgba(196,131,74,0.08); border-color: rgba(196,131,74,0.2); color: var(--orange-dark); font-weight: 600; }
     .wf-step.result { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); color: #15803d; font-weight: 600; }
-    html[data-theme="dark"] .wf-step.result { color: #86efac; }
     .wf-arrow { font-size: 14px; color: var(--text-dim); flex-shrink: 0; }
     .wf-outcome { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding-top: 16px; border-top: 1px solid var(--border); font-style: italic; }
     .wf-industry { font-size: 11px; color: var(--text-dim); font-weight: 600; margin-top: 10px; }
@@ -295,7 +232,6 @@
     .n8n-section .wf-step.trigger { background: rgba(196,131,74,0.15); border-color: rgba(196,131,74,0.3); color: var(--orange); }
     .n8n-section .wf-step.result { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.25); color: #22c55e; }
     .n8n-section .wf-arrow { color: rgba(255,255,255,0.3); }
-    html[data-theme="dark"] .n8n-section .workflow-card { background: #0f1320; }
 
     /* ══ BEFORE/AFTER ══ */
     .beforeafter { background: var(--bg-off); }
@@ -433,8 +369,6 @@
     .ind-btn { padding: 6px 14px; border-radius: 100px; border: 1.5px solid var(--border-strong); background: transparent; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
     .ind-btn:hover { border-color: var(--orange); color: var(--navy); background: rgba(196,131,74,0.05); }
     .ind-btn.active { background: linear-gradient(135deg, #A86C35, #C4834A); border-color: var(--orange); color: #fff; box-shadow: 0 2px 10px rgba(196,131,74,0.25); }
-    html[data-theme="dark"] .ind-selector { background: var(--bg-off); border-bottom-color: var(--border); }
-    html[data-theme="dark"] .ind-btn.active { background: linear-gradient(135deg, #A86C35, #C4834A); border-color: var(--orange); color: #fff; }
     .ind-note { font-size: 11px; color: var(--text-dim); text-align: right; max-width: 1100px; margin: 3px auto 0; padding: 0 4px; }
 
     /* ══ RESPONSIVE ══ */
@@ -448,6 +382,7 @@
       .n8n-layout { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
+      .logo-img { height: 38px; }
       .nav-links, .nav-cta { display: none; }
       .hamburger { display: flex; }
       .steps-grid { grid-template-columns: 1fr; }
@@ -472,8 +407,7 @@
 <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
   <div class="navbar-inner">
     <a href="#" class="logo" aria-label="Clockworks — Home">
-      <img src="logos/clockworks-large-light.png" alt="Clockworks" class="logo-img logo-img-light" />
-      <img src="logos/clockworks-large-dark.png" alt="Clockworks" class="logo-img logo-img-dark" />
+      <img src="images/logo-full.svg" alt="Clockworks" class="logo-img" />
     </a>
     <div class="nav-links" role="list">
       <a href="#what-i-build" class="nav-link" role="listitem">What I Build</a>
@@ -484,10 +418,6 @@
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
       <a href="#booking" class="nav-cta">Free Strategy Session &rarr;</a>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
-        <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <svg class="theme-icon-sun"  xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-      </button>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -1194,16 +1124,6 @@ loadSiteContent();
 // ── YEAR ──
 document.getElementById('yr').textContent = new Date().getFullYear();
 
-// ── THEME TOGGLE ──
-const html = document.documentElement;
-const themeBtn = document.getElementById('theme-toggle');
-const saved = localStorage.getItem('theme');
-if (saved === 'dark') html.setAttribute('data-theme', 'dark');
-themeBtn.addEventListener('click', () => {
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  localStorage.setItem('theme', isDark ? 'light' : 'dark');
-});
 
 // ── NAVBAR SCROLL ──
 const navbar = document.getElementById('navbar');
