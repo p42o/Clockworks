@@ -339,6 +339,42 @@
     .about-trust-item { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--border); border-radius: 9px; padding: 9px 14px; box-shadow: var(--shadow-sm); }
     .about-trust-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
 
+    /* ══ TESTIMONIALS ══ */
+    .testimonials-section { background: var(--bg-off); }
+    .testimonials-grid { max-width: 720px; margin: 0 auto; }
+    .testimonial-featured {
+      background: #fff; border: 1px solid var(--border); border-radius: 14px;
+      padding: 32px 28px; box-shadow: var(--shadow-md); text-align: center;
+      max-width: 620px; margin: 0 auto;
+    }
+    .testimonial-quote-mark {
+      font-size: 36px; color: rgba(196,131,74,0.2); font-family: 'Instrument Serif', Georgia, serif;
+      line-height: 1; margin-bottom: 8px;
+    }
+    .testimonial-quote { font-style: italic; font-size: 15px; color: var(--text); line-height: 1.8; margin-bottom: 14px; }
+    .testimonial-quote p { margin-bottom: 0.5rem; }
+    .testimonial-quote p:last-child { margin-bottom: 0; }
+    .testimonial-attr { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .testimonial-name { font-weight: 600; font-size: 13px; color: var(--navy); }
+    .testimonial-biz { font-size: 13px; color: var(--text-muted); }
+    .testimonial-dot { color: var(--text-dim); }
+    .google-review-link { display: inline-flex; margin-left: 4px; opacity: 0.3; transition: opacity 0.2s; }
+    .google-review-link:hover { opacity: 0.5; }
+    .testimonial-supporting { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .testimonial-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; box-shadow: var(--shadow-sm);
+    }
+    .testimonial-card .testimonial-quote { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 10px; }
+    .testimonial-card .testimonial-attr { justify-content: flex-start; }
+    .testimonial-card .testimonial-name { font-size: 12px; }
+    .testimonial-card .testimonial-biz { font-size: 12px; }
+    .testimonial-card .google-review-link { margin-left: auto; }
+
+    @media (max-width: 640px) {
+      .testimonial-supporting { grid-template-columns: 1fr; }
+    }
+
     /* ══ FAQ ══ */
     .faq { background: var(--bg-off); }
     .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
@@ -427,6 +463,7 @@
       <a href="#what-i-build" class="nav-link" role="listitem">What I Build</a>
       <a href="#how-it-works" class="nav-link" role="listitem">How It Works</a>
       <a href="#pricing"      class="nav-link" role="listitem">Pricing</a>
+      <a href="#testimonials" class="nav-link nav-link-testimonials" role="listitem" style="display:none;">Testimonials</a>
       <a href="resources.html" class="nav-link" role="listitem">Resources</a>
       <a href="#about"        class="nav-link" role="listitem">About</a>
     </div>
@@ -444,6 +481,7 @@
   <a href="#what-i-build" class="mobile-link">What I Build</a>
   <a href="#how-it-works" class="mobile-link">How It Works</a>
   <a href="#pricing"      class="mobile-link">Pricing</a>
+  <a href="#testimonials" class="mobile-link nav-link-testimonials" style="display:none;">Testimonials</a>
   <a href="resources.html" class="mobile-link">Resources</a>
   <a href="#about"        class="mobile-link">About</a>
   <a href="#booking"      class="mobile-cta">Book Free Strategy Session &rarr;</a>
@@ -702,6 +740,17 @@
   </div>
 </section>
 
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="section testimonials-section" style="display:none;" aria-labelledby="testimonials-heading">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:44px;">
+      <p class="section-label" style="color:var(--orange-dark);">What Clients Say</p>
+      <h2 id="testimonials-heading" class="section-heading" style="margin-bottom:12px;">Results speak louder than promises.</h2>
+    </div>
+    <div id="testimonials-grid" class="testimonials-grid reveal"></div>
+  </div>
+</section>
+
 <!-- ABOUT -->
 <section id="about" class="section about" aria-labelledby="about-heading">
   <div class="container">
@@ -886,6 +935,7 @@
         <a href="#what-i-build"  class="footer-link">What I Build</a>
         <a href="#how-it-works"  class="footer-link">How It Works</a>
         <a href="#pricing"       class="footer-link">Pricing</a>
+        <a href="#testimonials" class="footer-link nav-link-testimonials" style="display:none;">Testimonials</a>
         <a href="#about"         class="footer-link">About</a>
         <a href="resources.html" class="footer-link">Resources</a>
         <a href="#booking"       class="footer-link">Book Session</a>
