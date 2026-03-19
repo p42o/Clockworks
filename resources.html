@@ -527,22 +527,7 @@
   </div>
 </footer>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
 <script>
-// ── FIREBASE ──
-const firebaseConfig = {
-  apiKey:            "AIzaSyAgYsFRypLXu5yym-KIRS9GXqcRWGwrtkA",
-  authDomain:        "stonearchai.firebaseapp.com",
-  projectId:         "stonearchai",
-  storageBucket:     "stonearchai.firebasestorage.app",
-  messagingSenderId: "815481121273",
-  appId:             "1:815481121273:web:182d13a485f645c9bdf528"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
 // ── YEAR ──
 document.getElementById('yr').textContent = new Date().getFullYear();
 
@@ -569,13 +554,22 @@ mobileMenu.querySelectorAll('a').forEach(a => {
 // ── TAG COLORS ──
 const TAG_COLORS = { 'GUIDE': '#38bdf8', 'CASE STUDY': '#34d399', 'NEWS': '#C4834A', 'TIP': '#a78bfa' };
 
-// ── BLOG POSTS ──
-let allPosts = [];
+// ── BLOG POSTS (static) ──
+const allPosts = [
+  {
+    title: "AI vs. Automation: What's the Difference, and Why It Matters",
+    tag: 'GUIDE',
+    excerpt: "Most people use these words interchangeably. That's a mistake — and it's costing them.",
+    date: 'Mar 19, 2026',
+    readTime: '5 min',
+    url: 'blog/ai-vs-automation.html'
+  }
+];
+
 let activeFilter = 'all';
 
 function filterPosts(tag) {
   activeFilter = tag;
-  // Update button states
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-tag') === tag);
   });
@@ -589,159 +583,41 @@ function renderPosts() {
     : allPosts.filter(p => p.tag === activeFilter);
 
   if (filtered.length === 0) {
-    grid.innerHTML = renderEmptyState();
-    return;
-  }
-
-  grid.innerHTML = filtered.map(post => {
-    const tagColor = TAG_COLORS[post.tag] || '#C4834A';
-    const isoDate = post.isoDate || '';
-    return `
-      <article class="resource-article" id="post-${post.id}">
-        <header class="resource-header">
-          <span class="resource-tag" style="background:${tagColor};">${escapeHtml(post.tag)}</span>
-          <time class="resource-date" datetime="${isoDate}">${escapeHtml(post.date)}</time>
-          <span class="resource-read-time">${escapeHtml(post.readTime)} read</span>
-        </header>
-        <h2 class="resource-title">${escapeHtml(post.title)}</h2>
-        <p class="resource-excerpt">${escapeHtml(post.excerpt)}</p>
-        <div class="resource-content">${sanitizeContent(post.content)}</div>
-      </article>
-    `;
-  }).join('');
-}
-
-function renderEmptyState() {
-  if (activeFilter !== 'all') {
-    return `
+    grid.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </div>
         <h3>No posts in this category yet</h3>
-        <p>Check back soon or explore another category. We are always adding new content.</p>
+        <p>Check back soon or explore another category.</p>
       </div>
     `;
+    return;
   }
-  return `
-    <div class="empty-state">
-      <div class="empty-state-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      </div>
-      <h3>New content coming soon</h3>
-      <p>In the meantime, book a free strategy session to learn how automation can save your business 10+ hours a week.</p>
-      <a href="index.html#booking" class="btn-primary">Book Free Strategy Session &rarr;</a>
-    </div>
-  `;
+
+  grid.innerHTML = filtered.map(post => {
+    const tagColor = TAG_COLORS[post.tag] || '#C4834A';
+    return `
+      <a href="${post.url}" class="resource-article-link" style="text-decoration:none;color:inherit;">
+        <article class="resource-article">
+          <header class="resource-header">
+            <span class="resource-tag" style="background:${tagColor};">${post.tag}</span>
+            <time class="resource-date">${post.date}</time>
+            <span class="resource-read-time">${post.readTime} read</span>
+          </header>
+          <h2 class="resource-title">${post.title}</h2>
+          <p class="resource-excerpt">${post.excerpt}</p>
+          <span style="font-size:13px;font-weight:500;color:var(--orange);margin-top:auto;">Read article &rarr;</span>
+        </article>
+      </a>
+    `;
+  }).join('');
 }
 
-function sanitizeContent(html) {
-  if (!html) return '';
-  return html
-    .replace(/<style[\s\S]*?<\/style>/gi, '')
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<link[^>]*>/gi, '');
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function updateSchemaJsonLd(posts) {
-  const schemaEl = document.getElementById('schema-jsonld');
-  if (!schemaEl || posts.length === 0) return;
-
-  try {
-    const schema = JSON.parse(schemaEl.textContent);
-    schema.hasPart = posts.map(post => ({
-      '@type': 'BlogPosting',
-      'headline': post.title,
-      'datePublished': post.isoDate || '',
-      'description': post.excerpt,
-      'author': {
-        '@type': 'Person',
-        'name': 'Parker'
-      },
-      'publisher': {
-        '@type': 'Organization',
-        'name': 'Clockworks',
-        'url': 'https://clockworksai.com'
-      },
-      'url': 'https://clockworksai.com/resources#post-' + post.id
-    }));
-    schemaEl.textContent = JSON.stringify(schema);
-  } catch (e) {
-    // Silently fail — base schema is still valid
-  }
-}
-
-// ── LOAD POSTS FROM FIRESTORE ──
-async function loadPosts() {
-  const spinner = document.getElementById('loading-spinner');
-  try {
-    const snapshot = await db.collection('blogPosts')
-      .orderBy('createdAt', 'desc')
-      .get();
-
-    const now = new Date();
-
-    allPosts = [];
-    snapshot.forEach(doc => {
-      const data = doc.data();
-
-      // Determine visibility:
-      // - No status field = published (backwards compat)
-      // - status === 'published' = visible
-      // - status === 'scheduled' AND publishAt <= now = visible
-      // - status === 'draft' = hidden
-      // - status === 'scheduled' AND publishAt > now = hidden
-      const status = data.status || 'published';
-      if (status === 'draft') return;
-      if (status === 'scheduled') {
-        if (!data.publishAt) return;
-        const publishDate = data.publishAt.toDate ? data.publishAt.toDate() : new Date(data.publishAt);
-        if (publishDate > now) return;
-      }
-
-      // Parse date for ISO format
-      let isoDate = '';
-      if (data.createdAt && data.createdAt.toDate) {
-        isoDate = data.createdAt.toDate().toISOString().split('T')[0];
-      }
-
-      allPosts.push({
-        id: doc.id,
-        title: data.title || '',
-        tag: data.tag || 'NEWS',
-        excerpt: data.excerpt || '',
-        content: data.content || '',
-        date: data.date || '',
-        readTime: data.readTime || '',
-        isoDate: isoDate
-      });
-    });
-
-    // Remove spinner
-    if (spinner) spinner.remove();
-
-    // Update schema
-    updateSchemaJsonLd(allPosts);
-
-    // Render
-    renderPosts();
-
-  } catch (err) {
-    console.error('Error loading blog posts:', err);
-    if (spinner) spinner.remove();
-    // Show empty state on error
-    renderPosts();
-  }
-}
-
-loadPosts();
+// Remove spinner and render
+const spinner = document.getElementById('loading-spinner');
+if (spinner) spinner.remove();
+renderPosts();
 </script>
 </body>
 </html>
