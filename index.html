@@ -331,21 +331,52 @@
     .plan-cta { display: block; text-align: center; margin-top: 22px; padding: 12px 18px; border-radius: 9px; font-weight: 600; font-size: 13px; transition: all 0.25s; }
 
     /* ══ ABOUT ══ */
-    .about { background: var(--bg-off); }
+    .about { background: #fff; }
     .about-centered { max-width: 700px; margin: 0 auto; text-align: center; }
     .about-headshot { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; object-position: center top; margin: 0 auto 20px; display: block; border: 2px solid rgba(196,131,74,0.3); }
     .about-bio { font-size: 15px; color: var(--text-muted); line-height: 1.85; display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; text-align: left; }
     .about-trust { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
     .about-trust-item { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--border); border-radius: 9px; padding: 9px 14px; box-shadow: var(--shadow-sm); }
     .about-trust-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-    .testimonials { margin-top: 36px; text-align: left; }
-    .testimonials-heading { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px; text-align: center; }
-    .testimonial { margin-bottom: 20px; padding-left: 16px; border-left: 2px solid var(--border); }
-    .testimonial p { font-style: italic; font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 4px; }
-    .testimonial cite { font-size: 13px; color: var(--text-dim); font-style: normal; }
+
+    /* ══ TESTIMONIALS ══ */
+    .testimonials-section { background: var(--bg-off); }
+    .testimonials-grid { max-width: 720px; margin: 0 auto; }
+    .testimonial-featured {
+      background: #fff; border: 1px solid var(--border); border-radius: 14px;
+      padding: 32px 28px; box-shadow: var(--shadow-md); text-align: center;
+      max-width: 620px; margin: 0 auto;
+    }
+    .testimonial-quote-mark {
+      font-size: 36px; color: rgba(196,131,74,0.2); font-family: 'Instrument Serif', Georgia, serif;
+      line-height: 1; margin-bottom: 8px;
+    }
+    .testimonial-quote { font-style: italic; font-size: 15px; color: var(--text); line-height: 1.8; margin-bottom: 14px; }
+    .testimonial-quote p { margin-bottom: 0.5rem; }
+    .testimonial-quote p:last-child { margin-bottom: 0; }
+    .testimonial-attr { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .testimonial-name { font-weight: 600; font-size: 13px; color: var(--navy); }
+    .testimonial-biz { font-size: 13px; color: var(--text-muted); }
+    .testimonial-dot { color: var(--text-dim); }
+    .google-review-link { display: inline-flex; margin-left: 4px; opacity: 0.3; transition: opacity 0.2s; }
+    .google-review-link:hover { opacity: 0.5; }
+    .testimonial-supporting { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .testimonial-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; box-shadow: var(--shadow-sm);
+    }
+    .testimonial-card .testimonial-quote { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 10px; }
+    .testimonial-card .testimonial-attr { justify-content: flex-start; }
+    .testimonial-card .testimonial-name { font-size: 12px; }
+    .testimonial-card .testimonial-biz { font-size: 12px; }
+    .testimonial-card .google-review-link { margin-left: auto; }
+
+    @media (max-width: 640px) {
+      .testimonial-supporting { grid-template-columns: 1fr; }
+    }
 
     /* ══ FAQ ══ */
-    .faq { background: #fff; }
+    .faq { background: var(--bg-off); }
     .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
     .faq-item { background: var(--bg-off); border: 1px solid var(--border); border-radius: 13px; overflow: hidden; align-self: start; }
     .faq-btn { width: 100%; padding: 17px 18px; display: flex; justify-content: space-between; align-items: flex-start; background: none; border: none; text-align: left; }
@@ -432,6 +463,7 @@
       <a href="#what-i-build" class="nav-link" role="listitem">What I Build</a>
       <a href="#how-it-works" class="nav-link" role="listitem">How It Works</a>
       <a href="#pricing"      class="nav-link" role="listitem">Pricing</a>
+      <a href="#testimonials" class="nav-link nav-link-testimonials" role="listitem" style="display:none;">Testimonials</a>
       <a href="resources.html" class="nav-link" role="listitem">Resources</a>
       <a href="#about"        class="nav-link" role="listitem">About</a>
     </div>
@@ -449,6 +481,7 @@
   <a href="#what-i-build" class="mobile-link">What I Build</a>
   <a href="#how-it-works" class="mobile-link">How It Works</a>
   <a href="#pricing"      class="mobile-link">Pricing</a>
+  <a href="#testimonials" class="mobile-link nav-link-testimonials" style="display:none;">Testimonials</a>
   <a href="resources.html" class="mobile-link">Resources</a>
   <a href="#about"        class="mobile-link">About</a>
   <a href="#booking"      class="mobile-cta">Book Free Strategy Session &rarr;</a>
@@ -707,6 +740,17 @@
   </div>
 </section>
 
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="section testimonials-section" style="display:none;" aria-labelledby="testimonials-heading">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:44px;">
+      <p class="section-label" style="color:var(--orange-dark);">What Clients Say</p>
+      <h2 id="testimonials-heading" class="section-heading" style="margin-bottom:12px;">Results speak louder than promises.</h2>
+    </div>
+    <div id="testimonials-grid" class="testimonials-grid reveal"></div>
+  </div>
+</section>
+
 <!-- ABOUT -->
 <section id="about" class="section about" aria-labelledby="about-heading">
   <div class="container">
@@ -723,26 +767,6 @@
         <div class="about-trust-item"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="about-trust-label">AI &amp; automation systems builder</span></div>
         <div class="about-trust-item"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="about-trust-label">Maple Grove, MN &mdash; local meetings available</span></div>
         <div class="about-trust-item"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="about-trust-label">No contracts, no retainers required</span></div>
-      </div>
-
-      <!-- Testimonials placeholder -->
-      <div class="testimonials" id="testimonials-container">
-        <div class="testimonials-heading">What Clients Say</div>
-        <!-- TODO: add real quote -->
-        <div class="testimonial">
-          <p>"Client quote will go here once results are in."</p>
-          <cite>&mdash; Name, Business Type</cite>
-        </div>
-        <!-- TODO: add real quote -->
-        <div class="testimonial">
-          <p>"Another client testimonial will go here."</p>
-          <cite>&mdash; Name, Business Type</cite>
-        </div>
-        <!-- TODO: add real quote -->
-        <div class="testimonial">
-          <p>"Third testimonial placeholder."</p>
-          <cite>&mdash; Name, Business Type</cite>
-        </div>
       </div>
     </div>
   </div>
@@ -911,6 +935,7 @@
         <a href="#what-i-build"  class="footer-link">What I Build</a>
         <a href="#how-it-works"  class="footer-link">How It Works</a>
         <a href="#pricing"       class="footer-link">Pricing</a>
+        <a href="#testimonials" class="footer-link nav-link-testimonials" style="display:none;">Testimonials</a>
         <a href="#about"         class="footer-link">About</a>
         <a href="resources.html" class="footer-link">Resources</a>
         <a href="#booking"       class="footer-link">Book Session</a>
@@ -943,25 +968,84 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// ── TESTIMONIALS RENDERING ──
+const GOOGLE_SVG_16 = '<svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>';
+const GOOGLE_SVG_14 = '<svg width="14" height="14" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>';
+
+function renderGoogleIcon(url, size) {
+  if (!url) return '';
+  const svg = size === 16 ? GOOGLE_SVG_16 : GOOGLE_SVG_14;
+  return '<a href="' + escHtml(url) + '" target="_blank" rel="noopener noreferrer" title="View on Google Reviews" class="google-review-link">' + svg + '</a>';
+}
+
+function renderFeaturedCard(t) {
+  return '<div class="testimonial-featured">' +
+    '<div class="testimonial-quote-mark">\u201C</div>' +
+    '<div class="testimonial-quote">' + t.quote + '</div>' +
+    '<div class="testimonial-attr">' +
+      '<span class="testimonial-name">' + escHtml(t.name) + '</span>' +
+      (t.business ? '<span class="testimonial-dot">&middot;</span><span class="testimonial-biz">' + escHtml(t.business) + '</span>' : '') +
+      renderGoogleIcon(t.googleReviewUrl, 16) +
+    '</div>' +
+  '</div>';
+}
+
+function renderSupportingCard(t) {
+  return '<div class="testimonial-card">' +
+    '<div class="testimonial-quote">' + t.quote + '</div>' +
+    '<div class="testimonial-attr">' +
+      '<span class="testimonial-name">' + escHtml(t.name) + '</span>' +
+      (t.business ? '<span class="testimonial-dot">&middot;</span><span class="testimonial-biz">' + escHtml(t.business) + '</span>' : '') +
+      renderGoogleIcon(t.googleReviewUrl, 14) +
+    '</div>' +
+  '</div>';
+}
+
+function renderTestimonials(items) {
+  const grid = document.getElementById('testimonials-grid');
+  if (!items.length) { grid.innerHTML = ''; return; }
+
+  let html = renderFeaturedCard(items[0]);
+
+  if (items.length === 2) {
+    // Single supporting card, full width (no grid wrapper)
+    html += '<div style="margin-top:12px;">' + renderSupportingCard(items[1]) + '</div>';
+  } else if (items.length > 2) {
+    html += '<div class="testimonial-supporting">' +
+      items.slice(1).map(t => renderSupportingCard(t)).join('') +
+    '</div>';
+  }
+
+  grid.innerHTML = html;
+}
+
 // ── LOAD SITE CONTENT FROM ADMIN ──
 async function loadSiteContent() {
   try {
-    const doc = await db.collection('siteContent').doc('config').get();
-    if (!doc.exists) return;
-    const data = doc.data();
+    const [doc, testimonialsDoc] = await Promise.all([
+      db.collection('siteContent').doc('config').get(),
+      db.collection('siteContent').doc('testimonials').get()
+    ]);
 
-    // Render testimonials
-    if (data.testimonials && data.testimonials.length > 0) {
-      const container = document.getElementById('testimonials-container');
-      if (container) {
-        container.innerHTML = data.testimonials.map(t => `
-          <div class="testimonial">
-            <p>"${escHtml(t.quote)}"</p>
-            <cite>&mdash; ${escHtml(t.name)}${t.biz ? ', ' + escHtml(t.biz) : ''}</cite>
-          </div>
-        `).join('');
+    // Load testimonials from dedicated document (independent of config)
+    if (testimonialsDoc.exists) {
+      const tData = testimonialsDoc.data();
+      const section = document.getElementById('testimonials');
+      if (tData.sectionEnabled && tData.items) {
+        const liveItems = tData.items
+          .filter(t => t.live)
+          .sort((a, b) => a.order - b.order);
+        if (liveItems.length > 0) {
+          section.style.display = '';
+          renderTestimonials(liveItems);
+          // Show nav links
+          document.querySelectorAll('.nav-link-testimonials').forEach(el => el.style.display = '');
+        }
       }
     }
+
+    if (!doc.exists) return;
+    const data = doc.data();
 
     // Render FAQ from Firestore (if admin has added items)
     if (data.faqItems && data.faqItems.length > 0) {
