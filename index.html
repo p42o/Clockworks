@@ -968,25 +968,84 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// ── TESTIMONIALS RENDERING ──
+const GOOGLE_SVG_16 = '<svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>';
+const GOOGLE_SVG_14 = '<svg width="14" height="14" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>';
+
+function renderGoogleIcon(url, size) {
+  if (!url) return '';
+  const svg = size === 16 ? GOOGLE_SVG_16 : GOOGLE_SVG_14;
+  return '<a href="' + escHtml(url) + '" target="_blank" rel="noopener noreferrer" title="View on Google Reviews" class="google-review-link">' + svg + '</a>';
+}
+
+function renderFeaturedCard(t) {
+  return '<div class="testimonial-featured">' +
+    '<div class="testimonial-quote-mark">\u201C</div>' +
+    '<div class="testimonial-quote">' + t.quote + '</div>' +
+    '<div class="testimonial-attr">' +
+      '<span class="testimonial-name">' + escHtml(t.name) + '</span>' +
+      (t.business ? '<span class="testimonial-dot">&middot;</span><span class="testimonial-biz">' + escHtml(t.business) + '</span>' : '') +
+      renderGoogleIcon(t.googleReviewUrl, 16) +
+    '</div>' +
+  '</div>';
+}
+
+function renderSupportingCard(t) {
+  return '<div class="testimonial-card">' +
+    '<div class="testimonial-quote">' + t.quote + '</div>' +
+    '<div class="testimonial-attr">' +
+      '<span class="testimonial-name">' + escHtml(t.name) + '</span>' +
+      (t.business ? '<span class="testimonial-dot">&middot;</span><span class="testimonial-biz">' + escHtml(t.business) + '</span>' : '') +
+      renderGoogleIcon(t.googleReviewUrl, 14) +
+    '</div>' +
+  '</div>';
+}
+
+function renderTestimonials(items) {
+  const grid = document.getElementById('testimonials-grid');
+  if (!items.length) { grid.innerHTML = ''; return; }
+
+  let html = renderFeaturedCard(items[0]);
+
+  if (items.length === 2) {
+    // Single supporting card, full width (no grid wrapper)
+    html += '<div style="margin-top:12px;">' + renderSupportingCard(items[1]) + '</div>';
+  } else if (items.length > 2) {
+    html += '<div class="testimonial-supporting">' +
+      items.slice(1).map(t => renderSupportingCard(t)).join('') +
+    '</div>';
+  }
+
+  grid.innerHTML = html;
+}
+
 // ── LOAD SITE CONTENT FROM ADMIN ──
 async function loadSiteContent() {
   try {
-    const doc = await db.collection('siteContent').doc('config').get();
-    if (!doc.exists) return;
-    const data = doc.data();
+    const [doc, testimonialsDoc] = await Promise.all([
+      db.collection('siteContent').doc('config').get(),
+      db.collection('siteContent').doc('testimonials').get()
+    ]);
 
-    // Render testimonials
-    if (data.testimonials && data.testimonials.length > 0) {
-      const container = document.getElementById('testimonials-container');
-      if (container) {
-        container.innerHTML = data.testimonials.map(t => `
-          <div class="testimonial">
-            <p>"${escHtml(t.quote)}"</p>
-            <cite>&mdash; ${escHtml(t.name)}${t.biz ? ', ' + escHtml(t.biz) : ''}</cite>
-          </div>
-        `).join('');
+    // Load testimonials from dedicated document (independent of config)
+    if (testimonialsDoc.exists) {
+      const tData = testimonialsDoc.data();
+      const section = document.getElementById('testimonials');
+      if (tData.sectionEnabled && tData.items) {
+        const liveItems = tData.items
+          .filter(t => t.live)
+          .sort((a, b) => a.order - b.order);
+        if (liveItems.length > 0) {
+          section.style.display = '';
+          renderTestimonials(liveItems);
+          // Show nav links
+          document.querySelectorAll('.nav-link-testimonials').forEach(el => el.style.display = '');
+        }
       }
     }
+
+    if (!doc.exists) return;
+    const data = doc.data();
 
     // Render FAQ from Firestore (if admin has added items)
     if (data.faqItems && data.faqItems.length > 0) {
