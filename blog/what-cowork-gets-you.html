@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>What a $150 AI Session Actually Gets You (The Inside Story) — Clockworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f9f7f2; --ink: #1a1917; --ink-muted: #6b6860; --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1); --border-strong: rgba(26,25,23,0.2);
+      --accent: #1d6bbf; --accent-bg: #edf4fc; --accent-text: #0c3e72;
+      --success: #1a7a4a; --success-bg: #ebf7f1; --success-text: #0d4a2b;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background-color: var(--cream); color: var(--ink); font-size: 17px; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(249,247,242,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; font-weight: 400; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; transition: background 0.2s, color 0.2s !important; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; object-fit: cover; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-info { line-height: 1.4; }
+    .byline-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+    .body-text p { margin-bottom: 1.5rem; color: var(--ink); }
+    .body-text p:last-child { margin-bottom: 0; }
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; }
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+    .timeline { margin: 2rem 0; }
+    .timeline-item { display: flex; gap: 1.25rem; padding-bottom: 1.5rem; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-marker { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .timeline-dot { width: 32px; height: 32px; background: var(--accent-bg); border: 1.5px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--accent-text); flex-shrink: 0; }
+    .timeline-line { width: 1.5px; background: var(--border); flex-grow: 1; margin-top: 6px; }
+    .timeline-item:last-child .timeline-line { display: none; }
+    .timeline-content { padding-top: 5px; padding-bottom: 0.5rem; }
+    .timeline-time { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.3rem; }
+    .timeline-content h3 { font-family: var(--serif); font-size: 1.05rem; font-weight: 400; color: var(--ink); margin-bottom: 0.4rem; }
+    .timeline-content p { font-size: 0.95rem; color: var(--ink-muted); line-height: 1.65; margin: 0; }
+    .deliverables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 2rem 0; }
+    .deliverable-card { background: #fff; border-radius: 12px; border: 0.5px solid var(--border); padding: 1.25rem 1.4rem; }
+    .deliverable-card h3 { font-size: 0.95rem; font-weight: 500; color: var(--ink); margin-bottom: 0.4rem; }
+    .deliverable-card p { font-size: 0.88rem; color: var(--ink-muted); line-height: 1.6; margin: 0; }
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .signature p { font-size: 1rem; color: var(--ink); margin-bottom: 1.5rem !important; }
+    .sig-name { font-weight: 500; font-size: 1rem; color: var(--ink); }
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: opacity 0.2s, transform 0.2s; }
+    .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .deliverables-grid { grid-template-columns: 1fr; }
+      .site-nav { gap: 1rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Clockworks — Services</div>
+    <h1 class="hero-title">What a $150 AI Session Actually Gets You<br>(The Inside Story)</h1>
+    <p class="hero-subtitle">A minute-by-minute look at what happens in a Clockworks Cowork session — and what you walk away with.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; Jun 15, 2026 &nbsp;·&nbsp; 7 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>Hey — I'm Parker. I've been running Clockworks for a while now and one thing I've learned is that "AI consulting" sounds mysterious to most people. They don't know what to expect. They've never paid someone to help them with AI before. They're not sure what a two-hour session actually produces.</p>
+      <p>So this post is a full walk-through. Why the Cowork format exists, what happens minute by minute, what people actually leave with, and where the model honestly falls short. No fluff.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">Why the Cowork format exists</h2>
+      <div class="body-text">
+        <p>Most AI training falls into two categories: general tutorials that don't apply to your specific situation, or expensive enterprise implementations that cost more than a small business has to spend. Neither helps the HVAC owner who just wants to stop writing the same email fourteen times a week.</p>
+        <p>The Cowork format exists to fill that gap. It's a focused, two-hour working session where we tackle your actual business problems with AI, right now, while you're watching. You don't leave with a plan — you leave with things that are already built and working. That distinction matters. Plans sit in a drawer. Working templates get used on Monday morning.</p>
+        <p>The price is $150. I set it that way deliberately. It's accessible enough that a small business owner can try it without a significant budget conversation. And it's scoped tightly enough that I can deliver real value in the time we have.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">Before the session: intake and scope confirmation</h2>
+      <div class="body-text">
+        <p>Before we meet, I send a short intake form. It takes about five minutes to fill out. It asks: what does your business do, what are the most time-consuming tasks in your week, what have you already tried with AI (if anything), and what does success look like to you after this session?</p>
+        <p>I read every intake before the session and use it to pre-plan what we'll work on. I also send a scope confirmation — a brief email that says "based on what you told me, here's what I'm thinking we tackle: X, Y, and Z. Does this match what you're hoping for?" If it doesn't match, we adjust before we start. I don't want to spend two hours building something you didn't actually need.</p>
+        <p>That confirmation step sounds small but it's important. The sessions that go best are the ones where we're aligned before we start. The sessions that get messy are the ones where expectations aren't set.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">Minute by minute: what the session looks like</h2>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="timeline-dot">1</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-time">Minutes 0–15</div>
+            <h3>Quick orientation</h3>
+            <p>We spend the first 15 minutes talking. What's your actual workflow? Where are the friction points? What did the intake form not capture? I want to understand the real situation — not just the symptoms — before we start building anything. This also gives me a sense of your comfort level with AI, so I know how much explaining to do as we go.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="timeline-dot">2</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-time">Minutes 15–45</div>
+            <h3>First build: the highest-priority item</h3>
+            <p>We tackle whatever is costing you the most time first. Usually this is email — either templates for recurring situations, or setting up a Claude Project with your business context. We run it live, test it on a real example from your actual work, and iterate until the output is something you'd actually use. You watch everything I do and ask questions as we go.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="timeline-dot">3</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-time">Minutes 45–90</div>
+            <h3>Second and third builds</h3>
+            <p>Depending on what you need, we build one or two more things: a weekly report template, a set of social media prompts, a proposal framework, a document summarization workflow. Each one follows the same process — build it, test it on your real content, refine it until it's usable. I explain what I'm doing and why at each step so you can do it yourself later.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="timeline-dot">4</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-time">Minutes 90–110</div>
+            <h3>Your turn — practice run</h3>
+            <p>For at least 20 minutes, you drive. I watch you use what we built and give feedback in real time. This is the part people underestimate — watching someone else do it and doing it yourself are completely different experiences. The practice run is how you build the muscle memory to actually use these things on your own.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="timeline-dot">5</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-time">Minutes 110–120</div>
+            <h3>Wrap-up and what's next</h3>
+            <p>Last 10 minutes: I summarize what we built, what to do with it, and one or two things to try on your own before we'd potentially meet again. I also share the shared doc with your prompts and setup notes so you have everything in one place.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What you leave with</h2>
+
+      <div class="deliverables-grid article-section">
+        <div class="deliverable-card">
+          <h3>A Claude Project, set up and ready</h3>
+          <p>With your business context loaded in, so every future conversation starts smarter.</p>
+        </div>
+        <div class="deliverable-card">
+          <h3>3–5 copy-paste email prompts</h3>
+          <p>Tailored to your actual recurring email situations, tested on real examples.</p>
+        </div>
+        <div class="deliverable-card">
+          <h3>A shared Google Doc with everything</h3>
+          <p>All prompts, setup instructions, and notes in one place you can reference and share.</p>
+        </div>
+        <div class="deliverable-card">
+          <h3>At least one additional workflow</h3>
+          <p>Report template, social content prompts, proposal framework — whatever fit your situation.</p>
+        </div>
+      </div>
+
+      <div class="callout article-section">
+        <p>The thing people tell me most often after a session: "I can't believe how much we got done in two hours." That's the goal. Not a deck of slides about AI. Actual working stuff, tested on your real business, that you start using the same week.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">Honest limitations</h2>
+      <div class="body-text">
+        <p>Two hours has real limits. If you're looking for a deep automation build — connecting multiple software systems, building custom workflows, setting up AI agents — that's a different scope and a different price. The Cowork session is great for foundational AI habits and practical tools; it's not designed for complex technical integration.</p>
+        <p>It also requires you to show up with specifics. The sessions that go sideways are the ones where someone hasn't thought about what they actually want to work on. The intake form helps with this, but the more prepared you are, the more we can get done in the time we have.</p>
+        <p>And finally: this isn't magic. What you build in the session works well if you use it consistently. The people who get the most out of a Cowork are the ones who actually use what we built every day for the first month. Habit formation is on you — I can build the tools, but I can't make you reach for them.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section signature body-text">
+      <p>If this sounds like what you need, the free 20-minute call is where we figure out if a Cowork session is the right fit for your situation. We'll talk through what you'd want to tackle and I'll tell you honestly whether two hours is enough or whether you'd need something different.</p>
+      <p class="sig-name">— Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Ready to stop guessing?</h2>
+      <p>Free 20-minute call. No pitch. Just an honest look at where AI or automation fits your business.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call →</a>
+    </div>
+
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">aiclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.article-section').forEach(function(el) { observer.observe(el); });
+  </script>
+
+</body>
+</html>

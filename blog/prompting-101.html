@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>Prompting 101: The Only Guide You Need If You're Not a Tech Person — Clockworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f9f7f2; --ink: #1a1917; --ink-muted: #6b6860; --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1); --border-strong: rgba(26,25,23,0.2);
+      --accent: #1d6bbf; --accent-bg: #edf4fc; --accent-text: #0c3e72;
+      --success: #1a7a4a; --success-bg: #ebf7f1; --success-text: #0d4a2b;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background-color: var(--cream); color: var(--ink); font-size: 17px; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(249,247,242,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; font-weight: 400; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; transition: background 0.2s, color 0.2s !important; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; object-fit: cover; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-info { line-height: 1.4; }
+    .byline-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+    .body-text p { margin-bottom: 1.5rem; color: var(--ink); }
+    .body-text p:last-child { margin-bottom: 0; }
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; }
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+    .mistake-card { background: #fff; border-radius: 12px; border: 0.5px solid var(--border); padding: 1.4rem 1.6rem; margin: 1.25rem 0; }
+    .mistake-label { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; background: #fef3ee; color: #7a3a0d; padding: 3px 10px; border-radius: 100px; margin-bottom: 0.6rem; }
+    .fix-label { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; background: var(--success-bg); color: var(--success-text); padding: 3px 10px; border-radius: 100px; margin: 0.6rem 0 0.5rem; }
+    .mistake-card h3 { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; color: var(--ink); margin-bottom: 0.4rem; }
+    .mistake-card p { font-size: 0.95rem; color: var(--ink-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+    .mistake-card p:last-child { margin-bottom: 0; }
+    .fix-text { color: var(--ink) !important; }
+    .prompt-list { background: #fff; border-radius: 12px; border: 0.5px solid var(--border); padding: 1.5rem 1.6rem; margin: 1.5rem 0; }
+    .prompt-list h3 { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; color: var(--ink); margin-bottom: 1rem; }
+    .prompt-item { border-bottom: 0.5px solid var(--border); padding: 0.9rem 0; }
+    .prompt-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .prompt-item-label { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.3rem; }
+    .prompt-box { background: var(--cream); border: 0.5px solid var(--border-strong); border-radius: 6px; padding: 0.75rem 1rem; font-size: 0.88rem; color: var(--ink); font-style: italic; line-height: 1.65; }
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .signature p { font-size: 1rem; color: var(--ink); margin-bottom: 1.5rem !important; }
+    .sig-name { font-weight: 500; font-size: 1rem; color: var(--ink); }
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: opacity 0.2s, transform 0.2s; }
+    .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .site-nav { gap: 1rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Clockworks — AI for Small Business</div>
+    <h1 class="hero-title">Prompting 101: The Only Guide You Need If You're Not a Tech Person</h1>
+    <p class="hero-subtitle">No jargon. No theory. Just what actually works — and ten prompts you can use today.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; Jun 1, 2026 &nbsp;·&nbsp; 8 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>Hey — I'm Parker. I run Clockworks, and I've now taught AI prompting to several dozen small business owners across the trades, real estate, and local services. Almost all of them came to me with the same problem: they'd tried AI, gotten mediocre results, and assumed the technology wasn't mature enough.</p>
+      <p>In almost every case, the technology was fine. The prompts were the problem. This guide covers everything you need to know to write prompts that actually work — without any technical background whatsoever.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What a prompt actually is</h2>
+      <div class="body-text">
+        <p>A prompt is the instruction you give to an AI. That's it. There's no special language to learn, no code to write, no settings to configure. You type something in plain English, the AI responds, and you can continue the conversation.</p>
+        <p>The reason it matters is that AI is both very capable and very literal. If you give it a vague instruction, it gives you a vague response. If you give it a specific, well-structured instruction, it gives you something genuinely useful. The gap between a bad prompt and a good one is enormous — we're not talking about small improvements. We're talking about the difference between "completely useless" and "ready to send."</p>
+        <p>Think of it this way: if you hired someone new and on their first day you handed them a sticky note that said "help with emails," what would they do? They'd have no idea. They'd guess. They'd give you something generic. But if you sat down with them and said "here's what I need, here's who I'm writing to, here's the tone I want, and here's an example" — now they can actually help you.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The three-part formula</h2>
+      <div class="body-text">
+        <p>Every good prompt has three parts: <strong>Context</strong>, <strong>Task</strong>, and <strong>Format</strong>. Once you know these three things, you'll naturally write better prompts without even thinking about it.</p>
+        <p><strong>Context</strong> is who you are and what the situation is. "I'm the owner of a 5-person plumbing company in Minnetonka" gives the AI critical information it needs to make the output relevant. Without it, the AI has to guess, and it will guess wrong.</p>
+        <p><strong>Task</strong> is the specific thing you need done. Not "help me write" but "write a follow-up email to a customer who got a quote on Tuesday and hasn't responded." Be specific. Specific tasks get specific results.</p>
+        <p><strong>Format</strong> tells the AI how to deliver the output. "Under 100 words, friendly tone, no bullet points, end with a question" will get you a very different result than saying nothing. Always specify length, tone, and structure if they matter to you.</p>
+      </div>
+
+      <div class="callout article-section">
+        <p>You don't need to include all three parts every time — but the more you include, the better the output. When results disappoint you, look at your prompt and ask: what context did I leave out? What did I not specify?</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">5 common mistakes and how to fix them</h2>
+
+      <div class="mistake-card">
+        <div class="mistake-label">Mistake 01</div>
+        <h3>Too vague</h3>
+        <p>"Write an email about my business." This gives the AI almost nothing to work with.</p>
+        <div class="fix-label">The Fix</div>
+        <p class="fix-text">Add the recipient, the situation, the purpose, and the tone. "Write a friendly 80-word email to a past customer I worked with two years ago. I want to let them know we're running a spring tune-up special and ask if they'd like to schedule."</p>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-label">Mistake 02</div>
+        <h3>Expecting perfection on the first try</h3>
+        <p>People send one prompt, don't love the result, and give up. That's not how it works.</p>
+        <div class="fix-label">The Fix</div>
+        <p class="fix-text">Treat it as a conversation. "Make it shorter." "Change the tone to be less formal." "Add a line about our warranty." Two or three rounds of refinement gets you to great output faster than trying to write the perfect prompt upfront.</p>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-label">Mistake 03</div>
+        <h3>Not specifying length</h3>
+        <p>If you don't say how long you want the output, the AI will make a guess — and it often guesses long.</p>
+        <div class="fix-label">The Fix</div>
+        <p class="fix-text">Always include a word count or a rough length: "under 100 words," "one paragraph," "a short bullet list with 5 items." This alone improves output quality significantly.</p>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-label">Mistake 04</div>
+        <h3>Forgetting to specify tone</h3>
+        <p>The AI defaults to a polished, professional tone. That's often not what you want — especially for emails that should sound like you, not like a press release.</p>
+        <div class="fix-label">The Fix</div>
+        <p class="fix-text">Say "conversational," "warm," "direct," "no corporate buzzwords," or even "write the way I'd talk to a customer in person." If you want it to sound like you specifically, give it an example of your writing and say "write in a style similar to this."</p>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-label">Mistake 05</div>
+        <h3>Starting with a difficult task</h3>
+        <p>If your first prompt is something complex — a full proposal, a business plan, a strategy document — and it disappoints you, you might conclude AI isn't useful.</p>
+        <div class="fix-label">The Fix</div>
+        <p class="fix-text">Start simple. Write one email. Summarize one short document. Get comfortable with the back-and-forth. Then work up to more complex tasks once you understand how the tool responds to your instructions.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The iterate mindset</h2>
+      <div class="body-text">
+        <p>The single biggest shift in how people use AI is when they stop thinking of it as a one-shot tool and start thinking of it as a conversation. You're not trying to write the perfect prompt. You're trying to get somewhere useful through a back-and-forth exchange.</p>
+        <p>Ask for a draft. Read it. Tell the AI what's wrong. Ask for a revision. Repeat once or twice. This process typically takes under five minutes and produces much better output than spending 20 minutes trying to craft the perfect first prompt.</p>
+        <p>I tell clients: pretend you're editing, not prompting. You're giving feedback to a fast, capable assistant. The faster you can say "that's wrong, here's why, try again," the faster you get to something good.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">10 starter prompts for common business tasks</h2>
+
+      <div class="prompt-list article-section">
+        <h3>Copy, adapt, and use these today.</h3>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Email — Quote Follow-Up</div>
+          <div class="prompt-box">Write a friendly 80-word follow-up email to a customer who received a quote from me [X] days ago and hasn't responded. I quoted them [job description]. Not pushy — just checking in and offering to answer questions.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Email — New Lead Response</div>
+          <div class="prompt-box">Write a warm reply to a new inquiry from someone who reached out about [what they need]. Confirm I received their message, show I understand what they're asking, and propose a next step. Under 100 words.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Social Media — Weekly Post</div>
+          <div class="prompt-box">Write an Instagram caption for a [type of business]. Topic: [tip, story, or behind-the-scenes thing]. Conversational, under 80 words, end with a soft call to action.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Document Summary</div>
+          <div class="prompt-box">Here's a document I need to understand: [paste text]. Give me a plain-English summary of the key points, the 3 most important things, and anything that seems unusual or worth asking about.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Meeting Prep</div>
+          <div class="prompt-box">I have a meeting with [describe person/situation]. Give me 5 smart questions to ask, what I should know going in, and 2 potential objections with honest responses.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Proposal Intro</div>
+          <div class="prompt-box">Write a one-paragraph proposal introduction for [describe the project and client]. Professional but warm. Show we understand what they need. Set up the scope that follows.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Rewrite in My Voice</div>
+          <div class="prompt-box">Here's a draft I wrote: [paste text]. Rewrite it to sound cleaner and more natural. Keep the main points. Don't make it stiff or formal.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Customer Complaint Response</div>
+          <div class="prompt-box">Write a professional, empathetic response to a customer complaint about [describe the issue]. Acknowledge the problem, take appropriate responsibility, and offer a clear path forward. Under 120 words.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Weekly Report</div>
+          <div class="prompt-box">I'm going to give you raw notes from my week. Turn them into a clear, professional weekly business summary. Here are the notes: [paste your notes].</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-item-label">Idea Brainstorm</div>
+          <div class="prompt-box">I run a [type of business]. Give me 10 ideas for [what you want ideas about — e.g. "things to post about this month" or "ways to follow up with past customers"]. Quick, practical, no fluff.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">How to get consistent results</h2>
+      <div class="body-text">
+        <p>Once you find a prompt that works well for a recurring task, save it. Keep a running Google Doc or note with your best prompts. Update them when you find a version that works better. Over time you'll build a personal library of prompts that reliably produce good output for your specific business.</p>
+        <p>If you're using Claude, the Projects feature lets you store persistent context so every session starts with the AI already knowing your business. That's the highest-leverage thing you can do to improve consistency. Set it up once and you'll notice the quality of everything goes up.</p>
+        <p>The goal isn't to be great at prompting. The goal is to be consistent enough that AI actually saves you time. A handful of solid prompts that you use every week is worth more than elaborate prompting techniques you'll never remember. Keep it simple, keep it practical, and iterate as you go.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section signature body-text">
+      <p>If you want to work through your first five prompts with someone who can troubleshoot in real time, that's exactly what a Clockworks session is for. Reach out — we'll build your starter library together.</p>
+      <p class="sig-name">— Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Ready to stop guessing?</h2>
+      <p>Free 20-minute call. No pitch. Just an honest look at where AI or automation fits your business.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call →</a>
+    </div>
+
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">aiclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.article-section').forEach(function(el) { observer.observe(el); });
+  </script>
+
+</body>
+</html>

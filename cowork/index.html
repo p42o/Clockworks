@@ -1,0 +1,750 @@
+<!--
+  CLOCKWORKS COWORK — /cowork/index.html
+  Repositioned from /learn — "Claude Cowork" concept.
+  Original /learn/index.html preserved as /learn/index.backup.html
+
+  TO DO BEFORE GOING LIVE:
+  1. Create a free Formspree account at formspree.io
+  2. Create a new form and replace "YOUR_FORM_ID" in the <form> action below
+  3. git push → auto-deploys via GitHub Actions to Namecheap
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="canonical" href="https://mnclockworks.com/cowork" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png" />
+  <title>Clockworks Cowork | Turn Claude Into Your AI Coworker — $150 Intro Rate</title>
+  <meta name="description" content="Claude Cowork Sessions by Clockworks. In 2 hours we turn Claude into your personal AI coworker — live integrations into PowerPoint, Excel, Gmail, Calendar & Google Drive. $150 founding rate." />
+  <meta property="og:title" content="Clockworks Cowork — Turn Claude Into Your Personal AI Coworker" />
+  <meta property="og:description" content="In 2 focused hours we set up Claude as your real AI coworker — Gmail, Drive, Excel, PowerPoint, and your actual daily workflow. $150 founding rate. Remote or Twin Cities in-person." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mnclockworks.com/cowork" />
+  <meta property="og:image" content="https://mnclockworks.com/images/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #fff; color: #334155; font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.6; }
+    ::selection { background: rgba(196,131,74,0.2); color: #1C2333; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: inherit; }
+    img { max-width: 100%; display: block; }
+
+    :root {
+      --orange: #C4834A;
+      --orange-dark: #A86C35;
+      --navy: #1C2333;
+      --bg-off: #f8f9fc;
+      --border: rgba(28,35,51,0.08);
+      --border-strong: rgba(28,35,51,0.18);
+      --text: #334155;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      --shadow-sm: 0 1px 4px rgba(28,35,51,0.06), 0 2px 12px rgba(28,35,51,0.04);
+      --shadow-md: 0 4px 16px rgba(28,35,51,0.10), 0 2px 8px rgba(28,35,51,0.06);
+      --shadow-lg: 0 8px 32px rgba(28,35,51,0.12), 0 4px 16px rgba(28,35,51,0.08);
+    }
+
+    @keyframes fadeInUp  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse     { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes float     { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    .container    { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .container-sm { max-width: 800px;  margin: 0 auto; padding: 0 24px; }
+    .section      { padding: 80px 24px; }
+
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 15px; border: none; box-shadow: 0 4px 18px rgba(196,131,74,0.30); transition: transform 0.2s, filter 0.2s, box-shadow 0.2s; }
+    .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 6px 24px rgba(196,131,74,0.40); }
+    .btn-ghost   { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--navy); padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 15px; border: 1.5px solid var(--border-strong); transition: background 0.2s, border-color 0.2s; }
+    .btn-ghost:hover { background: var(--bg-off); border-color: var(--navy); }
+
+    .sec-label   { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 10px; }
+    .sec-heading { font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(26px, 3.8vw, 44px); color: var(--navy); line-height: 1.1; }
+    .sec-sub     { font-size: 16px; color: var(--text-muted); line-height: 1.7; margin-top: 12px; }
+
+    /* ── NAVBAR ── */
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 200; transition: background 0.3s, box-shadow 0.3s; }
+    .navbar.scrolled { background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(28,35,51,0.06); }
+    .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 68px; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-img { height: 64px; width: auto; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-link  { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: color 0.2s; }
+    .nav-link:hover { color: var(--navy); }
+    .nav-cta   { font-size: 13px; font-weight: 700; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; padding: 9px 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(196,131,74,0.25); transition: filter 0.2s; }
+    .nav-cta:hover { filter: brightness(1.08); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 4px; cursor: pointer; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--navy); border-radius: 2px; transition: all 0.25s; }
+    .mobile-menu { display: none; position: fixed; top: 68px; left: 0; right: 0; z-index: 199; background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); flex-direction: column; padding: 16px 24px 24px; animation: slideDown 0.2s ease; box-shadow: 0 8px 24px rgba(28,35,51,0.10); }
+    .mobile-menu.open { display: flex; }
+    .mobile-link { font-size: 16px; font-weight: 500; color: var(--navy); padding: 13px 0; border-bottom: 1px solid var(--border); }
+    .mobile-cta  { margin-top: 16px; text-align: center; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 15px; }
+
+    /* ── HERO ── */
+    .hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; background: linear-gradient(150deg, #fefefe 0%, #f7f3ef 40%, #fef9f5 80%, #fff 100%); }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+    .hero-blob-1 { width: 600px; height: 600px; top: -200px; right: -100px; background: radial-gradient(circle, rgba(196,131,74,0.07) 0%, transparent 70%); animation: float 8s ease-in-out infinite; }
+    .hero-blob-2 { width: 500px; height: 500px; bottom: -100px; left: -100px; background: radial-gradient(circle, rgba(28,35,51,0.05) 0%, transparent 70%); animation: float 10s ease-in-out infinite reverse; }
+    .hero-content { position: relative; z-index: 1; width: 100%; padding: 120px 24px 90px; max-width: 1200px; margin: 0 auto; }
+    .hero-layout  { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(196,131,74,0.08); border: 1px solid rgba(196,131,74,0.22); border-radius: 100px; padding: 6px 16px; margin-bottom: 24px; }
+    .hero-badge-dot  { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); animation: pulse 2s infinite; flex-shrink: 0; }
+    .hero-badge-text { color: var(--orange-dark); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+    .hero-h1     { font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(38px, 5.5vw, 68px); font-weight: 400; color: var(--navy); line-height: 1.08; margin-bottom: 20px; max-width: 820px; }
+    .hero-accent { color: var(--orange); font-style: italic; }
+    .hero-desc   { font-size: clamp(15px, 1.7vw, 18px); color: var(--text-muted); line-height: 1.7; max-width: 580px; margin-bottom: 30px; }
+
+    .intro-price-pill { display: inline-flex; align-items: center; gap: 16px; background: #fff; border: 1px solid rgba(34,197,94,0.30); border-radius: 14px; padding: 14px 22px; margin-bottom: 30px; box-shadow: 0 2px 12px rgba(34,197,94,0.10), var(--shadow-sm); }
+    .intro-price-pill .label   { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #15803d; margin-bottom: 3px; }
+    .intro-price-pill .amount  { display: flex; align-items: baseline; gap: 8px; }
+    .intro-price-pill .current { font-family: 'Instrument Serif', serif; font-size: 36px; color: var(--navy); line-height: 1; }
+    .intro-price-pill .was     { font-size: 18px; color: var(--text-dim); text-decoration: line-through; }
+    .intro-price-pill .divider { width: 1px; height: 44px; background: rgba(34,197,94,0.20); flex-shrink: 0; }
+    .intro-price-pill .note    { font-size: 13px; color: var(--text-muted); line-height: 1.5; max-width: 160px; text-align: left; }
+
+    .hero-btns  { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; justify-content: center; }
+    .hero-proof { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; }
+    .proof-item { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 500; color: var(--text-muted); }
+    .proof-icon { color: var(--orange); font-size: 15px; }
+
+    /* ── TOOL PILLS ── */
+    .tool-pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 28px; }
+    .tool-pill  { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid var(--border); border-radius: 100px; padding: 7px 14px; font-size: 12px; font-weight: 600; color: var(--text-muted); box-shadow: var(--shadow-sm); }
+    .tool-pill i { font-size: 14px; color: var(--orange); }
+
+    /* ── TRUST STRIP ── */
+    .trust-strip { background: var(--navy); padding: 18px 24px; }
+    .trust-strip-inner { max-width: 1100px; margin: 0 auto; display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap; }
+    .trust-item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.50); font-size: 13px; font-weight: 500; white-space: nowrap; }
+    .trust-item i { color: var(--orange); font-size: 16px; }
+
+    /* ── WHO ── */
+    .who { background: var(--bg-off); }
+    .who-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+    .who-card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 28px 24px; box-shadow: var(--shadow-sm); transition: transform 0.25s, box-shadow 0.25s; }
+    .who-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .who-emoji { font-size: 32px; margin-bottom: 12px; }
+    .who-role  { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; }
+    .who-title { font-weight: 700; font-size: 16px; color: var(--navy); line-height: 1.4; }
+
+    /* ── HOW IT WORKS ── */
+    .hiw { background: #fff; }
+    .hiw-steps { max-width: 720px; margin: 40px auto 0; }
+    .hiw-step  { display: grid; grid-template-columns: 56px 1fr; gap: 24px; align-items: flex-start; padding: 30px 0; border-bottom: 1px solid var(--border); }
+    .hiw-step:last-child { border-bottom: none; }
+    .hiw-num   { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #A86C35, #C4834A); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 18px; flex-shrink: 0; box-shadow: 0 4px 14px rgba(196,131,74,0.30); }
+    .hiw-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 4px; }
+    .hiw-title { font-weight: 700; font-size: 19px; color: var(--navy); margin-bottom: 7px; line-height: 1.3; }
+    .hiw-desc  { font-size: 15px; color: var(--text-muted); line-height: 1.7; }
+    .hiw-callout { margin-top: 12px; background: rgba(196,131,74,0.06); border-left: 3px solid var(--orange); border-radius: 0 10px 10px 0; padding: 13px 16px; font-size: 14px; color: var(--text); line-height: 1.65; }
+    .hiw-callout strong { color: var(--navy); }
+
+    /* ── TOPICS (dark) ── */
+    .topics { background: var(--navy); position: relative; overflow: hidden; padding: 80px 0; }
+    .topics::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(196,131,74,0.12) 0%, transparent 60%); pointer-events: none; }
+    .topics-inner  { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .topics-sub    { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 520px; margin-top: 12px; margin-bottom: 44px; }
+    .topics-grid   { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .topic-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 28px 24px; transition: border-color 0.25s, background 0.25s, transform 0.25s; }
+    .topic-card:hover { border-color: rgba(196,131,74,0.35); background: rgba(196,131,74,0.06); transform: translateY(-3px); }
+    .topic-icon  { font-size: 28px; color: var(--orange); margin-bottom: 14px; }
+    .topic-title { font-weight: 700; font-size: 16px; color: #fff; margin-bottom: 7px; }
+    .topic-desc  { font-size: 13px; color: rgba(255,255,255,0.50); line-height: 1.65; }
+
+    /* ── PROMISE ── */
+    .promise { background: var(--bg-off); }
+    .promise-card { background: #fff; border: 1px solid var(--border); border-radius: 22px; padding: 44px; box-shadow: var(--shadow-md); max-width: 780px; margin: 40px auto 0; }
+    .promise-icon  { width: 54px; height: 54px; border-radius: 14px; background: rgba(196,131,74,0.10); display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--orange); margin-bottom: 20px; }
+    .promise-title { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--navy); margin-bottom: 14px; line-height: 1.2; }
+    .promise-body  { font-size: 15px; color: var(--text-muted); line-height: 1.75; margin-bottom: 10px; }
+    .dialogue { background: var(--bg-off); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; margin-top: 22px; }
+    .dialogue-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; }
+    .dialogue-row   { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+    .dialogue-row:last-child { margin-bottom: 0; }
+    .dialogue-tag   { font-size: 11px; font-weight: 700; padding: 3px 11px; border-radius: 7px; flex-shrink: 0; margin-top: 3px; white-space: nowrap; }
+    .tag-you { background: rgba(59,130,246,0.10); color: #2563eb; }
+    .tag-me  { background: rgba(196,131,74,0.12); color: var(--orange-dark); }
+    .dialogue-text  { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+
+    /* ── PRICING ── */
+    .pricing { background: #fff; }
+    .pricing-card { max-width: 660px; margin: 40px auto 0; background: #fff; border: 2px solid var(--orange); border-radius: 24px; padding: 44px; box-shadow: 0 0 0 1px rgba(196,131,74,0.06), var(--shadow-lg); position: relative; overflow: hidden; }
+    .pricing-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #A86C35, #C4834A, #E8B87A, #C4834A, #A86C35); background-size: 200% auto; }
+    .pricing-founding { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.10); border: 1px solid rgba(34,197,94,0.28); border-radius: 100px; padding: 5px 14px; font-size: 11px; font-weight: 700; color: #15803d; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 20px; }
+    .pricing-name { font-weight: 700; font-size: 12px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .pricing-row  { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; }
+    .pricing-num  { font-family: 'Instrument Serif', serif; font-size: 76px; color: var(--navy); line-height: 1; }
+    .pricing-was  { font-size: 24px; color: var(--text-dim); text-decoration: line-through; }
+    .pricing-desc { font-size: 15px; color: var(--text-muted); line-height: 1.65; padding-bottom: 26px; border-bottom: 1px solid var(--border); margin-bottom: 26px; }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .pricing-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; color: var(--text); line-height: 1.5; }
+    .check { color: var(--orange); font-size: 16px; flex-shrink: 0; line-height: 22px; }
+    .pricing-note { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 14px; line-height: 1.5; }
+
+    /* ── FAQ ── */
+    .faq { background: var(--bg-off); }
+    .faq-list { max-width: 720px; margin: 40px auto 0; display: flex; flex-direction: column; gap: 9px; }
+    .faq-item { background: #fff; border: 1px solid var(--border); border-radius: 13px; overflow: hidden; }
+    .faq-btn  { width: 100%; padding: 18px 20px; display: flex; justify-content: space-between; align-items: flex-start; background: none; border: none; text-align: left; cursor: pointer; }
+    .faq-q    { font-weight: 600; font-size: 15px; color: var(--navy); line-height: 1.4; padding-right: 12px; }
+    .faq-icon { font-size: 18px; color: var(--text-dim); flex-shrink: 0; line-height: 1; transition: all 0.25s; }
+    .faq-a    { padding: 0 20px 18px; font-size: 14px; color: var(--text-muted); line-height: 1.75; display: none; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--orange); }
+    .faq-item.open .faq-a    { display: block; animation: fadeInUp 0.2s ease; }
+
+    /* ── CTA / FORM ── */
+    .cta { background: linear-gradient(160deg, #151821 0%, #1C2333 50%, #161A24 100%); padding: 90px 24px; position: relative; overflow: hidden; }
+    .cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(196,131,74,0.12) 0%, transparent 65%); pointer-events: none; }
+    .cta-inner   { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+    .cta-heading { font-family: 'Instrument Serif', serif; font-size: clamp(28px, 4vw, 46px); color: #fff; line-height: 1.12; margin-bottom: 10px; }
+    .cta-sub     { font-size: 16px; color: rgba(255,255,255,0.58); line-height: 1.65; margin-bottom: 34px; }
+    .form-wrap   { background: rgba(255,255,255,0.97); border-radius: 22px; padding: 38px; box-shadow: var(--shadow-lg); }
+    .form-row    { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .form-field  { margin-bottom: 14px; }
+    .form-label  { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .form-opt    { font-weight: 400; color: var(--text-dim); }
+    .form-input,
+    .form-select,
+    .form-textarea { width: 100%; padding: 12px 14px; border-radius: 10px; background: #fff; border: 1.5px solid var(--border-strong); color: var(--text); font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(196,131,74,0.10); }
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: var(--text-dim); }
+    .form-textarea { resize: vertical; min-height: 96px; }
+    .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748b' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+    .form-submit { display: block; width: 100%; text-align: center; padding: 15px 24px; border-radius: 12px; border: none; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; font-weight: 700; font-size: 16px; font-family: inherit; box-shadow: 0 4px 18px rgba(196,131,74,0.30); cursor: pointer; transition: filter 0.2s, transform 0.2s; margin-top: 4px; }
+    .form-submit:hover    { filter: brightness(1.07); transform: translateY(-1px); }
+    .form-submit:disabled { opacity: 0.65; transform: none; cursor: not-allowed; }
+    .form-footnote { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 12px; line-height: 1.5; }
+    .form-success { display: none; text-align: center; padding: 20px 0; }
+    .form-success i { font-size: 48px; color: #22c55e; margin-bottom: 12px; }
+    .form-success-title { font-family: 'Instrument Serif', serif; font-size: 26px; color: var(--navy); margin-bottom: 8px; }
+    .form-success-body  { font-size: 15px; color: var(--text-muted); line-height: 1.7; }
+
+    /* ── FOOTER ── */
+    .footer { background: var(--navy); padding: 44px 24px; text-align: center; }
+    .footer-logo    { font-family: 'Instrument Serif', serif; font-size: 20px; color: rgba(255,255,255,0.85); margin-bottom: 6px; }
+    .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.30); margin-bottom: 20px; }
+    .footer-links   { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .footer-link    { font-size: 13px; color: rgba(255,255,255,0.40); transition: color 0.2s; }
+    .footer-link:hover { color: rgba(255,255,255,0.80); }
+    .footer-copy    { font-size: 12px; color: rgba(255,255,255,0.18); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .who-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+      .topics-grid { grid-template-columns: 1fr 1fr; }
+      .intro-price-pill { flex-direction: column; gap: 10px; text-align: center; }
+      .intro-price-pill .divider { width: 80px; height: 1px; }
+      .intro-price-pill .note { max-width: 100%; text-align: center; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .form-row  { grid-template-columns: 1fr; }
+      .promise-card { padding: 28px 20px; }
+      .pricing-card { padding: 32px 22px; }
+      .pricing-num  { font-size: 56px; }
+    }
+    @media (max-width: 540px) {
+      .topics-grid { grid-template-columns: 1fr; }
+      .trust-strip-inner { gap: 18px; }
+      .section { padding: 60px 20px; }
+      .hiw-step { grid-template-columns: 48px 1fr; gap: 16px; }
+      .form-wrap { padding: 26px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="/" class="logo">
+      <img src="../images/logo-small.svg" alt="Clockworks" class="logo-img" />
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link">← Clockworks Home</a>
+      <a href="#how-it-works" class="nav-link">How It Works</a>
+      <a href="#pricing" class="nav-link">Pricing</a>
+      <a href="#request" class="nav-cta">Claim Your Session</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/" class="mobile-link">← Clockworks Home</a>
+  <a href="#how-it-works" class="mobile-link">How It Works</a>
+  <a href="#topics" class="mobile-link">What We Cover</a>
+  <a href="#pricing" class="mobile-link">Pricing</a>
+  <a href="#request" class="mobile-cta">Claim Your Session — $150</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="hero-content">
+    <div class="hero-layout reveal">
+
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        <span class="hero-badge-text">Now Enrolling First 20 Students — Founding Rate Active</span>
+      </div>
+
+      <h1 class="hero-h1">
+        Everyone's talking about AI.<br>
+        You're still doing it <span class="hero-accent">all yourself.</span>
+      </h1>
+
+      <p class="hero-desc">
+        In 2 focused hours we turn Claude into your personal AI Coworker — live integrations into PowerPoint, Excel, Chrome, Gmail, Calendar &amp; Google Drive. No theory. No videos. Just your real work, done faster.
+      </p>
+
+      <div class="intro-price-pill">
+        <div>
+          <div class="label">Founding Rate — First 20 Students Only</div>
+          <div class="amount">
+            <span class="current">$150</span>
+            <span class="was">$399</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="note">Price rises as we fill the first cohort. Remote or in-person, Twin Cities.</div>
+      </div>
+
+      <div class="hero-btns">
+        <a href="#request" class="btn-primary"><i class="ti ti-calendar-plus"></i> Claim Your 2-Hour Cowork Session</a>
+        <a href="#how-it-works" class="btn-ghost"><i class="ti ti-arrow-down"></i> See Exactly How It Works</a>
+      </div>
+
+      <div class="hero-proof">
+        <div class="proof-item"><i class="ti ti-clock proof-icon"></i> 2 hours, live</div>
+        <div class="proof-item"><i class="ti ti-users proof-icon"></i> 1-on-1 or small group</div>
+        <div class="proof-item"><i class="ti ti-map-pin proof-icon"></i> Remote or Twin Cities</div>
+        <div class="proof-item"><i class="ti ti-shield-check proof-icon"></i> Scope confirmed before you pay</div>
+      </div>
+
+      <div class="tool-pills">
+        <span class="tool-pill"><i class="ti ti-mail"></i> Gmail</span>
+        <span class="tool-pill"><i class="ti ti-calendar"></i> Google Calendar</span>
+        <span class="tool-pill"><i class="ti ti-file-spreadsheet"></i> Excel</span>
+        <span class="tool-pill"><i class="ti ti-presentation"></i> PowerPoint</span>
+        <span class="tool-pill"><i class="ti ti-brand-google-drive"></i> Google Drive</span>
+        <span class="tool-pill"><i class="ti ti-world"></i> Chrome</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-strip-inner">
+    <div class="trust-item"><i class="ti ti-tools"></i> Built and taught by a working AI consultant who uses Claude daily for client work</div>
+    <div class="trust-item"><i class="ti ti-map-pin"></i> Based in Maple Grove, MN</div>
+    <div class="trust-item"><i class="ti ti-hand-stop"></i> No surprises — scope confirmed before you pay</div>
+  </div>
+</div>
+
+<!-- WHO THIS IS FOR -->
+<section class="who section" id="who">
+  <div class="container">
+    <div style="text-align:center;" class="reveal">
+      <p class="sec-label">Who This Is For</p>
+      <h2 class="sec-heading">You don't need to be technical.<br>You just need to show up.</h2>
+      <p class="sec-sub" style="max-width:520px;margin-left:auto;margin-right:auto;">This is for people with a job to do who want Claude to help them do it faster. Not developers — professionals.</p>
+    </div>
+    <div class="who-grid reveal">
+      <div class="who-card">
+        <div class="who-emoji">💼</div>
+        <div class="who-role">The Professional</div>
+        <div class="who-title">Meetings mention AI constantly. You don't want to be the one left behind.</div>
+      </div>
+      <div class="who-card">
+        <div class="who-emoji">🏠</div>
+        <div class="who-role">The Business Owner</div>
+        <div class="who-title">You're still doing everything manually. Claude can reclaim hours — we show you exactly where.</div>
+      </div>
+      <div class="who-card">
+        <div class="who-emoji">🎯</div>
+        <div class="who-role">The Curious One</div>
+        <div class="who-title">You tried it once, got weird results, and closed the tab. We make it actually click.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="hiw section" id="how-it-works">
+  <div class="container-sm">
+    <div style="text-align:center;" class="reveal">
+      <p class="sec-label">How It Works</p>
+      <h2 class="sec-heading">Three steps. No guesswork.</h2>
+    </div>
+    <div class="hiw-steps reveal">
+
+      <div class="hiw-step">
+        <div class="hiw-num">1</div>
+        <div>
+          <div class="hiw-label">Before we meet</div>
+          <div class="hiw-title">5-minute intake: your tools, your real workload, your goals.</div>
+          <p class="hiw-desc">Tell me what you use every day and what's eating your time. That's it. No trick questions.</p>
+        </div>
+      </div>
+
+      <div class="hiw-step">
+        <div class="hiw-num">2</div>
+        <div>
+          <div class="hiw-label">I review &amp; confirm scope</div>
+          <div class="hiw-title">I reply within 1 business day with exactly what we'll build together.</div>
+          <p class="hiw-desc">Or I'll reframe honestly if it needs more time.</p>
+          <div class="hiw-callout">
+            <strong>What "honest" looks like:</strong> If your goals run bigger than 2 hours, I tell you what fits for $150 and what going further would cost. You decide — no pressure, no commitment until scope is agreed.
+          </div>
+        </div>
+      </div>
+
+      <div class="hiw-step">
+        <div class="hiw-num">3</div>
+        <div>
+          <div class="hiw-label">The 2-hour Cowork Session</div>
+          <div class="hiw-title">We open your PowerPoint, Excel, Gmail, and Drive — and build together.</div>
+          <p class="hiw-desc">Live, on video or in person. You leave with working integrations, not notes from a lecture.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE COVER (dark) -->
+<section class="topics" id="topics">
+  <div class="topics-inner">
+    <div class="reveal">
+      <p class="sec-label" style="color:var(--orange);">What We Cover</p>
+      <h2 class="sec-heading" style="color:#fff;">Every session is tailored to you.<br>Here's what's on the table.</h2>
+      <p class="topics-sub">We focus on whichever of these apply to your real work. No filler.</p>
+    </div>
+    <div class="topics-grid reveal">
+      <div class="topic-card">
+        <div class="topic-icon"><i class="ti ti-robot"></i></div>
+        <div class="topic-title">Claude as Your Coworker</div>
+        <div class="topic-desc">What Claude actually is, why it's different (and better) than ChatGPT for real daily work, and how to set it up right.</div>
+      </div>
+      <div class="topic-card">
+        <div class="topic-icon"><i class="ti ti-plug-connected"></i></div>
+        <div class="topic-title">Live Integrations</div>
+        <div class="topic-desc">Connect Claude directly into Gmail, Calendar, Google Drive, Chrome, PowerPoint &amp; Excel — live, in your actual accounts.</div>
+      </div>
+      <div class="topic-card">
+        <div class="topic-icon"><i class="ti ti-message-2"></i></div>
+        <div class="topic-title">Smart Prompting That Works</div>
+        <div class="topic-desc">Rewrite your actual emails, proposals, and reports live so Claude gives you usable output every time — not boilerplate.</div>
+      </div>
+      <div class="topic-card">
+        <div class="topic-icon"><i class="ti ti-presentation"></i></div>
+        <div class="topic-title">PowerPoint &amp; Excel Automation</div>
+        <div class="topic-desc">Build slides, charts, and data summaries in minutes instead of hours. We do it with your real files.</div>
+      </div>
+      <div class="topic-card">
+        <div class="topic-icon"><i class="ti ti-world"></i></div>
+        <div class="topic-title">Browser &amp; Workflow Hacks</div>
+        <div class="topic-desc">Chrome extensions, Claude Projects, and daily automations that save you 5–10 hours a week. Practical, not theoretical.</div>
+      </div>
+      <div class="topic-card">
+        <div class="topic-icon"><i class="ti ti-help-circle"></i></div>
+        <div class="topic-title">Your Specific Questions</div>
+        <div class="topic-desc">Bring whatever feels overwhelming. You can't ask a YouTube video anything — this is two hours with a real person.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE PROMISE -->
+<section class="promise section" id="promise">
+  <div class="container">
+    <div style="text-align:center;" class="reveal">
+      <p class="sec-label">My Model</p>
+      <h2 class="sec-heading">I don't take money for things I can't deliver.</h2>
+    </div>
+    <div class="promise-card reveal">
+      <div class="promise-icon"><i class="ti ti-scale"></i></div>
+      <h3 class="promise-title">Ask me anything. I'll tell you what it's worth.</h3>
+      <p class="promise-body">You fill out the intake. I read it and respond before we schedule anything — confirming scope or reframing it honestly. No money changes hands until you know exactly what you're getting.</p>
+      <div class="dialogue">
+        <div class="dialogue-label">What this looks like in practice</div>
+        <div class="dialogue-row">
+          <span class="dialogue-tag tag-you">You</span>
+          <div class="dialogue-text">"I want to automate my whole business — email follow-ups, invoicing, scheduling — and learn Claude properly. Can we do all of that in 2 hours?"</div>
+        </div>
+        <div class="dialogue-row">
+          <span class="dialogue-tag tag-me">Parker</span>
+          <div class="dialogue-text">"In 2 hours we can do a solid Claude deep-dive and get one automation actually running. All three systems would take 4–6 hours — closer to $600–$800. Want to start with Claude + email, or reprioritize? Your call."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing section" id="pricing">
+  <div class="container">
+    <div style="text-align:center;" class="reveal">
+      <p class="sec-label">Simple Pricing</p>
+      <h2 class="sec-heading">One session. Clear price. No surprises.</h2>
+    </div>
+    <div class="pricing-card reveal">
+      <div class="pricing-founding"><i class="ti ti-star" style="font-size:12px;"></i> Founding Student Rate — First 20 Spots</div>
+      <div class="pricing-name">2-Hour Claude Cowork Session</div>
+      <div class="pricing-row">
+        <span class="pricing-num">$150</span>
+        <span class="pricing-was">$399</span>
+      </div>
+      <p class="pricing-desc">Introductory rate for our first students while we build and refine the curriculum. Price increases as spots fill. Lock it in now.</p>
+      <ul class="pricing-features">
+        <li class="pricing-feature"><span class="check"><i class="ti ti-check"></i></span> 2-hour live session — video call or in-person (Twin Cities metro)</li>
+        <li class="pricing-feature"><span class="check"><i class="ti ti-check"></i></span> Live integrations built into your PowerPoint, Excel, Gmail, Calendar &amp; Google Drive</li>
+        <li class="pricing-feature"><span class="check"><i class="ti ti-check"></i></span> Pre-session intake reviewed and scope confirmed before you commit</li>
+        <li class="pricing-feature"><span class="check"><i class="ti ti-check"></i></span> 100% personalized — your tools, your files, your workflow</li>
+        <li class="pricing-feature"><span class="check"><i class="ti ti-check"></i></span> Hands-on the entire time — no lecture-only slides</li>
+        <li class="pricing-feature"><span class="check"><i class="ti ti-check"></i></span> Follow-up recap with takeaways and next steps</li>
+        <li class="pricing-feature"><span class="check"><i class="ti ti-check"></i></span> 1-on-1 or small group (2–4 people, same per-person rate)</li>
+      </ul>
+      <a href="#request" class="btn-primary" style="display:flex;justify-content:center;font-size:16px;padding:15px 28px;">
+        <i class="ti ti-calendar-plus"></i> Claim Your Session
+      </a>
+      <p class="pricing-note">You fill out the intake. I confirm scope. <em>Then</em> you pay — not before.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq section" id="faq">
+  <div class="container">
+    <div style="text-align:center;" class="reveal">
+      <p class="sec-label">FAQ</p>
+      <h2 class="sec-heading">Common questions</h2>
+    </div>
+    <div class="faq-list reveal">
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          <span class="faq-q">Do I need any technical background?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Not at all. If you can open a browser and type, you're ready. We start wherever you are.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          <span class="faq-q">What if my goals are too big for 2 hours?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">That's what the intake is for. I'll tell you exactly what fits in 2 hours and what going further would cost. You decide before any money changes hands.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          <span class="faq-q">Can I bring a coworker or business partner?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Yes — groups of 2–4 work great. Same $150 per-person founding rate.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          <span class="faq-q">Remote or in-person — what's available?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Your choice. Remote is via Google Meet or Zoom with screen sharing. In-person is available in the Twin Cities metro (Maple Grove area).</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          <span class="faq-q">When do I pay?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">After scope is confirmed — not before. Fill out the intake, I review it, we agree on what you'll get, then you book and pay.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          <span class="faq-q">What do I need to bring?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">A computer with internet access. Free Claude and ChatGPT accounts are enough to start — I'll walk you through setup if needed. Paid plans unlock more, but aren't required.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          <span class="faq-q">How is this different from just watching YouTube?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">You can't ask YouTube a question. A live session means we work through your actual files, your specific workflow, and your exact questions in real time. No video can do that.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA / INTAKE FORM -->
+<section class="cta" id="request">
+  <div class="cta-glow"></div>
+  <div class="cta-inner">
+    <div style="text-align:center;" class="reveal">
+      <p class="sec-label" style="color:var(--orange);">Claim Your Session</p>
+      <h2 class="cta-heading">Tell me where you're starting.<br>I'll tell you where we can go.</h2>
+      <p class="cta-sub">5-minute intake below. I'll review and reach out within 1 business day to confirm scope and get a time on the calendar.</p>
+    </div>
+    <div class="form-wrap reveal">
+      <!-- Replace YOUR_FORM_ID with your Formspree endpoint: formspree.io -->
+      <form id="intakeForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="form-row">
+          <div>
+            <label class="form-label" for="firstName">First Name</label>
+            <input class="form-input" id="firstName" name="firstName" type="text" placeholder="Jane" required />
+          </div>
+          <div>
+            <label class="form-label" for="lastName">Last Name</label>
+            <input class="form-input" id="lastName" name="lastName" type="text" placeholder="Smith" required />
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="email">Email Address</label>
+          <input class="form-input" id="email" name="email" type="email" placeholder="jane@yourcompany.com" required />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="format">Session Format</label>
+          <select class="form-select" id="format" name="format" required>
+            <option value="" disabled selected>Choose one...</option>
+            <option value="remote-1on1">Remote — 1-on-1</option>
+            <option value="remote-group">Remote — Small Group (2–4 people)</option>
+            <option value="inperson-1on1">In-Person — 1-on-1 (Twin Cities)</option>
+            <option value="inperson-group">In-Person — Small Group (Twin Cities)</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="experience">Your Current AI Experience</label>
+          <select class="form-select" id="experience" name="experience" required>
+            <option value="" disabled selected>How would you describe your level?</option>
+            <option value="none">Never used them seriously</option>
+            <option value="casual">Tried a few times — didn't really click</option>
+            <option value="some">Use occasionally, want to go deeper</option>
+            <option value="regular">Use regularly, ready to level up</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="goals">What do you want to get out of this? <span style="color:var(--orange);">*</span></label>
+          <textarea class="form-textarea" id="goals" name="goals" placeholder="Be specific — the more detail you give me, the better I can prepare. E.g. 'I want to stop spending 2 hours a day on email and finally understand how to use Claude for my weekly reports.'" required></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="tools">What tools do you already use? <span class="form-opt">(optional)</span></label>
+          <input class="form-input" id="tools" name="tools" type="text" placeholder="e.g. Gmail, Excel, PowerPoint, Google Drive, Outlook..." />
+        </div>
+        <button type="submit" class="form-submit" id="submitBtn">
+          <i class="ti ti-send" style="font-size:16px;margin-right:6px;"></i> Submit Intake &amp; Claim Your Spot
+        </button>
+        <p class="form-footnote">I'll reach out within 1 business day. No commitment until we've agreed on scope.</p>
+      </form>
+      <div class="form-success" id="formSuccess">
+        <i class="ti ti-circle-check"></i>
+        <div class="form-success-title">Got it. Talk soon.</div>
+        <div class="form-success-body">I'll review your intake and reach out within 1 business day to confirm what we'll cover and lock in a time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">Clockworks Cowork</div>
+  <div class="footer-tagline">AI &amp; Automation for Real People &mdash; Maple Grove, MN</div>
+  <div class="footer-links">
+    <a href="/" class="footer-link">Clockworks Home</a>
+    <a href="/cowork" class="footer-link">Cowork Sessions</a>
+    <a href="javascript:void(0)" onclick="openContactModal()" class="footer-link">Contact</a>
+    <a href="/privacy.html" class="footer-link">Privacy</a>
+  </div>
+  <div class="footer-copy">&copy; 2026 Clockworks. All rights reserved.</div>
+</footer>
+
+<script>
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  const onScroll = () => navbar.classList.toggle('scrolled', window.scrollY > 20);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Mobile menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Form submission
+  const form       = document.getElementById('intakeForm');
+  const submitBtn  = document.getElementById('submitBtn');
+  const successDiv = document.getElementById('formSuccess');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled    = true;
+    submitBtn.textContent = 'Sending…';
+    try {
+      const res = await fetch(form.action, {
+        method:  'POST',
+        body:    new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.style.display       = 'none';
+        successDiv.style.display = 'block';
+      } else { throw new Error(); }
+    } catch {
+      const name  = document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value;
+      const email = document.getElementById('email').value;
+      const goals = document.getElementById('goals').value;
+      const tools = document.getElementById('tools').value;
+      const body  = `Name: ${name}\nEmail: ${email}\nFormat: ${document.getElementById('format').value}\nExperience: ${document.getElementById('experience').value}\nTools: ${tools}\n\nGoals:\n${goals}`;
+      window.location.href = `mailto:parker@mnclockworks.com?subject=Clockworks Cowork – Session Request&body=${encodeURIComponent(body)}`;
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'Submit Intake & Claim Your Spot';
+    }
+  });
+</script>
+<script src="../contact-modal.js"></script>
+</body>
+</html>

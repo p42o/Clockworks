@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>How to Use Claude to Write All Your Business Emails in Half the Time — Clockworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f9f7f2;
+      --ink: #1a1917;
+      --ink-muted: #6b6860;
+      --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1);
+      --border-strong: rgba(26,25,23,0.2);
+      --accent: #1d6bbf;
+      --accent-bg: #edf4fc;
+      --accent-text: #0c3e72;
+      --success: #1a7a4a;
+      --success-bg: #ebf7f1;
+      --success-text: #0d4a2b;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background-color: var(--cream);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(249,247,242,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 0.5px solid var(--border);
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; font-weight: 400; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; transition: background 0.2s, color 0.2s !important; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; object-fit: cover; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-info { line-height: 1.4; }
+    .byline-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+
+    .body-text p { margin-bottom: 1.5rem; color: var(--ink); }
+    .body-text p:last-child { margin-bottom: 0; }
+
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; }
+
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+
+    .template-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 0.5px solid var(--border);
+      padding: 1.5rem 1.6rem;
+      margin: 1.5rem 0;
+    }
+
+    .template-label {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--accent-bg);
+      color: var(--accent-text);
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 0.75rem;
+    }
+
+    .template-card h3 { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; color: var(--ink); margin-bottom: 0.5rem; }
+
+    .template-card p { font-size: 0.95rem; color: var(--ink-muted); line-height: 1.7; margin-bottom: 0.75rem; }
+    .template-card p:last-child { margin-bottom: 0; }
+
+    .prompt-box { background: var(--cream); border: 0.5px solid var(--border-strong); border-radius: 8px; padding: 0.9rem 1.1rem; font-size: 0.88rem; color: var(--ink); font-style: italic; line-height: 1.65; }
+
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .signature p { font-size: 1rem; color: var(--ink); margin-bottom: 1.5rem !important; }
+    .sig-name { font-weight: 500; font-size: 1rem; color: var(--ink); }
+
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: opacity 0.2s, transform 0.2s; }
+    .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .site-nav { gap: 1rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Clockworks — AI for Small Business</div>
+    <h1 class="hero-title">How to Use Claude to Write All Your Business Emails in Half the Time</h1>
+    <p class="hero-subtitle">The setup takes 15 minutes. After that, you'll wonder how you wrote emails without it.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; May 11, 2026 &nbsp;·&nbsp; 7 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>Hey — I'm Parker. I run Clockworks, and email is one of the first things I tackle with every client. Not because it's the biggest time sink — though it often is — but because it's the easiest win. You see the result immediately, and it builds confidence to go tackle the harder stuff.</p>
+      <p>Here's the setup I recommend, the five email templates I use most often, the "rough draft first" technique that changes how you work, and how to make the output actually sound like you — not like a chatbot.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The setup: Claude account + a Project</h2>
+      <div class="body-text">
+        <p>Go to claude.ai, create a free account, and then create a new Project. Call it "Email" or "My Business." Inside the Project settings, there's a field for custom instructions. This is where you tell Claude who you are, once, so you never have to repeat it.</p>
+        <p>Paste something like this into your Project instructions: "I'm [your name], the owner of [your business], a [describe what you do] based in [your city]. My typical customers are [describe them]. My communication style is [friendly, direct, professional — however you'd describe it]. When you write emails for me, keep them short, warm, and clear. Never use jargon or buzzwords."</p>
+        <p>That's it. From now on, every conversation in that Project starts with Claude already knowing the basics. You're not re-explaining yourself every time.</p>
+      </div>
+
+      <div class="callout article-section">
+        <p>The Project setup is the highest-leverage 15 minutes you'll spend this week. Do it once, and every email you write from then on will require 50% less explanation in your prompt.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">5 copy-paste email templates</h2>
+      <div class="body-text">
+        <p>These are the prompts I use most often with clients. They're generic enough to adapt to any business — just swap in your specifics.</p>
+      </div>
+
+      <div class="template-card">
+        <div class="template-label">Template 01</div>
+        <h3>The Quote Follow-Up</h3>
+        <p>For when you sent a quote 3–5 days ago and haven't heard back.</p>
+        <div class="prompt-box">Write a short follow-up email to a customer who received a quote from me on [day/date] and hasn't responded. I quoted them [brief description of the job, e.g. "a new HVAC system install" or "a full backyard renovation"]. The amount was approximately $[X]. Keep it under 80 words, friendly, not pushy. End by asking if they have any questions or if the timing needs to shift.</div>
+      </div>
+
+      <div class="template-card">
+        <div class="template-label">Template 02</div>
+        <h3>The Difficult Conversation</h3>
+        <p>For when you need to deliver bad news, correct a misunderstanding, or push back on something without damaging the relationship.</p>
+        <div class="prompt-box">Write a professional but warm email to a customer about [describe the situation — e.g. "a project delay because a part is backordered" or "a price increase we need to discuss"]. I want to be honest and direct, take responsibility where appropriate, and end with a clear path forward. Keep it under 150 words.</div>
+      </div>
+
+      <div class="template-card">
+        <div class="template-label">Template 03</div>
+        <h3>The New Lead Response</h3>
+        <p>For responding to someone who filled out a form or reached out cold.</p>
+        <div class="prompt-box">Write a reply to a new inquiry from someone who [describe what they're asking about, e.g. "wants a quote on repiping their basement" or "is interested in selling their home"]. They came through [form / referral / Instagram]. I want to confirm I received their message, show I understand what they need, and propose a next step (a call or site visit). Keep it warm, under 100 words.</div>
+      </div>
+
+      <div class="template-card">
+        <div class="template-label">Template 04</div>
+        <h3>The Check-In After Service</h3>
+        <p>For following up after you've completed a job, to check in and (gently) ask for a review.</p>
+        <div class="prompt-box">Write a short follow-up email to a customer I completed work for about [X] days ago. The job was [brief description]. I want to check in, make sure they're happy, and mention that a Google review would mean a lot to us without being aggressive about it. Friendly and genuine, under 100 words.</div>
+      </div>
+
+      <div class="template-card">
+        <div class="template-label">Template 05</div>
+        <h3>The Vendor / Partner Email</h3>
+        <p>For negotiating, requesting information, or communicating professionally with suppliers and business partners.</p>
+        <div class="prompt-box">Write an email to [vendor/supplier name or type] asking about [what you need — e.g. "updated pricing for the season" or "availability for a large order in June"]. I want to come across as a serious, established business — not a small shop making one-off requests. Professional tone, clear ask, under 100 words.</div>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The "rough draft first" technique</h2>
+      <div class="body-text">
+        <p>Here's the most underrated thing I teach: before you ask Claude to write an email from scratch, try typing a rough, messy version of what you want to say first. Just get the ideas out — don't worry about grammar or structure. Then paste that into Claude with this prompt: "Rewrite this into a clean, professional email. Keep the main points but clean up the language and tighten it up."</p>
+        <p>Why does this work better? Because your rough draft has your actual intent in it. Claude isn't guessing what you meant — it's just making it sound better. The output is closer to what you actually want to say, with way less back-and-forth to get there.</p>
+        <p>I showed this technique to a property manager in Golden Valley who was spending 45 minutes a day on email. She started doing rough-draft-first on everything, and within two weeks she told me she had cut that to under 20 minutes. Not because she's a better writer — but because she stopped trying to write well in her head before she typed anything.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">How to make it sound like you</h2>
+      <div class="body-text">
+        <p>The most common complaint I hear is "the AI sounds too formal" or "it doesn't sound like me." Both are fixable with two things: better instructions and one extra step.</p>
+        <p>In your Project instructions, add a few phrases you actually use. If you always say "Happy to help" or you tend to be more casual than formal, say so explicitly. The more specific you are about your voice — including what to avoid — the better the output.</p>
+        <p>Then after you get a draft, read it out loud. Anything that sounds weird coming out of your mouth, change it. This is faster than it sounds. One or two word swaps and you're done. The goal isn't a perfect first draft — it's a draft that takes 30 seconds to clean up instead of 10 minutes to write from scratch.</p>
+      </div>
+
+      <div class="callout article-section">
+        <p>You don't need Claude to write perfect emails for you. You need it to write 85% emails so you can get to 100% in two minutes instead of fifteen. That's the real ROI.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section signature body-text">
+      <p>If you want help setting this up for your specific business — including the Project instructions and a set of templates that match what you actually send — that's what a Clockworks session is for. Reach out and we'll build it together.</p>
+      <p class="sig-name">— Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Ready to stop guessing?</h2>
+      <p>Free 20-minute call. No pitch. Just an honest look at where AI or automation fits your business.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call →</a>
+    </div>
+
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">aiclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.article-section').forEach(function(el) {
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>90 Days of AI Content: What I Learned About What Clicks and What Doesn't — Clockworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f9f7f2; --ink: #1a1917; --ink-muted: #6b6860; --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1); --border-strong: rgba(26,25,23,0.2);
+      --accent: #1d6bbf; --accent-bg: #edf4fc; --accent-text: #0c3e72;
+      --success: #1a7a4a; --success-bg: #ebf7f1; --success-text: #0d4a2b;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background-color: var(--cream); color: var(--ink); font-size: 17px; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(249,247,242,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; font-weight: 400; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; transition: background 0.2s, color 0.2s !important; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; object-fit: cover; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-info { line-height: 1.4; }
+    .byline-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+    .body-text p { margin-bottom: 1.5rem; color: var(--ink); }
+    .body-text p:last-child { margin-bottom: 0; }
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; }
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+    .insight-card { background: #fff; border-radius: 12px; border: 0.5px solid var(--border); padding: 1.4rem 1.6rem; margin: 1.25rem 0; }
+    .insight-num { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent-bg); color: var(--accent-text); padding: 3px 10px; border-radius: 100px; margin-bottom: 0.6rem; }
+    .insight-card h3 { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; color: var(--ink); margin-bottom: 0.5rem; }
+    .insight-card p { font-size: 0.95rem; color: var(--ink-muted); line-height: 1.7; margin: 0; }
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .signature p { font-size: 1rem; color: var(--ink); margin-bottom: 1.5rem !important; }
+    .sig-name { font-weight: 500; font-size: 1rem; color: var(--ink); }
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: opacity 0.2s, transform 0.2s; }
+    .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .site-nav { gap: 1rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Clockworks — Reflection</div>
+    <h1 class="hero-title">90 Days of AI Content: What I Learned About What Clicks and What Doesn't</h1>
+    <p class="hero-subtitle">An honest look back at three months of writing, posting, and figuring this out in public.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; Jun 29, 2026 &nbsp;·&nbsp; 6 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>Hey — I'm Parker. This is my 90-day reflection post, and I'm going to try to be honest in a way that marketing content usually isn't.</p>
+      <p>Three months ago I committed to posting consistently about AI for small business — what works, what doesn't, what I'm seeing in the field. Not a strategy, just a commitment to show up and share what I actually know. This is what I learned.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What resonated</h2>
+
+      <div class="insight-card">
+        <div class="insight-num">Insight 01</div>
+        <h3>Specific beats general, every time</h3>
+        <p>The posts that got the most response were the ones with specific, copy-paste-able prompts and concrete examples — like the HVAC client story, the email templates, the 5 things you can do this week. The posts that got the least response were the more conceptual ones about AI trends and industry implications. People don't want to understand AI. They want to use it on Thursday morning. I should have learned this faster than I did.</p>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-num">Insight 02</div>
+        <h3>Honesty is a differentiator</h3>
+        <p>The posts where I said something critical — about cheap tools, about myths that cost people money, about the limits of my own service — got more engagement than the purely positive ones. People are exhausted by AI hype. When someone in the space says "here's what doesn't work and here's why," it cuts through in a way that enthusiasm alone doesn't. I wasn't trying to be contrarian — I was just being honest — and that turned out to be unusual enough to be interesting.</p>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-num">Insight 03</div>
+        <h3>The client story format converts</h3>
+        <p>The Mike story — the HVAC guy who went from 3 hours to 20 minutes — generated more consultation requests than any other post. Not because it was the most technically detailed, but because it was the most human. A real person, a real problem, a real change. That's the format I'll lean into more going forward: named (or anonymized but specific) stories about real transformations, told as narrative, not as a case study template.</p>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-num">Insight 04</div>
+        <h3>Fear is the real objection</h3>
+        <p>The AI myths post and the job replacement post hit something emotional for a lot of people. AI anxiety is real. Business owners are scared — not of the tools, but of being left behind, of not understanding something that's moving fast, of making the wrong investment. The posts that acknowledged that fear directly, without dismissing it or amplifying it, got the most personal responses. People want someone to be honest about the uncertainty, not just cheerful about the opportunity.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What surprised me</h2>
+      <div class="body-text">
+        <p>I expected the trades and local service audience to be skeptical. They were — at first. But once someone in that world sees AI save them three hours on a Sunday night, they become some of the most enthusiastic adopters I've met. The skepticism isn't permanent. It's waiting to be replaced by a real experience of the tool working.</p>
+        <p>What I didn't expect was how emotional the conversations got. I've had calls with business owners who were genuinely anxious about their relevance. Not their company's relevance — their personal relevance. "Am I going to be obsolete?" That question came up more than I anticipated. It's not something I can fully answer, but I take it seriously when I hear it.</p>
+        <p>I also didn't expect how much the consulting work would shape the content, and vice versa. The best posts came from patterns I noticed across client sessions. The sessions got better because I'd thought through the concepts while writing about them. The two reinforce each other in ways I didn't fully anticipate when I started.</p>
+      </div>
+
+      <div class="callout article-section">
+        <p>The most useful thing I can do for a small business owner isn't explain AI — it's give them one thing that saves them real time this week. Everything else follows from that first win.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">An honest look at the consulting business</h2>
+      <div class="body-text">
+        <p>I'm going to be straight: building a consulting business around AI is not a simple thing. The technology changes fast. Client expectations vary widely. And there's a lot of noise in this space — people making big claims, selling courses and systems that overpromise.</p>
+        <p>What I've learned is that the Clockworks model — focused, scoped sessions, honest conversations, no-pitch free calls — works better than I thought it would. People appreciate the directness. They appreciate that I'll tell them when they don't need me, or when a different tool or approach would serve them better.</p>
+        <p>The businesses that have gotten the most value from working with me are the ones that came with specific problems, not vague aspirations. "I spend 10 hours a week on these three tasks" beats "I want to use AI better" every single time. Specific problems lead to specific solutions lead to measurable results.</p>
+        <p>What's next for Clockworks is more of what's already working: hands-on sessions, honest content, and a growing library of resources for the business owners who want to do it themselves. I'm not trying to scale into a software company or an agency. I'm trying to be genuinely useful to a specific group of people — and get better at that every month.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What I'm doing next</h2>
+      <div class="body-text">
+        <p>More client stories. More specific, step-by-step guides. More honest posts that acknowledge the uncertainty and frustration that comes with adopting new tools. Less theory, more practice.</p>
+        <p>I'm also going to start sharing more about the edges of what I've figured out — the things that don't work, the prompts that fail, the automations that break. The messy middle of figuring out AI for a real business is more interesting and more useful than polished success stories. I want to document that more.</p>
+        <p>And I want to keep hearing from people. The emails and DMs I get from readers who tried something from one of these posts and it worked — or didn't work and they want to know why — those conversations are the best part of this. Keep them coming.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section signature body-text">
+      <p>Thanks for reading. Whether you found this blog last week or you've been here since the beginning — I'm glad you're here. The best way to stay connected is to subscribe to the newsletter or reach out directly. I read everything.</p>
+      <p>If there's a topic you want me to tackle next — something specific to your industry or situation — send it my way. The most useful posts I've written started as a question someone asked me directly.</p>
+      <p class="sig-name">— Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Ready to stop guessing?</h2>
+      <p>Free 20-minute call. No pitch. Just an honest look at where AI or automation fits your business.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call →</a>
+    </div>
+
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">aiclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.article-section').forEach(function(el) { observer.observe(el); });
+  </script>
+
+</body>
+</html>

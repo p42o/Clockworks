@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>Should You Be Worried About AI Replacing Your Job? My Honest Answer. — Clockworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f9f7f2; --ink: #1a1917; --ink-muted: #6b6860; --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1); --border-strong: rgba(26,25,23,0.2);
+      --accent: #1d6bbf; --accent-bg: #edf4fc; --accent-text: #0c3e72;
+      --success: #1a7a4a; --success-bg: #ebf7f1; --success-text: #0d4a2b;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background-color: var(--cream); color: var(--ink); font-size: 17px; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(249,247,242,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; font-weight: 400; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; transition: background 0.2s, color 0.2s !important; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; object-fit: cover; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-info { line-height: 1.4; }
+    .byline-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+    .body-text p { margin-bottom: 1.5rem; color: var(--ink); }
+    .body-text p:last-child { margin-bottom: 0; }
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; }
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 2rem 0; }
+    .compare-card { background: #fff; border-radius: 12px; border: 0.5px solid var(--border); padding: 1.25rem 1.4rem; transition: box-shadow 0.2s, transform 0.2s; }
+    .compare-card:hover { box-shadow: 0 4px 20px rgba(26,25,23,0.07); transform: translateY(-2px); }
+    .card-tag { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; margin-bottom: 1rem; }
+    .tag-risk { background: #fef3ee; color: #7a3a0d; }
+    .tag-safe { background: var(--success-bg); color: var(--success-text); }
+    .compare-card h3 { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.75rem; font-family: var(--sans); }
+    .compare-card ul { list-style: none; padding: 0; margin: 0; }
+    .compare-card li { font-size: 0.9rem; color: var(--ink); padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; border-bottom: 0.5px solid var(--border); }
+    .compare-card li:last-child { border-bottom: none; }
+    .compare-card li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--ink-faint); flex-shrink: 0; margin-top: 7px; }
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .signature p { font-size: 1rem; color: var(--ink); margin-bottom: 1.5rem !important; }
+    .sig-name { font-weight: 500; font-size: 1rem; color: var(--ink); }
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: opacity 0.2s, transform 0.2s; }
+    .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .site-nav { gap: 1rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Clockworks — AI for Small Business</div>
+    <h1 class="hero-title">Should You Be Worried About AI Replacing Your Job? My Honest Answer.</h1>
+    <p class="hero-subtitle">Not a hot take. Not reassurance. Just what I actually think — and what you can do about it.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; Jun 8, 2026 &nbsp;·&nbsp; 7 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>Hey — I'm Parker. I run Clockworks, and I want to be careful with this one. A lot of people — on both sides — are not being straight with you about AI and jobs. The optimists say "AI will just create new jobs!" and wave away legitimate concerns. The doom crowd says entire professions are about to disappear overnight. Neither is accurate.</p>
+      <p>Here's my honest take. I think some jobs will change significantly. Some won't. And the biggest factor in which category you end up in isn't the industry you're in — it's what you decide to do about it right now.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The honest answer: it depends on what kind of work you do</h2>
+      <div class="body-text">
+        <p>AI is genuinely very good at certain categories of work. It can read, write, summarize, analyze, research, answer questions, and generate content at a speed and quality that is hard for humans to match on a per-task basis. If your job is primarily about producing those types of outputs, yes — AI will change what your job looks like.</p>
+        <p>That doesn't necessarily mean your job disappears. It might mean you do more strategic work and less repetitive work. It might mean one person does what three people used to do. It might mean the floor for entry-level work shifts upward and you need different skills to stay competitive.</p>
+        <p>On the other hand, if your job involves physical presence, complex judgment in unpredictable situations, long-term relationship management, or creative work that requires lived experience — AI is not coming for that anytime soon. An HVAC tech who diagnoses a weird problem in a 40-year-old building, a real estate agent who knows every neighborhood in town and can read what a client really needs, a general contractor who manages a crew through a difficult job — these are not tasks an AI can do.</p>
+      </div>
+
+      <div class="callout article-section">
+        <p>The question isn't "will AI replace my industry?" It's "what parts of my current job could AI do faster or cheaper than me?" The honest answer to that question is the useful one — because it tells you where to focus your energy.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What categories of work are most at risk</h2>
+      <div class="body-text">
+        <p>Here's the pattern I see: the more a task involves taking in standard inputs and producing standard outputs, the more at risk it is. Data entry. Standard report writing. Templated customer service responses. First-draft content creation. Basic research and summarization. These are the things AI does well and tirelessly.</p>
+        <p>The less standard the inputs, the less useful AI is. A complicated negotiation. A client who's upset and needs someone to actually listen. A diagnostic problem where the solution isn't clear. A project where the requirements keep changing. These are AI's weak spots, and they tend to be the high-value parts of most jobs.</p>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-card">
+          <div class="card-tag tag-risk">Higher Risk</div>
+          <h3>AI Does These Well</h3>
+          <ul>
+            <li>Standard report writing</li>
+            <li>Templated customer communications</li>
+            <li>Basic content creation at volume</li>
+            <li>Data summarization and analysis</li>
+            <li>Answering common, repeatable questions</li>
+          </ul>
+        </div>
+        <div class="compare-card">
+          <div class="card-tag tag-safe">Lower Risk</div>
+          <h3>Harder for AI</h3>
+          <ul>
+            <li>Physical, on-site work</li>
+            <li>Long-term relationship management</li>
+            <li>Complex judgment in novel situations</li>
+            <li>Work requiring trust and accountability</li>
+            <li>Leading, motivating, and managing people</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The AI + human model that's actually winning</h2>
+      <div class="body-text">
+        <p>The thing I see working in the real world — not in theory, but in actual businesses — is not AI replacing people. It's AI making individual people significantly more productive.</p>
+        <p>The landscaper who used to spend 45 minutes per proposal now spends 12. The property manager who used to answer 40 routine emails a day now answers 40 emails in 90 minutes. The real estate agent who used to miss follow-ups because she ran out of time now follows up consistently because drafting takes seconds. Each of these people is doing more with the same hours — and they're getting better at their actual skilled work because they're not burning time on repetitive tasks.</p>
+        <p>That's the model. Not "AI does my job." "I do more and better work because AI handles the parts that don't require me."</p>
+        <p>The businesses losing ground are the ones where this isn't happening — where everyone is still doing everything manually while their competitors have built leverage with these tools. That's where the real competitive risk lives.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What the people surviving AI disruption are doing differently</h2>
+      <div class="body-text">
+        <p>I pay attention to this. Here's what I see in the people who are navigating this well — both employees and business owners.</p>
+        <p><strong>They're using AI rather than avoiding it.</strong> Not reluctantly, not minimally — they're actively looking for tasks to hand off. They've accepted that this is a real shift and they're moving toward it rather than waiting to see what happens.</p>
+        <p><strong>They're doubling down on the things AI can't do.</strong> Relationships. Judgment. Expertise. Trust. The things that make clients choose you over a cheaper alternative. The things that take years to build and can't be replicated. These people are becoming more human, not less, because they've offloaded the machine work to the machine.</p>
+        <p><strong>They're learning fast.
+        </strong> Not learning coding. Not getting a certification in AI. Just trying things, building habits, and getting a little better every week. The compound effect of consistent, curious experimentation is significant over 12 months.</p>
+        <p>You don't need to be an AI expert. You need to be someone who uses it regularly and gets honest about what it can and can't do for your specific situation. That's the whole strategy.</p>
+      </div>
+
+      <div class="callout article-section">
+        <p>The people who will be most disrupted by AI are the ones who decide it doesn't apply to them and stop paying attention. The people who will benefit most are the ones who treat it as a tool to build with, right now.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section signature body-text">
+      <p>If you're thinking about your own situation and want an honest, outside perspective — not a sales pitch, just a conversation about where AI does and doesn't apply to your work — that's exactly what the free call is for.</p>
+      <p class="sig-name">— Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Ready to stop guessing?</h2>
+      <p>Free 20-minute call. No pitch. Just an honest look at where AI or automation fits your business.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call →</a>
+    </div>
+
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">aiclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.article-section').forEach(function(el) { observer.observe(el); });
+  </script>
+
+</body>
+</html>

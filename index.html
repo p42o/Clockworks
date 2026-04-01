@@ -465,6 +465,7 @@
       <a href="#pricing"      class="nav-link" role="listitem">Pricing</a>
       <a href="#testimonials" class="nav-link nav-link-testimonials" role="listitem" style="display:none;">Testimonials</a>
       <a href="resources.html" class="nav-link" role="listitem">Resources</a>
+      <a href="learn/"        class="nav-link" role="listitem">Learn AI</a>
       <a href="#about"        class="nav-link" role="listitem">About</a>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
@@ -483,6 +484,7 @@
   <a href="#pricing"      class="mobile-link">Pricing</a>
   <a href="#testimonials" class="mobile-link nav-link-testimonials" style="display:none;">Testimonials</a>
   <a href="resources.html" class="mobile-link">Resources</a>
+  <a href="learn/"        class="mobile-link">Learn AI</a>
   <a href="#about"        class="mobile-link">About</a>
   <a href="#booking"      class="mobile-cta">Book Free Strategy Session &rarr;</a>
 </div>
@@ -847,6 +849,24 @@
   </div>
 </section>
 
+<!-- LEARN CALLOUT -->
+<section class="section" style="background:var(--bg-off);padding:60px 24px;" aria-label="Clockworks Learn">
+  <div class="container-sm" style="max-width:760px;">
+    <div class="reveal" style="background:#fff;border:1px solid var(--border);border-radius:20px;padding:40px 36px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:36px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:220px;">
+        <p class="section-label" style="color:var(--orange-dark);margin-bottom:10px;">Clockworks Learn</p>
+        <h2 style="font-family:'Instrument Serif',Georgia,serif;font-size:clamp(22px,3vw,32px);color:var(--navy);line-height:1.15;margin-bottom:12px;">Want to understand AI yourself — not just have it done for you?</h2>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.75;margin-bottom:0;">I offer live, 1-on-1 sessions where you actually learn how to use ChatGPT, Claude, and AI tools for your own life or business. Two hours, built around your goals. No fluff, no generic script.</p>
+      </div>
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="font-family:'Instrument Serif',serif;font-size:42px;color:var(--navy);line-height:1;margin-bottom:4px;">$150</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#15803d;margin-bottom:18px;">Intro rate</div>
+        <a href="learn/" class="btn-primary" style="white-space:nowrap;">Learn More &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CTA / BOOKING FORM -->
 <section id="booking" class="section cta-section" aria-labelledby="cta-heading">
   <div class="cta-glow" aria-hidden="true"></div>
@@ -938,8 +958,9 @@
         <a href="#testimonials" class="footer-link nav-link-testimonials" style="display:none;">Testimonials</a>
         <a href="#about"         class="footer-link">About</a>
         <a href="resources.html" class="footer-link">Resources</a>
+        <a href="learn/"         class="footer-link">Learn AI</a>
         <a href="#booking"       class="footer-link">Book Session</a>
-        <a href="mailto:parker@mnclockworks.com" class="footer-link">parker@mnclockworks.com</a>
+        <a href="javascript:void(0)" onclick="openContactModal()" class="footer-link">Contact</a>
       </nav>
     </div>
     <div class="footer-bottom">
@@ -1379,6 +1400,7 @@ if (floatBtn) {
   }, { passive: true });
 }
 </script>
+<script src="contact-modal.js"></script>
 </body>
 </html>
 

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>From 3 Hours to 20 Minutes: A Real Client Story — Clockworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f9f7f2; --ink: #1a1917; --ink-muted: #6b6860; --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1); --border-strong: rgba(26,25,23,0.2);
+      --accent: #1d6bbf; --accent-bg: #edf4fc; --accent-text: #0c3e72;
+      --success: #1a7a4a; --success-bg: #ebf7f1; --success-text: #0d4a2b;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background-color: var(--cream); color: var(--ink); font-size: 17px; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(249,247,242,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; font-weight: 400; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; transition: background 0.2s, color 0.2s !important; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; object-fit: cover; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-info { line-height: 1.4; }
+    .byline-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+    .body-text p { margin-bottom: 1.5rem; color: var(--ink); }
+    .body-text p:last-child { margin-bottom: 0; }
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; }
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+    .quote-block { background: var(--ink); color: var(--cream); border-radius: 12px; padding: 1.75rem 1.8rem; margin: 2rem 0; }
+    .quote-block blockquote { font-family: var(--serif); font-size: 1.25rem; font-weight: 400; line-height: 1.5; color: var(--cream); margin-bottom: 0.75rem; }
+    .quote-attribution { font-size: 0.88rem; color: rgba(249,247,242,0.6); }
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 2rem 0; }
+    .stat-card { background: #fff; border-radius: 12px; border: 0.5px solid var(--border); padding: 1.25rem 1.2rem; text-align: center; }
+    .stat-number { font-family: var(--serif); font-size: 2rem; color: var(--accent); line-height: 1; margin-bottom: 0.4rem; }
+    .stat-label { font-size: 0.8rem; color: var(--ink-muted); line-height: 1.4; }
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .signature p { font-size: 1rem; color: var(--ink); margin-bottom: 1.5rem !important; }
+    .sig-name { font-weight: 500; font-size: 1rem; color: var(--ink); }
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: opacity 0.2s, transform 0.2s; }
+    .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .stat-row { grid-template-columns: 1fr; }
+      .site-nav { gap: 1rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Clockworks — Client Story</div>
+    <h1 class="hero-title">From 3 Hours to 20 Minutes:<br>A Real Client Story</h1>
+    <p class="hero-subtitle">What two hours of setup actually looks like — and what it means six weeks later.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; May 25, 2026 &nbsp;·&nbsp; 6 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>Hey — I'm Parker. I run Clockworks, and I want to tell you about Mike.</p>
+      <p>Mike runs a 6-person HVAC company in the western suburbs of Minneapolis. He's been in the trades for 22 years. He's good at what he does. He has a full book of business and a team he trusts. What he does not have is time.</p>
+      <p>When Mike came to me, he wasn't looking for a tech transformation. He wanted to stop spending his Sunday nights writing reports and catching up on email. That was it. He'd heard AI might help. He had no idea where to start.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The before: Sunday nights at the kitchen table</h2>
+      <div class="body-text">
+        <p>Every week, Mike put together a report for his business: jobs completed, revenue, any issues with crews or materials, what was coming up the following week. He sent it to himself and to his business partner. It took about two hours. Sometimes two and a half, if the week had been messy.</p>
+        <p>He also had a chronic email backlog. Not because he ignored email — because he spent too long on each one. He'd rewrite the same follow-up four or five times before sending it. He told me he often wrote and deleted entire emails without sending them because they didn't sound right. Meanwhile, leads went cold and customers waited longer than they should have.</p>
+        <p>He also had a handful of recurring customer service situations that he handled the same way, every time, from scratch. Seasonal maintenance reminders. Responses to "the heat isn't working" calls after hours. Requests for quotes on systems he'd quoted a dozen times before.</p>
+        <p>None of this was complicated work. It was just slow, manual, and relentlessly repetitive. Mike estimated he was spending 8 to 10 hours per week on this category of task.</p>
+      </div>
+
+      <div class="callout article-section">
+        <p>This is the pattern I see most often: not one big problem, but a cluster of small, repetitive ones that together add up to a day and a half of lost work every week.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What we built in two hours</h2>
+      <div class="body-text">
+        <p>Mike and I did a two-hour Clockworks session on a Wednesday afternoon. Here's what we actually built:</p>
+        <p><strong>The weekly report template.</strong> We created a Claude Project called "Weekly Report" with standing instructions about what the report needed to cover, what Mike's business partner cared about, and what format worked best. We also created a simple fill-in-the-blanks input form — a Google Doc that Mike fills in each week with raw notes: jobs done, numbers, any issues. He pastes those notes into Claude with one line: "Turn these notes into this week's report." That's it.</p>
+        <p><strong>Five email templates.</strong> We built five prompts for the most common email situations Mike faces. Quote follow-ups. New lead responses. Post-job check-ins. Responding to after-hours calls. Seasonal maintenance outreach. Each prompt lives in a shared Google Doc Mike keeps open on his phone. He copies the relevant prompt, swaps in the customer name and a detail or two, and hits send.</p>
+        <p><strong>A rough-draft habit.</strong> For emails he couldn't find a template for, we practiced the "rough draft first" technique — Mike types his messy version of what he wants to say, then pastes it into Claude with "clean this up." Two minutes instead of twenty.</p>
+        <p>That was the entire session. No code. No software integration. No new subscriptions beyond the Claude free tier. Two hours of setup.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The numbers, six weeks later</h2>
+
+      <div class="stat-row article-section">
+        <div class="stat-card">
+          <div class="stat-number">20 min</div>
+          <div class="stat-label">Weekly report (was 2–2.5 hours)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">~6 hrs</div>
+          <div class="stat-label">Time saved per week on email and reporting</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3 leads</div>
+          <div class="stat-label">Re-engaged in first two weeks from faster follow-ups</div>
+        </div>
+      </div>
+
+      <div class="body-text">
+        <p>The report now takes Mike about 20 minutes on Sunday afternoon instead of 2+ hours at night. He still fills in the raw notes himself — that part takes about 10 minutes — but the writing is done in seconds. He reads through it, makes one or two small adjustments, and it's done.</p>
+        <p>Email went from his biggest time sink to something he mostly handles in the morning before his first job. The templates handle 80% of what he sends. The rough-draft technique handles most of the rest.</p>
+        <p>The lead re-engagement was a side effect he didn't expect. Because he was following up faster and more confidently, three leads who had gone cold came back in the first two weeks. One of them turned into a full system installation — a $6,400 job. That alone would have paid for years of AI subscriptions.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <div class="quote-block">
+        <blockquote>"I kept waiting for it to be more complicated than it was. But it's just... faster. Sunday nights are mine again. That's not a small thing."</blockquote>
+        <div class="quote-attribution">— Mike, HVAC business owner, western Minneapolis suburbs</div>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What this actually teaches us</h2>
+      <div class="body-text">
+        <p>Mike's situation isn't unique. I see it constantly. The tasks that eat small business owners alive aren't complicated — they're just repetitive and slow because there's no system behind them. Every week you're reinventing the wheel on the same email. Every Sunday you're starting the report from scratch.</p>
+        <p>AI doesn't replace those tasks. It gives you a system for them. You still do the thinking. You still know your customers and your business. But you stop typing the same things over and over, and you stop staring at a blank screen when you know exactly what you want to say but can't quite get it out.</p>
+        <p>The two-hour investment paid for itself in the first week. The habits Mike built in that session are things he'll use for the rest of his career. That's the math that matters.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section signature body-text">
+      <p>If you recognize yourself in Mike's story, reach out. The free call is for exactly this: figuring out which two hours would make the biggest difference in your week. No pitch, just an honest look at your situation.</p>
+      <p class="sig-name">— Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Ready to stop guessing?</h2>
+      <p>Free 20-minute call. No pitch. Just an honest look at where AI or automation fits your business.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call →</a>
+    </div>
+
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">aiclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.article-section').forEach(function(el) { observer.observe(el); });
+  </script>
+
+</body>
+</html>

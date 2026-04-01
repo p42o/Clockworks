@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>The AI Myths Costing Small Businesses Real Money — Clockworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f9f7f2;
+      --ink: #1a1917;
+      --ink-muted: #6b6860;
+      --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1);
+      --border-strong: rgba(26,25,23,0.2);
+      --accent: #1d6bbf;
+      --accent-bg: #edf4fc;
+      --accent-text: #0c3e72;
+      --success: #1a7a4a;
+      --success-bg: #ebf7f1;
+      --success-text: #0d4a2b;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background-color: var(--cream);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(249,247,242,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 0.5px solid var(--border);
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .site-logo {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .site-nav a {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink-muted);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .site-nav a:hover { color: var(--ink); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent) !important;
+      padding: 6px 14px;
+      border: 0.5px solid var(--accent);
+      border-radius: 100px;
+      transition: background 0.2s, color 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--accent) !important;
+      color: #fff !important;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--accent);
+      z-index: 200;
+      transition: width 0.1s linear;
+    }
+
+    .hero {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 5rem 2rem 3rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s 0.1s forwards;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 1.4rem;
+    }
+
+    .eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1.5px;
+      background: var(--ink-faint);
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+      font-weight: 400;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--ink-muted);
+      line-height: 1.65;
+      max-width: 560px;
+      margin-bottom: 2.5rem;
+    }
+
+    .byline {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 2.5rem;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      object-fit: cover;
+      border: 0.5px solid rgba(26,25,23,0.15);
+    }
+
+    .byline-info { line-height: 1.4; }
+
+    .byline-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .byline-meta {
+      font-size: 13px;
+      color: var(--ink-muted);
+    }
+
+    .article {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+
+    .article-section {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .article-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .body-text p {
+      margin-bottom: 1.5rem;
+      color: var(--ink);
+    }
+
+    .body-text p:last-child { margin-bottom: 0; }
+
+    .section-heading {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin: 3rem 0 1.2rem;
+      line-height: 1.25;
+    }
+
+    .divider {
+      width: 36px;
+      height: 2px;
+      background: var(--border-strong);
+      border-radius: 2px;
+      margin: 2.5rem 0;
+    }
+
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: var(--accent-bg);
+      padding: 1.1rem 1.4rem;
+      margin: 2rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .callout p {
+      margin: 0 !important;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--accent-text);
+      line-height: 1.7;
+    }
+
+    .myth-block {
+      background: #fff;
+      border-radius: 12px;
+      border: 0.5px solid var(--border);
+      padding: 1.5rem 1.6rem;
+      margin: 1.5rem 0;
+    }
+
+    .myth-label {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: #fef3ee;
+      color: #7a3a0d;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 0.75rem;
+    }
+
+    .truth-label {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--success-bg);
+      color: var(--success-text);
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin: 0.75rem 0 0.5rem;
+    }
+
+    .myth-block h3 {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .myth-block p {
+      font-size: 0.95rem;
+      color: var(--ink-muted);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .myth-block p:last-child { margin-bottom: 0; }
+
+    .truth-text {
+      font-size: 0.95rem;
+      color: var(--ink) !important;
+      line-height: 1.7;
+    }
+
+    .signature {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 0.5px solid var(--border);
+    }
+
+    .signature p {
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 1.5rem !important;
+    }
+
+    .sig-name {
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .cta-block {
+      background: var(--ink);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--cream);
+    }
+
+    .cta-block h2 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .cta-block p {
+      font-size: 0.95rem;
+      color: rgba(249,247,242,0.65);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 11px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .site-footer {
+      border-top: 0.5px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .footer-text {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .site-nav { gap: 1rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Clockworks — AI for Small Business</div>
+    <h1 class="hero-title">The AI Myths Costing<br>Small Businesses Real Money</h1>
+    <p class="hero-subtitle">Five beliefs about AI that keep business owners stuck — and the honest truth behind each one.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; Apr 27, 2026 &nbsp;·&nbsp; 6 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>Hey — I'm Parker. I run Clockworks, and every week I talk to business owners who've decided AI isn't for them — usually based on something they heard that isn't true.</p>
+      <p>These aren't dumb beliefs. They made sense at some point, or they came from a real experience with a bad tool. But they're holding people back from saving real time and real money. So I want to address them directly.</p>
+      <p>Here are the five myths I hear most often — and what's actually true.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The myths</h2>
+
+      <div class="myth-block">
+        <div class="myth-label">Myth 01</div>
+        <h3>"You need to know how to code to use AI."</h3>
+        <p>This one comes from the early days, when most AI tools required technical setup. People saw headlines about "prompt engineering" and assumed there was a steep learning curve before you could get value.</p>
+        <div class="truth-label">The truth</div>
+        <p class="truth-text">Today's AI tools — ChatGPT, Claude, Gemini — are conversational. You type in plain English, the same way you'd talk to a smart colleague. I've taught a 68-year-old plumber how to use Claude in 20 minutes. No code. No technical background. Just typing and reading.</p>
+      </div>
+
+      <div class="myth-block">
+        <div class="myth-label">Myth 02</div>
+        <h3>"AI is going to replace my employees."</h3>
+        <p>This fear is understandable. There's a lot of noise in the media about AI taking jobs. And honestly — some jobs will change. But the story is more nuanced than the headlines suggest.</p>
+        <div class="truth-label">The truth</div>
+        <p class="truth-text">For most small businesses, AI is a force multiplier for your people, not a replacement. An employee who uses AI for drafting, research, and admin can do the work of 1.5 people — and spend more of their time on the things that actually require a human. The businesses that will get hurt aren't the ones who adopt AI; they're the ones who don't, while their competitors do.</p>
+      </div>
+
+      <div class="myth-block">
+        <div class="myth-label">Myth 03</div>
+        <h3>"It's too expensive for a small business."</h3>
+        <p>People hear "enterprise AI" and picture a $50,000 implementation budget. Some AI deployments do cost that. Most don't — and you definitely don't need to start there.</p>
+        <div class="truth-label">The truth</div>
+        <p class="truth-text">The free tiers of ChatGPT and Claude will give you enormous value before you spend a dollar. Paid plans start at $20/month. For context: if AI saves you three hours a week and you bill at $75/hour, you've paid for a year of subscriptions in the first month. The ROI on basic AI adoption is almost always positive within the first 30 days.</p>
+      </div>
+
+      <div class="myth-block">
+        <div class="myth-label">Myth 04</div>
+        <h3>"One AI tool does everything."</h3>
+        <p>I see this go both ways: either people expect one tool to solve all their problems and get frustrated when it doesn't, or they assume they need to buy every tool on the market. Neither is right.</p>
+        <div class="truth-label">The truth</div>
+        <p class="truth-text">Different tools are genuinely better at different things. Claude is excellent for writing and long document analysis. ChatGPT has more integrations and plugins. Perplexity is great for research with cited sources. Most of my clients use two to three tools, each for specific use cases. You don't need to master all of them — just know which one to reach for based on the task.</p>
+      </div>
+
+      <div class="myth-block">
+        <div class="myth-label">Myth 05</div>
+        <h3>"AI isn't ready yet — I'll wait until it's better."</h3>
+        <p>This is the myth that costs businesses the most. The logic feels safe: "I'll wait until it matures." But this reasoning has a hidden flaw.</p>
+        <div class="truth-label">The truth</div>
+        <p class="truth-text">AI is already good enough to save you meaningful time today. Will it get better? Absolutely. But your competitors who are using it now are building workflows, habits, and experience that compounds. Waiting another year doesn't just mean you're a year behind on tools — it means you're a year behind on the institutional knowledge of how to actually use them. The best time to start was six months ago. The second best time is today.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <div class="callout">
+        <p>The honest cost of these myths isn't just missed efficiency. It's the hours you spend on work AI could handle, the proposals you write more slowly than you need to, the emails you keep putting off. The opportunity cost is real — it's just invisible because you can't see the time you didn't save.</p>
+      </div>
+
+      <div class="body-text">
+        <p>I'm not here to hype AI. I'm here to tell you the honest truth about where it actually helps and where it doesn't. But these five myths? They're not honest skepticism. They're outdated information — and holding onto them is costing you.</p>
+        <p>If any of these resonated because you've been telling yourself one of them, that's okay. The solution is just to go try something small. Pick one task. Use a free tool. See what happens.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section signature body-text">
+      <p>If you're not sure where to start or want to pressure-test your specific situation, reach out. I offer free 20-minute calls and I won't push you into anything you don't need.</p>
+      <p class="sig-name">— Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Ready to stop guessing?</h2>
+      <p>Free 20-minute call. No pitch. Just an honest look at where AI or automation fits your business.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call →</a>
+    </div>
+
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">aiclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.article-section').forEach(function(el) {
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>

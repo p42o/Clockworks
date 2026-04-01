@@ -5,14 +5,12 @@ import { initCredentials } from "./credentials.js";
 import { initLogs } from "./logs.js";
 import { initImport } from "./csv.js";
 import { initFeed } from "./feed.js";
+import { initSettings } from "./settings.js";
 
 const authGate   = document.getElementById("auth-gate");
 const appEl      = document.getElementById("app");
 const signInBtn  = document.getElementById("sign-in-btn");
 const authErr    = document.getElementById("auth-err");
-const layout     = document.getElementById("layout");
-const logToggle  = document.getElementById("log-toggle");
-const logCloseBtn = document.getElementById("log-close-btn");
 const signOutBtn = document.getElementById("sign-out-btn");
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -62,28 +60,15 @@ document.querySelectorAll("nav a[data-page]").forEach(a => {
   a.addEventListener("click", () => showPage(a.dataset.page));
 });
 
-// ── Log panel ─────────────────────────────────────────────────────────────────
-logToggle.addEventListener("click", () => {
-  const opening = !layout.classList.contains("log-open");
-  layout.classList.toggle("log-open");
-  if (opening) {
-    // Clear badge when opened
-    const badge = document.getElementById("log-badge");
-    badge.textContent = "0";
-    badge.classList.remove("show");
-  }
-});
-
-logCloseBtn.addEventListener("click", () => layout.classList.remove("log-open"));
-
 // ── Boot ──────────────────────────────────────────────────────────────────────
 let booted = false;
 function bootApp() {
   if (booted) return;
   booted = true;
-  initFeed();
+  initFeed().catch(e => console.warn("Feed init error:", e));
   initPosts();
   initCredentials();
   initLogs();
   initImport();
+  initSettings();
 }
