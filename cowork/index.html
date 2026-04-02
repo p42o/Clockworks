@@ -614,8 +614,7 @@
       <p class="cta-sub">5-minute intake below. I'll review and reach out within 1 business day to confirm scope and get a time on the calendar.</p>
     </div>
     <div class="form-wrap reveal">
-      <!-- Replace YOUR_FORM_ID with your Formspree endpoint: formspree.io -->
-      <form id="intakeForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <form id="intakeForm">
         <div class="form-row">
           <div>
             <label class="form-label" for="firstName">First Name</label>
@@ -714,34 +713,82 @@
     });
   });
 
-  // Form submission
+  // Form submission — Discord webhook
+  const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1489040629332840500/8EolpZvDZTiCZJmmrSI-SZJTjsktMxbFop4_B4DHyCuMuhClg_vU277Kx-ub7VylgYql';
+
+  const FORMAT_LABELS = {
+    'remote-1on1':    'Remote — 1-on-1',
+    'remote-group':   'Remote — Small Group (2–4)',
+    'inperson-1on1':  'In-Person — 1-on-1 (Twin Cities)',
+    'inperson-group': 'In-Person — Small Group (Twin Cities)',
+  };
+  const EXP_LABELS = {
+    'none':    'Never used them seriously',
+    'casual':  "Tried a few times — didn't really click",
+    'some':    'Use occasionally, want to go deeper',
+    'regular': 'Use regularly, ready to level up',
+  };
+
   const form       = document.getElementById('intakeForm');
   const submitBtn  = document.getElementById('submitBtn');
   const successDiv = document.getElementById('formSuccess');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    submitBtn.disabled    = true;
-    submitBtn.textContent = 'Sending…';
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const format    = document.getElementById('format').value;
+    const exp       = document.getElementById('experience').value;
+    const goals     = document.getElementById('goals').value.trim();
+    const tools     = document.getElementById('tools').value.trim();
+
+    if (!firstName || !email || !format || !exp || !goals) {
+      submitBtn.disabled = false;
+      return;
+    }
+
+    submitBtn.disabled   = true;
+    submitBtn.innerHTML  = '<i class="ti ti-loader" style="font-size:16px;margin-right:6px;animation:spin 1s linear infinite;display:inline-block;"></i> Sending…';
+
+    const payload = {
+      embeds: [{
+        title: '🤝 New Cowork Session Request',
+        color: 0xC4834A,
+        fields: [
+          { name: 'Name',       value: `${firstName} ${lastName}`,          inline: true  },
+          { name: 'Email',      value: email,                                inline: true  },
+          { name: 'Format',     value: FORMAT_LABELS[format] || format,      inline: false },
+          { name: 'Experience', value: EXP_LABELS[exp] || exp,               inline: false },
+          { name: 'Goals',      value: goals.length > 1024 ? goals.slice(0,1021)+'…' : goals, inline: false },
+          { name: 'Tools',      value: tools || '(not provided)',            inline: false },
+        ],
+        timestamp: new Date().toISOString(),
+        footer: { text: 'mnclockworks.com/cowork' },
+      }]
+    };
+
     try {
-      const res = await fetch(form.action, {
+      const res = await fetch(DISCORD_WEBHOOK, {
         method:  'POST',
-        body:    new FormData(form),
-        headers: { 'Accept': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
       });
       if (res.ok) {
         form.style.display       = 'none';
         successDiv.style.display = 'block';
-      } else { throw new Error(); }
-    } catch {
-      const name  = document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value;
-      const email = document.getElementById('email').value;
-      const goals = document.getElementById('goals').value;
-      const tools = document.getElementById('tools').value;
-      const body  = `Name: ${name}\nEmail: ${email}\nFormat: ${document.getElementById('format').value}\nExperience: ${document.getElementById('experience').value}\nTools: ${tools}\n\nGoals:\n${goals}`;
-      window.location.href = `mailto:parker@mnclockworks.com?subject=Clockworks Cowork – Session Request&body=${encodeURIComponent(body)}`;
-      submitBtn.disabled    = false;
-      submitBtn.textContent = 'Submit Intake & Claim Your Spot';
+      } else {
+        throw new Error(res.status);
+      }
+    } catch (err) {
+      console.error('Cowork form webhook failed:', err);
+      submitBtn.disabled  = false;
+      submitBtn.innerHTML = '<i class="ti ti-send" style="font-size:16px;margin-right:6px;"></i> Submit Intake & Claim Your Spot';
+      const errEl = document.createElement('p');
+      errEl.style.cssText = 'color:#ef4444;font-size:13px;margin-top:10px;text-align:center;';
+      errEl.textContent = 'Something went wrong — please try again.';
+      form.appendChild(errEl);
+      setTimeout(() => errEl.remove(), 6000);
     }
   });
 </script>

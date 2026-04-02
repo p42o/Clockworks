@@ -786,11 +786,13 @@
       }
     } catch (err) {
       console.error('Discord webhook failed:', err);
-      // Fallback to mailto
-      const body = `Name: ${firstName} ${lastName}\nEmail: ${email}\nFormat: ${FORMAT_LABELS[format]||format}\nExperience: ${EXP_LABELS[exp]||exp}\n\nGoals:\n${goals}`;
-      window.location.href = `mailto:parker@mnclockworks.com?subject=Clockworks Learn – Session Request&body=${encodeURIComponent(body)}`;
       submitBtn.disabled  = false;
       submitBtn.innerHTML = '<i class="ti ti-send" style="font-size:16px;margin-right:6px;"></i> Submit Intake Request';
+      const errEl = document.createElement('p');
+      errEl.style.cssText = 'color:#ef4444;font-size:13px;margin-top:10px;text-align:center;';
+      errEl.textContent = 'Something went wrong — please try again.';
+      form.appendChild(errEl);
+      setTimeout(() => errEl.remove(), 6000);
     }
   });
 </script>

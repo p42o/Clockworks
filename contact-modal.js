@@ -197,7 +197,11 @@
       console.error('Contact modal webhook failed:', err);
       submitBtn.disabled  = false;
       submitBtn.innerHTML = 'Send Message &rarr;';
-      alert('Something went wrong. Please email parker@mnclockworks.com directly.');
+      const errEl = document.createElement('p');
+      errEl.style.cssText = 'color:#ef4444;font-size:13px;margin-top:10px;text-align:center;';
+      errEl.textContent = 'Something went wrong — please try again.';
+      document.getElementById('cw-contact-form').appendChild(errEl);
+      setTimeout(() => errEl.remove(), 6000);
     }
   });
 
