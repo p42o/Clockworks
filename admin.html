@@ -525,6 +525,8 @@
 
       <!-- ── DASHBOARD ── -->
       <div class="panel active" id="panel-dashboard">
+
+        <!-- Site stats -->
         <div class="stats-grid" id="dash-stats">
           <div class="stat-card">
             <div class="stat-label">Testimonials</div>
@@ -542,12 +544,66 @@
             <div class="stat-hint">all time</div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-title"><i class="ti ti-clock-hour-4"></i> Recent Form Submissions</div>
-          <div id="dash-recent-logs">
-            <div class="spinner-center"><div class="spinner"></div></div>
+
+        <!-- Analytics header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="font-size:13px;font-weight:700;color:var(--text-muted);display:flex;align-items:center;gap:7px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><rect x="2" y="14" width="4" height="8" rx="1" fill="#4285F4"/><rect x="10" y="9" width="4" height="13" rx="1" fill="#34A853"/><rect x="18" y="4" width="4" height="18" rx="1" fill="#EA4335"/></svg>
+            Google Analytics
+            <span style="font-size:10px;color:var(--text-dimmer);font-weight:400;">(last 7 days)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="ga-status-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-dimmer);display:inline-block;"></span>
+            <span id="ga-status-text" style="font-size:11px;color:var(--text-dimmer);">Loading…</span>
+            <button id="ga-reconnect-btn" class="btn btn-ghost btn-xs" style="display:none;">
+              <i class="ti ti-refresh"></i> Reconnect
+            </button>
+            <a href="https://analytics.google.com/analytics/web/#/p531471954" target="_blank" class="btn btn-ghost btn-xs">
+              <i class="ti ti-external-link"></i> Open GA
+            </a>
           </div>
         </div>
+
+        <!-- GA stat cards -->
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">
+          <div class="stat-card" style="border-color:rgba(66,133,244,0.2);">
+            <div class="stat-label" style="color:#4285F4;">Active Now</div>
+            <div class="stat-val" id="ga-active-now">—</div>
+            <div class="stat-hint">users on site</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(52,168,83,0.2);">
+            <div class="stat-label" style="color:#34A853;">Users</div>
+            <div class="stat-val" id="ga-users-7d">—</div>
+            <div class="stat-hint">7-day total</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(251,188,5,0.2);">
+            <div class="stat-label" style="color:#FBBC05;">Sessions</div>
+            <div class="stat-val" id="ga-sessions-7d">—</div>
+            <div class="stat-hint">7-day total</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(234,67,53,0.2);">
+            <div class="stat-label" style="color:#EA4335;">Page Views</div>
+            <div class="stat-val" id="ga-pageviews-7d">—</div>
+            <div class="stat-hint">7-day total</div>
+          </div>
+        </div>
+
+        <!-- Top pages + recent submissions side by side -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0;">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chart-bar"></i> Top Pages <span style="font-size:10px;color:var(--text-dimmer);font-weight:400;">(7 days)</span></div>
+            <div id="ga-top-pages">
+              <div class="spinner-center"><div class="spinner"></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-clock-hour-4"></i> Recent Form Submissions</div>
+            <div id="dash-recent-logs">
+              <div class="spinner-center"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- ── TESTIMONIALS ── -->
@@ -836,6 +892,10 @@
 // ⚠️  Set this to YOUR Gmail address to restrict admin access
 const ADMIN_EMAIL = '';  // e.g. 'you@gmail.com' — leave empty to allow any Google account
 
+// Google Analytics 4
+const GA_PROPERTY_ID  = '531471954';
+const GA_MEASUREMENT_ID = 'G-PSNYLVG4V1';
+
 const firebaseConfig = {
   apiKey:            "AIzaSyAgYsFRypLXu5yym-KIRS9GXqcRWGwrtkA",
   authDomain:        "stonearchai.firebaseapp.com",
@@ -892,6 +952,14 @@ function fmtLogTime(ts) {
    AUTH
    ═══════════════════════════════════════════════════ */
 
+let _gaAccessToken = sessionStorage.getItem('cw_ga_token') || null;
+
+function saveGaToken(token) {
+  _gaAccessToken = token;
+  if (token) sessionStorage.setItem('cw_ga_token', token);
+  else sessionStorage.removeItem('cw_ga_token');
+}
+
 document.getElementById('google-signin-btn').addEventListener('click', async () => {
   const btn = document.getElementById('google-signin-btn');
   const errEl = document.getElementById('login-error');
@@ -901,7 +969,10 @@ document.getElementById('google-signin-btn').addEventListener('click', async () 
 
   try {
     const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/analytics.readonly');
     const result = await auth.signInWithPopup(provider);
+    const credential = firebase.auth.GoogleAuthProvider.credentialFromResult(result);
+    if (credential?.accessToken) saveGaToken(credential.accessToken);
     const user = result.user;
 
     if (ADMIN_EMAIL && user.email !== ADMIN_EMAIL) {
@@ -1006,6 +1077,7 @@ commsToggle.addEventListener('click', () => {
    ═══════════════════════════════════════════════════ */
 
 async function loadDashboard() {
+  // Site stats from Firestore
   try {
     const [testimonialsDoc, logsSnap, blogSnap] = await Promise.all([
       db.collection('siteContent').doc('testimonials').get(),
@@ -1013,36 +1085,171 @@ async function loadDashboard() {
       db.collection('blogPosts').where('status','==','published').get(),
     ]);
 
-    // Stats
     const liveCount = testimonialsDoc.exists
       ? (testimonialsDoc.data().items || []).filter(t => t.live).length : 0;
     document.getElementById('stat-testimonials').textContent = liveCount;
     document.getElementById('stat-posts').textContent = blogSnap.size;
     document.getElementById('stat-submissions').textContent = logsSnap.size;
 
-    // Recent logs
     const recentEl = document.getElementById('dash-recent-logs');
     if (logsSnap.empty) {
       recentEl.innerHTML = '<div class="empty-state"><i class="ti ti-inbox"></i><p>No form submissions yet.</p></div>';
-      return;
+    } else {
+      recentEl.innerHTML = logsSnap.docs.slice(0, 5).map(d => {
+        const l = d.data();
+        const ok = l.status === 'sent';
+        return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:18px;">${ok ? '✅' : '❌'}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;color:#f1f5f9;">${esc(l.name || '—')}</div>
+            <div style="font-size:11px;color:var(--text-dim);">${esc(l.email || '')} &bull; ${esc(l.subject || '(no subject)')}</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-dimmer);white-space:nowrap;">${fmtDate(l.timestamp)}</div>
+        </div>`;
+      }).join('');
     }
-    const rows = logsSnap.docs.slice(0, 5).map(d => {
-      const l = d.data();
-      const ok = l.status === 'sent';
-      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
-        <span style="font-size:18px;">${ok ? '✅' : '❌'}</span>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;font-weight:600;color:#f1f5f9;">${esc(l.name || '—')}</div>
-          <div style="font-size:11px;color:var(--text-dim);">${esc(l.email || '')} &bull; ${esc(l.subject || '(no subject)')}</div>
-        </div>
-        <div style="font-size:11px;color:var(--text-dimmer);white-space:nowrap;">${fmtDate(l.timestamp)}</div>
-      </div>`;
-    }).join('');
-    recentEl.innerHTML = rows || '<div class="empty-state"><p>No recent submissions.</p></div>';
   } catch (e) {
-    console.error('Dashboard load error:', e);
+    console.error('Dashboard Firestore error:', e);
+  }
+
+  // GA analytics
+  loadGAStats();
+}
+
+async function gaFetch(endpoint, body) {
+  const res = await fetch(
+    `https://analyticsdata.googleapis.com/v1beta/properties/${GA_PROPERTY_ID}${endpoint}`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + _gaAccessToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }
+  );
+  if (res.status === 401) throw Object.assign(new Error('auth'), { status: 401 });
+  if (!res.ok) throw new Error('GA API error ' + res.status);
+  return res.json();
+}
+
+function setGAStatus(state) {
+  const dot  = document.getElementById('ga-status-dot');
+  const text = document.getElementById('ga-status-text');
+  const btn  = document.getElementById('ga-reconnect-btn');
+  if (state === 'ok') {
+    dot.style.background = 'var(--green)'; text.textContent = 'Connected'; btn.style.display = 'none';
+  } else if (state === 'loading') {
+    dot.style.background = 'var(--yellow)'; text.textContent = 'Loading…'; btn.style.display = 'none';
+  } else {
+    dot.style.background = 'var(--red)'; text.textContent = 'Not connected'; btn.style.display = '';
   }
 }
+
+async function loadGAStats() {
+  if (!_gaAccessToken) { setGAStatus('error'); renderGAUnavailable(); return; }
+  setGAStatus('loading');
+
+  try {
+    const [realtimeData, reportData] = await Promise.all([
+      // Active users right now
+      gaFetch(':runRealtimeReport', {
+        metrics: [{ name: 'activeUsers' }],
+      }),
+      // 7-day report: users, sessions, pageviews + top pages
+      gaFetch(':runReport', {
+        dateRanges: [{ startDate: '7daysAgo', endDate: 'today' }],
+        metrics: [
+          { name: 'activeUsers' },
+          { name: 'sessions' },
+          { name: 'screenPageViews' },
+        ],
+        dimensions: [{ name: 'pagePath' }],
+        orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
+        limit: 10,
+      }),
+    ]);
+
+    // Realtime
+    const activeNow = realtimeData.rows?.[0]?.metricValues?.[0]?.value ?? '0';
+    document.getElementById('ga-active-now').textContent = activeNow;
+
+    // Aggregate 7-day totals
+    let totalUsers = 0, totalSessions = 0, totalPageviews = 0;
+    (reportData.rows || []).forEach(row => {
+      totalUsers     += parseInt(row.metricValues[0].value) || 0;
+      totalSessions  += parseInt(row.metricValues[1].value) || 0;
+      totalPageviews += parseInt(row.metricValues[2].value) || 0;
+    });
+
+    document.getElementById('ga-users-7d').textContent     = totalUsers.toLocaleString();
+    document.getElementById('ga-sessions-7d').textContent  = totalSessions.toLocaleString();
+    document.getElementById('ga-pageviews-7d').textContent = totalPageviews.toLocaleString();
+
+    // Top pages table
+    const topPagesEl = document.getElementById('ga-top-pages');
+    const rows = reportData.rows || [];
+    if (!rows.length) {
+      topPagesEl.innerHTML = '<div class="empty-state" style="padding:20px 0;"><p>No page data yet.</p></div>';
+    } else {
+      const maxViews = parseInt(rows[0].metricValues[2].value) || 1;
+      topPagesEl.innerHTML = rows.slice(0, 8).map(row => {
+        const path  = row.dimensionValues[0].value;
+        const views = parseInt(row.metricValues[2].value) || 0;
+        const pct   = Math.round((views / maxViews) * 100);
+        const label = path === '/' ? '/ (Home)' : path;
+        return `<div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;">
+            <span style="font-size:12px;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;" title="${esc(path)}">${esc(label)}</span>
+            <span style="font-size:11px;color:var(--text-dim);flex-shrink:0;margin-left:8px;">${views.toLocaleString()}</span>
+          </div>
+          <div style="height:4px;border-radius:2px;background:rgba(255,255,255,0.06);">
+            <div style="height:100%;border-radius:2px;background:linear-gradient(90deg,#4285F4,#34A853);width:${pct}%;transition:width 0.6s ease;"></div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    setGAStatus('ok');
+  } catch (e) {
+    if (e.status === 401) {
+      saveGaToken(null);
+      setGAStatus('error');
+      renderGAUnavailable('Session expired.');
+    } else {
+      setGAStatus('error');
+      renderGAUnavailable(e.message);
+    }
+  }
+}
+
+function renderGAUnavailable(msg) {
+  const hint = msg ? `<p style="font-size:11px;color:var(--text-dimmer);margin-top:4px;">${esc(msg)}</p>` : '';
+  const noData = `<div class="empty-state" style="padding:20px 0;">
+    <i class="ti ti-chart-off"></i>
+    <p>Analytics unavailable</p>${hint}
+  </div>`;
+  document.getElementById('ga-top-pages').innerHTML = noData;
+  ['ga-active-now','ga-users-7d','ga-sessions-7d','ga-pageviews-7d'].forEach(id => {
+    document.getElementById(id).textContent = '—';
+  });
+}
+
+// Reconnect button — re-triggers Google sign-in to get a fresh token
+document.getElementById('ga-reconnect-btn').addEventListener('click', async () => {
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/analytics.readonly');
+    const result = await auth.signInWithPopup(provider);
+    const credential = firebase.auth.GoogleAuthProvider.credentialFromResult(result);
+    if (credential?.accessToken) {
+      saveGaToken(credential.accessToken);
+      loadGAStats();
+    }
+  } catch(e) {
+    toast('Could not reconnect: ' + e.message, 'error');
+  }
+});
 
 /* ═══════════════════════════════════════════════════
    TESTIMONIALS
