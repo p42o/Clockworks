@@ -1,12 +1,103 @@
 /**
  * contact-modal.js — shared contact form popup
- * Wired to Discord webhook. Include on any page, then call openContactModal().
+ * Loads destination settings from Firestore (formSettings doc).
+ * Falls back to hardcoded Discord webhook if Firebase is unavailable.
+ * Logs every submission to Firestore formLogs collection.
  */
 (function () {
-  const DISCORD_WEBHOOK =
+  /* ── Firebase config (same project as main site) ─────────────────────────── */
+  const FIREBASE_CONFIG = {
+    apiKey:            "AIzaSyAgYsFRypLXu5yym-KIRS9GXqcRWGwrtkA",
+    authDomain:        "stonearchai.firebaseapp.com",
+    projectId:         "stonearchai",
+    storageBucket:     "stonearchai.firebasestorage.app",
+    messagingSenderId: "815481121273",
+    appId:             "1:815481121273:web:182d13a485f645c9bdf528"
+  };
+
+  // Fallback webhook if Firestore settings can't be loaded
+  const FALLBACK_DISCORD_WEBHOOK =
     'https://discord.com/api/webhooks/1489040629332840500/8EolpZvDZTiCZJmmrSI-SZJTjsktMxbFop4_B4DHyCuMuhClg_vU277Kx-ub7VylgYql';
 
-  // ── Inject styles ────────────────────────────────────────────────────────────
+  /* ── State ─────────────────────────────────────────────────────────────────── */
+  let _db = null;
+  let _formSettings = null;  // { destination, discordWebhook, emailAddress }
+  let _settingsLoaded = false;
+
+  /* ── Bootstrap Firebase ────────────────────────────────────────────────────── */
+  function ensureFirebase() {
+    return new Promise(resolve => {
+      if (typeof firebase !== 'undefined') {
+        try {
+          // Use existing app if already initialized, or initialize
+          const app = firebase.apps.length
+            ? firebase.app()
+            : firebase.initializeApp(FIREBASE_CONFIG, 'contact-modal');
+          _db = app.firestore ? app.firestore() : firebase.firestore();
+        } catch(e) {
+          // May already be initialized under default name
+          try { _db = firebase.firestore(); } catch(_) {}
+        }
+        resolve();
+        return;
+      }
+
+      // Dynamically load Firebase if not present
+      const scripts = [
+        'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js',
+        'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js',
+      ];
+      let loaded = 0;
+      scripts.forEach(src => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = () => {
+          loaded++;
+          if (loaded === scripts.length) {
+            try {
+              firebase.initializeApp(FIREBASE_CONFIG, 'contact-modal');
+              _db = firebase.app('contact-modal').firestore();
+            } catch(e) {
+              try { _db = firebase.firestore(); } catch(_) {}
+            }
+            resolve();
+          }
+        };
+        s.onerror = () => { loaded++; if (loaded === scripts.length) resolve(); };
+        document.head.appendChild(s);
+      });
+    });
+  }
+
+  async function loadFormSettings() {
+    if (_settingsLoaded) return;
+    _settingsLoaded = true;
+    try {
+      await ensureFirebase();
+      if (!_db) return;
+      const doc = await _db.collection('siteContent').doc('formSettings').get();
+      if (doc.exists) _formSettings = doc.data();
+    } catch(e) {
+      console.warn('[contact-modal] Could not load form settings:', e);
+    }
+  }
+
+  async function logSubmission(fields, status) {
+    try {
+      if (!_db) return;
+      await _db.collection('formLogs').add({
+        ...fields,
+        destination: _formSettings?.destination || 'discord',
+        status,
+        page: window.location.pathname,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch(e) {
+      console.warn('[contact-modal] Could not log submission:', e);
+    }
+  }
+
+  /* ── Styles ────────────────────────────────────────────────────────────────── */
   const style = document.createElement('style');
   style.textContent = `
     #cw-contact-overlay {
@@ -86,7 +177,7 @@
   `;
   document.head.appendChild(style);
 
-  // ── Inject HTML ──────────────────────────────────────────────────────────────
+  /* ── HTML ──────────────────────────────────────────────────────────────────── */
   const overlay = document.createElement('div');
   overlay.id = 'cw-contact-overlay';
   overlay.innerHTML = `
@@ -126,99 +217,119 @@
     </div>`;
   document.body.appendChild(overlay);
 
-  // ── Wire up close / backdrop ─────────────────────────────────────────────────
+  /* ── Close behavior ────────────────────────────────────────────────────────── */
   function closeModal() {
     overlay.classList.remove('open');
     document.body.style.overflow = '';
   }
 
   document.getElementById('cw-contact-close').addEventListener('click', closeModal);
-  overlay.addEventListener('click', function (e) {
-    if (e.target === overlay) closeModal();
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeModal();
-  });
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
-  // ── Form submission ──────────────────────────────────────────────────────────
+  /* ── Form submit ───────────────────────────────────────────────────────────── */
   const form       = document.getElementById('cw-contact-form');
   const submitBtn  = document.getElementById('cw-contact-submit');
   const successDiv = document.getElementById('cw-contact-success');
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
+
     const name    = document.getElementById('cw-name').value.trim();
     const email   = document.getElementById('cw-email').value.trim();
     const subject = document.getElementById('cw-subject').value.trim();
     const message = document.getElementById('cw-message').value.trim();
 
     if (!name || !email || !message) {
-      // Simple highlight for empty required fields
       [['cw-name', name], ['cw-email', email], ['cw-message', message]].forEach(([id, val]) => {
-        const el = document.getElementById(id);
-        el.style.borderColor = val ? '' : '#ef4444';
+        document.getElementById(id).style.borderColor = val ? '' : '#ef4444';
       });
       return;
     }
 
-    submitBtn.disabled   = true;
-    submitBtn.innerHTML  = '<span class="cw-spinning">⚙</span>&nbsp; Sending…';
+    submitBtn.disabled  = true;
+    submitBtn.innerHTML = '<span class="cw-spinning">⚙</span>&nbsp; Sending…';
 
-    const sourcePage = window.location.pathname.replace(/\/$/, '') || '/';
+    // Load settings (cached after first load)
+    await loadFormSettings();
 
-    const payload = {
-      embeds: [{
-        title: '💬 New Contact Message',
-        color: 0xC4834A,
-        fields: [
-          { name: 'Name',    value: name,                 inline: true  },
-          { name: 'Email',   value: email,                inline: true  },
-          { name: 'Subject', value: subject || '(none)',  inline: false },
-          { name: 'Message', value: message.length > 1024 ? message.slice(0, 1021) + '…' : message, inline: false },
-        ],
-        timestamp: new Date().toISOString(),
-        footer: { text: 'Sent from ' + sourcePage },
-      }]
-    };
+    const fields = { name, email, subject, message };
+    const dest   = _formSettings?.destination || 'discord';
+    let   ok     = false;
 
     try {
-      const res = await fetch(DISCORD_WEBHOOK, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload),
-      });
-      if (res.ok) {
-        form.style.display       = 'none';
-        successDiv.style.display = 'block';
+      if (dest === 'email') {
+        // Email delivery requires a backend; for now fall through to Discord fallback
+        const emailAddr = _formSettings?.emailAddress;
+        if (emailAddr) {
+          // Attempt mailto as last resort (opens email client)
+          // A real implementation would POST to a backend/Formspree/EmailJS
+          console.warn('[contact-modal] Email delivery not fully implemented; using Discord fallback.');
+        }
+        // Fall through to Discord
+        ok = await sendToDiscord(name, email, subject, message, FALLBACK_DISCORD_WEBHOOK);
       } else {
-        throw new Error('Discord returned ' + res.status);
+        const webhook = _formSettings?.discordWebhook || FALLBACK_DISCORD_WEBHOOK;
+        ok = await sendToDiscord(name, email, subject, message, webhook);
       }
-    } catch (err) {
-      console.error('Contact modal webhook failed:', err);
+    } catch(err) {
+      ok = false;
+    }
+
+    await logSubmission(fields, ok ? 'sent' : 'failed');
+
+    if (ok) {
+      form.style.display       = 'none';
+      successDiv.style.display = 'block';
+    } else {
       submitBtn.disabled  = false;
       submitBtn.innerHTML = 'Send Message &rarr;';
       const errEl = document.createElement('p');
       errEl.style.cssText = 'color:#ef4444;font-size:13px;margin-top:10px;text-align:center;';
       errEl.textContent = 'Something went wrong — please try again.';
-      document.getElementById('cw-contact-form').appendChild(errEl);
+      form.appendChild(errEl);
       setTimeout(() => errEl.remove(), 6000);
     }
   });
 
-  // Reset form state when modal is reopened
+  async function sendToDiscord(name, email, subject, message, webhookUrl) {
+    const sourcePage = window.location.pathname.replace(/\/$/, '') || '/';
+    const res = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        embeds: [{
+          title: '💬 New Contact Message',
+          color: 0xC4834A,
+          fields: [
+            { name: 'Name',    value: name,                  inline: true  },
+            { name: 'Email',   value: email,                 inline: true  },
+            { name: 'Subject', value: subject || '(none)',   inline: false },
+            { name: 'Message', value: message.length > 1024 ? message.slice(0,1021)+'…' : message, inline: false },
+          ],
+          timestamp: new Date().toISOString(),
+          footer: { text: 'Sent from ' + sourcePage },
+        }]
+      }),
+    });
+    return res.ok;
+  }
+
+  /* ── Public API ────────────────────────────────────────────────────────────── */
   window.openContactModal = function () {
-    // Reset if previously submitted
     form.style.display       = '';
     successDiv.style.display = 'none';
     submitBtn.disabled       = false;
     submitBtn.innerHTML      = 'Send Message &rarr;';
     form.reset();
-    // Clear any error borders
     ['cw-name','cw-email','cw-message'].forEach(id => {
       document.getElementById(id).style.borderColor = '';
     });
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('cw-name').focus(), 100);
+
+    // Pre-load settings in background
+    loadFormSettings();
   };
 })();

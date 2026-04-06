@@ -1106,11 +1106,58 @@ async function loadSiteContent() {
     const settingsDoc = await db.collection('siteContent').doc('settings').get();
     if (settingsDoc.exists) {
       const s = settingsDoc.data();
+
+      // X / Twitter
       if (s.socialX) {
-        document.querySelectorAll('.bio-social-x, .footer-social-x').forEach(a => a.href = s.socialX);
+        const xEls = document.querySelectorAll('.bio-social-x, .footer-social-x');
+        xEls.forEach(a => { a.href = s.socialX; });
+        if (s.socialXEnabled === false) xEls.forEach(a => a.style.display = 'none');
       }
+
+      // Facebook
       if (s.socialFacebook) {
-        document.querySelectorAll('.bio-social-fb, .footer-social-fb').forEach(a => a.href = s.socialFacebook);
+        const fbEls = document.querySelectorAll('.bio-social-fb, .footer-social-fb');
+        fbEls.forEach(a => { a.href = s.socialFacebook; });
+        if (s.socialFacebookEnabled === false) fbEls.forEach(a => a.style.display = 'none');
+      }
+
+      // Instagram (inject into bio-card-socials and footer-socials if enabled)
+      if (s.instagram?.url && s.instagram?.enabled) {
+        document.querySelectorAll('.bio-card-socials, .footer-socials').forEach(container => {
+          if (container.querySelector('.cw-social-instagram')) return;
+          const a = document.createElement('a');
+          a.href = s.instagram.url;
+          a.target = '_blank'; a.rel = 'noopener noreferrer';
+          a.className = 'cw-social-instagram'; a.setAttribute('aria-label', 'Follow on Instagram');
+          a.innerHTML = '<i class="ti ti-brand-instagram"></i>';
+          container.appendChild(a);
+        });
+      }
+
+      // LinkedIn
+      if (s.linkedin?.url && s.linkedin?.enabled) {
+        document.querySelectorAll('.bio-card-socials, .footer-socials').forEach(container => {
+          if (container.querySelector('.cw-social-linkedin')) return;
+          const a = document.createElement('a');
+          a.href = s.linkedin.url;
+          a.target = '_blank'; a.rel = 'noopener noreferrer';
+          a.className = 'cw-social-linkedin'; a.setAttribute('aria-label', 'Connect on LinkedIn');
+          a.innerHTML = '<i class="ti ti-brand-linkedin"></i>';
+          container.appendChild(a);
+        });
+      }
+
+      // Google Business
+      if (s.googleBusiness?.url && s.googleBusiness?.enabled) {
+        document.querySelectorAll('.footer-socials').forEach(container => {
+          if (container.querySelector('.cw-social-google')) return;
+          const a = document.createElement('a');
+          a.href = s.googleBusiness.url;
+          a.target = '_blank'; a.rel = 'noopener noreferrer';
+          a.className = 'cw-social-google'; a.setAttribute('aria-label', 'Google Business');
+          a.innerHTML = '<i class="ti ti-brand-google"></i>';
+          container.appendChild(a);
+        });
       }
     }
   } catch(err) {
