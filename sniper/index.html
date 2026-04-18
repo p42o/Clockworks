@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clockworks Sniper — Turn Their Bad Website Into Your Next Client</title>
+<meta name="description" content="Scrape any small business site, rebuild it with AI, sell the upgrade. One-time $99 tool. Runs locally. Bring your own API key.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ground: #0E0E0C;
+  --ground-soft: #1A1916;
+  --ground-card: #141210;
+  --paper: #F5F1E8;
+  --paper-2: #EDE7D8;
+  --paper-3: #E2DAC5;
+  --ink: #F5F1E8;
+  --ink-soft: rgba(245,241,232,0.75);
+  --ink-muted: rgba(245,241,232,0.45);
+  --line: rgba(245,241,232,0.1);
+  --line-bright: rgba(245,241,232,0.2);
+  --signal: #D4582A;
+  --signal-deep: #A8441F;
+  --signal-soft: rgba(212,88,42,0.15);
+  --mech: #3C5A4A;
+  --font-display: 'Instrument Serif', 'Didot', Georgia, serif;
+  --font-sans: 'Geist', -apple-system, 'Inter', sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--ground);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+}
+
+/* Grain texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  background: rgba(14,14,12,0.85);
+  backdrop-filter: blur(12px);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  text-decoration: none;
+}
+.nav-logo em { font-style: italic; color: var(--signal); }
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-back:hover { color: var(--ink); }
+.nav-cta {
+  background: var(--signal);
+  color: var(--paper);
+  border: none;
+  padding: 10px 22px;
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.nav-cta:hover { background: var(--signal-deep); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 140px 60px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -300px; right: -300px;
+  width: 800px; height: 800px;
+  border: 1px solid rgba(212,88,42,0.07);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hero-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--signal);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-tag::before {
+  content: '';
+  display: inline-block;
+  width: 32px;
+  height: 1px;
+  background: var(--signal);
+}
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8.5vw, 130px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  max-width: 1100px;
+  margin-bottom: 36px;
+}
+.hero-headline em { font-style: italic; color: var(--signal); }
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 600px;
+  margin-bottom: 48px;
+  font-weight: 300;
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--signal);
+  color: var(--paper);
+  border: none;
+  padding: 16px 32px;
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-primary:hover { background: var(--signal-deep); transform: translateY(-1px); }
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--line-bright);
+  padding: 15px 28px;
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { color: var(--ink); border-color: rgba(245,241,232,0.4); }
+.hero-note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
+  margin-top: 20px;
+}
+.hero-note strong { color: var(--signal); }
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 60px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-scroll::after {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 40px;
+  background: var(--line-bright);
+}
+
+/* ── SECTIONS ── */
+section {
+  padding: 100px 60px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 0 60px;
+}
+.section-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--signal);
+  padding-top: 8px;
+  border-top: 1px solid var(--signal);
+  display: inline-block;
+  margin-bottom: 60px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 80px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  margin-bottom: 28px;
+}
+.section-title em { font-style: italic; color: var(--signal); }
+.section-lede {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 580px;
+  font-weight: 300;
+}
+
+/* ── HOW IT WORKS ── */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 80px;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+.how-step {
+  padding: 48px 40px 48px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--signal);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.step-num::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.step-title {
+  font-family: var(--font-display);
+  font-size: 38px;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  font-weight: 400;
+  line-height: 1.05;
+}
+.step-body {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.step-detail {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+  letter-spacing: 0.06em;
+}
+
+/* ── PROBLEM ── */
+.problem-section {
+  background: var(--ground-soft);
+  padding: 100px 60px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.problem-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.problem-statement {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 52px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  max-width: 900px;
+  padding: 48px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.problem-statement em { font-style: italic; color: var(--signal); }
+.problem-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 60px;
+}
+.stat {
+  padding: 40px 40px 40px 0;
+  border-right: 1px solid var(--line);
+}
+.stat:not(:first-child) { padding-left: 40px; }
+.stat:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6vw, 80px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--signal);
+  margin-bottom: 12px;
+}
+.stat-label {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ── FEATURES ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  margin-top: 80px;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+.feature {
+  padding: 40px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--signal-soft);
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+.feature-icon svg { width: 20px; height: 20px; stroke: var(--signal); fill: none; stroke-width: 1.5; }
+.feature-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+.feature-body {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.feature-tag {
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--signal);
+}
+
+/* ── PRICING ── */
+.pricing-section {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 100px 60px;
+}
+.pricing-card {
+  border: 1px solid var(--line-bright);
+  padding: 64px;
+  position: relative;
+  overflow: hidden;
+  background: var(--ground-card);
+}
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--signal);
+}
+.pricing-badge {
+  display: inline-block;
+  background: var(--signal-soft);
+  color: var(--signal);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 4px 12px;
+  border-radius: 2px;
+  margin-bottom: 32px;
+}
+.pricing-amount {
+  font-family: var(--font-display);
+  font-size: clamp(72px, 10vw, 120px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--paper);
+  margin-bottom: 16px;
+}
+.pricing-amount span {
+  font-size: 0.35em;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  color: var(--ink-muted);
+  vertical-align: super;
+  font-style: normal;
+}
+.pricing-desc {
+  font-size: 18px;
+  color: var(--ink-soft);
+  font-weight: 300;
+  margin-bottom: 40px;
+  max-width: 500px;
+  line-height: 1.6;
+}
+.pricing-includes {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 40px;
+  margin-bottom: 48px;
+}
+.pricing-includes li {
+  font-size: 14px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.pricing-includes li::before {
+  content: '—';
+  color: var(--signal);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+}
+.pricing-cta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.pricing-footnote {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 24px;
+  line-height: 1.7;
+}
+.pricing-footnote strong { color: var(--signal); }
+.pricing-bg-text {
+  position: absolute;
+  bottom: -20px; right: -10px;
+  font-family: var(--font-display);
+  font-size: 200px;
+  line-height: 1;
+  color: rgba(212,88,42,0.04);
+  pointer-events: none;
+  letter-spacing: -0.04em;
+  font-style: italic;
+}
+
+/* ── FAQ ── */
+.faq-section {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 60px 100px;
+}
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-top: 80px;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+.faq-item {
+  padding: 40px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.faq-q {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.faq-a {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.faq-a code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--ground-soft);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--signal);
+}
+
+/* ── CTA STRIP ── */
+.cta-strip {
+  background: var(--ground-soft);
+  border-top: 1px solid var(--line);
+  padding: 80px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-strip::before {
+  content: '';
+  position: absolute;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 600px;
+  border: 1px solid rgba(212,88,42,0.06);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.cta-strip-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 64px);
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+  font-weight: 400;
+  position: relative;
+}
+.cta-strip-title em { font-style: italic; color: var(--signal); }
+.cta-strip-sub {
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin-bottom: 40px;
+  font-weight: 300;
+  position: relative;
+}
+.cta-strip .btn-primary { position: relative; font-size: 16px; padding: 18px 40px; }
+
+/* ── FOOTER ── */
+footer {
+  padding: 40px 60px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--paper);
+}
+.footer-brand em { font-style: italic; color: var(--signal); }
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: var(--ink); }
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── GUMROAD / PAYMENT BUTTON ── */
+.buy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--signal);
+  color: #fff;
+  border: none;
+  padding: 18px 40px;
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: -0.01em;
+}
+.buy-button:hover { background: var(--signal-deep); transform: translateY(-2px); }
+.buy-button svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .hero { padding: 120px 24px 60px; }
+  section, .pricing-section, .faq-section { padding-left: 24px; padding-right: 24px; }
+  .section-divider { margin: 0 24px; }
+  .steps-grid, .features-grid, .faq-grid, .problem-stats { grid-template-columns: 1fr; }
+  .how-step { border-right: none; }
+  .feature { border-right: none; }
+  .faq-item { border-right: none; }
+  .stat { border-right: none; padding-left: 0; }
+  .pricing-card { padding: 40px 24px; }
+  .pricing-includes { grid-template-columns: 1fr; }
+  footer { flex-direction: column; align-items: flex-start; gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ────────────────────────────────────────────────────────────────────── -->
+<nav>
+  <a href="https://mnclockworks.com" class="nav-logo">Clock<em>works</em></a>
+  <a href="https://mnclockworks.com" class="nav-back">← mnclockworks.com</a>
+  <!--
+    PAYMENT BUTTON — SETUP INSTRUCTIONS:
+
+    OPTION A (Recommended — Gumroad handles delivery automatically):
+    1. Go to gumroad.com and create a free account
+    2. Create a new product → set price to $99 → upload the Clockworks Sniper ZIP
+    3. Replace the href below with your Gumroad product link
+    4. Add <script src="https://gumroad.com/js/gumroad.js"></script> to get the overlay
+
+    OPTION B (PayPal — you deliver the ZIP manually via email):
+    Replace the <a> below with a <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+    See the pricing section below for the full PayPal button form.
+  -->
+  <a href="#pricing" class="nav-cta">Get Sniper — $99</a>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-tag">Clockworks Sniper</div>
+  <h1 class="hero-headline">Their bad website<br>is your<em> next client.</em></h1>
+  <p class="hero-sub">
+    Sniper scrapes any small business site, rebuilds it with Claude AI into something worth buying, and hands you a professional demo — for about $0.25 in API costs.
+  </p>
+  <div class="hero-actions">
+    <!-- Replace href with your Gumroad or PayPal link -->
+    <a href="#pricing" class="btn-primary">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Get Clockworks Sniper — $99
+    </a>
+    <a href="#how-it-works" class="btn-ghost">See how it works</a>
+  </div>
+  <p class="hero-note"><strong>$99 one-time</strong> · No subscription · Bring your own API key · Runs locally on your Mac</p>
+  <div class="hero-scroll">Scroll to learn more</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ── PROBLEM ─────────────────────────────────────────────────────────────── -->
+<div class="problem-section">
+  <div class="problem-inner">
+    <div class="section-tag">The opportunity</div>
+    <p class="problem-statement">
+      <em>90% of local small businesses</em> have websites that are costing them customers every day. Most know it. Almost none have done anything about it.
+    </p>
+    <div class="problem-stats">
+      <div class="stat">
+        <div class="stat-num">~38M</div>
+        <div class="stat-label">Small businesses in the US — most with embarrassing or nonexistent websites</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">$0.25</div>
+        <div class="stat-label">Average API cost to rebuild their entire website with Claude Sonnet</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">$1–5k</div>
+        <div class="stat-label">What small businesses typically pay for a new website — if someone asks</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ────────────────────────────────────────────────────────── -->
+<section id="how-it-works">
+  <div class="section-tag">How it works</div>
+  <h2 class="section-title">Three steps.<br><em>One tool.</em></h2>
+  <p class="section-lede">Clockworks Sniper runs locally on your Mac. No cloud. No subscriptions. You bring the API key, the tool does the rest.</p>
+  <div class="steps-grid">
+    <div class="how-step">
+      <div class="step-num">01 — Find</div>
+      <h3 class="step-title">Point it at any target.</h3>
+      <p class="step-body">Paste any URL and Sniper extracts their text, colors, fonts, images, contact info, hours, and services automatically. Or upload screenshots — Claude's vision AI does the rest.</p>
+      <div class="step-detail">URL scraper · Screenshot OCR · Auto color + font extraction · Contact info parser</div>
+    </div>
+    <div class="how-step">
+      <div class="step-num">02 — Build</div>
+      <h3 class="step-title">Claude rebuilds it.</h3>
+      <p class="step-body">Review the extracted data, tag their images, optionally generate AI stock photos — then send it to Claude. In 30–60 seconds you have a professional, modern site built on real content.</p>
+      <div class="step-detail">Claude Sonnet / Opus · AI stock photos via Flux · Full HTML/CSS output · Live preview</div>
+    </div>
+    <div class="how-step">
+      <div class="step-num">03 — Sell</div>
+      <h3 class="step-title">Walk in with a demo.</h3>
+      <p class="step-body">Export a PIN-protected version to show the prospect. When they pay you, hand over the clean version and the client onboarding form. Done.</p>
+      <div class="step-detail">PIN lock + countdown banner · Price anchor overlay · Clean handoff version · AI onboarding form</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ── FEATURES ────────────────────────────────────────────────────────────── -->
+<section>
+  <div class="section-tag">What you get</div>
+  <h2 class="section-title">Everything you need<br><em>to pitch and close.</em></h2>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
+      </div>
+      <h4 class="feature-title">URL Scraper</h4>
+      <p class="feature-body">Extracts headlines, body copy, nav links, CTAs, brand colors, Google Fonts, phone numbers, emails, addresses, social links, business hours, and services — automatically.</p>
+      <div class="feature-tag">Works on any public URL</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg>
+      </div>
+      <h4 class="feature-title">Screenshot OCR</h4>
+      <p class="feature-body">No website? Upload screenshots, photos of flyers, or a Google Business listing. Claude analyzes the images and extracts the same data as the scraper.</p>
+      <div class="feature-tag">Up to 6 images · Claude Vision</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h4 class="feature-title">Claude Site Generation</h4>
+      <p class="feature-body">Choose from Haiku (fast, cheap), Sonnet (recommended), or Opus (highest quality). Each generates a complete, single-file HTML/CSS website from the scraped content.</p>
+      <div class="feature-tag">~$0.10–$0.50 per generation</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" stroke-linejoin="round"/></svg>
+      </div>
+      <h4 class="feature-title">AI Stock Photos</h4>
+      <p class="feature-body">Don't have good photos? Generate 1–5 professional stock photos via Flux Schnell on Replicate. Claude writes the prompts, Flux generates them — automatically on-brand.</p>
+      <div class="feature-tag">Requires Replicate API key · Optional</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+      <h4 class="feature-title">PIN-Protected Preview</h4>
+      <p class="feature-body">Export a protected version with a countdown timer, price anchor overlay ("Sites like this run $2,500–$5,000"), and your CTA button. Send it to the prospect to create urgency.</p>
+      <div class="feature-tag">Customizable PIN · Countdown · Price anchor</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke-linecap="round"/></svg>
+      </div>
+      <h4 class="feature-title">Client Onboarding Form</h4>
+      <p class="feature-body">After every export, an AI analyzes the generated site and creates a custom onboarding HTML form — pre-filled with placeholder text the client needs to swap in. Saves hours of back-and-forth.</p>
+      <div class="feature-tag">Auto-generated · No setup required</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ── PRICING ─────────────────────────────────────────────────────────────── -->
+<div id="pricing" class="pricing-section">
+  <div class="section-tag">Pricing</div>
+  <div class="pricing-card">
+    <div class="pricing-badge">One-time purchase · No subscription</div>
+    <div class="pricing-amount"><span>$</span>99</div>
+    <p class="pricing-desc">
+      Pay once, own it forever. Bring your own Anthropic API key. Each site generation costs you pennies — not monthly fees.
+    </p>
+    <ul class="pricing-includes">
+      <li>URL scraper + screenshot OCR</li>
+      <li>Claude site generation (all 3 models)</li>
+      <li>Image tagging + AI stock photos</li>
+      <li>PIN-protected pitch version</li>
+      <li>Clean handoff version</li>
+      <li>AI-generated onboarding form</li>
+      <li>Runs locally — no cloud, no tracking</li>
+      <li>Lifetime updates (self-update via git)</li>
+    </ul>
+    <div class="pricing-cta">
+      <!--
+        PAYMENT INTEGRATION — CHOOSE ONE:
+
+        OPTION A — GUMROAD (Easiest, ~10% fee, automatic delivery):
+        1. Create product at gumroad.com, upload your ZIP, set price $99
+        2. Add <script src="https://gumroad.com/js/gumroad.js"></script> to <head>
+        3. Replace the <a> below with: <a class="gumroad-button buy-button" href="https://YOURNAME.gumroad.com/l/PRODUCTID">Buy Clockworks Sniper — $99</a>
+
+        OPTION B — PAYPAL (~3% + $0.30 per sale, manual delivery):
+        Replace the <a> below with this form:
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="display:inline">
+          <input type="hidden" name="cmd" value="_xclick">
+          <input type="hidden" name="business" value="parks.phone@gmail.com">
+          <input type="hidden" name="item_name" value="Clockworks Sniper">
+          <input type="hidden" name="amount" value="99.00">
+          <input type="hidden" name="currency_code" value="USD">
+          <input type="hidden" name="return" value="https://mnclockworks.com/sniper/thank-you.html">
+          <input type="hidden" name="cancel_return" value="https://mnclockworks.com/sniper">
+          <button type="submit" class="buy-button">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Buy with PayPal — $99
+          </button>
+        </form>
+      -->
+      <a href="#" class="buy-button">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Get Clockworks Sniper — $99
+      </a>
+    </div>
+    <p class="pricing-footnote">
+      Requires a Mac with Python 3 installed. You need an <strong>Anthropic API key</strong> (get one at console.anthropic.com — typical usage cost is $0.10–$0.50 per site).<br>
+      AI stock photos require a separate Replicate API key (optional). A single high-quality site generation costs around $0.25.
+    </p>
+    <div class="pricing-bg-text">$99</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ── FAQ ─────────────────────────────────────────────────────────────────── -->
+<div class="faq-section">
+  <div class="section-tag">Questions</div>
+  <h2 class="section-title">Answered.</h2>
+  <div class="faq-grid">
+    <div class="faq-item">
+      <h4 class="faq-q">What does "bring your own API key" mean?</h4>
+      <p class="faq-a">You sign up at <code>console.anthropic.com</code>, add a payment method, and copy your API key into Sniper's Settings. You pay Anthropic directly for each generation — typically $0.10–$0.50 per site. We don't touch your billing.</p>
+    </div>
+    <div class="faq-item">
+      <h4 class="faq-q">Does this run in the cloud?</h4>
+      <p class="faq-a">No. Clockworks Sniper runs entirely on your Mac — it's a local web app that opens in your browser. The only external calls are to the Anthropic API (for generation) and optionally Replicate (for AI photos). Your target site data never hits our servers.</p>
+    </div>
+    <div class="faq-item">
+      <h4 class="faq-q">What do I actually deliver to the client?</h4>
+      <p class="faq-a">You get a ZIP with: (1) a PIN-locked preview HTML file you send to the prospect, (2) a clean handoff HTML file you deliver after payment, and (3) an AI-generated onboarding form so they can supply their real content. Hosting is the client's problem — you're selling the build.</p>
+    </div>
+    <div class="faq-item">
+      <h4 class="faq-q">How much should I charge clients?</h4>
+      <p class="faq-a">Most local small business sites (landscaping, pest control, cleaning, trades) sell for $1,000–$3,000 for a one-pager. Multi-page sites run $3,000–$7,000. Sniper generates a single-page site — position it as a foundation and upsell from there. One sale pays for the tool 10–30×.</p>
+    </div>
+    <div class="faq-item">
+      <h4 class="faq-q">Do I need to know how to code?</h4>
+      <p class="faq-a">No coding required to generate and export sites. You need Python 3 on your Mac (it's either already there or a 2-minute install). The output is clean HTML/CSS you or a developer can customize further.</p>
+    </div>
+    <div class="faq-item">
+      <h4 class="faq-q">What if the generated site isn't perfect?</h4>
+      <p class="faq-a">The Prompt Review step lets you add custom instructions before generating — "add a gallery section," "use a dark theme," "make the hero focus on emergency availability." You can regenerate as many times as you want. Each attempt costs ~$0.25.</p>
+    </div>
+    <div class="faq-item">
+      <h4 class="faq-q">What happens after I buy?</h4>
+      <p class="faq-a">You'll receive a download link for the Clockworks Sniper ZIP. Unzip it, double-click <code>Launch Sniper.command</code> to start, and open your browser to <code>localhost:5555</code>. First run takes about 30 seconds to set up dependencies.</p>
+    </div>
+    <div class="faq-item">
+      <h4 class="faq-q">Is this legal? Can I scrape any site?</h4>
+      <p class="faq-a">You're responsible for how you use the tool. Scraping publicly visible information is generally legal, but using it to deceive, spam, or misrepresent a business is not. Clockworks Sniper is built for legitimate web design prospecting — walk in, show the demo, make your pitch. If they say no, delete the draft.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── CTA STRIP ────────────────────────────────────────────────────────────── -->
+<div class="cta-strip">
+  <h2 class="cta-strip-title">Your first client<br>is one URL <em>away.</em></h2>
+  <p class="cta-strip-sub">$99. No subscription. No expiration. One sale and you've made your money back 10×.</p>
+  <a href="#pricing" class="btn-primary">Get Clockworks Sniper — $99</a>
+</div>
+
+<!-- ── FOOTER ───────────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-brand">Clock<em>works</em> Sniper</div>
+  <div class="footer-links">
+    <a href="https://mnclockworks.com">Main Site</a>
+    <a href="https://mnclockworks.com#contact">Contact</a>
+    <a href="https://mnclockworks.com/terms.html">Terms</a>
+    <a href="https://mnclockworks.com/privacy.html">Privacy</a>
+  </div>
+  <div class="footer-copy">© 2026 Clockworks · Maple Grove, MN</div>
+</footer>
+
+</body>
+</html>
