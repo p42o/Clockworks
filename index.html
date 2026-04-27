@@ -2531,11 +2531,11 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
     'missed-call': {
       label: 'lead captured in 11s',
       nodes: [
-        { label: 'Missed Call',    sub: 'Trigger',     icon: 'ti-phone-incoming',   bg: 'rgba(196,131,74,0.14)',  color: '#A86C35', x: 25, y: 22 },
-        { label: 'AI Response',    sub: 'Claude · GPT',icon: 'ti-sparkles',         bg: 'rgba(139,92,246,0.14)',  color: '#7c3aed', x: 55, y: 50 },
+        { label: 'Missed Call',    sub: 'Trigger',     icon: 'ti-phone-incoming',   bg: 'rgba(196,131,74,0.14)',  color: '#A86C35', x: 22, y: 22 },
+        { label: 'AI Response',    sub: 'Claude · GPT',icon: 'ti-sparkles',         bg: 'rgba(139,92,246,0.14)',  color: '#7c3aed', x: 50, y: 50 },
         { label: 'SMS Sent',       sub: 'Twilio',      icon: 'ti-message-2',        bg: 'rgba(59,130,246,0.14)',  color: '#2563eb', x: 82, y: 28 },
         { label: 'Calendar Hold',  sub: 'Google Cal',  icon: 'ti-calendar-event',   bg: 'rgba(34,197,94,0.14)',   color: '#15803d', x: 82, y: 72 },
-        { label: 'Parker Notified',sub: 'Discord',     icon: 'ti-bell-ringing',     bg: 'rgba(244,63,94,0.12)',   color: '#be123c', x: 44, y: 72 }
+        { label: 'Parker Notified',sub: 'Discord',     icon: 'ti-bell-ringing',     bg: 'rgba(244,63,94,0.12)',   color: '#be123c', x: 22, y: 78 }
       ],
       wires: [[0,1],[1,2],[1,3],[1,4]],
       seq: [0,1,2,3]
@@ -2543,11 +2543,11 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
     'lead-qualifier': {
       label: 'qualified in 6s',
       nodes: [
-        { label: 'Form Submit',    sub: 'Website',     icon: 'ti-forms',            bg: 'rgba(59,130,246,0.14)',  color: '#2563eb', x: 22, y: 18 },
-        { label: 'Enrich',         sub: 'Clearbit',    icon: 'ti-database-search',  bg: 'rgba(20,184,166,0.14)',  color: '#0d9488', x: 22, y: 60 },
-        { label: 'AI Scoring',     sub: 'GPT-4',       icon: 'ti-brain',            bg: 'rgba(139,92,246,0.14)',  color: '#7c3aed', x: 55, y: 42 },
-        { label: 'Hot · Route',    sub: 'Slack',       icon: 'ti-flame',            bg: 'rgba(244,63,94,0.12)',   color: '#be123c', x: 84, y: 22 },
-        { label: 'Cold · Nurture', sub: 'Mailchimp',   icon: 'ti-snowflake',        bg: 'rgba(196,131,74,0.14)',  color: '#A86C35', x: 84, y: 70 }
+        { label: 'Form Submit',    sub: 'Website',     icon: 'ti-forms',            bg: 'rgba(59,130,246,0.14)',  color: '#2563eb', x: 22, y: 22 },
+        { label: 'Enrich',         sub: 'Clearbit',    icon: 'ti-database-search',  bg: 'rgba(20,184,166,0.14)',  color: '#0d9488', x: 22, y: 78 },
+        { label: 'AI Scoring',     sub: 'GPT-4',       icon: 'ti-brain',            bg: 'rgba(139,92,246,0.14)',  color: '#7c3aed', x: 50, y: 50 },
+        { label: 'Hot · Route',    sub: 'Slack',       icon: 'ti-flame',            bg: 'rgba(244,63,94,0.12)',   color: '#be123c', x: 82, y: 28 },
+        { label: 'Cold · Nurture', sub: 'Mailchimp',   icon: 'ti-snowflake',        bg: 'rgba(196,131,74,0.14)',  color: '#A86C35', x: 82, y: 72 }
       ],
       wires: [[0,2],[1,2],[2,3],[2,4]],
       seq: [0,1,2,3]
