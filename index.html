@@ -13,8 +13,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="canonical" href="https://mnclockworks.com" />
   <link rel="icon" type="image/svg+xml" href="images/logo-small.svg" />
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logo-small.svg" />
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+  <template id="__bundler_thumbnail" data-bg-color="#1C2333">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="800" fill="#1C2333"/>
+      <g transform="translate(600 400)" fill="none" stroke="#C4834A" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="0" cy="0" r="60"/>
+        <g>
+          <line x1="0" y1="-180" x2="0" y2="-110"/>
+          <line x1="0" y1="180" x2="0" y2="110"/>
+          <line x1="-180" y1="0" x2="-110" y2="0"/>
+          <line x1="180" y1="0" x2="110" y2="0"/>
+          <line x1="-127" y1="-127" x2="-78" y2="-78"/>
+          <line x1="127" y1="127" x2="78" y2="78"/>
+          <line x1="-127" y1="127" x2="-78" y2="78"/>
+          <line x1="127" y1="-127" x2="78" y2="-78"/>
+        </g>
+      </g>
+      <text x="600" y="640" text-anchor="middle" font-family="Georgia, serif" font-size="54" fill="#fefefe" font-style="italic">Clockworks</text>
+    </svg>
+  </template>
   <title>Clockworks | AI & Automation for Small Business</title>
   <meta name="description" content="Clockworks builds done-for-you AI and automation systems that save small businesses 10+ hours a week. Invoicing, scheduling, lead follow-up, reviews — all on autopilot. Free 30-minute strategy session." />
   <meta name="keywords" content="AI consulting small business, business automation, workflow automation, done-for-you automation, AI solutions small business, invoice automation, lead follow-up automation, automated scheduling, Maple Grove MN, Twin Cities" />
@@ -185,7 +202,7 @@
     .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(196,131,74,0.08); border: 1px solid rgba(196,131,74,0.22); border-radius: 100px; padding: 6px 16px; margin-bottom: 16px; }
     .hero-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); animation: pulse 2s infinite; }
     .hero-badge-text { color: var(--orange-dark); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
-    .hero-h1 { font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(34px, 4.5vw, 58px); font-weight: 400; color: var(--navy); line-height: 1.1; margin-bottom: 22px; max-width: 820px; }
+    .hero-h1 { font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(34px, 4.5vw, 58px); font-weight: 400; color: var(--navy); line-height: 1.15; margin-bottom: 28px; max-width: 820px; text-wrap: balance; }
     .hero-accent { color: var(--orange); }
     .hero-desc { font-size: clamp(15px, 1.7vw, 18px); color: var(--text-muted); line-height: 1.75; max-width: 620px; margin-bottom: 32px; }
     .hero-btns { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; justify-content: center; }
@@ -223,6 +240,16 @@
     .auto-card-subtitle { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 14px; line-height: 1.5; }
     .auto-card-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #22c55e; }
     .auto-card-badge::before { content: '\2713'; font-weight: 700; }
+    .auto-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+    .auto-card-cat { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.4); padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+    .auto-card-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; margin: 14px 0 18px; padding: 10px 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; }
+    .auto-flow-chip { font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,0.78); padding: 4px 8px; background: rgba(196,131,74,0.10); border: 1px solid rgba(196,131,74,0.18); border-radius: 6px; white-space: nowrap; }
+    .auto-flow-arrow { color: rgba(196,131,74,0.6); font-size: 12px; font-weight: 700; }
+    .auto-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .auto-card-more { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); display: inline-flex; align-items: center; gap: 4px; transition: color .25s, transform .25s; }
+    .auto-card-more i { font-size: 13px; transition: transform .25s; }
+    .auto-card:hover .auto-card-more { color: var(--orange); }
+    .auto-card:hover .auto-card-more i { transform: translateX(3px); }
 
     /* Icon gradient classes */
     .grad-copper i { background: linear-gradient(135deg, #C4834A, #E8B87A); background-clip: text; -webkit-background-clip: text; }
@@ -423,6 +450,284 @@
     .footer-copy { font-size: 11px; color: rgba(255,255,255,0.25); }
 
 
+    /* ══════════════════════════════════════════════
+       LIVELIER ADDITIONS (2026 Refresh)
+       ══════════════════════════════════════════════ */
+
+    /* ── Hero Layout w/ Workflow Diagram ── */
+    @media (min-width: 1024px) {
+      .hero-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: center; gap: 56px; text-align: left; }
+      .hero-layout .hero-h1 { max-width: none; }
+      .hero-layout .hero-desc { max-width: 520px; }
+      .hero-layout .hero-btns { justify-content: flex-start; }
+      .hero-layout .hero-trust { justify-content: flex-start; }
+    }
+
+    /* ── Rotating words (typewriter-ish) ── */
+    .rotator {
+      position: relative;
+      display: inline-block;
+      color: var(--orange);
+      font-style: italic;
+      white-space: nowrap;
+      vertical-align: baseline;
+      /* No min-width by default — let the rotator size to content. The cursor caret stays anchored visually. */
+    }
+    @media (min-width: 1024px) {
+      .rotator { min-width: 11ch; }
+    }
+    .rotator::after { content: ''; display: inline-block; width: 2px; height: 0.9em; background: var(--orange); margin-left: 2px; vertical-align: baseline; animation: caret 1s steps(1) infinite; transform: translateY(0.08em); }
+    @keyframes caret { 50% { opacity: 0; } }
+    /* Allow the hero h1 to stay on predictable lines */
+    .hero-h1 { line-height: 1.3; }
+
+    /* ── Hero Workflow Diagram ── */
+    .wf-shell { display: flex; flex-direction: column; gap: 12px; max-width: 520px; margin: 0 auto; }
+    .wf-tabs { display: flex; gap: 6px; padding: 5px; background: rgba(255,255,255,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(28,35,51,0.06); border-radius: 14px; box-shadow: 0 2px 8px rgba(28,35,51,0.04); }
+    .wf-tab {
+      flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px 10px; border-radius: 9px; border: 0; background: transparent;
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: var(--text-muted);
+      cursor: pointer; transition: background .2s, color .2s, transform .15s;
+      white-space: nowrap;
+    }
+    .wf-tab i { font-size: 14px; }
+    .wf-tab:hover { color: var(--navy); }
+    .wf-tab.active { background: var(--navy); color: #fff; box-shadow: 0 2px 8px -2px rgba(28,35,51,0.3); }
+    .wf-tab.active:hover { color: #fff; }
+    @media (max-width: 480px) {
+      .wf-tab span { display: none; }
+      .wf-tab { padding: 10px; }
+      .wf-tab i { font-size: 16px; }
+    }
+    .wf-stage {
+      position: relative; width: 100%; aspect-ratio: 1 / 1;
+      border-radius: 24px;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(196,131,74,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 85%, rgba(28,35,51,0.07) 0%, transparent 60%),
+        linear-gradient(180deg, #fdfbf7 0%, #f7f2ec 100%);
+      border: 1px solid rgba(28,35,51,0.06);
+      box-shadow: 0 24px 60px -24px rgba(28,35,51,0.18), 0 2px 8px rgba(28,35,51,0.04);
+      overflow: hidden;
+    }
+    .wf-stage::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(28,35,51,0.08) 1px, transparent 1.2px);
+      background-size: 22px 22px;
+      mask-image: radial-gradient(ellipse at center, #000 55%, transparent 85%);
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 55%, transparent 85%);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .wf-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+    .wf-node {
+      position: absolute;
+      background: #fff;
+      border: 1px solid rgba(28,35,51,0.12);
+      border-radius: 12px;
+      padding: 9px 12px 9px 10px;
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 6px 18px -6px rgba(28,35,51,0.2), 0 1px 2px rgba(28,35,51,0.06);
+      font-size: 12px; font-weight: 600; color: var(--navy);
+      transform: translate(-50%, -50%);
+      transition: transform .35s cubic-bezier(.2,.9,.3,1.4), box-shadow .35s ease, border-color .35s ease;
+      white-space: nowrap; user-select: none;
+    }
+    .wf-node.active {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 4px rgba(196,131,74,0.18), 0 10px 24px -8px rgba(196,131,74,0.45), 0 2px 6px rgba(28,35,51,0.08);
+      transform: translate(-50%, -50%) scale(1.04);
+    }
+    .wf-node-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--text-dim);
+      transition: background .3s ease, box-shadow .3s ease;
+      flex-shrink: 0;
+    }
+    .wf-node.active .wf-node-dot {
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.18);
+    }
+    .wf-node-ico {
+      width: 20px; height: 20px; border-radius: 6px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(196,131,74,0.12); color: var(--orange-dark);
+      flex-shrink: 0;
+    }
+    .wf-node-ico i { font-size: 13px; }
+    .wf-node-label { line-height: 1.15; letter-spacing: 0.1px; }
+    .wf-node-sub { display: block; font-size: 10px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.3px; text-transform: uppercase; margin-top: 1px; }
+
+    /* SVG path styles */
+    .wf-wire { fill: none; stroke: rgba(28,35,51,0.18); stroke-width: 2; stroke-linecap: round; }
+    .wf-wire-glow { fill: none; stroke: var(--orange); stroke-width: 2.5; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(196,131,74,0.55)); opacity: 0; transition: opacity .2s; }
+    .wf-wire-glow.lit { opacity: 1; }
+    .wf-packet { fill: var(--orange); filter: drop-shadow(0 0 8px rgba(196,131,74,0.9)); }
+
+    /* Stage caption */
+    .wf-caption {
+      position: absolute; bottom: 14px; left: 14px; right: 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(28,35,51,0.08); border-radius: 10px;
+      padding: 8px 12px; font-size: 11px; color: var(--text-muted); font-weight: 500;
+    }
+    .wf-caption-live { display: inline-flex; align-items: center; gap: 6px; color: var(--navy); font-weight: 700; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+    .wf-caption-live::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.18); animation: pulse 1.6s infinite; }
+    .wf-caption-time { font-variant-numeric: tabular-nums; color: var(--navy-mid); }
+
+    @media (max-width: 1023px) {
+      .wf-shell { max-width: 440px; margin-top: 40px; }
+    }
+    @media (max-width: 520px) {
+      .wf-shell { display: none; }
+    }
+
+    /* ── Activity Ticker ── */
+    .activity-ticker {
+      margin-top: 20px; padding: 10px 16px;
+      background: rgba(255,255,255,0.6); backdrop-filter: blur(8px);
+      border: 1px solid rgba(28,35,51,0.06); border-radius: 100px;
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 12px; color: var(--text-muted);
+      max-width: 100%; overflow: hidden;
+    }
+    .activity-ticker-pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 3px rgba(196,131,74,0.18); flex-shrink: 0; animation: pulse 1.4s infinite; }
+    .activity-ticker-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; font-variant-numeric: tabular-nums; }
+    .activity-ticker-text b { color: var(--navy); font-weight: 600; }
+    .activity-ticker-text .ago { color: var(--text-dim); font-weight: 500; }
+
+    /* ── Count-up number (hero counter) ── */
+    .hero-counter strong { font-variant-numeric: tabular-nums; color: var(--orange-dark); font-size: 15px; }
+
+    /* ── Live Stats Strip (replaces plain "currently building" line area) ── */
+    .live-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 24px;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(28,35,51,0.06);
+      border-radius: 14px;
+      max-width: 520px;
+    }
+    .live-stat { text-align: left; padding: 0 14px; position: relative; }
+    .live-stat + .live-stat { border-left: 1px solid rgba(28,35,51,0.08); }
+    .live-stat-num { font-family: 'Instrument Serif', Georgia, serif; font-size: 28px; color: var(--navy); line-height: 1; font-variant-numeric: tabular-nums; }
+    .live-stat-num .plus { color: var(--orange); }
+    .live-stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-top: 6px; }
+
+    @media (max-width: 640px) {
+      .live-stats { grid-template-columns: 1fr; }
+      .live-stat { padding: 10px 0; }
+      .live-stat + .live-stat { border-left: none; border-top: 1px solid rgba(28,35,51,0.08); }
+    }
+
+    /* ── Card cascade (automations) ── */
+    @keyframes cardSpringIn {
+      0%   { opacity: 0; transform: translateY(14px) scale(0.96); }
+      60%  { opacity: 1; transform: translateY(-2px) scale(1.01); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .auto-card { animation: cardSpringIn 0.55s cubic-bezier(.2,.9,.3,1.4) both; }
+
+    /* Animate the auto-card badge as a row of progressing dots on hover */
+    .auto-card { position: relative; }
+    .auto-card::after {
+      content: ''; position: absolute; left: 24px; right: 24px; bottom: 0; height: 2px;
+      background: linear-gradient(90deg, var(--orange), #E8B87A);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform .45s ease;
+      border-radius: 2px;
+      opacity: 0.85;
+    }
+    .auto-card:hover::after { transform: scaleX(1); }
+
+    /* Hover: icon micro-bounce */
+    .auto-card-icon { transition: transform .35s cubic-bezier(.2,.9,.3,1.4); }
+    .auto-card:hover .auto-card-icon { transform: translateY(-3px) rotate(-4deg); }
+
+    /* ── Magnetic/ripple buttons ── */
+    .btn-primary, .nav-cta, .plan-cta.btn-primary, .auto-modal-cta, .form-submit, .mobile-cta {
+      position: relative; overflow: hidden; isolation: isolate;
+    }
+    .btn-primary::before, .nav-cta::before, .auto-modal-cta::before, .form-submit::before, .mobile-cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.35) 50%, transparent 80%);
+      transform: translateX(-120%);
+      transition: transform .7s cubic-bezier(.3,.9,.3,1.1);
+      pointer-events: none;
+    }
+    .btn-primary:hover::before, .nav-cta:hover::before, .auto-modal-cta:hover::before,
+    .form-submit:hover::before, .mobile-cta:hover::before { transform: translateX(120%); }
+    .ripple {
+      position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      transform: translate(-50%,-50%) scale(0);
+      animation: rippleExpand 0.65s ease-out forwards;
+      pointer-events: none;
+      z-index: 2;
+    }
+    @keyframes rippleExpand {
+      to { transform: translate(-50%,-50%) scale(6); opacity: 0; }
+    }
+
+    /* ── Gear accent (section marker) ── */
+    .gear-accent {
+      display: inline-block; width: 14px; height: 14px; margin-right: 8px; vertical-align: -2px;
+      color: var(--orange);
+      animation: gearSpin 14s linear infinite;
+    }
+    @keyframes gearSpin { to { transform: rotate(360deg); } }
+
+    /* Logo wordmark/gear subtle wiggle on hover */
+    .logo:hover .logo-gear { animation: gearSpin 2.2s linear infinite; }
+    .logo-gear { display: inline-block; transition: transform .3s; color: var(--orange); vertical-align: middle; }
+
+    /* ── Section label pill treatment ── */
+    .section-label-wrap {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 12px; border-radius: 100px;
+      background: rgba(196,131,74,0.08); border: 1px solid rgba(196,131,74,0.18);
+      margin-bottom: 16px;
+    }
+    .section-label-wrap .section-label { margin: 0; color: var(--orange-dark); font-size: 11px; }
+
+    /* ── Pricing "live building" ticker ── */
+    .pricing-live {
+      margin: 0 auto 32px; max-width: 520px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 10px 18px;
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 100px;
+      font-size: 13px; color: #15803d; font-weight: 600;
+    }
+    .pricing-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: pulse 1.4s infinite; }
+    .pricing-live-count { font-variant-numeric: tabular-nums; color: var(--navy); }
+
+    /* ── Reveal: richer entrance ── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1); }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── Step cards: progress bar fill on reveal ── */
+    .step-card { position: relative; }
+    .step-card::before {
+      content: ''; position: absolute; left: 0; top: 0; height: 3px; width: 100%;
+      background: linear-gradient(90deg, var(--orange), #E8B87A);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 1.1s cubic-bezier(.2,.9,.3,1.1) .2s;
+      border-radius: 3px 3px 0 0;
+    }
+    .step-card.visible::before { transform: scaleX(1); }
+
+    /* ── Subtle parallax data-attr (driven by JS) ── */
+    .hero-blob { will-change: transform; }
+
     /* ══ RESPONSIVE ══ */
     @media (max-width: 1024px) {
       .steps-grid { grid-template-columns: repeat(2,1fr); }
@@ -465,7 +770,7 @@
 <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
   <div class="navbar-inner">
     <a href="#" class="logo" aria-label="Clockworks — Home">
-      <img src="images/logo-full.svg" alt="Clockworks" class="logo-img" />
+      <img src="images/logo-full.svg" alt="Clockworks" class="logo-img" onerror="this.outerHTML='&lt;span class=\'logo-gear\' style=\'font-family:Instrument Serif,serif;font-size:24px;color:var(--navy);display:inline-flex;align-items:center;gap:8px;\'&gt;&lt;svg width=\'28\' height=\'28\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23C4834A\' stroke-width=\'1.6\' stroke-linecap=\'round\' stroke-linejoin=\'round\' style=\'animation:gearSpin 14s linear infinite;\'&gt;&lt;circle cx=\'12\' cy=\'12\' r=\'3\'/&gt;&lt;path d=\'M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\'/&gt;&lt;/svg&gt;Clockworks&lt;/span&gt;'" />
     </a>
     <div class="nav-links" role="list">
       <a href="#what-i-build" class="nav-link" role="listitem">What I Build</a>
@@ -536,28 +841,73 @@
   <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
   <div class="hero-content">
     <div class="hero-layout" style="animation:fadeInUp 0.8s ease both;">
-      <div class="hero-badge">
-        <span class="hero-badge-dot" aria-hidden="true"></span>
-        <span class="hero-badge-text">AI-POWERED AUTOMATION &middot; SMALL BUSINESS</span>
+      <div>
+        <div class="hero-badge">
+          <span class="hero-badge-dot" aria-hidden="true"></span>
+          <span class="hero-badge-text">AI-POWERED AUTOMATION &middot; SMALL BUSINESS</span>
+        </div>
+        <h1 class="hero-h1">
+          You're losing 10+ hours a week to <span class="rotator" id="rotator" aria-live="polite">invoices</span>.&nbsp; <span class="hero-accent">Let's fix that &mdash; for free.</span>
+        </h1>
+        <p class="hero-desc" id="hero-desc">
+          Book a free 30-minute strategy session. I'll map your biggest time drains, show you exactly what to automate, and give you a written roadmap and a free working demo &mdash; whether you hire me or not. If you do, your first workflow is live within a week.
+        </p>
+        <div class="hero-btns">
+          <a href="#booking" class="btn-primary" data-magnetic>Book My Free 30-Min Strategy Session &rarr;</a>
+          <a href="#how-it-works" class="btn-ghost">See How It Works</a>
+        </div>
+        <div class="activity-ticker" aria-live="polite" aria-label="Why automation pays off">
+          <span class="activity-ticker-pulse" aria-hidden="true"></span>
+          <span class="activity-ticker-text" id="activity-text"><b>1 in 3</b> calls to small businesses go unanswered <span class="ago">&middot; you can fix that</span></span>
+        </div>
+        <div class="hero-trust" id="hero-trust" style="margin-top:24px;">
+          <span class="hero-trust-parker"><img src="images/Parker.png" alt="Parker" class="hero-headshot" /> Parker &middot; Maple Grove, MN</span>
+          <span>Free roadmap, zero obligation</span>
+          <span>Working demo in 48 hours</span>
+          <span>Coffee-bet guarantee</span>
+        </div>
+        <div class="live-stats" aria-label="Live automation impact">
+          <div class="live-stat">
+            <div class="live-stat-num"><span class="countup" data-to="1247">0</span><span class="plus">+</span></div>
+            <div class="live-stat-label">Hours saved / month</div>
+          </div>
+          <div class="live-stat">
+            <div class="live-stat-num"><span class="countup" data-to="5">0</span></div>
+            <div class="live-stat-label">Building this week</div>
+          </div>
+          <div class="live-stat">
+            <div class="live-stat-num"><span class="countup" data-to="48" data-suffix="h">0</span></div>
+            <div class="live-stat-label">Demo turnaround</div>
+          </div>
+        </div>
       </div>
-      <h1 class="hero-h1">
-        You're losing 10+ hours a week to invoices, missed calls, and follow-ups.<br>
-        <span class="hero-accent">Let's fix that &mdash; for free.</span>
-      </h1>
-      <p class="hero-desc" id="hero-desc">
-        Book a free 30-minute strategy session. I'll map your biggest time drains, show you exactly what to automate, and give you a written roadmap and a free working demo &mdash; whether you hire me or not. If you do, your first workflow is live within a week.
-      </p>
-      <div class="hero-btns">
-        <a href="#booking" class="btn-primary">Book My Free 30-Min Strategy Session &rarr;</a>
-        <a href="#how-it-works" class="btn-ghost">See How It Works</a>
+      <!-- Animated Workflow Diagram (3 scenarios, tab-switchable) -->
+      <div class="wf-shell">
+        <div class="wf-tabs" role="tablist" aria-label="Workflow scenarios">
+          <button class="wf-tab active" data-scenario="missed-call" role="tab" aria-selected="true">
+            <i class="ti ti-phone-incoming"></i><span>Missed Call AI</span>
+          </button>
+          <button class="wf-tab" data-scenario="lead-qualifier" role="tab" aria-selected="false">
+            <i class="ti ti-user-search"></i><span>Lead Qualifier</span>
+          </button>
+          <button class="wf-tab" data-scenario="social-autopilot" role="tab" aria-selected="false">
+            <i class="ti ti-sparkles"></i><span>Social Autopilot</span>
+          </button>
+        </div>
+        <div class="wf-stage" aria-hidden="true" id="wf-stage">
+          <svg viewBox="0 0 500 500" preserveAspectRatio="none" id="wf-svg">
+            <g id="wf-wires"></g>
+            <g id="wf-gwires"></g>
+            <circle class="wf-packet" id="wf-packet" cx="-50" cy="-50" r="5" />
+          </svg>
+          <div id="wf-nodes"></div>
+          <div class="wf-caption">
+            <span class="wf-caption-live">Live Workflow</span>
+            <span id="wf-status">Booting scenario&hellip;</span>
+            <span class="wf-caption-time" id="wf-clock">00:00</span>
+          </div>
+        </div>
       </div>
-      <div class="hero-trust" id="hero-trust">
-        <span class="hero-trust-parker"><img src="images/Parker.png" alt="Parker" class="hero-headshot" /> Parker &middot; Maple Grove, MN</span>
-        <span>Free roadmap, zero obligation</span>
-        <span>Working demo in 48 hours</span>
-        <span>Coffee-bet guarantee</span>
-      </div>
-      <div class="hero-counter">Currently building for <strong>5</strong> Twin Cities businesses</div>
     </div>
   </div>
 </section>
@@ -588,25 +938,12 @@
   </div>
 </section>
 
-<!-- MID-PAGE CTA -->
-<section class="mid-cta" aria-label="Quick booking form">
+<!-- MID-PAGE CTA (button-only — booking form is at #booking) -->
+<section class="mid-cta" aria-label="Quick CTA">
   <div class="mid-cta-inner">
-    <h2 class="mid-cta-heading reveal">Convinced already? Let's talk.</h2>
-    <div class="mid-cta-form-wrap reveal">
-      <form id="mid-form" novalidate>
-        <div class="mid-cta-row">
-          <div>
-            <label class="form-label" for="mid-name">Your Name</label>
-            <input class="form-input" id="mid-name" name="name" type="text" placeholder="Jane Smith" required autocomplete="name" />
-          </div>
-          <div>
-            <label class="form-label" for="mid-email">Email Address</label>
-            <input class="form-input" id="mid-email" name="email" type="email" placeholder="jane@yourbusiness.com" required autocomplete="email" />
-          </div>
-        </div>
-        <button type="submit" class="form-submit" id="mid-submit">Book My Free Call &rarr;</button>
-      </form>
-    </div>
+    <h2 class="mid-cta-heading reveal" style="margin-bottom:8px;">Convinced already?</h2>
+    <p class="reveal" style="font-size:15px;color:var(--text-muted);margin-bottom:24px;">Skip ahead and grab a slot &mdash; or keep scrolling to see the rest.</p>
+    <a href="#booking" class="btn-primary reveal" data-magnetic style="display:inline-flex;">Jump to Booking &rarr;</a>
   </div>
 </section>
 
@@ -1372,11 +1709,21 @@ function renderAutoCards(filter) {
   if (!grid) return;
   grid.innerHTML = AUTOMATIONS.map((a, i) => {
     const hidden = filter !== 'all' && a.category !== filter ? ' hidden' : '';
+    const flowChips = (a.flow || []).slice(0, 3).map((step, si) =>
+      `<span class="auto-flow-chip">${step}</span>${si < Math.min(2, a.flow.length - 1) ? '<span class="auto-flow-arrow" aria-hidden="true">›</span>' : ''}`
+    ).join('');
     return `<div class="auto-card${hidden}" data-category="${a.category}" data-index="${i}" role="button" tabindex="0" aria-label="${a.title}" style="animation-delay:${i * 0.06}s">
-      <div class="auto-card-icon ${a.bgClass} ${a.gradient}"><i class="ti ${a.icon}"></i></div>
+      <div class="auto-card-top">
+        <div class="auto-card-icon ${a.bgClass} ${a.gradient}"><i class="ti ${a.icon}"></i></div>
+        <div class="auto-card-cat">${a.category.replace('-', ' ')}</div>
+      </div>
       <div class="auto-card-title">${a.title}</div>
       <div class="auto-card-subtitle">${a.subtitle}</div>
-      <div class="auto-card-badge">${a.badge}</div>
+      <div class="auto-card-flow" aria-hidden="true">${flowChips}</div>
+      <div class="auto-card-foot">
+        <div class="auto-card-badge">${a.badge}</div>
+        <span class="auto-card-more">View workflow <i class="ti ti-arrow-right"></i></span>
+      </div>
     </div>`;
   }).join('');
 
@@ -1457,6 +1804,403 @@ document.querySelectorAll('.hero-headshot, .about-headshot').forEach(img => {
   img.addEventListener('click', e => { e.preventDefault(); openBioCard(); });
 });
 
+// ══════════════════════════════════════════════
+// LIVELIER SITE — ANIMATIONS & INTERACTIVITY
+// ══════════════════════════════════════════════
+
+// ── Respect reduced motion ──
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ── 1. Rotating pain-point words ──
+(function rotator() {
+  const el = document.getElementById('rotator');
+  if (!el) return;
+  const words = ['invoices', 'missed calls', 'follow-ups', 'reviews', 'scheduling', 'quotes'];
+  let i = 0, j = 0, deleting = false;
+  function step() {
+    const word = words[i];
+    if (!deleting) {
+      el.textContent = word.slice(0, ++j);
+      if (j === word.length) { deleting = true; setTimeout(step, 1400); return; }
+    } else {
+      el.textContent = word.slice(0, --j);
+      if (j === 0) { deleting = false; i = (i + 1) % words.length; }
+    }
+    setTimeout(step, deleting ? 32 : 70);
+  }
+  if (!REDUCED_MOTION) step();
+  else el.textContent = 'invoices';
+})();
+
+// ── 2. Stat Ticker (industry / ROI rotation) ──
+(function ticker() {
+  const el = document.getElementById('activity-text');
+  if (!el) return;
+  // Each: [primary stat, supporting context]
+  const stats = [
+    ['1 in 3', 'calls to small businesses go unanswered &middot; you can fix that'],
+    ['78%', 'of customers go with the business that responds first'],
+    ['$1,200', 'average value of a single recovered missed call'],
+    ['5 min', 'response time = 9x more likely to convert the lead'],
+    ['10–15 hrs/wk', 'saved by owners after their first 3 automations'],
+    ['Under 60s', 'is the new acceptable lead-response window'],
+    ['$0/mo', 'support fee &middot; you own every workflow I build'],
+    ['90%', 'of leads go cold after 30 minutes of silence'],
+    ['24/7', 'coverage without hiring or after-hours pay'],
+    ['~$3.50', 'returned for every $1 spent on small-biz automation'],
+    ['3–7 days', 'typical build-to-launch on a Clockworks system'],
+    ['~6 hrs/wk', 'spent by owners on tasks AI now does in seconds'],
+    ['68%', 'of small businesses still respond to leads manually'],
+    ['Zero', 'lock-in &middot; built on tools you can keep without me'],
+    ['43%', 'more revenue at SMBs that automate lead follow-up'],
+    ['8 minutes', 'is the average response time &mdash; that\'s 8 minutes too long'],
+    ['1 missed lead/wk', '&times; 52 weeks &times; $400 = $20,800/yr leaking out'],
+    ['11s', 'is how fast a Clockworks workflow texts back a missed call'],
+    ['No retainer', '&middot; flat one-time build fee, then it\'s yours'],
+    ['~50%', 'of small biz owners work nights catching up on admin']
+  ];
+  let idx = 0;
+  function render() {
+    const [stat, context] = stats[idx];
+    el.innerHTML = '<b>' + stat + '</b> ' + context;
+    idx = (idx + 1) % stats.length;
+  }
+  render();
+  if (!REDUCED_MOTION) setInterval(render, 4200);
+})();
+
+// ── 3. Count-up numbers ──
+(function countUp() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const to = parseInt(el.dataset.to, 10);
+      const suffix = el.dataset.suffix || '';
+      obs.unobserve(el);
+      if (REDUCED_MOTION) { el.textContent = to.toLocaleString() + suffix; return; }
+      const dur = 1400; const start = performance.now();
+      function tick(now) {
+        const t = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const v = Math.floor(eased * to);
+        el.textContent = v.toLocaleString() + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.countup').forEach(el => obs.observe(el));
+})();
+
+// ── 4. Hero "hours saved" slow drift (keeps the page alive) ──
+(function hoursDrift() {
+  const hoursEl = document.querySelector('.live-stat .countup[data-to="1247"]');
+  if (!hoursEl || REDUCED_MOTION) return;
+  setInterval(() => {
+    const cur = parseInt(hoursEl.textContent.replace(/,/g, ''), 10);
+    if (isNaN(cur) || cur < 1247) return;
+    hoursEl.textContent = (cur + 1).toLocaleString();
+  }, 7500);
+})();
+
+// ── 5. Animated Hero Workflow ──
+(function workflow() {
+  const stage = document.getElementById('wf-stage');
+  if (!stage) return;
+  const wiresG = document.getElementById('wf-wires');
+  const gwiresG = document.getElementById('wf-gwires');
+  const nodesHost = document.getElementById('wf-nodes');
+  const packet = document.getElementById('wf-packet');
+  const status = document.getElementById('wf-status');
+  const clock = document.getElementById('wf-clock');
+  const tabs = document.querySelectorAll('.wf-tab');
+
+  // ── Scenario definitions ──
+  // Each node: id, label, sub, icon (Tabler class), iconBg, iconColor, x%, y%
+  // Wires: [fromNodeIdx, toNodeIdx]
+  // Seq: ordered list of wire indices (in order they fire)
+  const SCENARIOS = {
+    'missed-call': {
+      label: 'lead captured in 11s',
+      nodes: [
+        { label: 'Missed Call',    sub: 'Trigger',     icon: 'ti-phone-incoming',   bg: 'rgba(196,131,74,0.14)',  color: '#A86C35', x: 25, y: 22 },
+        { label: 'AI Response',    sub: 'Claude · GPT',icon: 'ti-sparkles',         bg: 'rgba(139,92,246,0.14)',  color: '#7c3aed', x: 55, y: 50 },
+        { label: 'SMS Sent',       sub: 'Twilio',      icon: 'ti-message-2',        bg: 'rgba(59,130,246,0.14)',  color: '#2563eb', x: 82, y: 28 },
+        { label: 'Calendar Hold',  sub: 'Google Cal',  icon: 'ti-calendar-event',   bg: 'rgba(34,197,94,0.14)',   color: '#15803d', x: 82, y: 72 },
+        { label: 'Parker Notified',sub: 'Discord',     icon: 'ti-bell-ringing',     bg: 'rgba(244,63,94,0.12)',   color: '#be123c', x: 44, y: 86 }
+      ],
+      wires: [[0,1],[1,2],[1,3],[1,4]],
+      seq: [0,1,2,3]
+    },
+    'lead-qualifier': {
+      label: 'qualified in 6s',
+      nodes: [
+        { label: 'Form Submit',    sub: 'Website',     icon: 'ti-forms',            bg: 'rgba(59,130,246,0.14)',  color: '#2563eb', x: 22, y: 18 },
+        { label: 'Enrich',         sub: 'Clearbit',    icon: 'ti-database-search',  bg: 'rgba(20,184,166,0.14)',  color: '#0d9488', x: 22, y: 60 },
+        { label: 'AI Scoring',     sub: 'GPT-4',       icon: 'ti-brain',            bg: 'rgba(139,92,246,0.14)',  color: '#7c3aed', x: 55, y: 42 },
+        { label: 'Hot · Route',    sub: 'Slack',       icon: 'ti-flame',            bg: 'rgba(244,63,94,0.12)',   color: '#be123c', x: 84, y: 22 },
+        { label: 'Cold · Nurture', sub: 'Mailchimp',   icon: 'ti-snowflake',        bg: 'rgba(196,131,74,0.14)',  color: '#A86C35', x: 84, y: 70 }
+      ],
+      wires: [[0,2],[1,2],[2,3],[2,4]],
+      seq: [0,1,2,3]
+    },
+    'social-autopilot': {
+      label: 'cross-posted in 9s',
+      nodes: [
+        { label: 'Content Brief',  sub: 'Notion',      icon: 'ti-bulb',             bg: 'rgba(196,131,74,0.14)',  color: '#A86C35', x: 22, y: 22 },
+        { label: 'AI Writer',      sub: 'Claude',      icon: 'ti-sparkles',         bg: 'rgba(139,92,246,0.14)',  color: '#7c3aed', x: 50, y: 50 },
+        { label: 'Image Gen',      sub: 'DALL-E',      icon: 'ti-photo',            bg: 'rgba(34,197,94,0.14)',   color: '#15803d', x: 22, y: 78 },
+        { label: 'Schedule',       sub: 'Buffer',      icon: 'ti-calendar-up',      bg: 'rgba(59,130,246,0.14)',  color: '#2563eb', x: 82, y: 28 },
+        { label: 'Cross-Post',     sub: 'IG · LI · X', icon: 'ti-share-3',          bg: 'rgba(244,63,94,0.12)',   color: '#be123c', x: 82, y: 72 }
+      ],
+      wires: [[0,1],[2,1],[1,3],[1,4]],
+      seq: [0,1,2,3]
+    }
+  };
+
+  // Each node center: returns {x, y} in svg viewbox 0–500
+  function nodeCenter(scenario, idx) {
+    const n = scenario.nodes[idx];
+    return { x: (n.x / 100) * 500, y: (n.y / 100) * 500 };
+  }
+
+  // Build a smooth cubic between two centers — bend toward midpoint pulled out a bit
+  function buildPath(from, to) {
+    const mx = (from.x + to.x) / 2;
+    const my = (from.y + to.y) / 2;
+    return `M ${from.x} ${from.y} C ${mx} ${from.y}, ${mx} ${to.y}, ${to.x} ${to.y}`;
+  }
+
+  let currentScenario = 'missed-call';
+  let runToken = 0;  // increment to cancel running loop
+
+  function wait(ms, token) {
+    return new Promise(r => {
+      const id = setTimeout(() => r(token === runToken), ms);
+    });
+  }
+
+  function renderScenario(key) {
+    const sc = SCENARIOS[key];
+    if (!sc) return;
+    currentScenario = key;
+    runToken++;
+    const myToken = runToken;
+
+    // Clear existing
+    wiresG.innerHTML = '';
+    gwiresG.innerHTML = '';
+    nodesHost.innerHTML = '';
+    packet.setAttribute('cx', -50); packet.setAttribute('cy', -50);
+
+    // Build wires
+    const wirePaths = [];
+    const gwirePaths = [];
+    sc.wires.forEach((w, i) => {
+      const from = nodeCenter(sc, w[0]);
+      const to = nodeCenter(sc, w[1]);
+      const d = buildPath(from, to);
+      const w1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      w1.setAttribute('d', d); w1.setAttribute('class', 'wf-wire');
+      wiresG.appendChild(w1);
+      const w2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      w2.setAttribute('d', d); w2.setAttribute('class', 'wf-wire-glow');
+      gwiresG.appendChild(w2);
+      wirePaths.push(w1); gwirePaths.push(w2);
+    });
+
+    // Build nodes
+    const nodeEls = sc.nodes.map((n, i) => {
+      const el = document.createElement('div');
+      el.className = 'wf-node';
+      el.style.left = n.x + '%';
+      el.style.top = n.y + '%';
+      el.innerHTML = `
+        <span class="wf-node-ico" style="background:${n.bg};color:${n.color};"><i class="ti ${n.icon}"></i></span>
+        <span class="wf-node-label">${n.label}<span class="wf-node-sub">${n.sub}</span></span>
+        <span class="wf-node-dot" aria-hidden="true"></span>
+      `;
+      nodesHost.appendChild(el);
+      return el;
+    });
+
+    if (status) status.innerHTML = `Running &middot; ${sc.label.replace(/(\d+s|\d+ ?ms)/, '<b style="color:var(--navy);">$1</b>')}`;
+
+    // Run animation loop
+    runLoop(sc, wirePaths, gwirePaths, nodeEls, myToken);
+  }
+
+  function transit(wire, gwire, duration, token) {
+    return new Promise(resolve => {
+      const len = wire.getTotalLength();
+      gwire.classList.add('lit');
+      const start = performance.now();
+      function frame(now) {
+        if (token !== runToken) { gwire.classList.remove('lit'); resolve(false); return; }
+        const t = Math.min(1, (now - start) / duration);
+        const eased = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+        const p = wire.getPointAtLength(eased * len);
+        packet.setAttribute('cx', p.x);
+        packet.setAttribute('cy', p.y);
+        if (t < 1) requestAnimationFrame(frame);
+        else {
+          setTimeout(() => gwire.classList.remove('lit'), 260);
+          resolve(true);
+        }
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  async function runLoop(sc, wires, gwires, nodes, token) {
+    if (REDUCED_MOTION) {
+      nodes.forEach(n => n.classList.add('active'));
+      return;
+    }
+    while (token === runToken) {
+      // Reset
+      nodes.forEach(n => n.classList.remove('active'));
+      packet.setAttribute('cx', -50); packet.setAttribute('cy', -50);
+      if (!(await wait(600, token))) return;
+      // Fire first source node
+      const firstWire = sc.wires[sc.seq[0]];
+      if (!nodes[firstWire[0]]) return;
+      nodes[firstWire[0]].classList.add('active');
+      if (!(await wait(500, token))) return;
+      for (const wIdx of sc.seq) {
+        if (token !== runToken) return;
+        const [from, to] = sc.wires[wIdx];
+        const ok = await transit(wires[wIdx], gwires[wIdx], 850, token);
+        if (!ok) return;
+        nodes[to].classList.add('active');
+        if (!(await wait(380, token))) return;
+      }
+      if (!(await wait(1800, token))) return;
+    }
+  }
+
+  // Tab handling
+  let userLocked = false;
+  let autoCycleTimer;
+  const order = ['missed-call','lead-qualifier','social-autopilot'];
+  function startAutoCycle() {
+    clearInterval(autoCycleTimer);
+    autoCycleTimer = setInterval(() => {
+      if (userLocked) return;
+      const idx = order.indexOf(currentScenario);
+      const next = order[(idx + 1) % order.length];
+      switchTo(next);
+    }, 14000);
+  }
+  function switchTo(key) {
+    tabs.forEach(t => {
+      const active = t.dataset.scenario === key;
+      t.classList.toggle('active', active);
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    renderScenario(key);
+  }
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      userLocked = true;
+      switchTo(t.dataset.scenario);
+    });
+  });
+
+  // Boot when stage visible
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { obs.disconnect(); switchTo('missed-call'); startAutoCycle(); } });
+  }, { threshold: 0.2 });
+  obs.observe(stage);
+
+  // Clock
+  if (clock && !REDUCED_MOTION) {
+    let sec = 0;
+    setInterval(() => {
+      sec++;
+      const m = String(Math.floor(sec/60)).padStart(2,'0');
+      const s = String(sec%60).padStart(2,'0');
+      clock.textContent = m + ':' + s;
+    }, 1000);
+  }
+})();
+
+// ── 6. Cursor parallax on hero blobs ──
+(function parallax() {
+  if (REDUCED_MOTION) return;
+  const b1 = document.querySelector('.hero-blob-1');
+  const b2 = document.querySelector('.hero-blob-2');
+  const hero = document.querySelector('.hero');
+  if (!hero || !b1 || !b2) return;
+  let tx1 = 0, ty1 = 0, tx2 = 0, ty2 = 0, cx1=0,cy1=0,cx2=0,cy2=0;
+  hero.addEventListener('mousemove', e => {
+    const r = hero.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    tx1 = x * 24; ty1 = y * 24;
+    tx2 = -x * 18; ty2 = -y * 18;
+  });
+  function frame() {
+    cx1 += (tx1 - cx1) * 0.06; cy1 += (ty1 - cy1) * 0.06;
+    cx2 += (tx2 - cx2) * 0.06; cy2 += (ty2 - cy2) * 0.06;
+    b1.style.transform = 'translate(' + cx1.toFixed(2) + 'px,' + cy1.toFixed(2) + 'px)';
+    b2.style.transform = 'translate(' + cx2.toFixed(2) + 'px,' + cy2.toFixed(2) + 'px)';
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+// ── 7. Magnetic CTA ──
+(function magnetic() {
+  if (REDUCED_MOTION) return;
+  document.querySelectorAll('[data-magnetic]').forEach(el => {
+    el.style.transition = 'transform .25s cubic-bezier(.2,.9,.3,1.4)';
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      el.style.transform = 'translate(' + (x*0.18) + 'px,' + (y*0.25) + 'px)';
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  });
+})();
+
+// ── 8. Ripple on primary buttons ──
+(function ripple() {
+  document.querySelectorAll('.btn-primary, .nav-cta, .auto-modal-cta, .form-submit, .mobile-cta').forEach(el => {
+    el.addEventListener('click', e => {
+      const r = el.getBoundingClientRect();
+      const span = document.createElement('span');
+      span.className = 'ripple';
+      span.style.width = span.style.height = Math.max(r.width, r.height) + 'px';
+      span.style.left = (e.clientX - r.left) + 'px';
+      span.style.top  = (e.clientY - r.top)  + 'px';
+      el.appendChild(span);
+      setTimeout(() => span.remove(), 700);
+    });
+  });
+})();
+
+// ── 9. Automation card entry stagger (delay on render) ──
+(function staggerAutoCards() {
+  const grid = document.getElementById('auto-grid');
+  if (!grid) return;
+  // Cards are rendered by existing code — just assign delays via CSS variable on observe
+  const obs = new MutationObserver(() => {
+    grid.querySelectorAll('.auto-card').forEach((c, i) => {
+      c.style.animationDelay = (i * 80) + 'ms';
+    });
+  });
+  obs.observe(grid, { childList: true });
+  // Initial
+  grid.querySelectorAll('.auto-card').forEach((c, i) => {
+    c.style.animationDelay = (i * 80) + 'ms';
+  });
+})();
+
 // ── MEETING PREFERENCE PILLS ──
 const meetingPills = document.getElementById('meeting-pills');
 if (meetingPills) {
@@ -1472,25 +2216,7 @@ if (meetingPills) {
 
 </script>
 
-<!-- FLOATING STRATEGY SESSION BUTTON -->
-<div id="float-btn" style="position:fixed;bottom:24px;right:24px;z-index:300;opacity:0;transform:translateY(10px);transition:opacity 0.4s,transform 0.4s;pointer-events:none;">
-  <a href="#booking" style="display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#A86C35,#C4834A);color:#fff;padding:13px 22px;border-radius:50px;font-weight:700;font-size:14px;box-shadow:0 6px 24px rgba(196,131,74,0.40);text-decoration:none;white-space:nowrap;" aria-label="Book free strategy session">
-    &#9742;&#65039; Free Strategy Session
-  </a>
-</div>
-<script>
-// Show floating button after scrolling past hero
-const floatBtn = document.getElementById('float-btn');
-if (floatBtn) {
-  window.addEventListener('scroll', () => {
-    const show = window.scrollY > 600;
-    floatBtn.style.opacity = show ? '1' : '0';
-    floatBtn.style.transform = show ? 'translateY(0)' : 'translateY(10px)';
-    floatBtn.style.pointerEvents = show ? 'auto' : 'none';
-  }, { passive: true });
-}
-</script>
-<script src="contact-modal.js"></script>
+<!-- contact-modal.js inlined: no-op stub -->
 </body>
 </html>
 
