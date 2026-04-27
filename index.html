@@ -838,10 +838,8 @@
       font-style: italic;
       white-space: nowrap;
       vertical-align: baseline;
-      /* No min-width by default — let the rotator size to content. The cursor caret stays anchored visually. */
-    }
-    @media (min-width: 1024px) {
-      .rotator { min-width: 11ch; }
+      min-width: 11ch;
+      text-align: left;
     }
     .rotator::after { content: ''; display: inline-block; width: 2px; height: 0.9em; background: var(--orange); margin-left: 2px; vertical-align: baseline; animation: caret 1s steps(1) infinite; transform: translateY(0.08em); }
     @keyframes caret { 50% { opacity: 0; } }
