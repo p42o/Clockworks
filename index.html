@@ -230,63 +230,430 @@
     .filter-pill.active { background: linear-gradient(135deg, #A86C35, #C4834A); border-color: var(--orange); color: #fff; box-shadow: 0 2px 12px rgba(196,131,74,0.30); }
 
     /* ── Automation Card Grid ── */
-    .auto-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    .auto-card { background: #0f1320; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 28px 24px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; position: relative; overflow: hidden; }
-    .auto-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(196,131,74,0.2); border-color: rgba(196,131,74,0.25); }
+    /* ── Automation Card Grid (redesigned) ── */
+    .auto-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .auto-card {
+      background: linear-gradient(180deg, #11172A 0%, #0C111E 100%);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 0;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.35s cubic-bezier(.2,.8,.3,1), box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+    .auto-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(196,131,74,0.30);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(196,131,74,0.15);
+    }
     .auto-card.hidden { display: none; }
-    .auto-card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; flex-shrink: 0; }
-    .auto-card-icon i { font-size: 26px; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .auto-card-title { font-weight: 700; font-size: 16px; color: #fff; margin-bottom: 6px; line-height: 1.3; }
-    .auto-card-subtitle { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 14px; line-height: 1.5; }
-    .auto-card-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #22c55e; }
-    .auto-card-badge::before { content: '\2713'; font-weight: 700; }
-    .auto-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
-    .auto-card-cat { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.4); padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
-    .auto-card-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; margin: 14px 0 18px; padding: 10px 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; }
-    .auto-flow-chip { font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,0.78); padding: 4px 8px; background: rgba(196,131,74,0.10); border: 1px solid rgba(196,131,74,0.18); border-radius: 6px; white-space: nowrap; }
-    .auto-flow-arrow { color: rgba(196,131,74,0.6); font-size: 12px; font-weight: 700; }
-    .auto-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .auto-card-more { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); display: inline-flex; align-items: center; gap: 4px; transition: color .25s, transform .25s; }
-    .auto-card-more i { font-size: 13px; transition: transform .25s; }
-    .auto-card:hover .auto-card-more { color: var(--orange); }
-    .auto-card:hover .auto-card-more i { transform: translateX(3px); }
+    .auto-card:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
 
-    /* Icon gradient classes */
-    .grad-copper i { background: linear-gradient(135deg, #C4834A, #E8B87A); background-clip: text; -webkit-background-clip: text; }
-    .grad-blue i { background: linear-gradient(135deg, #3B82F6, #93C5FD); background-clip: text; -webkit-background-clip: text; }
-    .grad-green i { background: linear-gradient(135deg, #22C55E, #86EFAC); background-clip: text; -webkit-background-clip: text; }
-    .grad-rose i { background: linear-gradient(135deg, #F43F5E, #FDA4AF); background-clip: text; -webkit-background-clip: text; }
-    .grad-purple i { background: linear-gradient(135deg, #8B5CF6, #C4B5FD); background-clip: text; -webkit-background-clip: text; }
-    .grad-amber i { background: linear-gradient(135deg, #F59E0B, #FCD34D); background-clip: text; -webkit-background-clip: text; }
+    /* Top "scene" panel — tinted background that matches the SVG illustration */
+    .auto-card-scene {
+      position: relative;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .auto-card-scene::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), transparent 60%);
+      mix-blend-mode: overlay;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    .auto-card-scene::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    }
+    .auto-card-scene svg {
+      width: 96px; height: 96px;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.18));
+      transition: transform 0.5s cubic-bezier(.2,.9,.3,1.4);
+      position: relative; z-index: 1;
+    }
+    .auto-card:hover .auto-card-scene svg { transform: translateY(-3px) scale(1.04); }
 
-    /* Icon background colors */
-    .bg-copper { background: rgba(196,131,74,0.15); }
-    .bg-blue { background: rgba(59,130,246,0.15); }
-    .bg-green { background: rgba(34,197,94,0.15); }
-    .bg-rose { background: rgba(244,63,94,0.15); }
-    .bg-purple { background: rgba(139,92,246,0.15); }
-    .bg-amber { background: rgba(245,158,11,0.15); }
+    /* Drifting decorative pills behind the illustration (static on cards, animated in modal) */
+    .auto-card-scene .scene-blob {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(18px);
+      opacity: 0.55;
+    }
+    .auto-card-scene .scene-blob.b1 { width: 90px; height: 90px; left: -20px; top: -20px; background: rgba(255,255,255,0.55); }
+    .auto-card-scene .scene-blob.b2 { width: 70px; height: 70px; right: -15px; bottom: -15px; background: rgba(255,255,255,0.4); }
+    @keyframes sceneFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(8px, -6px) scale(1.08); }
+    }
 
-    /* ── Automation Detail Modal ── */
-    .auto-modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    /* Category pill in the top-right corner */
+    .auto-card-cat {
+      position: absolute;
+      top: 12px; right: 12px;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: rgba(28,35,51,0.7);
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.5);
+      z-index: 2;
+    }
+
+    /* Body */
+    .auto-card-body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
+    .auto-card-title { font-weight: 700; font-size: 17px; color: #fff; margin-bottom: 5px; line-height: 1.25; letter-spacing: -0.01em; }
+    .auto-card-subtitle { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 16px; line-height: 1.5; }
+
+    /* Animated workflow rail */
+    .auto-card-rail {
+      position: relative;
+      height: 22px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+    }
+    .auto-card-rail-meta {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .auto-card-rail-meta::before {
+      content: '';
+      width: 14px; height: 1px;
+      background: rgba(196,131,74,0.4);
+    }
+    .auto-card-rail-track {
+      position: absolute;
+      left: 8px; right: 8px;
+      top: 50%;
+      height: 2px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, rgba(196,131,74,0.18), rgba(196,131,74,0.32), rgba(196,131,74,0.18));
+      border-radius: 2px;
+    }
+
+    .auto-card-rail-node {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .auto-card-rail-node .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #1C2333;
+      border: 2px solid rgba(196,131,74,0.55);
+      box-shadow: 0 0 0 3px rgba(15,19,32,1);
+    }
+    .auto-card-rail-node[data-active="true"] .dot {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    /* Footer row */
+    .auto-card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .auto-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #4ADE80;
+      letter-spacing: 0.005em;
+    }
+    .auto-card-badge::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22C55E;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18);
+    }
+    .auto-card-more {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: color .25s, gap .25s;
+    }
+    .auto-card-more svg { width: 12px; height: 12px; transition: transform .25s; }
+    .auto-card:hover .auto-card-more { color: var(--orange); gap: 7px; }
+    .auto-card:hover .auto-card-more svg { transform: translateX(2px); }
+
+    /* Scene background tints (tied to category) */
+    .scene-copper { background: linear-gradient(135deg, #FCE9D8, #F5D5B6); }
+    .scene-blue   { background: linear-gradient(135deg, #DCEAFE, #BBD5FB); }
+    .scene-green  { background: linear-gradient(135deg, #D9F5E3, #B5E8C9); }
+    .scene-rose   { background: linear-gradient(135deg, #FDDDE4, #FAB9C7); }
+    .scene-purple { background: linear-gradient(135deg, #E5DCFB, #CCBAF5); }
+    .scene-amber  { background: linear-gradient(135deg, #FCEBC8, #F8D89E); }
+
+    /* ── Automation Detail Modal (redesigned) ── */
+    .auto-modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(8,11,20,0.72); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
     .auto-modal-overlay.open { opacity: 1; visibility: visible; }
-    .auto-modal { background: #fff; border-radius: 20px; max-width: 560px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 36px; position: relative; transform: translateY(20px) scale(0.97); transition: transform 0.3s ease; box-shadow: 0 24px 64px rgba(0,0,0,0.25); }
+    .auto-modal {
+      background: #fff;
+      border-radius: 22px;
+      max-width: 660px;
+      width: 100%;
+      max-height: 92vh;
+      overflow: hidden;
+      position: relative;
+      transform: translateY(24px) scale(0.96);
+      transition: transform 0.4s cubic-bezier(.2,.9,.3,1.2);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+      display: flex; flex-direction: column;
+    }
     .auto-modal-overlay.open .auto-modal { transform: translateY(0) scale(1); }
-    .auto-modal-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text-muted); cursor: pointer; transition: background 0.2s, color 0.2s; z-index: 2; }
-    .auto-modal-close:hover { background: var(--bg-off); color: var(--navy); }
-    .auto-modal-icon { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-    .auto-modal-icon i { font-size: 32px; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .auto-modal-title { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--navy); margin-bottom: 8px; line-height: 1.2; }
-    .auto-modal-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: #22c55e; margin-bottom: 24px; }
-    .auto-modal-badge::before { content: '\2713'; font-weight: 700; }
-    .auto-modal-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-    .auto-modal-flow-step { background: var(--bg-off); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: var(--text-muted); font-weight: 500; }
-    .auto-modal-flow-step:first-child { background: rgba(196,131,74,0.08); border-color: rgba(196,131,74,0.2); color: var(--orange-dark); font-weight: 600; }
-    .auto-modal-flow-step:last-child { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); color: #15803d; font-weight: 600; }
-    .auto-modal-flow-arrow { font-size: 14px; color: var(--text-dim); flex-shrink: 0; }
-    .auto-modal-impact { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 28px; padding: 18px; background: var(--bg-off); border-radius: 12px; border: 1px solid var(--border); }
-    .auto-modal-cta { display: block; width: 100%; text-align: center; padding: 14px 24px; border-radius: 12px; border: none; background: linear-gradient(135deg, #A86C35, #C4834A); color: #fff; font-weight: 700; font-size: 15px; font-family: inherit; box-shadow: 0 4px 18px rgba(196,131,74,0.30); cursor: pointer; transition: filter 0.2s, transform 0.2s; text-decoration: none; }
-    .auto-modal-cta:hover { filter: brightness(1.07); transform: translateY(-1px); }
+    .auto-modal-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: var(--navy);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      z-index: 4;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+    .auto-modal-close:hover { background: #fff; transform: rotate(90deg); }
+
+    .auto-modal-hero {
+      position: relative;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .auto-modal-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 25% 30%, rgba(255,255,255,0.5), transparent 60%);
+      pointer-events: none;
+    }
+    .auto-modal-hero .scene-blob { position: absolute; border-radius: 999px; filter: blur(28px); opacity: 0.5; animation: sceneFloat 8s ease-in-out infinite; }
+    .auto-modal-hero .scene-blob.b1 { width: 140px; height: 140px; left: -30px; top: -30px; background: rgba(255,255,255,0.65); }
+    .auto-modal-hero .scene-blob.b2 { width: 110px; height: 110px; right: -25px; bottom: -25px; background: rgba(255,255,255,0.5); animation-delay: -4s; }
+    .auto-modal-hero svg {
+      width: 130px; height: 130px;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.15));
+      position: relative; z-index: 1;
+    }
+    .auto-modal-cat-tag {
+      position: absolute;
+      top: 16px; left: 18px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(28,35,51,0.75);
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.6);
+      z-index: 2;
+    }
+
+    .auto-modal-body {
+      padding: 28px 34px 32px;
+      overflow-y: auto;
+    }
+    .auto-modal-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 30px;
+      color: var(--navy);
+      margin-bottom: 6px;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+    .auto-modal-subtitle {
+      font-size: 14px; color: var(--text-muted); margin-bottom: 18px; font-weight: 500;
+    }
+    .auto-modal-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700; color: #15803d;
+      padding: 6px 12px;
+      background: rgba(34,197,94,0.10);
+      border: 1px solid rgba(34,197,94,0.25);
+      border-radius: 999px;
+      margin-bottom: 24px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .auto-modal-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: #22C55E; box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+    }
+
+    /* Vertical timeline */
+    .auto-modal-flow-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.10em;
+      color: var(--text-dim); margin-bottom: 14px;
+    }
+    .auto-modal-flow {
+      position: relative;
+      padding-left: 36px;
+      margin-bottom: 26px;
+    }
+    .auto-modal-flow::before {
+      content: '';
+      position: absolute; left: 13px; top: 14px; bottom: 14px;
+      width: 2px;
+      background: rgba(196,131,74,0.18);
+      border-radius: 2px;
+    }
+    /* Animated fill that travels down the timeline as steps "complete" */
+    .auto-modal-flow::after {
+      content: '';
+      position: absolute; left: 13px; top: 14px;
+      width: 2px;
+      height: 0;
+      background: linear-gradient(180deg, var(--orange), #C4834A);
+      border-radius: 2px;
+      transition: height 1.4s cubic-bezier(.4,.0,.2,1);
+    }
+    .auto-modal-overlay.open .auto-modal-flow::after { height: calc(100% - 28px); }
+
+    .auto-modal-flow-step {
+      position: relative;
+      padding: 10px 0 10px 4px;
+      opacity: 0;
+      transform: translateX(-8px);
+      animation: stepIn 0.5s cubic-bezier(.2,.9,.3,1.2) forwards;
+    }
+    .auto-modal-flow-step + .auto-modal-flow-step { margin-top: 6px; }
+    @keyframes stepIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .auto-modal-flow-step::before {
+      content: '';
+      position: absolute;
+      left: -28px; top: 14px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid rgba(196,131,74,0.35);
+      box-shadow: 0 0 0 3px #fff;
+      transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s ease;
+      z-index: 1;
+    }
+    .auto-modal-flow-step.lit::before {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+    .auto-modal-flow-step.lit:last-child::before {
+      transform: scale(1.1);
+    }
+    .auto-modal-flow-step.lit:last-child::after {
+      content: '';
+      position: absolute;
+      left: -34px; top: 14px;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--orange);
+      opacity: 0;
+      animation: ringPulse 2s ease-out 0.4s infinite;
+    }
+    @keyframes ringPulse {
+      0%   { transform: scale(0.5); opacity: 0.6; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+    .auto-modal-step-num {
+      font-size: 11px; font-weight: 700;
+      color: var(--orange);
+      letter-spacing: 0.08em;
+      margin-bottom: 2px;
+    }
+    .auto-modal-step-name {
+      font-size: 15px; font-weight: 600;
+      color: var(--navy);
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    .auto-modal-step-detail {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .auto-modal-step-tools {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      margin-top: 6px;
+    }
+    .auto-modal-tool-chip {
+      font-size: 10.5px; font-weight: 600;
+      color: var(--text-muted);
+      padding: 3px 8px;
+      background: var(--bg-off);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      letter-spacing: 0.01em;
+    }
+
+    .auto-modal-impact-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.10em;
+      color: var(--text-dim); margin-bottom: 10px;
+    }
+    .auto-modal-impact {
+      font-size: 15px; color: var(--text-muted); line-height: 1.65;
+      margin-bottom: 26px;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, rgba(196,131,74,0.06), rgba(196,131,74,0.02));
+      border-radius: 14px;
+      border: 1px solid rgba(196,131,74,0.18);
+      border-left: 3px solid var(--orange);
+    }
+    .auto-modal-cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; text-align: center;
+      padding: 15px 24px;
+      border-radius: 12px; border: none;
+      background: linear-gradient(135deg, #A86C35, #C4834A);
+      color: #fff; font-weight: 700; font-size: 15px; font-family: inherit;
+      box-shadow: 0 6px 20px rgba(196,131,74,0.32);
+      cursor: pointer;
+      transition: filter 0.2s, transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+    }
+    .auto-modal-cta:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(196,131,74,0.40); }
 
     /* ── Bio Card Modal ── */
     .bio-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
@@ -634,23 +1001,6 @@
     }
     .auto-card { animation: cardSpringIn 0.55s cubic-bezier(.2,.9,.3,1.4) both; }
 
-    /* Animate the auto-card badge as a row of progressing dots on hover */
-    .auto-card { position: relative; }
-    .auto-card::after {
-      content: ''; position: absolute; left: 24px; right: 24px; bottom: 0; height: 2px;
-      background: linear-gradient(90deg, var(--orange), #E8B87A);
-      transform-origin: left;
-      transform: scaleX(0);
-      transition: transform .45s ease;
-      border-radius: 2px;
-      opacity: 0.85;
-    }
-    .auto-card:hover::after { transform: scaleX(1); }
-
-    /* Hover: icon micro-bounce */
-    .auto-card-icon { transition: transform .35s cubic-bezier(.2,.9,.3,1.4); }
-    .auto-card:hover .auto-card-icon { transform: translateY(-3px) rotate(-4deg); }
-
     /* ── Magnetic/ripple buttons ── */
     .btn-primary, .nav-cta, .plan-cta.btn-primary, .auto-modal-cta, .form-submit, .mobile-cta {
       position: relative; overflow: hidden; isolation: isolate;
@@ -824,12 +1174,22 @@
 <div class="auto-modal-overlay" id="auto-modal-overlay" aria-modal="true" role="dialog" aria-label="Automation details">
   <div class="auto-modal" id="auto-modal">
     <button class="auto-modal-close" id="auto-modal-close" aria-label="Close">&times;</button>
-    <div class="auto-modal-icon" id="auto-modal-icon"></div>
-    <div class="auto-modal-title" id="auto-modal-title"></div>
-    <div class="auto-modal-badge" id="auto-modal-badge"></div>
-    <div class="auto-modal-flow" id="auto-modal-flow"></div>
-    <div class="auto-modal-impact" id="auto-modal-impact"></div>
-    <a href="#booking" class="auto-modal-cta" id="auto-modal-cta">Book a Free Strategy Session &rarr;</a>
+    <div class="auto-modal-hero" id="auto-modal-hero">
+      <span class="scene-blob b1" aria-hidden="true"></span>
+      <span class="scene-blob b2" aria-hidden="true"></span>
+      <div class="auto-modal-cat-tag" id="auto-modal-cat"></div>
+      <div id="auto-modal-icon"></div>
+    </div>
+    <div class="auto-modal-body">
+      <div class="auto-modal-title" id="auto-modal-title"></div>
+      <div class="auto-modal-subtitle" id="auto-modal-subtitle"></div>
+      <div class="auto-modal-badge" id="auto-modal-badge"></div>
+      <div class="auto-modal-flow-label">How it works</div>
+      <div class="auto-modal-flow" id="auto-modal-flow"></div>
+      <div class="auto-modal-impact-label">What you'd notice</div>
+      <div class="auto-modal-impact" id="auto-modal-impact"></div>
+      <a href="#booking" class="auto-modal-cta" id="auto-modal-cta">Book a Free Strategy Session &rarr;</a>
+    </div>
   </div>
 </div>
 
@@ -1694,13 +2054,215 @@ if (midForm) {
 }
 
 // ── AUTOMATIONS DATA & RENDERING ──
+// Custom illustrated icons (mini-scenes that hint at each workflow's outcome).
+// Palette: navy #1C2333, copper #C4834A, white, plus one category accent per card.
+const AUTO_ICONS = {
+  'social-media': `
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- back post (tilted, ghosted) -->
+      <rect x="10" y="14" width="22" height="26" rx="3.5" transform="rotate(-8 21 27)" fill="#fff" stroke="#1C2333" stroke-opacity="0.18" stroke-width="1.2"/>
+      <!-- middle post -->
+      <rect x="14" y="12" width="22" height="26" rx="3.5" transform="rotate(-3 25 25)" fill="#fff" stroke="#1C2333" stroke-width="1.4"/>
+      <!-- front post -->
+      <rect x="20" y="11" width="26" height="32" rx="4" fill="#fff" stroke="#1C2333" stroke-width="1.6"/>
+      <rect x="23.5" y="14.5" width="19" height="13" rx="2" fill="#C4834A" fill-opacity="0.18"/>
+      <circle cx="29" cy="20" r="2.4" fill="#C4834A"/>
+      <path d="M26 26 L31 22 L35 25 L40 21" stroke="#C4834A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <rect x="23.5" y="30.5" width="14" height="2" rx="1" fill="#1C2333" fill-opacity="0.55"/>
+      <rect x="23.5" y="34" width="9" height="2" rx="1" fill="#1C2333" fill-opacity="0.3"/>
+      <!-- sparkle / AI burst -->
+      <g transform="translate(43 9)">
+        <path d="M5 0 L6 4 L10 5 L6 6 L5 10 L4 6 L0 5 L4 4 Z" fill="#C4834A"/>
+      </g>
+    </svg>
+  `,
+  'listing-social': `
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- house -->
+      <path d="M14 25 L28 13 L42 25 L42 44 L14 44 Z" fill="#fff" stroke="#1C2333" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M28 13 L28 6 L34 6 L34 18" stroke="#1C2333" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+      <!-- door -->
+      <rect x="24" y="33" width="8" height="11" fill="#3B82F6" fill-opacity="0.85" stroke="#1C2333" stroke-width="1.2"/>
+      <!-- window -->
+      <rect x="17" y="29" width="5.5" height="5.5" fill="#3B82F6" fill-opacity="0.45" stroke="#1C2333" stroke-width="1"/>
+      <rect x="33.5" y="29" width="5.5" height="5.5" fill="#3B82F6" fill-opacity="0.45" stroke="#1C2333" stroke-width="1"/>
+      <!-- AI tag floating off corner -->
+      <g transform="translate(34 34)">
+        <rect x="0" y="0" width="18" height="13" rx="3" fill="#C4834A"/>
+        <text x="9" y="9.5" font-family="Inter,sans-serif" font-size="7.5" font-weight="700" fill="#fff" text-anchor="middle">AI</text>
+        <path d="M-3 13 L0 7 L0 13 Z" fill="#C4834A"/>
+      </g>
+      <!-- sparkle -->
+      <g transform="translate(8 7)">
+        <path d="M3 0 L4 2.5 L6.5 3 L4 3.5 L3 6 L2 3.5 L0 3 L2 2.5 Z" fill="#C4834A"/>
+      </g>
+    </svg>
+  `,
+  'auto-invoice': `
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- back invoice -->
+      <rect x="10" y="11" width="26" height="32" rx="2.5" transform="rotate(-6 23 27)" fill="#fff" stroke="#1C2333" stroke-opacity="0.25" stroke-width="1.2"/>
+      <!-- main invoice -->
+      <rect x="14" y="10" width="28" height="36" rx="3" fill="#fff" stroke="#1C2333" stroke-width="1.6"/>
+      <!-- header bar -->
+      <rect x="17.5" y="13.5" width="14" height="2.5" rx="1" fill="#1C2333"/>
+      <rect x="17.5" y="17.5" width="9" height="2" rx="1" fill="#1C2333" fill-opacity="0.35"/>
+      <!-- line items -->
+      <rect x="17.5" y="23" width="21" height="1.6" rx="0.8" fill="#1C2333" fill-opacity="0.18"/>
+      <rect x="17.5" y="26.5" width="21" height="1.6" rx="0.8" fill="#1C2333" fill-opacity="0.18"/>
+      <rect x="17.5" y="30" width="14" height="1.6" rx="0.8" fill="#1C2333" fill-opacity="0.18"/>
+      <!-- total -->
+      <rect x="17.5" y="35" width="21" height="6" rx="1.5" fill="#22C55E" fill-opacity="0.18"/>
+      <text x="20" y="39.5" font-family="Inter,sans-serif" font-size="6" font-weight="700" fill="#15803D">PAID</text>
+      <!-- 5-star -->
+      <g transform="translate(38 30)">
+        <circle cx="6" cy="6" r="8.5" fill="#fff" stroke="#1C2333" stroke-width="1.4"/>
+        <path d="M6 1.8 L7.3 4.6 L10.3 4.9 L8.1 6.9 L8.7 9.9 L6 8.5 L3.3 9.9 L3.9 6.9 L1.7 4.9 L4.7 4.6 Z" fill="#F59E0B"/>
+      </g>
+    </svg>
+  `,
+  'missed-call': `
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- phone body -->
+      <rect x="16" y="8" width="22" height="40" rx="4" fill="#fff" stroke="#1C2333" stroke-width="1.6"/>
+      <rect x="18.5" y="11" width="17" height="29" rx="1.5" fill="#1C2333" fill-opacity="0.05"/>
+      <circle cx="27" cy="44" r="1.5" fill="#1C2333" fill-opacity="0.4"/>
+      <!-- speech bubble showing instant text -->
+      <g transform="translate(15.5 13)">
+        <path d="M2 0 H20 a3 3 0 0 1 3 3 V11 a3 3 0 0 1 -3 3 H8 L4 18 L4 14 H2 a3 3 0 0 1 -3 -3 V3 a3 3 0 0 1 3 -3 Z" fill="#C4834A"/>
+        <rect x="3" y="4" width="14" height="1.6" rx="0.8" fill="#fff" fill-opacity="0.95"/>
+        <rect x="3" y="7" width="11" height="1.6" rx="0.8" fill="#fff" fill-opacity="0.7"/>
+        <rect x="3" y="10" width="8" height="1.6" rx="0.8" fill="#fff" fill-opacity="0.5"/>
+      </g>
+      <!-- missed-call indicator dot -->
+      <g transform="translate(36 8)">
+        <circle cx="6" cy="6" r="6" fill="#F43F5E" stroke="#fff" stroke-width="1.5"/>
+        <path d="M3 9 L9 3 M3 3 L9 9" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+      </g>
+    </svg>
+  `,
+  'auto-scheduling': `
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- calendar body -->
+      <rect x="10" y="12" width="36" height="32" rx="3.5" fill="#fff" stroke="#1C2333" stroke-width="1.6"/>
+      <rect x="10" y="12" width="36" height="9" rx="3.5" fill="#8B5CF6"/>
+      <rect x="10" y="18.5" width="36" height="2.5" fill="#8B5CF6"/>
+      <!-- calendar rings -->
+      <rect x="17" y="8" width="3" height="8" rx="1.5" fill="#1C2333"/>
+      <rect x="36" y="8" width="3" height="8" rx="1.5" fill="#1C2333"/>
+      <!-- date grid (light) -->
+      <g fill="#1C2333" fill-opacity="0.18">
+        <circle cx="16" cy="27" r="1.4"/><circle cx="22" cy="27" r="1.4"/><circle cx="28" cy="27" r="1.4"/><circle cx="34" cy="27" r="1.4"/><circle cx="40" cy="27" r="1.4"/>
+        <circle cx="16" cy="33" r="1.4"/><circle cx="22" cy="33" r="1.4"/>
+        <circle cx="34" cy="33" r="1.4"/><circle cx="40" cy="33" r="1.4"/>
+        <circle cx="16" cy="39" r="1.4"/><circle cx="22" cy="39" r="1.4"/><circle cx="40" cy="39" r="1.4"/>
+      </g>
+      <!-- highlighted booked day -->
+      <circle cx="28" cy="33" r="3.5" fill="#C4834A"/>
+      <path d="M26.5 33 L27.7 34.2 L29.7 32.2" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <!-- confirmation tick floating -->
+      <g transform="translate(36 34)">
+        <circle cx="7" cy="7" r="7" fill="#22C55E" stroke="#fff" stroke-width="1.5"/>
+        <path d="M4 7.3 L6.2 9.5 L10.3 5" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </g>
+    </svg>
+  `,
+  'competitor-intel': `
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- chart card -->
+      <rect x="9" y="11" width="36" height="30" rx="3" fill="#fff" stroke="#1C2333" stroke-width="1.6"/>
+      <!-- bars -->
+      <rect x="14" y="28" width="4" height="9" rx="1" fill="#1C2333" fill-opacity="0.25"/>
+      <rect x="20" y="24" width="4" height="13" rx="1" fill="#1C2333" fill-opacity="0.4"/>
+      <rect x="26" y="20" width="4" height="17" rx="1" fill="#F59E0B"/>
+      <rect x="32" y="22" width="4" height="15" rx="1" fill="#1C2333" fill-opacity="0.35"/>
+      <rect x="38" y="17" width="4" height="20" rx="1" fill="#C4834A"/>
+      <!-- trend line -->
+      <path d="M14 27 L22 22 L28 18 L34 20 L42 14" stroke="#C4834A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="42" cy="14" r="2" fill="#C4834A" stroke="#fff" stroke-width="1.4"/>
+      <!-- magnifier lens overlapping bottom-right -->
+      <g transform="translate(31 28)">
+        <circle cx="9" cy="9" r="8" fill="#fff" stroke="#1C2333" stroke-width="1.6"/>
+        <circle cx="9" cy="9" r="4" fill="#F59E0B" fill-opacity="0.25" stroke="#1C2333" stroke-width="1.2"/>
+        <line x1="14.5" y1="14.5" x2="19" y2="19" stroke="#1C2333" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+    </svg>
+  `
+};
+
 const AUTOMATIONS = [
-  { id:'social-media', title:'Social Media Autopilot', icon:'ti-brand-instagram', gradient:'grad-copper', bgClass:'bg-copper', subtitle:'Set it & forget it', badge:'3+ hrs/week saved', category:'social-media', flow:['Content AI','Schedule Posts','Auto-Publish','Track Engagement'], impact:'Businesses that post 3+ times per week see 2\u00d7 more engagement. This runs on autopilot \u2014 pre-written, scheduled, and posted without you touching a thing.' },
-  { id:'listing-social', title:'Listing \u2192 Social Kit', icon:'ti-home-search', gradient:'grad-blue', bgClass:'bg-blue', subtitle:'Listing to post-ready', badge:'World-class marketing', category:'social-media', flow:['New Listing Added','AI Generates Copy & Hashtags','Creates Multi-Platform Posts','Ready to Publish'], impact:'World-class marketing materials for every listing, generated in seconds. Professional captions, platform-optimized formats, and trending hashtags \u2014 all from your listing data.' },
-  { id:'auto-invoice', title:'Auto-Invoice + Review', icon:'ti-file-invoice', gradient:'grad-green', bgClass:'bg-green', subtitle:'Done \u2192 paid \u2192 reviewed', badge:'~45 min/job saved', category:'operations', flow:['Job Marked Done','Invoice Generated & Sent','2hr Later: Review Text','Reviews Collected'], impact:'You packed up from your last job. Before you started the truck, the invoice was out and the review request was already in the customer\u2019s pocket.' },
-  { id:'missed-call', title:'Missed Call Recovery', icon:'ti-phone-incoming', gradient:'grad-rose', bgClass:'bg-rose', subtitle:'Never lose a lead', badge:'0 lost leads', category:'operations', flow:['Call Missed','Auto-Text Sent Instantly','Calendar Link Included','Lead Logged in CRM'], impact:'A customer called while you were on a job. They got an instant, professional text back. By the time you finished, the booking was already on your calendar.' },
-  { id:'auto-scheduling', title:'Auto Scheduling', icon:'ti-calendar-event', gradient:'grad-purple', bgClass:'bg-purple', subtitle:'Quote \u2192 calendar \u2192 parts', badge:'4+ hrs/week saved', category:'operations', flow:['Job Quote Accepted','Job Added to Calendar','Parts List Generated','Supplier Order Drafted'], impact:'Customer accepts the quote Tuesday night. By Wednesday morning, the job\u2019s on your calendar, your supplier has the parts order, and the customer\u2019s address is in your GPS.' },
-  { id:'competitor-intel', title:'Competitor Intel', icon:'ti-target-arrow', gradient:'grad-amber', bgClass:'bg-amber', subtitle:'Weekly market briefing', badge:'Stay one step ahead', category:'growth', flow:['Every Monday, 7am','Scrapes Google Reviews & Nextdoor','Checks Seasonal Trends','Intel Report in Your Inbox'], impact:'Every Monday you get a tailored briefing: what your competitors are hearing, what locals are asking about, and what\u2019s trending this season in your industry.' }
+  {
+    id:'social-media', title:'Social Media Autopilot', bgClass:'bg-copper',
+    subtitle:'Set it & forget it', badge:'3+ hrs/week saved', category:'social-media',
+    flow:['Content AI','Schedule Posts','Auto-Publish','Track Engagement'],
+    steps: [
+      { name:'Content AI generates a month of posts', detail:'Pulls your tone, services, and seasonal angles from a brief, then drafts captions, hooks, and image prompts for every platform you post on.', tools:['ChatGPT','Claude','your brand brief'] },
+      { name:'You approve in one click', detail:'Drafts land in a shared review queue (Notion or Airtable). Approve, tweak, or regenerate \u2014 takes about 10 minutes a month.', tools:['Notion','Airtable'] },
+      { name:'Posts auto-schedule across platforms', detail:'Approved posts flow into Buffer/Later with platform-specific formatting \u2014 reels, stories, square, vertical \u2014 spaced for peak engagement times.', tools:['Buffer','Later','Make.com'] },
+      { name:'Performance dashboard updates weekly', detail:'Engagement, reach, and follower growth roll up into a single weekly email so you see what\u2019s working without logging into 4 apps.', tools:['Looker Studio','Google Sheets'] }
+    ],
+    impact:'Businesses that post 3+ times per week see 2\u00d7 more engagement. This runs on autopilot \u2014 pre-written, scheduled, and posted without you touching a thing.'
+  },
+  {
+    id:'listing-social', title:'Listing \u2192 Social Kit', bgClass:'bg-blue',
+    subtitle:'Listing to post-ready', badge:'World-class marketing', category:'social-media',
+    flow:['New Listing Added','AI Generates Copy & Hashtags','Creates Multi-Platform Posts','Ready to Publish'],
+    steps: [
+      { name:'New listing detected', detail:'Watches your MLS feed, CRM, or a simple intake form. The moment a new property is listed, the workflow fires.', tools:['MLS','HubSpot','Typeform'] },
+      { name:'AI writes platform-tuned copy', detail:'Generates a punchy IG caption, a longer Facebook post, and a LinkedIn variant \u2014 all rooted in the listing\u2019s actual specs, neighborhood data, and price.', tools:['Claude','GPT-4','Zillow data'] },
+      { name:'Designs each post automatically', detail:'Drops listing photos into pre-built Canva templates sized for IG square, IG story, FB, and LinkedIn. Logo, agent headshot, and price all auto-placed.', tools:['Canva API','Bannerbear'] },
+      { name:'Drafts queued for one-tap publish', detail:'Everything lands in your scheduler ready to go \u2014 hashtags researched, alt text written, geo-tags set. You hit publish or let it auto-post.', tools:['Buffer','Meta Business Suite'] }
+    ],
+    impact:'World-class marketing materials for every listing, generated in seconds. Professional captions, platform-optimized formats, and trending hashtags \u2014 all from your listing data.'
+  },
+  {
+    id:'auto-invoice', title:'Auto-Invoice + Review', bgClass:'bg-green',
+    subtitle:'Done \u2192 paid \u2192 reviewed', badge:'~45 min/job saved', category:'operations',
+    flow:['Job Marked Done','Invoice Generated & Sent','2hr Later: Review Text','Reviews Collected'],
+    steps: [
+      { name:'Job marked complete in the field', detail:'Tech taps "Done" in your job software (or you do it from the office). That single action triggers the rest of the chain.', tools:['Jobber','Housecall Pro','ServiceTitan'] },
+      { name:'Branded invoice fires within 60 seconds', detail:'Pulls labor hours, parts used, and tax rate. Generates a PDF with your logo, payment links (Stripe/ACH), and emails the customer before you\u2019ve packed up.', tools:['QuickBooks','Stripe','Xero'] },
+      { name:'Two hours later, review request goes out', detail:'A friendly SMS lands while the work is still fresh. One-tap link goes straight to your Google Business profile \u2014 no app downloads, no friction.', tools:['Twilio','Google Business'] },
+      { name:'Reviews captured & negative ones flagged', detail:'4\u20135 star reviews post publicly. Anything 3 or below routes privately to you first \u2014 so you can fix it before it ever goes online.', tools:['Birdeye','Podium'] }
+    ],
+    impact:'You packed up from your last job. Before you started the truck, the invoice was out and the review request was already in the customer\u2019s pocket.'
+  },
+  {
+    id:'missed-call', title:'Missed Call Recovery', bgClass:'bg-rose',
+    subtitle:'Never lose a lead', badge:'0 lost leads', category:'operations',
+    flow:['Call Missed','Auto-Text Sent Instantly','Calendar Link Included','Lead Logged in CRM'],
+    steps: [
+      { name:'Missed call detected', detail:'Listens to your business line (cell, VoIP, or landline forwarder). The instant a call rings out unanswered, the workflow fires \u2014 even at 7pm on a Saturday.', tools:['Twilio','OpenPhone','RingCentral'] },
+      { name:'Personalized text sent in 5 seconds', detail:'"Hey \u2014 sorry I missed you. I\u2019m on a job. What can I help with?" Personalized to the time of day and tied to your business name. Studies show 78% of customers go with whoever responds first.', tools:['Twilio SMS','MessageBird'] },
+      { name:'Booking link included if they reply', detail:'If they text back asking for a quote or appointment, an AI agent qualifies the request and drops your live calendar link \u2014 they self-book without another back-and-forth.', tools:['Cal.com','Calendly','Make.com'] },
+      { name:'Lead logged in your CRM with full context', detail:'Caller name, number, the missed-call timestamp, the conversation transcript, and the booking (if any) all land in your CRM as a tagged lead. Nothing falls through.', tools:['HubSpot','Pipedrive','GoHighLevel'] }
+    ],
+    impact:'A customer called while you were on a job. They got an instant, professional text back. By the time you finished, the booking was already on your calendar.'
+  },
+  {
+    id:'auto-scheduling', title:'Auto Scheduling', bgClass:'bg-purple',
+    subtitle:'Quote \u2192 calendar \u2192 parts', badge:'4+ hrs/week saved', category:'operations',
+    flow:['Job Quote Accepted','Job Added to Calendar','Parts List Generated','Supplier Order Drafted'],
+    steps: [
+      { name:'Customer accepts the quote', detail:'Quote gets digitally signed (or marked "Accepted" in your CRM). That single trigger kicks off everything downstream \u2014 no manual handoff between sales and ops.', tools:['DocuSign','PandaDoc','HubSpot'] },
+      { name:'Job slotted into the right crew\u2019s calendar', detail:'Reads job type, duration, and location, then finds the next open slot for the right crew \u2014 respecting drive time, skill mix, and existing appointments.', tools:['Google Calendar','Jobber','Skedda'] },
+      { name:'Parts list extracted from quote', detail:'AI parses the quote line items and builds a clean parts list \u2014 SKUs, quantities, and notes \u2014 cross-referenced against what\u2019s already in your van or warehouse.', tools:['GPT-4','Airtable'] },
+      { name:'Supplier order drafted for your approval', detail:'A pre-filled order goes into your supplier\u2019s portal (or as a PDF email). You review it the night before, hit send, and parts are waiting at the counter or on the truck.', tools:['Home Depot Pro','Ferguson','custom EDI'] }
+    ],
+    impact:'Customer accepts the quote Tuesday night. By Wednesday morning, the job\u2019s on your calendar, your supplier has the parts order, and the customer\u2019s address is in your GPS.'
+  },
+  {
+    id:'competitor-intel', title:'Competitor Intel', bgClass:'bg-amber',
+    subtitle:'Weekly market briefing', badge:'Stay one step ahead', category:'growth',
+    flow:['Every Monday, 7am','Scrapes Google Reviews & Nextdoor','Checks Seasonal Trends','Intel Report in Your Inbox'],
+    steps: [
+      { name:'Runs every Monday at 7am', detail:'A scheduled trigger fires before your week starts. You define the competitor list once \u2014 5 to 15 local players \u2014 and the workflow runs against it weekly.', tools:['n8n','Make.com','cron'] },
+      { name:'Pulls the week\u2019s reviews & local mentions', detail:'Scrapes new Google reviews, Nextdoor posts, and Yelp comments mentioning your competitors. Captures both the praise and the complaints \u2014 the complaints are the gold.', tools:['Apify','SerpAPI','Bright Data'] },
+      { name:'Cross-references seasonal demand signals', detail:'Layers in Google Trends, weather forecasts, and local search volume so you can see what services are heating up before your competitors do.', tools:['Google Trends','OpenWeather'] },
+      { name:'AI-summarized briefing in your inbox', detail:'A 5-minute read: top complaints competitors are getting (your opportunities), what locals are asking about, and 2\u20133 specific moves to make this week.', tools:['Claude','Gmail','Slack'] }
+    ],
+    impact:'Every Monday you get a tailored briefing: what your competitors are hearing, what locals are asking about, and what\u2019s trending this season in your industry.'
+  }
 ];
 
 // Render automation cards
@@ -1709,20 +2271,34 @@ function renderAutoCards(filter) {
   if (!grid) return;
   grid.innerHTML = AUTOMATIONS.map((a, i) => {
     const hidden = filter !== 'all' && a.category !== filter ? ' hidden' : '';
-    const flowChips = (a.flow || []).slice(0, 3).map((step, si) =>
-      `<span class="auto-flow-chip">${step}</span>${si < Math.min(2, a.flow.length - 1) ? '<span class="auto-flow-arrow" aria-hidden="true">›</span>' : ''}`
-    ).join('');
+    const sceneClass = 'scene-' + a.bgClass.replace(/^bg-/, '');
+    // Pick which workflow node is "live" — last one to feel like the work is done
+    const flow = a.flow || [];
+    const railNodes = flow.map((step, si) => {
+      const isActive = si === flow.length - 1;
+      return `<div class="auto-card-rail-node" data-active="${isActive}" title="${step.replace(/"/g,'&quot;')}">
+        <span class="dot" aria-hidden="true"></span>
+      </div>`;
+    }).join('');
     return `<div class="auto-card${hidden}" data-category="${a.category}" data-index="${i}" role="button" tabindex="0" aria-label="${a.title}" style="animation-delay:${i * 0.06}s">
-      <div class="auto-card-top">
-        <div class="auto-card-icon ${a.bgClass} ${a.gradient}"><i class="ti ${a.icon}"></i></div>
+      <div class="auto-card-scene ${sceneClass}">
+        <span class="scene-blob b1" aria-hidden="true"></span>
+        <span class="scene-blob b2" aria-hidden="true"></span>
         <div class="auto-card-cat">${a.category.replace('-', ' ')}</div>
+        ${AUTO_ICONS[a.id] || ''}
       </div>
-      <div class="auto-card-title">${a.title}</div>
-      <div class="auto-card-subtitle">${a.subtitle}</div>
-      <div class="auto-card-flow" aria-hidden="true">${flowChips}</div>
-      <div class="auto-card-foot">
-        <div class="auto-card-badge">${a.badge}</div>
-        <span class="auto-card-more">View workflow <i class="ti ti-arrow-right"></i></span>
+      <div class="auto-card-body">
+        <div class="auto-card-title">${a.title}</div>
+        <div class="auto-card-subtitle">${a.subtitle}</div>
+        <div class="auto-card-rail-meta">${flow.length}-step workflow</div>
+        <div class="auto-card-rail" aria-hidden="true">
+          <div class="auto-card-rail-track"></div>
+          ${railNodes}
+        </div>
+        <div class="auto-card-foot">
+          <div class="auto-card-badge">${a.badge}</div>
+          <span class="auto-card-more">View workflow <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -1756,20 +2332,39 @@ function openAutoModal(index) {
   const a = AUTOMATIONS[index];
   if (!a) return;
 
-  document.getElementById('auto-modal-icon').className = 'auto-modal-icon ' + a.bgClass + ' ' + a.gradient;
-  document.getElementById('auto-modal-icon').innerHTML = '<i class="ti ' + a.icon + '"></i>';
+  const sceneClass = 'scene-' + a.bgClass.replace(/^bg-/, '');
+  const hero = document.getElementById('auto-modal-hero');
+  hero.className = 'auto-modal-hero ' + sceneClass;
+  document.getElementById('auto-modal-icon').innerHTML = AUTO_ICONS[a.id] || '';
+  document.getElementById('auto-modal-cat').textContent = a.category.replace('-', ' ');
   document.getElementById('auto-modal-title').textContent = a.title;
+  document.getElementById('auto-modal-subtitle').textContent = a.subtitle;
   document.getElementById('auto-modal-badge').textContent = a.badge;
 
-  const flowHtml = a.flow.map((step, i) => {
-    return (i > 0 ? '<span class="auto-modal-flow-arrow" aria-hidden="true">\u2192</span>' : '') +
-      '<span class="auto-modal-flow-step">' + step + '</span>';
+  // Rich timeline with step name + detail + tool chips
+  // Falls back to the simpler `flow` array if `steps` isn't defined
+  const steps = a.steps || (a.flow || []).map(name => ({ name, detail: '', tools: [] }));
+  const flowEl = document.getElementById('auto-modal-flow');
+  flowEl.innerHTML = steps.map((s, i) => {
+    const tools = (s.tools || []).map(t => `<span class="auto-modal-tool-chip">${t}</span>`).join('');
+    return `<div class="auto-modal-flow-step" data-step="${i}" style="animation-delay:${0.10 + i * 0.12}s">
+      <div class="auto-modal-step-num">STEP ${String(i + 1).padStart(2,'0')}</div>
+      <div class="auto-modal-step-name">${s.name}</div>
+      ${s.detail ? `<div class="auto-modal-step-detail">${s.detail}</div>` : ''}
+      ${tools ? `<div class="auto-modal-step-tools">${tools}</div>` : ''}
+    </div>`;
   }).join('');
-  document.getElementById('auto-modal-flow').innerHTML = flowHtml;
   document.getElementById('auto-modal-impact').textContent = a.impact;
 
   autoOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  // Light up step dots in sequence as the workflow "runs"
+  const stepEls = flowEl.querySelectorAll('.auto-modal-flow-step');
+  stepEls.forEach(el => el.classList.remove('lit'));
+  stepEls.forEach((el, i) => {
+    setTimeout(() => el.classList.add('lit'), 350 + i * 380);
+  });
 }
 
 function closeAutoModal() {
