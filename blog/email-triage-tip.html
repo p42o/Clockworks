@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>The 5-Minute Email Triage Setup — Clockworks</title>
+  <meta name="description" content="A simple AI-powered Gmail filter setup that buys back 5–7 hours a week. No code. No subscription. Twenty minutes to set up." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f9f7f2; --ink: #1a1917; --ink-muted: #6b6860; --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1); --border-strong: rgba(26,25,23,0.2);
+      --accent: #C4834A; --accent-bg: #fbf3ec; --accent-text: #7a4a1f;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background-color: var(--cream); color: var(--ink); font-size: 17px; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(249,247,242,0.92); backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; object-position: center top; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-name { font-size: 14px; font-weight: 500; }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+    .body-text p { margin-bottom: 1.5rem; }
+    .body-text p:last-child { margin-bottom: 0; }
+    .body-text ul, .body-text ol { margin: 0 0 1.5rem 1.4rem; }
+    .body-text li { margin-bottom: 0.5rem; line-height: 1.7; }
+    .body-text strong { font-weight: 500; }
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; letter-spacing: -0.01em; }
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+    .step { background: #fff; border: 0.5px solid var(--border); border-radius: 12px; padding: 1.5rem 1.6rem; margin: 1.25rem 0; }
+    .step-num { display: inline-block; font-family: var(--serif); font-size: 1.4rem; color: var(--accent); margin-right: 0.5rem; }
+    .step h3 { font-family: var(--serif); font-weight: 400; font-size: 1.2rem; color: var(--ink); margin-bottom: 0.5rem; display: inline; }
+    .step p, .step ul { font-size: 15px; color: var(--ink-muted); line-height: 1.7; }
+    .step ul { margin: 0.6rem 0 0 1.2rem; }
+    .step code { background: var(--cream); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 0.5px solid var(--border); font-family: 'SF Mono', Menlo, monospace; }
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .sig-name { font-weight: 500; font-size: 1rem; }
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; }
+    .cta-btn:hover { opacity: 0.85; }
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PSNYLVG4V1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PSNYLVG4V1');
+  </script>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Tip — 20 minutes to set up</div>
+    <h1 class="hero-title">The 5-minute email<br>triage setup that buys<br>back your mornings</h1>
+    <p class="hero-subtitle">A no-code AI inbox setup that flags the three emails that actually matter and silences the rest. Twenty minutes to install. Saves most owners 5–7 hours a week.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; Feb 12, 2026 · 7:42 AM &nbsp;·&nbsp; 4 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+    <section class="article-section body-text">
+      <p>Every business owner I work with has the same morning: open phone, swipe through 60 emails, mark 3 as important, lose the next hour responding to the noise instead of the signal. The fix is embarrassingly simple. You don't need a new tool. You need 20 minutes and a Gmail or Outlook account.</p>
+      <p>This is the exact setup I run for myself and the one I install for clients on day one.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What this does</h2>
+      <div class="body-text">
+        <p>Three labels show up in your inbox each morning:</p>
+        <ul>
+          <li><strong>🔴 Reply Today</strong> — real customer questions, money-related, time-sensitive</li>
+          <li><strong>🟡 FYI</strong> — useful but doesn't need a reply (confirmations, receipts, updates)</li>
+          <li><strong>⚪ Noise</strong> — newsletters, promos, automated junk you forgot to unsubscribe from</li>
+        </ul>
+        <p>You read 🔴 first, skim 🟡 over coffee, and never look at ⚪. That's it.</p>
+      </div>
+      <div class="callout article-section">
+        <p>The trick isn't building a smarter inbox. It's letting AI do triage <em>before</em> you open the app, so you only see what deserves your attention.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The setup, step by step</h2>
+
+      <div class="step article-section">
+        <span class="step-num">1.</span><h3>Use Gmail's built-in AI labels (free)</h3>
+        <p>Open Gmail on web → Settings (gear) → See all settings → Filters and Blocked Addresses → Create a new filter. Skip this step if you're on Outlook — the equivalent is "Rules → New rule" with similar logic.</p>
+      </div>
+
+      <div class="step article-section">
+        <span class="step-num">2.</span><h3>Build the "Reply Today" rule</h3>
+        <p>Has the words: <code>"quote" OR "estimate" OR "invoice" OR "when can you" OR "schedule" OR "urgent" OR "today"</code></p>
+        <p>Action: Apply label <code>🔴 Reply Today</code> + Star + Never send to spam.</p>
+      </div>
+
+      <div class="step article-section">
+        <span class="step-num">3.</span><h3>Build the "Noise" rule</h3>
+        <p>Has the words: <code>unsubscribe OR "view in browser" OR newsletter OR "marketing email"</code></p>
+        <p>Action: Apply label <code>⚪ Noise</code> + Skip the Inbox.</p>
+      </div>
+
+      <div class="step article-section">
+        <span class="step-num">4.</span><h3>Default everything else to "FYI"</h3>
+        <p>One more rule: <code>has:nouserlabels</code> → apply <code>🟡 FYI</code>. Anything that didn't match the first two now lands here.</p>
+      </div>
+
+      <div class="step article-section">
+        <span class="step-num">5.</span><h3>(Optional) Layer Claude or ChatGPT on top</h3>
+        <p>If you want smarter classification — emails that don't have obvious keywords but are still important — connect your inbox to Claude or ChatGPT via Zapier or Make. The prompt I use:</p>
+        <p><em>"You are an email triage assistant for a small business owner. Read this email and respond with only one of: REPLY_TODAY, FYI, NOISE. Reply today means it requires the owner's response within 24 hours, involves money, scheduling, or a real customer question."</em></p>
+        <p>That single prompt catches the edge cases the keyword rules miss.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">Why this works when fancier tools don't</h2>
+      <div class="body-text">
+        <p>I've tried every "AI inbox" SaaS on the market. Most of them fail for the same reason: they hide your email behind a new interface, your team won't switch, and you end up paying $30/month to feel guilty about not using it.</p>
+        <p>The setup above lives inside the inbox you already use. Your team already knows it. Nothing to learn. No vendor to fire when prices go up.</p>
+      </div>
+    </section>
+
+    <section class="article-section signature body-text">
+      <p>Take the 20 minutes today. If you want me to look over your shoulder while you set it up, that's what the free call is for.</p>
+      <p class="sig-name">— Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Want help installing this?</h2>
+      <p>Free 20-minute call. I'll walk you through your inbox and we'll set it up live.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call →</a>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">mnclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.article-section').forEach(function(el) { observer.observe(el); });
+  </script>
+</body>
+</html>

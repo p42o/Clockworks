@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>From Missed Call to Booked Job — Clockworks</title>
+  <meta name="description" content="A 90-minute build that turns missed calls into booked jobs. The exact lead-response workflow we ship to home-service businesses, end-to-end." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f9f7f2; --ink: #1a1917; --ink-muted: #6b6860; --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1); --border-strong: rgba(26,25,23,0.2);
+      --accent: #C4834A; --accent-bg: #fbf3ec; --accent-text: #7a4a1f;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background-color: var(--cream); color: var(--ink); font-size: 17px; line-height: 1.8; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(249,247,242,0.92); backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; color: var(--ink-muted); text-decoration: none; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; object-position: center top; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-name { font-size: 14px; font-weight: 500; }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+    .body-text p { margin-bottom: 1.5rem; }
+    .body-text p:last-child { margin-bottom: 0; }
+    .body-text ul, .body-text ol { margin: 0 0 1.5rem 1.4rem; }
+    .body-text li { margin-bottom: 0.5rem; line-height: 1.7; }
+    .body-text strong { font-weight: 500; }
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; letter-spacing: -0.01em; }
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 2rem 0; }
+    .stat { background: #fff; border: 0.5px solid var(--border); border-radius: 12px; padding: 1.4rem 1.2rem; text-align: center; }
+    .stat-num { font-family: var(--serif); font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: 0.4rem; }
+    .stat-label { font-size: 12px; color: var(--ink-muted); letter-spacing: 0.04em; }
+    .flow { background: #fff; border: 0.5px solid var(--border); border-radius: 12px; padding: 1.5rem 1.6rem; margin: 1.5rem 0; }
+    .flow-step { display: flex; gap: 1rem; padding: 0.8rem 0; border-bottom: 0.5px solid var(--border); }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-step-num { font-family: var(--serif); font-size: 1.3rem; color: var(--accent); width: 32px; flex-shrink: 0; }
+    .flow-step-text { font-size: 15px; color: var(--ink); line-height: 1.6; }
+    .flow-step-text strong { display: block; margin-bottom: 2px; }
+    .flow-step-text span { color: var(--ink-muted); font-size: 14px; }
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .sig-name { font-weight: 500; font-size: 1rem; }
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; }
+    .cta-btn:hover { opacity: 0.85; }
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .stat-grid { grid-template-columns: 1fr; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PSNYLVG4V1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PSNYLVG4V1');
+  </script>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Guide — End-to-End Build</div>
+    <h1 class="hero-title">From missed call<br>to booked job in<br>90 seconds</h1>
+    <p class="hero-subtitle">The exact lead-response workflow we ship to home-service businesses. End-to-end, no hand-waving — the trigger, the AI, the SMS, and the handoff.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; Mar 18, 2026 · 2:08 PM &nbsp;·&nbsp; 9 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+    <section class="article-section body-text">
+      <p>The single biggest revenue leak I find in small home-service businesses isn't lead generation. It's lead <em>response</em>. The leads are coming in. They're just hitting voicemail, sitting in a contact form for six hours, or getting a "We'll call you back" reply that arrives three days later.</p>
+      <p>Industry-wide, the data on this is brutal:</p>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-num">5×</div>
+          <div class="stat-label">Higher conversion if you respond in under 5 min</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">63%</div>
+          <div class="stat-label">Of consumers book the first business that responds</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">~40%</div>
+          <div class="stat-label">Average missed-call rate for trades during peak season</div>
+        </div>
+      </div>
+
+      <p>Here's the workflow I install on day one for any plumbing, HVAC, electrical, landscaping, or cleaning business that wants to plug the leak. It takes one focused afternoon to build, and it pays for itself with the first booked job it saves.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What you'll need</h2>
+      <div class="body-text">
+        <ul>
+          <li>A business phone number you can route (Google Voice, OpenPhone, Dialpad, RingCentral — anything that supports webhooks or call forwarding)</li>
+          <li>A scheduling tool with availability you can read programmatically (Jobber, Housecall Pro, Calendly, Acuity, Google Calendar)</li>
+          <li>An automation hub: Zapier, Make, or n8n (self-hosted if you want to save the subscription)</li>
+          <li>An LLM key — Claude or OpenAI, ~$5/month for a small business</li>
+          <li>A texting service: Twilio is the cheapest; OpenPhone has built-in SMS API on paid plans</li>
+        </ul>
+        <p>Total monthly cost when it's running: <strong>~$60–$120</strong>. Total time to build the first version: <strong>about 90 minutes</strong>.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The flow, in plain English</h2>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-text">
+            <strong>Caller dials your business line</strong>
+            <span>The call rings your team for 25 seconds. If nobody picks up, the call routes to the AI handler instead of voicemail.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-text">
+            <strong>The AI agent answers in your voice</strong>
+            <span>Greets them by your business name, asks three questions: what's the issue, what's the address (zip is fine), and is it an emergency.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-text">
+            <strong>The agent checks your real calendar</strong>
+            <span>Reads available slots from your scheduler and offers two times that fit. Books the slot if the caller says yes.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-text">
+            <strong>SMS confirmation hits the customer's phone within 90 seconds</strong>
+            <span>"Hi Sarah — confirmed for Thursday 10 AM at your address on Elm. Reply YES to confirm or call us back to change."</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">5</div>
+          <div class="flow-step-text">
+            <strong>Slack or text alert to the owner</strong>
+            <span>You get a one-line summary: "New job booked — Sarah, broken garbage disposal, Thursday 10 AM. Emergency: no."</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">6</div>
+          <div class="flow-step-text">
+            <strong>Emergency escalation</strong>
+            <span>If the caller said it's an emergency (water everywhere, no heat, no power), the AI texts you immediately and tells the caller you'll call back in 5 minutes.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout article-section">
+        <p>Notice what isn't here: a chatbot, an AI receptionist replacing your team, or any "fully autonomous" claim. The AI handles the missed call. Your team handles the relationship.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">The system prompt that makes it work</h2>
+      <div class="body-text">
+        <p>This is 90% of the build. Get the prompt right and the rest is wiring. Adapt it to your business — the structure matters more than the words.</p>
+        <p><em>"You are answering the phone for [Business Name], a [trade] company in [city]. Your only job is to: (1) find out what the caller needs, (2) confirm their address or zip, (3) determine if it's an emergency, and (4) offer two appointment times from this list: [calendar_slots]. Speak like a calm, friendly receptionist with 10 years on the job. Never quote prices. Never promise anything specific. If the caller is upset, acknowledge it once and keep moving. If they want to speak to a human, say someone will call back within 30 minutes and end the call."</em></p>
+        <p>That's the whole brain. The rest is just the connective tissue between your phone, your calendar, and your phone again.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">Mistakes I see businesses make</h2>
+      <div class="body-text">
+        <ol>
+          <li><strong>Letting the AI handle every call.</strong> Don't. Front-line goes to your team. AI is the safety net.</li>
+          <li><strong>Trying to make it sell.</strong> An AI on a 30-second call is a great triage tool and a terrible salesperson. Book the appointment, end the call.</li>
+          <li><strong>No emergency path.</strong> If a customer's basement is flooding and the AI tries to schedule them for next Tuesday, you've lost them and the review.</li>
+          <li><strong>No human review for the first 50 calls.</strong> Listen to the recordings. Tweak the prompt. Then trust it.</li>
+          <li><strong>Building it themselves with no fallback.</strong> When the integration breaks at 9 PM on a Saturday, who fixes it? Have a plan.</li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2 class="section-heading">What this looks like in dollars</h2>
+      <div class="body-text">
+        <p>Conservative math from a recent client (small plumbing shop, ~$1.2M revenue):</p>
+        <ul>
+          <li>Average ticket: $420</li>
+          <li>Missed calls per week before: ~22</li>
+          <li>Calls captured by the AI workflow: ~14 (the rest hang up or were spam)</li>
+          <li>Booked appointments from those: ~6</li>
+          <li>Weekly recovered revenue: <strong>~$2,500</strong></li>
+          <li>Monthly cost of the workflow: <strong>~$95</strong></li>
+        </ul>
+        <p>That's the kind of math that makes "AI for small business" stop sounding like a buzzword.</p>
+      </div>
+    </section>
+
+    <section class="article-section signature body-text">
+      <p>Build it yourself if you've got the afternoon. If you don't, that's literally what we do at Clockworks — fixed price, two-week ship, full handoff. Either way, plug the leak.</p>
+      <p class="sig-name">— Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Want this shipped for you?</h2>
+      <p>Free 20-minute call. We'll map your current call flow and price the build.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call →</a>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">mnclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.article-section').forEach(function(el) { observer.observe(el); });
+  </script>
+</body>
+</html>
