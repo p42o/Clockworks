@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../images/logo-small.svg" />
+  <title>I Sat in a Contractor's Truck for 4 Hours — Clockworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f9f7f2;
+      --ink: #1a1917;
+      --ink-muted: #6b6860;
+      --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1);
+      --border-strong: rgba(26,25,23,0.2);
+      --accent: #1d6bbf;
+      --accent-bg: #edf4fc;
+      --accent-text: #0c3e72;
+      --success: #1a7a4a;
+      --success-bg: #ebf7f1;
+      --success-text: #0d4a2b;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background-color: var(--cream);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(249,247,242,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 0.5px solid var(--border);
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .site-logo {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .site-nav a {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink-muted);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .site-nav a:hover { color: var(--ink); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent) !important;
+      padding: 6px 14px;
+      border: 0.5px solid var(--accent);
+      border-radius: 100px;
+      transition: background 0.2s, color 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--accent) !important;
+      color: #fff !important;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--accent);
+      z-index: 200;
+      transition: width 0.1s linear;
+    }
+
+    .hero {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 5rem 2rem 3rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s 0.1s forwards;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 1.4rem;
+    }
+
+    .eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1.5px;
+      background: var(--ink-faint);
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+      font-weight: 400;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--ink-muted);
+      line-height: 1.65;
+      max-width: 560px;
+      margin-bottom: 2.5rem;
+    }
+
+    .byline {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 2.5rem;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      object-fit: cover;
+      border: 0.5px solid rgba(26,25,23,0.15);
+    }
+
+    .byline-info { line-height: 1.4; }
+
+    .byline-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .byline-meta {
+      font-size: 13px;
+      color: var(--ink-muted);
+    }
+
+    .article {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+
+    .article-section {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .article-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .body-text p {
+      margin-bottom: 1.5rem;
+      color: var(--ink);
+    }
+
+    .body-text p:last-child { margin-bottom: 0; }
+
+    .section-heading {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin: 3rem 0 1.2rem;
+      line-height: 1.25;
+    }
+
+    .divider {
+      width: 36px;
+      height: 2px;
+      background: var(--border-strong);
+      border-radius: 2px;
+      margin: 2.5rem 0;
+    }
+
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: var(--accent-bg);
+      padding: 1.1rem 1.4rem;
+      margin: 2rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .callout p {
+      margin: 0 !important;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--accent-text);
+      line-height: 1.7;
+    }
+
+    .myth-block {
+      background: #fff;
+      border-radius: 12px;
+      border: 0.5px solid var(--border);
+      padding: 1.5rem 1.6rem;
+      margin: 1.5rem 0;
+    }
+
+    .myth-label {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: #fef3ee;
+      color: #7a3a0d;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 0.75rem;
+    }
+
+    .truth-label {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--success-bg);
+      color: var(--success-text);
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin: 0.75rem 0 0.5rem;
+    }
+
+    .myth-block h3 {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .myth-block p {
+      font-size: 0.95rem;
+      color: var(--ink-muted);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .myth-block p:last-child { margin-bottom: 0; }
+
+    .truth-text {
+      font-size: 0.95rem;
+      color: var(--ink) !important;
+      line-height: 1.7;
+    }
+
+    .signature {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 0.5px solid var(--border);
+    }
+
+    .signature p {
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 1.5rem !important;
+    }
+
+    .sig-name {
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .cta-block {
+      background: var(--ink);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--cream);
+    }
+
+    .cta-block h2 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .cta-block p {
+      font-size: 0.95rem;
+      color: rgba(249,247,242,0.65);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 11px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .site-footer {
+      border-top: 0.5px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .footer-text {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .site-nav { gap: 1rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PSNYLVG4V1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PSNYLVG4V1');
+  </script>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <header class="site-header">
+    <a href="../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../resources.html">Blog</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#contact" class="nav-cta">Free Consultation</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Clockworks — AI for Trades</div>
+    <h1 class="hero-title">I Sat in a Contractor's<br>Truck for 4 Hours</h1>
+    <p class="hero-subtitle">Here's the AI playbook I built from it. The five automations every Twin Cities trade business should run before Memorial Day.</p>
+    <div class="byline">
+      <img class="avatar" src="../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">CEO, Clockworks &nbsp;·&nbsp; May 5, 2026 &nbsp;·&nbsp; 8 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>I sat in a Twin Cities contractor's truck for four hours last Tuesday. He's not the most skilled in his trade. He's not the most experienced. He doesn't have the slickest website or the biggest crew. And yet his calendar is open for next week, his phone is answered within 90 seconds, and he just earned his 47th 5-star Google review &mdash; only three of which he asked for personally.</p>
+      <p>Here's what I learned sitting shotgun. And the AI playbook I built from it for every other small trade business in the west metro who's tired of working until 9pm and watching the close-rate stay flat.</p>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2>The truck-cab problem</h2>
+      <div class="body-text">
+        <p>The job &mdash; fixing the furnace, framing the deck, snaking the line, replacing the panel &mdash; is the easy part. You're trained for it. You're paid for it. You enjoy it.</p>
+        <p>The hard part is everything around the job. The follow-up texts. The "did you get the estimate?" check-ins. The review requests. The 11pm Facebook message asking "do you serve Eden Prairie?" The appointment confirmations. The "I'm 15 minutes out" texts. The annual maintenance reminders. The invoicing nudges.</p>
+        <p>This is the boring 30%. And it's killing your business &mdash; not because you're bad at it, but because you can't be bad at it AND under a sink at the same time. So you do it after hours. Or on Saturday. Or you don't do it at all.</p>
+        <p>The trade businesses crushing it in 2026 figured something out: that boring 30% is the cheapest, easiest, highest-ROI thing in your operation to hand to a system. Not because the system is smart. Because the system is <em>consistent</em> &mdash; and you, with the best intentions in the world, cannot be consistent when you're 12 feet up a ladder.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2>The five automations every Twin Cities trade should have running</h2>
+      <div class="body-text">
+        <h3>1. Missed-call text-back</h3>
+        <p>When a customer calls and you can't pick up, an automated text fires within five seconds: <em>"Hey &mdash; sorry I missed you. What can I help with?"</em></p>
+        <p>Four out of five callers reply by text. Without it, they hang up and call the next name on Google.</p>
+        <p>Setup: 15 minutes. Cost: free with most CRMs. The single highest-ROI automation we build, period.</p>
+
+        <h3>2. The 3-text estimate follow-up</h3>
+        <p>Most estimates die on a counter or in an inbox, not because the customer hates the price but because life moves on. The fix: a sequence that politely keeps the conversation alive without being pushy.</p>
+        <ul>
+          <li><strong>+24 hours:</strong> "Just checking if you had any questions about the estimate."</li>
+          <li><strong>+72 hours:</strong> "Still interested? I've got availability opening next week."</li>
+          <li><strong>+7 days:</strong> "Last check-in. No pressure &mdash; just wanted to make sure you're taken care of."</li>
+        </ul>
+        <p>Reply at any point and the sequence stops. A Bloomington contractor we work with took his close rate from 18% to 31% in the first month &mdash; same leads, same prices, same crew. The only thing that changed was that nobody got forgotten.</p>
+
+        <h3>3. The review automation</h3>
+        <p>One hour after a job is marked complete, an automated text goes out: <em>"Thanks for having us out. Everything looking good?"</em> If yes, the next message includes a direct link to your Google Business Profile. If anything below 3 stars, you get an alert before the review goes public &mdash; so you can call the customer and make it right.</p>
+        <p>A Wayzata roofing crew went from 14 reviews in 18 months to 27 new 5-star reviews in 30 days. They were already earning the reviews. They were just never asking for them at the right moment.</p>
+
+        <h3>4. Two-text appointment confirmations</h3>
+        <p>The single cheapest way to cut your no-show rate by ~70%:</p>
+        <ul>
+          <li><strong>T-24 hours:</strong> "We'll see you tomorrow at [time]. Reply C to confirm."</li>
+          <li><strong>T-2 hours:</strong> "On our way in about 2 hours."</li>
+        </ul>
+        <p>An Eden Prairie HVAC company set this up last fall. No-show rate dropped from 22% to 6% in the first month. They eliminated roughly four wasted truck rolls a week &mdash; at an internal cost of about $110 each, that's $1,760 a month back in their pocket. From two text messages.</p>
+
+        <h3>5. Past-customer rebooking</h3>
+        <p>The automation almost no one is running, and the one that prints money: every twelve months after a service, an automated message fires to the past customer asking if they'd like to schedule the same service again. With a direct booking link.</p>
+        <p>This is free revenue from people who already trust you. It runs forever after one setup. For a landscaping business in Plymouth, this single automation booked 38% of their spring cleanup work last year &mdash; work that used to take their office manager three weeks of cold calls every February.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2>Why "I'll just do it myself" is the most expensive sentence in trades</h2>
+      <div class="callout">
+        <p>If you bill at $60 an hour and you spend ten hours a week on follow-ups, review requests, appointment confirmations, and answering "do you serve Plymouth?" &mdash; you're using $600 a week of your most valuable resource on tasks that a system could handle for less than $5.</p>
+        <p><strong>That's $31,200 a year. To send texts and answer the same four questions over and over.</strong></p>
+      </div>
+      <div class="body-text">
+        <p>And that's just the dollars. The real cost is what the admin work does to your evenings, your weekends, the dinners you missed because you were quoting an emergency call at 7pm.</p>
+        <p>You wouldn't hand-dig a foundation when you own an excavator. Stop hand-sending follow-up texts when a system could do it while you sleep.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section">
+      <h2>What this actually looks like for your shop</h2>
+      <div class="body-text">
+        <p>I'm a Twin Cities small-business owner myself. I know what you're thinking: "this sounds great, but I don't have time to figure it out, I don't trust some 22-year-old with a SaaS subscription to set it up, and I'm not handing my business over to AI."</p>
+        <p>Fair. None of that has to happen.</p>
+        <p>What I do at Clockworks is sit in your truck &mdash; figuratively or literally &mdash; for an hour, find the two or three boring tasks that are eating the most of your week, and build the automations that handle them. They sound like you. They sign off as you. They route real conversations back to a human (you) when the system reaches the edge of what it should handle. And they document everything in plain English so you're never locked out of your own systems.</p>
+        <p>The whole thing usually takes about two weeks from first call to fully running. The investment for a small shop is in the same range as a single missed job for most trades. And the lift compounds &mdash; every week the systems run, you reclaim hours that were quietly leaking out of your business.</p>
+      </div>
+    </section>
+
+    <div class="divider article-section"></div>
+
+    <section class="article-section signature body-text">
+      <p>The trades guys getting crushed by competitors right now aren't getting crushed by AI. They're getting crushed by other trades guys who already use it to handle the boring 30% &mdash; so they have time to do their actual job better.</p>
+      <p>Don't be the one getting crushed. Be the one with an open calendar and 47 5-star reviews.</p>
+      <p class="sig-name">&mdash; Parker Swanson, CEO of Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Want to know what I'd build first for your shop?</h2>
+      <p>Free 30-minute call. No pitch. If I can't find a single task worth automating, the coffee's on me.</p>
+      <a href="../index.html#contact" class="cta-btn">Book a free call &rarr;</a>
+    </div>
+
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">aiclockworks.com &nbsp;·&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.article-section').forEach(function(el) {
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>
