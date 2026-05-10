@@ -1,0 +1,4 @@
+# Permanent redirect — old /sniper path → new /sitesniper.
+# Keeps any existing inbound links / shares working.
+Redirect 301 /sniper/ /sitesniper/
+Redirect 301 /sniper /sitesniper/

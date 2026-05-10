@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Site Sniper — AI Website Pitch Generator | Clockworks</title>
+<meta name="description" content="Drop in any business URL. Site Sniper hands you a finished AI redesign, a Before/After audit, and a written cold pitch in 90 seconds. Mac app. Bring your own AI key. $99 one-time. From Clockworks.">
+<meta property="og:title" content="Site Sniper — Turn Any Website Into a Client-Winning Redesign">
+<meta property="og:description" content="Audit + Redesign + Cold Pitch in ~90 seconds. Mac app. $99 one-time. Bring your own AI key.">
+<meta property="og:image" content="https://www.mnclockworks.com/sitesniper/images/hero.png">
+<meta property="og:url" content="https://www.mnclockworks.com/sitesniper">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../images/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ───────── Brand variables — Clockworks (light) ⨯ Site Sniper (dark) ───── */
+:root {
+  /* Site Sniper (dark) — used in hero/CTA bands */
+  --ss-bg:#0E0E0C; --ss-bg2:#141210; --ss-bg3:#1A1916;
+  --ss-border:#2A2620; --ss-border2:#3A342C;
+  --ss-signal:#D4582A; --ss-signal2:#A8441F;
+  --ss-signal-dim:rgba(212,88,42,0.12); --ss-signal-glow:rgba(212,88,42,0.25);
+  --ss-paper:#F5F1E8; --ss-paper-2:#EDE7D8;
+  --ss-text:#C8C2B4; --ss-text-mute:#8A8478; --ss-text-dim:#5A554C;
+
+  /* Clockworks (light) — used in body/proof sections */
+  --cw-bg:#fefefe; --cw-bg-soft:#f7f3ef; --cw-bg-warm:#fef9f5;
+  --cw-navy:#1C2333; --cw-text:#334155; --cw-text-mute:#64748B;
+  --cw-border:#E5E1DA; --cw-border-strong:#C9C2B5;
+  --cw-copper:#C4834A; --cw-copper-deep:#A86C35;
+  --cw-shadow-sm:0 4px 12px rgba(28,35,51,0.06);
+  --cw-shadow-md:0 8px 24px rgba(28,35,51,0.10);
+
+  /* Shared display fonts */
+  --font-display:'Instrument Serif','Didot',Georgia,serif;
+  --font-cw:'Inter',-apple-system,system-ui,sans-serif;
+  --font-ss:'Geist',-apple-system,system-ui,sans-serif;
+  --font-mono:'Geist Mono','JetBrains Mono',monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-cw);color:var(--cw-text);background:var(--cw-bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+
+/* ───────── Top header (navbar) — Clockworks chrome ───────── */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(254,254,254,0.92);backdrop-filter:saturate(160%) blur(14px);border-bottom:1px solid var(--cw-border)}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.topbar .brand{display:flex;align-items:center;gap:10px;color:var(--cw-navy)}
+.topbar .brand .logo-mark{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;color:var(--cw-copper)}
+.topbar .brand .name{font-family:var(--font-display);font-size:24px;color:var(--cw-navy)}
+.topbar .brand .name em{color:var(--cw-copper);font-style:italic}
+.topbar .breadcrumb{color:var(--cw-text-mute);font-size:13px;font-weight:500}
+.topbar .breadcrumb a{color:var(--cw-text-mute);transition:color .15s}
+.topbar .breadcrumb a:hover{color:var(--cw-navy)}
+.topbar .right{display:flex;align-items:center;gap:14px}
+.topbar .nav-cta{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#A86C35,#C4834A);color:#fff;padding:9px 18px;border-radius:8px;font-weight:700;font-size:13.5px;box-shadow:0 2px 10px rgba(196,131,74,0.25);transition:filter .15s,transform .15s}
+.topbar .nav-cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
+
+/* ───────── HERO SECTION — Dark Site Sniper aesthetic ───────── */
+.hero{
+  background:
+    radial-gradient(ellipse at 20% -10%,rgba(212,88,42,0.15),transparent 55%),
+    radial-gradient(ellipse at 85% 100%,rgba(196,131,74,0.10),transparent 50%),
+    var(--ss-bg);
+  color:var(--ss-text);
+  font-family:var(--font-ss);
+  padding:48px 0 80px;
+  position:relative;
+  overflow:hidden;
+  border-bottom:1px solid var(--ss-border);
+}
+/* subtle grain */
+.hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:0.45;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.45 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.hero-inner{max-width:1280px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
+
+.from-clockworks{display:inline-flex;align-items:center;gap:10px;padding:6px 14px;border:1px solid rgba(196,131,74,0.4);background:rgba(196,131,74,0.08);border-radius:99px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#E8B485;margin-bottom:32px}
+.from-clockworks .gear{display:inline-block;width:14px;height:14px;color:var(--cw-copper);animation:gearSpin 14s linear infinite}
+@keyframes gearSpin{to{transform:rotate(360deg)}}
+
+.hero-image-frame{margin-top:8px;border-radius:18px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,0.5),0 0 0 1px var(--ss-border);background:#000;max-width:1240px}
+.hero-image-frame img{width:100%;display:block}
+
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:40px;align-items:center}
+
+.btn-orange{display:inline-flex;align-items:center;gap:10px;background:var(--ss-signal);color:#0E0E0C;padding:16px 26px;border-radius:10px;font-family:var(--font-ss);font-weight:600;font-size:16px;border:none;transition:transform .12s,box-shadow .12s,background .12s}
+.btn-orange:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(212,88,42,0.4);background:#E66331}
+.btn-orange.large{padding:18px 32px;font-size:17px}
+
+.btn-ghost-dark{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--ss-paper);padding:16px 24px;border-radius:10px;font-family:var(--font-ss);font-weight:500;font-size:15px;border:1px solid var(--ss-border2);transition:border-color .12s,background .12s}
+.btn-ghost-dark:hover{border-color:var(--ss-signal);background:var(--ss-signal-dim)}
+
+.hero-trust{display:flex;align-items:center;gap:18px;color:var(--ss-text-mute);font-size:13px;font-family:var(--font-mono)}
+.hero-trust .dot{width:5px;height:5px;border-radius:50%;background:var(--ss-text-dim)}
+
+/* ───────── Section: From Clockworks intro band ───────── */
+.intro-band{background:linear-gradient(180deg,var(--ss-bg) 0%,var(--cw-bg-warm) 100%);padding:0;border-bottom:1px solid var(--cw-border)}
+.intro-band-inner{max-width:980px;margin:0 auto;padding:80px 32px;text-align:center}
+.intro-band .pre{font-family:var(--font-mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--cw-copper-deep);margin-bottom:14px}
+.intro-band h2{font-family:var(--font-display);font-size:clamp(34px,5vw,52px);line-height:1.15;color:var(--cw-navy);font-weight:400;letter-spacing:-0.01em}
+.intro-band h2 em{color:var(--cw-copper);font-style:italic}
+.intro-band p{margin-top:16px;font-size:18px;color:var(--cw-text);max-width:680px;margin-left:auto;margin-right:auto}
+
+/* ───────── How it works — 3 steps ───────── */
+section.howto{background:var(--cw-bg);padding:80px 0;border-bottom:1px solid var(--cw-border)}
+.section-inner{max-width:1180px;margin:0 auto;padding:0 32px}
+.section-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--cw-copper-deep);margin-bottom:12px;text-align:center}
+.section-title{font-family:var(--font-display);font-size:clamp(32px,4.5vw,46px);font-weight:400;color:var(--cw-navy);text-align:center;line-height:1.15;letter-spacing:-0.01em;margin-bottom:48px}
+.section-title em{color:var(--cw-copper);font-style:italic}
+
+.step-row{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:8px}
+.step-card{background:#fff;border:1px solid var(--cw-border);border-radius:18px;padding:32px 26px;box-shadow:var(--cw-shadow-sm);transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.step-card:hover{transform:translateY(-3px);box-shadow:var(--cw-shadow-md)}
+.step-card .num{position:absolute;top:18px;right:22px;font-family:var(--font-display);font-size:62px;color:var(--cw-bg-soft);line-height:1;font-weight:400;z-index:0}
+.step-card .icon{width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:linear-gradient(135deg,#FCEEDF,#F8E0C7);color:var(--cw-copper-deep);margin-bottom:18px;position:relative;z-index:1}
+.step-card h3{font-family:var(--font-display);font-size:24px;color:var(--cw-navy);font-weight:400;margin-bottom:10px;position:relative;z-index:1}
+.step-card p{color:var(--cw-text);font-size:14.5px;position:relative;z-index:1}
+
+/* ───────── Money math strip — bold orange band ───────── */
+.math-strip{background:var(--ss-bg);padding:64px 0;color:var(--ss-paper);font-family:var(--font-ss);position:relative;overflow:hidden}
+.math-strip::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(212,88,42,0.12),transparent 70%);pointer-events:none}
+.math-inner{max-width:1180px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:repeat(4,1fr);gap:28px;position:relative;z-index:1;align-items:end}
+.math-cell .label{font-family:var(--font-mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ss-text-mute);margin-bottom:8px}
+.math-cell .value{font-family:var(--font-display);font-size:54px;line-height:1;color:var(--ss-paper);font-weight:400}
+.math-cell .value em{color:var(--ss-signal);font-style:italic;font-weight:400}
+.math-cell .sub{margin-top:6px;color:var(--ss-text-mute);font-size:13px}
+.math-cell.win .value{color:var(--ss-signal);font-weight:400}
+
+/* ───────── Who it's for ───────── */
+section.who{background:var(--cw-bg-warm);padding:80px 0;border-bottom:1px solid var(--cw-border)}
+.who-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px}
+.who-col{background:#fff;border:1px solid var(--cw-border);border-radius:18px;padding:32px 30px;box-shadow:var(--cw-shadow-sm)}
+.who-col.green{border-left:4px solid #4F8F60}
+.who-col.red{border-left:4px solid #B85450}
+.who-col h3{font-family:var(--font-display);font-size:26px;color:var(--cw-navy);font-weight:400;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.who-col h3 .check,.who-col h3 .x{display:inline-flex;width:28px;height:28px;border-radius:50%;align-items:center;justify-content:center;font-size:14px;font-weight:bold}
+.who-col.green h3 .check{background:rgba(79,143,96,0.15);color:#4F8F60}
+.who-col.red h3 .x{background:rgba(184,84,80,0.15);color:#B85450}
+.who-col ul{list-style:none;padding:0}
+.who-col li{padding:12px 0;border-bottom:1px solid var(--cw-border);color:var(--cw-text);font-size:15px;display:flex;align-items:flex-start;gap:10px}
+.who-col li:last-child{border:none}
+.who-col li::before{content:'→';color:var(--cw-copper);font-weight:bold;flex-shrink:0;margin-top:1px}
+.who-col.red li::before{content:'×';color:var(--cw-text-mute)}
+
+/* ───────── What's included ───────── */
+section.included{background:var(--cw-bg);padding:80px 0;border-bottom:1px solid var(--cw-border)}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+.feature-card{background:#fff;border:1px solid var(--cw-border);border-radius:14px;padding:24px;transition:border-color .2s,transform .2s}
+.feature-card:hover{border-color:var(--cw-copper);transform:translateY(-2px)}
+.feature-card .ico{font-size:22px;margin-bottom:10px}
+.feature-card h4{font-family:var(--font-cw);font-size:16px;font-weight:600;color:var(--cw-navy);margin-bottom:6px}
+.feature-card p{font-size:13.5px;color:var(--cw-text-mute);line-height:1.55;margin:0}
+
+/* ───────── Final dark CTA ───────── */
+section.final-cta{background:var(--ss-bg);color:var(--ss-paper);padding:96px 0;text-align:center;border-top:1px solid var(--ss-border);position:relative;overflow:hidden}
+section.final-cta::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 30% 30%,rgba(212,88,42,0.18),transparent 50%),
+    radial-gradient(ellipse at 70% 70%,rgba(212,88,42,0.10),transparent 50%);
+}
+.final-cta-inner{max-width:780px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
+.final-cta .icon-mark{width:96px;height:96px;border-radius:24px;margin:0 auto 28px;display:flex;align-items:center;justify-content:center;background:#000;border:1px solid var(--ss-border2);box-shadow:0 24px 60px rgba(212,88,42,0.25)}
+.final-cta h2{font-family:var(--font-display);font-size:clamp(40px,6vw,64px);font-weight:400;line-height:1.1;letter-spacing:-0.02em;margin-bottom:18px;color:var(--ss-paper)}
+.final-cta h2 em{color:var(--ss-signal);font-style:italic}
+.final-cta p{color:var(--ss-text);font-size:18px;margin-bottom:32px;max-width:540px;margin-left:auto;margin-right:auto}
+.final-cta .actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* ───────── Footer (matches mnclockworks.com) ───────── */
+footer.foot{background:#fff;border-top:1px solid var(--cw-border);padding:48px 0 32px;font-family:var(--font-cw);color:var(--cw-text-mute);font-size:13px}
+.foot-inner{max-width:1180px;margin:0 auto;padding:0 32px}
+.foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;margin-bottom:28px}
+.foot-brand .name{font-family:var(--font-display);font-size:24px;color:var(--cw-navy);margin-bottom:4px}
+.foot-brand .sub{color:var(--cw-text-mute);font-size:13px;margin-bottom:14px}
+.foot-socials{display:flex;gap:10px}
+.foot-socials a{width:34px;height:34px;border-radius:8px;border:1px solid var(--cw-border);display:inline-flex;align-items:center;justify-content:center;color:var(--cw-text-mute);transition:all .15s}
+.foot-socials a:hover{border-color:var(--cw-copper);color:var(--cw-copper)}
+.foot-links{display:flex;flex-wrap:wrap;gap:12px 22px}
+.foot-links a{color:var(--cw-text);font-size:14px;transition:color .15s}
+.foot-links a:hover{color:var(--cw-copper)}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding-top:24px;border-top:1px solid var(--cw-border)}
+
+/* ───────── Responsive ───────── */
+@media (max-width:920px){
+  .step-row{grid-template-columns:1fr}
+  .math-inner{grid-template-columns:repeat(2,1fr);gap:32px 20px}
+  .who-grid{grid-template-columns:1fr}
+  .feature-grid{grid-template-columns:1fr 1fr}
+  .topbar .breadcrumb{display:none}
+}
+@media (max-width:560px){
+  .topbar-inner,.section-inner,.foot-inner,.hero-inner,.intro-band-inner,.math-inner,.final-cta-inner{padding-left:20px;padding-right:20px}
+  .feature-grid{grid-template-columns:1fr}
+  .hero{padding:32px 0 60px}
+  section.howto,section.who,section.included{padding:60px 0}
+  .step-card{padding:26px 22px}
+  .math-cell .value{font-size:42px}
+  .topbar .nav-cta{padding:8px 14px;font-size:12.5px}
+  .from-clockworks{font-size:10px;padding:5px 12px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═════════════════════════════════════════ TOP HEADER ═════════════════════════════════════════ -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="../" class="brand" aria-label="Clockworks home">
+      <span class="logo-mark">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="animation:gearSpin 14s linear infinite">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+        </svg>
+      </span>
+      <span class="name">Clock<em>works</em></span>
+    </a>
+    <div class="breadcrumb"><a href="../">Home</a> <span style="margin:0 8px;color:var(--cw-border-strong)">/</span> <span style="color:var(--cw-navy);font-weight:600">Site Sniper</span></div>
+    <div class="right">
+      <!-- Replace the href below with your actual Gumroad product URL when live -->
+      <a href="https://venturescape1.gumroad.com/l/sitesniper" target="_blank" rel="noopener" class="nav-cta">Get on Gumroad &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════════════════════════════════════ HERO ═════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <span class="from-clockworks">
+      <svg class="gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      A Product From Clockworks &nbsp;·&nbsp; v1.0
+    </span>
+
+    <div class="hero-image-frame">
+      <img src="images/hero.png" alt="Site Sniper interface showing a Before/After website redesign for Mario's Pizza, with a 72/100 audit score and a generated cold-outreach pitch.">
+    </div>
+
+    <div class="hero-actions">
+      <a class="btn-orange large" href="https://venturescape1.gumroad.com/l/sitesniper" target="_blank" rel="noopener">
+        Buy Site Sniper — $99 &rarr;
+      </a>
+      <a class="btn-ghost-dark" href="#how-it-works">See how it works</a>
+      <div class="hero-trust" style="margin-left:8px">
+        <span>🍎 Mac App</span><span class="dot"></span>
+        <span>One-time</span><span class="dot"></span>
+        <span>BYO AI key</span><span class="dot"></span>
+        <span>~$0.30/site</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════ INTRO BAND ═════════════════════════════════════════ -->
+<section class="intro-band">
+  <div class="intro-band-inner">
+    <div class="pre">From the Clockworks workshop</div>
+    <h2>Building websites is easy now.<br><em>Selling them is the hard part.</em></h2>
+    <p>Anyone can spin up a half-decent landing page in an hour. But sitting across from a small business owner and turning a cold pitch into a paid project? That part hasn't gotten easier — until now. Site Sniper is the unfair advantage Clockworks built for itself, packaged so anyone can use it.</p>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════ HOW IT WORKS ═════════════════════════════════════════ -->
+<section class="howto" id="how-it-works">
+  <div class="section-inner">
+    <div class="section-eyebrow">How it works</div>
+    <h2 class="section-title">Three steps. <em>One tool.</em></h2>
+
+    <div class="step-row">
+      <div class="step-card">
+        <div class="num">01</div>
+        <div class="icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <h3>Point it at any target.</h3>
+        <p>Paste any small business URL. Site Sniper scrapes their photos, colors, fonts, copy, hours, and contact info. Then audits the site across SEO, AIO, performance, accessibility, and trust — five categories, one 0-100 score.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="num">02</div>
+        <div class="icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h3>Claude rebuilds it.</h3>
+        <p>Pre-loaded expert prompts (the moat — months of tuning) hand off to Claude Sonnet 4.6. About 90 seconds later you have a complete responsive HTML site, on-brand to the business, locked behind a PIN-protected preview link.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="num">03</div>
+        <div class="icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Send the pitch.</h3>
+        <p>The cold-outreach generator writes a Facebook DM, LinkedIn message, and SMS tuned to that exact business. Send the link with the PIN. When they say yes, an onboarding form and a host-specific deploy guide are auto-generated.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════ MONEY MATH STRIP ═════════════════════════════════════════ -->
+<section class="math-strip">
+  <div class="math-inner">
+    <div class="math-cell">
+      <div class="label">Cost to run</div>
+      <div class="value">$0.30</div>
+      <div class="sub">in AI tokens per pitch</div>
+    </div>
+    <div class="math-cell win">
+      <div class="label">What you charge</div>
+      <div class="value"><em>$100+</em></div>
+      <div class="sub">per delivered redesign</div>
+    </div>
+    <div class="math-cell">
+      <div class="label">Sales to break even</div>
+      <div class="value">1</div>
+      <div class="sub">on the $99 tool itself</div>
+    </div>
+    <div class="math-cell win">
+      <div class="label">Time per pitch</div>
+      <div class="value"><em>~5 min</em></div>
+      <div class="sub">paste, generate, send</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════ WHO IT'S FOR ═════════════════════════════════════════ -->
+<section class="who">
+  <div class="section-inner">
+    <div class="section-eyebrow">Who Site Sniper is for</div>
+    <h2 class="section-title">Honest, not hype.</h2>
+
+    <div class="who-grid">
+      <div class="who-col green">
+        <h3><span class="check">✓</span> This is built for you if&hellip;</h3>
+        <ul>
+          <li>You've watched five YouTube videos about Cursor or v0 and you're ready to land your first paid client this week.</li>
+          <li>You freelance web design and want a finished concept to walk into pitches with — not a portfolio link nobody clicks.</li>
+          <li>You run a small marketing agency doing outbound to local businesses and need a stronger lead magnet.</li>
+          <li>You're a "I want to start something but don't know what" person — this is one of the easiest digital-product hustles in 2026.</li>
+        </ul>
+      </div>
+      <div class="who-col red">
+        <h3><span class="x">×</span> This is not for you if&hellip;</h3>
+        <ul>
+          <li>You want a hosted SaaS with a monthly bill — Site Sniper runs locally on your Mac, no subscriptions, ever.</li>
+          <li>You expect unlimited free AI calls — you bring your own Anthropic key. Real cost is real (~$0.30 per pitch).</li>
+          <li>You plan to bulk-spam strangers — read the EULA, that's not what this tool is for.</li>
+          <li>You only own a Windows PC right now — Mac at v1.0; Windows port is on the roadmap.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════ WHAT'S INCLUDED ═════════════════════════════════════════ -->
+<section class="included">
+  <div class="section-inner">
+    <div class="section-eyebrow">In the box</div>
+    <h2 class="section-title">Everything you need to <em>pitch and close.</em></h2>
+
+    <div class="feature-grid">
+      <div class="feature-card"><div class="ico">🎯</div><h4>One-click scraper</h4><p>Pulls photos, colors, fonts, copy, contact info, business hours, social links — in seconds.</p></div>
+      <div class="feature-card"><div class="ico">🤖</div><h4>World-class AI prompts</h4><p>The actual moat. Months of tuning, baked in. You don't write a single line of prompt.</p></div>
+      <div class="feature-card"><div class="ico">📊</div><h4>5-category audit</h4><p>SEO, AIO, performance, accessibility, trust. Before/After report exports as a deliverable.</p></div>
+      <div class="feature-card"><div class="ico">✉️</div><h4>Cold-outreach generator</h4><p>Tuned per-business: Facebook DM, LinkedIn note, and SMS — written, not templated.</p></div>
+      <div class="feature-card"><div class="ico">🔒</div><h4>PIN-locked previews</h4><p>Send your prospect a private link with a 7-day expiry timer and access PIN.</p></div>
+      <div class="feature-card"><div class="ico">📋</div><h4>Auto onboarding form</h4><p>When they say yes, the tool generates an intake form so you capture real content in 5 minutes.</p></div>
+      <div class="feature-card"><div class="ico">🚀</div><h4>Host-specific deploy guide</h4><p>WHOIS-detects the prospect's host (GoDaddy, Wix, Squarespace, etc.) and writes step-by-step upload instructions for THEM.</p></div>
+      <div class="feature-card"><div class="ico">🏷️</div><h4>White-label preview</h4><p>Brand the preview with your own studio name. Not "Site Sniper" — you.</p></div>
+      <div class="feature-card"><div class="ico">🔐</div><h4>Local-only. No telemetry.</h4><p>Runs on your Mac. Your data stays your data. Source code included and editable.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════ FINAL CTA ═════════════════════════════════════════ -->
+<section class="final-cta">
+  <div class="final-cta-inner">
+    <div class="icon-mark">
+      <!-- Inline scope reticle SVG -->
+      <svg width="56" height="56" viewBox="0 0 64 64" fill="none" stroke="#D4582A" stroke-width="3" stroke-linecap="round">
+        <circle cx="32" cy="32" r="22"/>
+        <circle cx="32" cy="32" r="14"/>
+        <line x1="32" y1="2" x2="32" y2="12"/><line x1="32" y1="52" x2="32" y2="62"/>
+        <line x1="2" y1="32" x2="12" y2="32"/><line x1="52" y1="32" x2="62" y2="32"/>
+        <circle cx="32" cy="32" r="2.5" fill="#D4582A"/>
+      </svg>
+    </div>
+    <h2>Your first paid client is one URL <em>away.</em></h2>
+    <p>$99 once. Source included. 7-day refund if it doesn't run on your Mac. The shovel — not the gold rush hype.</p>
+    <div class="actions">
+      <a class="btn-orange large" href="https://venturescape1.gumroad.com/l/sitesniper" target="_blank" rel="noopener">Get Site Sniper on Gumroad &rarr;</a>
+      <a class="btn-ghost-dark" href="../contact/">Questions? Talk to Parker</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════ FOOTER ═════════════════════════════════════════ -->
+<footer class="foot">
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="name">Clockworks</div>
+        <div class="sub">AI &amp; Automation for Small Business · Maple Grove, MN</div>
+        <div class="foot-socials">
+          <a href="https://x.com/ClockworksMN" target="_blank" rel="noopener" aria-label="X">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61580475420690" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.99 22 12"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="foot-links">
+        <a href="../">Home</a>
+        <a href="../#what-i-build">What I Build</a>
+        <a href="../#how-it-works">How It Works</a>
+        <a href="../#pricing">Pricing</a>
+        <a href="../resources.html">Resources</a>
+        <a href="../learn/">Learn AI</a>
+        <a href="../contact/">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; <span id="yr"></span> Clockworks &middot; A product of PGS Ventures LLC. All rights reserved.</span>
+      <span><a href="../privacy.html" style="margin-right:14px">Privacy Policy</a><a href="../terms.html">Terms &amp; Conditions</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+</body>
+</html>
