@@ -1,0 +1,2934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprocket — Worksheet Lab</title>
+<style>
+  /* ============================================================
+     SPROCKET — kid-friendly worksheet generator
+     Personal tool · BYOK OpenAI · single-file offline-capable
+     (network used only for OpenAI calls with the user's key)
+     ============================================================ */
+
+  :root {
+    --bg: #FFF6E9;
+    --bg-2: #FFEFD6;
+    --ink: #2B2233;
+    --ink-soft: #6E6378;
+    --paper: #FFFFFF;
+    --grape: #7C4DFF;
+    --grape-dk: #5E35E0;
+    --sky: #2BB8F0;
+    --mint: #2BD4A8;
+    --sun: #FFC23C;
+    --coral: #FF6F61;
+    --pink: #FF8FCf;
+    --line: #E7DCEC;
+    --line-dk: #CDBFD6;
+    --shadow: 0 10px 30px rgba(124,77,255,0.18);
+    --shadow-sm: 0 4px 14px rgba(124,77,255,0.14);
+    --r-lg: 26px;
+    --r-md: 18px;
+    --r-sm: 12px;
+    --ok: #28b463;
+    --warn: #e8a317;
+    --err: #e8584a;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: "Baloo 2", "Nunito", "Quicksand", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(circle at 20% 0%, var(--bg-2), var(--bg) 60%);
+    color: var(--ink);
+    min-height: 100%;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3 { margin: 0 0 .4rem; font-weight: 800; letter-spacing: -.01em; }
+  p { margin: 0 0 .6rem; }
+  button { font-family: inherit; cursor: pointer; }
+  input, select, textarea { font-family: inherit; }
+
+  .app { max-width: 1080px; margin: 0 auto; padding: 18px 18px 80px; }
+
+  /* ===== Top bar ===== */
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1.35rem; color: var(--grape-dk); }
+  .logo .badge {
+    width: 38px; height: 38px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--grape), var(--sky));
+    display: grid; place-items: center; color: white; font-size: 1.1rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .logo small { display:block; font-size:.62rem; font-weight:700; letter-spacing:.14em; color: var(--ink-soft); text-transform: uppercase; }
+  .top-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    border: 0; background: var(--paper); color: var(--ink-soft);
+    width: 42px; height: 42px; border-radius: 14px; font-size: 1.05rem;
+    box-shadow: var(--shadow-sm); transition: transform .12s, color .12s;
+  }
+  .icon-btn:hover { transform: translateY(-2px); color: var(--grape); }
+
+  /* ===== Stage (robot + speech) ===== */
+  .stage {
+    background: linear-gradient(135deg, #fff, #fff8ef);
+    border: 3px solid #fff;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+    padding: 20px 22px;
+    display: flex; gap: 18px; align-items: center;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage::after {
+    content:""; position:absolute; right:-40px; top:-40px; width:160px; height:160px;
+    background: radial-gradient(circle, rgba(124,77,255,.10), transparent 70%);
+  }
+  .robot-wrap { flex-shrink: 0; width: 132px; height: 150px; position: relative; }
+  .speech {
+    background: var(--bg-2);
+    border-radius: 18px 18px 18px 4px;
+    padding: 14px 18px;
+    font-size: 1.06rem; font-weight: 600; color: var(--ink);
+    position: relative; flex: 1;
+    min-height: 56px;
+  }
+  .speech b { color: var(--grape-dk); }
+  .speech .sub { display:block; font-size:.86rem; font-weight:600; color: var(--ink-soft); margin-top: 4px; }
+
+  /* ===== Robot SVG animations ===== */
+  @keyframes bob { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-7px);} }
+  @keyframes blink { 0%,92%,100%{ transform: scaleY(1);} 96%{ transform: scaleY(.1);} }
+  @keyframes spin { from{ transform: rotate(0);} to{ transform: rotate(360deg);} }
+  @keyframes spinrev { from{ transform: rotate(0);} to{ transform: rotate(-360deg);} }
+  @keyframes wiggle { 0%,100%{ transform: rotate(-7deg);} 50%{ transform: rotate(7deg);} }
+  @keyframes pop { 0%{ transform: scale(0);} 70%{ transform: scale(1.15);} 100%{ transform: scale(1);} }
+  .robot { width: 132px; height: 150px; animation: bob 3.4s ease-in-out infinite; transform-origin: center bottom; }
+  .robot.think { animation: bob 1.1s ease-in-out infinite; }
+  .robot.happy { animation: pop .5s ease, bob 3s ease-in-out infinite .5s; }
+  .r-eye { transform-origin: center; animation: blink 5s infinite; }
+  .r-gear { transform-origin: center; animation: spin 6s linear infinite; }
+  .r-gear.fast { animation: spin 1.1s linear infinite; }
+  .r-antenna { transform-origin: 66px 30px; }
+  .robot.think .r-antenna { animation: wiggle .5s ease-in-out infinite; }
+  .r-arm-l { transform-origin: 38px 92px; }
+  .robot.happy .r-arm-l { animation: wiggle .4s ease-in-out 4; }
+
+  /* ===== Cards / steps ===== */
+  .card {
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+    padding: 22px;
+    margin-bottom: 16px;
+    border: 3px solid #fff;
+    animation: slideup .35s ease;
+  }
+  @keyframes slideup { from{ opacity:0; transform: translateY(14px);} to{ opacity:1; transform: translateY(0);} }
+  .card h2 { font-size: 1.4rem; color: var(--grape-dk); }
+  .card .lead { color: var(--ink-soft); font-weight:600; margin-bottom: 14px; }
+
+  /* progress dots */
+  .progress { display:flex; gap:8px; align-items:center; margin-bottom: 14px; flex-wrap:wrap; }
+  .pdot { display:flex; align-items:center; gap:6px; font-size:.8rem; font-weight:800; color: var(--line-dk); }
+  .pdot .n { width:26px; height:26px; border-radius:50%; background: var(--bg-2); display:grid; place-items:center; color: var(--ink-soft); }
+  .pdot.done .n { background: var(--mint); color:#fff; }
+  .pdot.active .n { background: var(--grape); color:#fff; box-shadow: 0 0 0 4px rgba(124,77,255,.18); }
+  .pdot.active { color: var(--grape-dk); }
+
+  /* choice grid */
+  .grid { display:grid; gap:12px; }
+  .grid.cols2 { grid-template-columns: repeat(2,1fr); }
+  .grid.cols3 { grid-template-columns: repeat(3,1fr); }
+  .grid.cols4 { grid-template-columns: repeat(4,1fr); }
+  @media (max-width:760px){ .grid.cols3,.grid.cols4{ grid-template-columns: repeat(2,1fr);} }
+  @media (max-width:480px){ .grid.cols2,.grid.cols3,.grid.cols4{ grid-template-columns: 1fr;} }
+
+  .choice {
+    border: 3px solid var(--line);
+    background: var(--paper);
+    border-radius: var(--r-md);
+    padding: 16px;
+    text-align: left;
+    transition: transform .12s, border-color .12s, background .12s;
+    display:flex; align-items:center; gap:12px;
+    font-weight: 800; font-size: 1rem; color: var(--ink);
+  }
+  .choice:hover { transform: translateY(-3px) scale(1.01); border-color: var(--grape); }
+  .choice.sel { border-color: var(--grape); background: #f6f1ff; }
+  .choice .emoji { font-size: 1.7rem; line-height:1; }
+  .choice .sub { display:block; font-size:.78rem; font-weight:600; color: var(--ink-soft); }
+
+  .theme-card { flex-direction: column; align-items:flex-start; min-height: 96px; justify-content: space-between; }
+  .theme-card .emoji { font-size: 2.1rem; }
+
+  /* buttons */
+  .btn {
+    border: 0; border-radius: 16px; padding: 14px 26px;
+    font-weight: 900; font-size: 1.05rem; color: #fff;
+    background: linear-gradient(135deg, var(--grape), var(--grape-dk));
+    box-shadow: var(--shadow-sm); transition: transform .12s, filter .12s;
+  }
+  .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+  .btn:disabled { opacity:.5; filter: grayscale(.4); cursor: not-allowed; transform:none; }
+  .btn.ghost { background: var(--bg-2); color: var(--grape-dk); box-shadow:none; }
+  .btn.mint { background: linear-gradient(135deg, var(--mint), #1fae8a); }
+  .btn.coral { background: linear-gradient(135deg, var(--coral), #e8543f); }
+  .btn.sun { background: linear-gradient(135deg, var(--sun), #f0a90c); color:#5a3d00; }
+  .btn.sky { background: linear-gradient(135deg, var(--sky), #1f9bd0); }
+  /* ORF reading-fluency */
+  .orf-passage { font-size:1.55rem; line-height:2.1; font-weight:700; color:var(--ink);
+    background:var(--paper); border:3px solid var(--line); border-radius:18px; padding:22px 24px; }
+  .orf-passage.big { font-size:1.9rem; line-height:2.3; }
+  .orf-w { cursor:pointer; padding:1px 3px; border-radius:6px; transition:background .1s; }
+  .orf-w:hover { background:var(--bg-2); }
+  .orf-w.miss { background:#ffd9d4; color:var(--coral); text-decoration:line-through; }
+  .orf-w.last { box-shadow:inset 0 -4px 0 var(--sky); }
+  .orf-timer { font-size:3rem; font-weight:900; font-family:inherit; color:var(--grape-dk); }
+  .orf-timer.go { color:var(--coral); }
+  .wcpm-row { display:flex; align-items:flex-end; gap:6px; height:90px; padding:8px 0; }
+  .wcpm-bar { flex:1; min-width:14px; background:linear-gradient(var(--sky),var(--grape)); border-radius:6px 6px 0 0; position:relative; }
+  .wcpm-bar span { position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:.7rem; font-weight:800; color:var(--ink-soft); }
+  .btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top: 18px; }
+  .btn.sm { padding: 9px 16px; font-size:.9rem; border-radius: 12px; }
+
+  /* form */
+  label.fld { display:block; font-weight:800; margin: 12px 0 6px; color: var(--ink); }
+  .fld-hint { font-weight:600; font-size:.8rem; color: var(--ink-soft); }
+  input.in, select.in, textarea.in {
+    width:100%; border:3px solid var(--line); border-radius: 14px;
+    padding: 12px 14px; font-size:1rem; font-weight:700; color: var(--ink);
+    background: var(--paper); transition: border-color .12s;
+  }
+  input.in:focus, select.in:focus, textarea.in:focus { outline:none; border-color: var(--grape); }
+  textarea.in { resize: vertical; min-height: 64px; font-weight:600; }
+
+  /* toggles for accommodations */
+  .accom { display:grid; grid-template-columns: repeat(2,1fr); gap:10px; }
+  @media (max-width:560px){ .accom{ grid-template-columns:1fr; } }
+  .toggle {
+    display:flex; align-items:flex-start; gap:10px; border:3px solid var(--line);
+    border-radius:14px; padding:12px; cursor:pointer; transition:border-color .12s, background .12s;
+  }
+  .toggle.on { border-color: var(--mint); background:#effcf7; }
+  .toggle input { margin-top:3px; width:18px; height:18px; accent-color: var(--mint); }
+  .toggle .t-title { font-weight:800; font-size:.95rem; }
+  .toggle .t-sub { font-weight:600; font-size:.76rem; color: var(--ink-soft); }
+
+  /* profile chips */
+  .kid-row { display:flex; gap:10px; flex-wrap:wrap; }
+  .kid-chip {
+    border:3px solid var(--line); background:var(--paper); border-radius:18px;
+    padding:12px 16px; display:flex; align-items:center; gap:10px; font-weight:800;
+    transition: border-color .12s, transform .12s;
+  }
+  .kid-chip:hover { transform: translateY(-2px); border-color: var(--grape); }
+  .kid-chip.sel { border-color: var(--grape); background:#f6f1ff; }
+  .kid-ava { width:42px; height:42px; border-radius:50%; display:grid; place-items:center; font-size:1.3rem; color:#fff; }
+
+  /* drawer */
+  .scrim { position:fixed; inset:0; background:rgba(43,34,51,.45); backdrop-filter: blur(3px); display:none; z-index:80; }
+  .scrim.show { display:block; }
+  .drawer {
+    position:fixed; top:0; right:-460px; width:440px; max-width:92vw; height:100%;
+    background:var(--bg); box-shadow:-10px 0 40px rgba(0,0,0,.2); z-index:90;
+    transition: right .28s ease; padding:22px; overflow-y:auto;
+  }
+  .drawer.show { right:0; }
+  .drawer h2 { color: var(--grape-dk); }
+  .keytag { font-size:.75rem; font-weight:800; padding:3px 9px; border-radius:99px; }
+  .keytag.ok { background:#e3f7ec; color:var(--ok); }
+  .keytag.no { background:#fde9e7; color:var(--err); }
+
+  /* loading */
+  .loading { text-align:center; padding: 30px 10px; }
+  .loadbar { height:12px; background:var(--bg-2); border-radius:99px; overflow:hidden; margin:18px auto; max-width:420px; }
+  .loadbar i { display:block; height:100%; width:30%; border-radius:99px;
+    background:linear-gradient(90deg,var(--grape),var(--sky),var(--mint)); animation: load 1.6s ease-in-out infinite; }
+  @keyframes load { 0%{ margin-left:-30%;} 100%{ margin-left:100%;} }
+  .load-status { font-weight:800; color:var(--grape-dk); min-height:1.4em; }
+
+  /* confetti */
+  .confetti { position:fixed; inset:0; pointer-events:none; z-index:200; overflow:hidden; }
+  .conf { position:absolute; width:10px; height:14px; opacity:.9; animation: fall linear forwards; }
+  @keyframes fall { to{ transform: translateY(110vh) rotate(720deg); opacity:1; } }
+
+  .toast {
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:var(--ink); color:#fff; padding:12px 22px; border-radius:14px;
+    font-weight:800; z-index:300; opacity:0; transition:opacity .2s, transform .2s; pointer-events:none;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(-6px); }
+  .toast.err { background: var(--err); }
+
+  /* =========================================================
+     WORKSHEET — print-perfect output
+     ========================================================= */
+  .ws-actions { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .sheet {
+    background:#fff; color:#111; border-radius: 14px;
+    box-shadow: var(--shadow); padding: 46px 50px;
+    max-width: 8.5in; margin: 0 auto;
+    font-family: "Nunito", "Baloo 2", system-ui, sans-serif;
+  }
+  .sheet .ws-header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; border-bottom:3px solid #111; padding-bottom:12px; margin-bottom:6px; }
+  .sheet .ws-banner { width:100%; border-radius:12px; margin:14px 0 18px; display:block; }
+  .sheet h1.ws-title { font-size: 1.7rem; color:#111; margin:0; }
+  .sheet .ws-meta { font-size:.82rem; color:#444; font-weight:700; text-align:right; line-height:1.5; }
+  .sheet .ws-nameline { display:flex; gap:24px; font-weight:800; font-size:.95rem; margin: 6px 0 14px; }
+  .sheet .ws-nameline .u { flex:1; border-bottom:2px solid #999; }
+  .sheet .ws-instr { background:#f3eefe; border-left:5px solid #7C4DFF; padding:10px 14px; border-radius:8px; font-weight:700; margin: 10px 0 16px; }
+  .sheet .ws-warm { border:2px dashed #7C4DFF; border-radius:12px; padding:12px 16px; margin-bottom:18px; }
+  .sheet .ws-warm .lbl { font-weight:900; color:#5E35E0; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
+  .sheet .ws-prior { font-weight:800; color:#2BB8F0; background:#eaf7fe; border-radius:10px; padding:8px 14px; margin-bottom:14px; }
+  .sheet .ws-repair { border:2px solid #FF6F61; background:#fff3f1; border-radius:12px; padding:12px 16px; margin-bottom:18px; }
+  .sheet .ws-repair .lbl { font-weight:900; color:#d64530; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
+  .sheet .ws-guided { border:2px solid #2BD4A8; background:#effcf7; border-radius:12px; padding:12px 16px; margin-bottom:18px; }
+  .sheet .ws-guided .lbl { font-weight:900; color:#1aa886; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
+  .sheet .ws-guided .g-item { padding:7px 0; }
+  .sheet .ws-guided .g-scaffold { font-size:.85rem; color:#1aa886; font-style:italic; margin:3px 0 4px; }
+  .sheet .ws-section { margin-bottom: 20px; }
+  .sheet .ws-section h3 { font-size:1.15rem; color:#5E35E0; border-bottom:2px dotted #cbb9ee; padding-bottom:4px; }
+  .sheet .ws-section .sec-instr { font-weight:700; color:#333; margin:6px 0 12px; }
+  .sheet .ws-item { display:flex; gap:12px; padding:9px 0; align-items:flex-start; }
+  .sheet .ws-item .qn { font-weight:900; color:#5E35E0; min-width:26px; }
+  .sheet .ws-item .qbody { flex:1; }
+  .sheet .ws-q { font-weight:700; font-size:1.02rem; }
+  .sheet .ws-hint { font-size:.8rem; color:#666; font-style:italic; margin-top:3px; }
+  .sheet .ws-write { border-bottom:2px solid #bbb; height: 30px; margin-top:8px; }
+  .sheet .ws-write.lines { background-image: repeating-linear-gradient(#fff 0 28px, #ddd 28px 30px); border:0; height: 92px; }
+  .sheet .ws-write.hwlines {
+    border:0; height:84px;
+    background-image:
+      repeating-linear-gradient(transparent 0 18px, #f0a 0 0),
+      linear-gradient(#fff,#fff);
+    background:
+      repeating-linear-gradient(to bottom,
+        #fff 0, #fff 12px,
+        #2BB8F0 12px, #2BB8F0 13px,            /* top line */
+        #fff 13px, #fff 26px,
+        rgba(255,111,97,.5) 26px, rgba(255,111,97,.5) 27px, /* dotted mid (approx) */
+        #fff 27px, #fff 40px,
+        #111 40px, #111 41px,                    /* baseline */
+        #fff 41px, #fff 56px);
+  }
+  .sheet .ws-write.grid { border:0; height:120px; background-image:
+      linear-gradient(#e5e5e5 1px, transparent 1px),
+      linear-gradient(90deg,#e5e5e5 1px, transparent 1px);
+    background-size: 26px 26px; border:1px solid #ccc; border-radius:6px; }
+  .sheet .ws-write.tracing { border:0; height:60px; display:flex; align-items:center; font-size:2.4rem; letter-spacing:.5rem; color:#cdc4dd; font-weight:800; }
+  .sheet .ws-challenge { background:#fff7e6; border:2px solid #FFC23C; border-radius:12px; padding:12px 16px; margin:14px 0; }
+  .sheet .ws-challenge .lbl { font-weight:900; color:#a9740a; }
+  .sheet .ws-reflect { margin-top:18px; border-top:2px dashed #bbb; padding-top:12px; font-weight:700; }
+  .sheet .ws-faces { font-size:1.7rem; letter-spacing:14px; }
+  .sheet .ws-foot { margin-top:22px; text-align:center; font-size:.72rem; color:#999; font-weight:700; }
+  .answerkey { page-break-before: always; }
+  .answerkey h2 { color:#5E35E0; }
+  .ak-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:6px 22px; font-weight:700; font-size:.95rem; }
+
+  /* accommodation render modifiers (applied to .sheet) */
+  .sheet.acc-dyslexia { font-family: "Comic Sans MS","Trebuchet MS",Verdana,sans-serif; letter-spacing:.04em; word-spacing:.12em; line-height:1.9; }
+  .sheet.acc-dyslexia .ws-q { font-size:1.12rem; }
+  .sheet.acc-tint { background:#FBF3DF; }
+  .sheet.acc-tint.answerkey, .sheet.acc-tint .answerkey { background:#FBF3DF; }
+  .sheet.acc-big { font-size:1.12rem; }
+  .sheet.acc-big .ws-item { padding:14px 0; }
+  .sheet.acc-spaced .ws-item { padding: 16px 0; }
+  .sheet.acc-spaced { line-height: 2; }
+  /* Print-friendly black & white: ink-saving, grayscales everything incl. the
+     header image, forces a white page even if a tint accommodation is on. */
+  .sheet.bw { filter: grayscale(1) contrast(1.05); background:#fff !important; }
+  .sheet.bw .ws-instr, .sheet.bw .ws-warm, .sheet.bw .ws-guided,
+  .sheet.bw .ws-repair, .sheet.bw .ws-challenge, .sheet.bw .ws-prior { background:#fff !important; }
+
+  /* ===== Mobile / phone hardening ===== */
+  @media (max-width: 600px) {
+    .app { padding: 12px 12px 64px; }
+    .stage { flex-direction: column; text-align: center; gap: 12px; padding: 16px; }
+    .robot-wrap, .robot { width: 96px; height: 110px; }
+    .speech { border-radius: 14px; }
+    .card { padding: 16px; border-radius: 20px; }
+    .card h2 { font-size: 1.2rem; }
+    .btn { padding: 14px 20px; font-size: 1rem; width: 100%; }      /* full-width thumb targets */
+    .btn.sm { width: auto; padding: 10px 16px; }
+    .btn-row { flex-direction: column; }
+    .btn-row .btn.sm { width: auto; }
+    .topbar .logo { font-size: 1.1rem; }
+    .icon-btn { width: 46px; height: 46px; }                        /* ≥44px touch */
+    .drawer { width: 100%; max-width: 100%; padding: 18px; }
+    .sheet { padding: 22px 18px; font-size: .98rem; }
+    .sheet h1.ws-title { font-size: 1.35rem; }
+    .ws-actions .btn { width: 100%; }
+    .grid.cols2, .grid.cols3, .grid.cols4 { grid-template-columns: 1fr; }
+    .orf-passage { font-size: 1.35rem; line-height: 2.4; padding: 16px; }  /* roomier word taps */
+    .orf-passage.big { font-size: 1.5rem; }
+    .orf-w { padding: 4px 6px; }                                    /* bigger tap area */
+    .orf-timer { font-size: 2.4rem; }
+    .cap-tabs { flex-direction: row; }                              /* keep camera/upload side by side */
+    .cap-tab { padding: 14px 8px; }
+    .ring { width: 110px; height: 110px; }
+    .ring .inner { width: 90px; height: 90px; }
+    input.in, select.in, textarea.in { font-size: 16px; }           /* prevents iOS zoom-on-focus */
+  }
+  @media print {
+    body { background:#fff; }
+    .app > *:not(.print-on), .topbar, .stage, .ws-actions, .scrim, .drawer, .toast, .confetti, .no-print { display:none !important; }
+    .print-on { display:block !important; }
+    .sheet { box-shadow:none; border-radius:0; padding: 0.4in 0.5in; max-width:none; margin:0; }
+    .ws-section { page-break-inside: avoid; }
+    @page { margin: 0.5in; }
+  }
+  /* progress report */
+  .prog-skill { display:grid; grid-template-columns: 1fr 90px; gap:10px; align-items:center; padding:10px 0; border-bottom:1px dotted var(--line); }
+  .prog-bar { height:12px; background:var(--bg-2); border-radius:99px; overflow:hidden; margin-top:5px; }
+  .prog-bar i { display:block; height:100%; border-radius:99px; }
+  .prog-due { font-size:.7rem; font-weight:800; color:#fff; background:var(--coral); padding:2px 8px; border-radius:99px; }
+  .prog-trend { font-weight:900; }
+
+  /* ===== Grading flow ===== */
+  .cap-tabs { display:flex; gap:8px; margin-bottom:14px; }
+  .cap-tab { flex:1; border:3px solid var(--line); background:var(--paper); border-radius:14px; padding:12px; font-weight:800; color:var(--ink-soft); }
+  .cap-tab.on { border-color:var(--grape); color:var(--grape-dk); background:#f6f1ff; }
+  .cap-stage { background:#1c1626; border-radius:18px; overflow:hidden; position:relative; min-height:240px; display:grid; place-items:center; }
+  .cap-stage video, .cap-stage img { width:100%; max-height:62vh; display:block; object-fit:contain; }
+  .cap-drop { border:3px dashed var(--line-dk); border-radius:18px; padding:38px 18px; text-align:center; font-weight:800; color:var(--ink-soft); background:var(--bg-2); }
+  .cap-drop.drag { border-color:var(--grape); background:#f6f1ff; color:var(--grape-dk); }
+  .grade-item { border:3px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:10px; }
+  .grade-item.ok { border-color:var(--mint); background:#effcf7; }
+  .grade-item.no { border-color:var(--coral); background:#fff1ef; }
+  .grade-item.unsure { border-color:var(--sun); background:#fff9ec; }
+  .gi-head { display:flex; align-items:center; gap:10px; font-weight:800; }
+  .gi-verdict { display:flex; gap:6px; margin-left:auto; }
+  .gi-v { border:2px solid var(--line); background:#fff; border-radius:10px; padding:5px 10px; font-weight:800; font-size:.82rem; cursor:pointer; }
+  .gi-v.sel-ok { border-color:var(--mint); background:var(--mint); color:#fff; }
+  .gi-v.sel-no { border-color:var(--coral); background:var(--coral); color:#fff; }
+  .gi-v.sel-skip { border-color:var(--ink-soft); background:var(--ink-soft); color:#fff; }
+  .gi-read { font-size:.86rem; color:var(--ink-soft); font-weight:700; margin-top:6px; }
+  .gi-read b { color:var(--ink); }
+  .scorebig { font-size:3.2rem; font-weight:900; color:var(--grape-dk); font-family:inherit; line-height:1; }
+  .ring { --p:0; width:128px; height:128px; border-radius:50%; display:grid; place-items:center; margin:0 auto 8px;
+    background: conic-gradient(var(--mint) calc(var(--p)*1%), var(--bg-2) 0); }
+  .ring .inner { width:104px; height:104px; border-radius:50%; background:var(--paper); display:grid; place-items:center; }
+  .sugg { border:3px solid var(--sun); background:#fff9ec; border-radius:14px; padding:12px 14px; margin-bottom:10px; }
+  .sugg .btn-row { margin-top:10px; }
+  .pat-chip { display:inline-block; background:#fff1ef; color:#c0392b; border:2px solid var(--coral); font-weight:800; font-size:.76rem; padding:4px 10px; border-radius:99px; margin:3px; }
+  .mini-stat { display:inline-flex; flex-direction:column; align-items:center; background:var(--bg-2); border-radius:14px; padding:10px 16px; font-weight:900; }
+  .mini-stat small { font-weight:700; color:var(--ink-soft); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; }
+
+  .hidden { display:none !important; }
+  .center { text-align:center; }
+  .muted { color: var(--ink-soft); font-weight:600; }
+  .pill { display:inline-block; background:var(--bg-2); color:var(--grape-dk); font-weight:800; font-size:.74rem; padding:4px 10px; border-radius:99px; margin:2px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="logo">
+      <div class="badge">⚙️</div>
+      <div>Sprocket<small>Worksheet Lab</small></div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" title="Kid Profiles" onclick="openDrawer('profiles')">👧</button>
+      <button class="icon-btn" title="Settings" onclick="openDrawer('settings')">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Stage: robot + speech bubble -->
+  <div class="stage" id="stage">
+    <div class="robot-wrap">
+      <svg class="robot" id="robot" viewBox="0 0 132 150" aria-hidden="true">
+        <!-- antenna -->
+        <g class="r-antenna">
+          <line x1="66" y1="30" x2="66" y2="12" stroke="#7C4DFF" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="66" cy="9" r="6" fill="#FFC23C"/>
+        </g>
+        <!-- head -->
+        <rect x="30" y="28" width="72" height="58" rx="16" fill="#fff" stroke="#7C4DFF" stroke-width="4"/>
+        <!-- face screen -->
+        <rect x="40" y="40" width="52" height="34" rx="10" fill="#2B2233"/>
+        <g fill="#2BD4A8" class="r-eye">
+          <circle cx="55" cy="57" r="6"/>
+          <circle cx="77" cy="57" r="6"/>
+        </g>
+        <path d="M58 67 q8 7 16 0" stroke="#2BD4A8" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- body -->
+        <rect x="36" y="88" width="60" height="46" rx="14" fill="#fff" stroke="#7C4DFF" stroke-width="4"/>
+        <!-- chest gear -->
+        <g class="r-gear" id="rgear" transform="translate(66 111)">
+          <circle r="13" fill="#FFEFD6" stroke="#7C4DFF" stroke-width="3"/>
+          <g fill="#7C4DFF">
+            <rect x="-2.5" y="-18" width="5" height="6" rx="1"/>
+            <rect x="-2.5" y="12" width="5" height="6" rx="1"/>
+            <rect x="-18" y="-2.5" width="6" height="5" rx="1"/>
+            <rect x="12" y="-2.5" width="6" height="5" rx="1"/>
+          </g>
+          <circle r="4" fill="#7C4DFF"/>
+        </g>
+        <!-- arms -->
+        <rect class="r-arm-l" x="20" y="92" width="14" height="34" rx="7" fill="#7C4DFF"/>
+        <rect x="98" y="92" width="14" height="34" rx="7" fill="#7C4DFF"/>
+        <!-- feet -->
+        <rect x="44" y="132" width="16" height="12" rx="5" fill="#7C4DFF"/>
+        <rect x="72" y="132" width="16" height="12" rx="5" fill="#7C4DFF"/>
+      </svg>
+    </div>
+    <div class="speech" id="speech">
+      <span id="speechText">Booting up… ⚙️</span>
+      <span class="sub" id="speechSub"></span>
+    </div>
+  </div>
+
+  <!-- progress -->
+  <div class="progress" id="progress"></div>
+
+  <!-- ===== SCREENS ===== -->
+  <div id="screen-auth" class="card hidden"></div>
+  <div id="screen-denied" class="card hidden"></div>
+  <div id="screen-admin" class="card hidden"></div>
+  <div id="screen-family" class="card hidden"></div>
+  <div id="screen-welcome" class="card hidden"></div>
+  <div id="screen-profile" class="card hidden"></div>
+  <div id="screen-grade" class="card hidden"></div>
+  <div id="screen-subject" class="card hidden"></div>
+  <div id="screen-skill" class="card hidden"></div>
+  <div id="screen-theme" class="card hidden"></div>
+  <div id="screen-review" class="card hidden"></div>
+  <div id="screen-loading" class="card hidden"></div>
+  <div id="screen-worksheet" class="hidden"></div>
+  <div id="screen-capture" class="card hidden"></div>
+  <div id="screen-grading" class="card hidden"></div>
+  <div id="screen-gradereview" class="card hidden"></div>
+  <div id="screen-results" class="card hidden"></div>
+  <div id="screen-progress" class="card hidden"></div>
+  <div id="screen-orf" class="card hidden"></div>
+
+</div>
+
+<!-- Drawer (profiles / settings) -->
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer"></div>
+
+<div class="toast" id="toast"></div>
+<div class="confetti hidden" id="confetti"></div>
+
+<!-- ============================================================
+     FIREBASE BRIDGE (v9 modular, ESM from gstatic)
+     BYOK-only architecture: Firebase = Auth + Firestore ONLY.
+     No Cloud Functions, no server secret, no Blaze. The browser
+     still calls OpenAI directly with the user's own key.
+     Exposes window.SB for the classic app script to use.
+     ============================================================ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, addDoc, collection, getDocs, query, where, orderBy, limit, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ⬇⬇⬇  PASTE THE firebaseConfig OBJECT FROM THE FIREBASE CONSOLE HERE  ⬇⬇⬇
+   (see FIREBASE_SETUP.md). Until this is filled in, the app runs in
+   LOCAL MODE: no login, localStorage only — exactly like the old version,
+   so you can keep using it offline while the cloud side is wired.        */
+const firebaseConfig = {
+  apiKey: "AIzaSyB4fe6V96N3fknVqdl_SvQgruUoSrGwHjs",
+  authDomain: "sprocket-app-8a67b.firebaseapp.com",
+  projectId: "sprocket-app-8a67b",
+  storageBucket: "sprocket-app-8a67b.firebasestorage.app",
+  messagingSenderId: "920811527553",
+  appId: "1:920811527553:web:a7e27497ea72015461dc80"
+};
+/* ⬆⬆⬆  ----------------------------------------------------------  ⬆⬆⬆ */
+
+const CONFIGURED = !!firebaseConfig.apiKey;
+let _app, _auth, _db, _provider;
+if (CONFIGURED) {
+  _app = initializeApp(firebaseConfig);
+  _auth = getAuth(_app);
+  _db = getFirestore(_app);
+  _provider = new GoogleAuthProvider();
+}
+
+function genCode(){ // short, unambiguous, shareable family code
+  const a="ABCDEFGHJKMNPQRSTUVWXYZ23456789"; let s="";
+  for(let i=0;i<7;i++) s+=a[Math.floor(Math.random()*a.length)];
+  return s;
+}
+
+// The bridge the classic app script consumes.
+window.SB = {
+  configured: CONFIGURED,
+  user: null,
+  family: null,      // { id, name, code, role }
+  ready: null,       // Promise resolved once auth state is known
+
+  signIn: async () => { if(!CONFIGURED) return; await signInWithPopup(_auth, _provider); },
+  signOutNow: async () => { if(!CONFIGURED) return; await signOut(_auth); },
+
+  // Resolve which family this user belongs to (first membership). null if none.
+  resolveFamily: async () => {
+    if(!CONFIGURED || !window.SB.user) return null;
+    const uid = window.SB.user.uid;
+    const fams = await getDocs(query(collection(_db,"families"), where("memberUids","array-contains",uid)));
+    if (fams.empty) return null;
+    const fdoc = fams.docs[0];
+    const f = fdoc.data();
+    const mref = await getDoc(doc(_db,"families",fdoc.id,"members",uid));
+    window.SB.family = { id: fdoc.id, name: f.name, code: f.code, role: (mref.exists()? mref.data().role : "parent") };
+    return window.SB.family;
+  },
+
+  createFamily: async (familyName, parentName) => {
+    const uid = window.SB.user.uid;
+    let code, tries=0;
+    do { code = genCode(); tries++; } while (tries<5 && (await getDoc(doc(_db,"familyCodes",code))).exists());
+    const fref = doc(collection(_db,"families"));
+    await setDoc(fref, { name: familyName, code, ownerUid: uid, memberUids:[uid], createdAt: serverTimestamp() });
+    await setDoc(doc(_db,"families",fref.id,"members",uid), { uid, role:"owner", name: parentName||"", joinedAt: serverTimestamp() });
+    await setDoc(doc(_db,"familyCodes",code), { familyId: fref.id });
+    window.SB.family = { id: fref.id, name: familyName, code, role:"owner" };
+    return window.SB.family;
+  },
+
+  joinFamily: async (code, memberName, role) => {
+    code = (code||"").trim().toUpperCase();
+    const cref = await getDoc(doc(_db,"familyCodes",code));
+    if(!cref.exists()) throw new Error("That family code wasn't found. Double-check it with whoever shared it.");
+    const fid = cref.data().familyId;
+    const uid = window.SB.user.uid;
+    const fsnap = await getDoc(doc(_db,"families",fid));
+    const mu = (fsnap.data().memberUids)||[];
+    if(!mu.includes(uid)) mu.push(uid);
+    await setDoc(doc(_db,"families",fid), { memberUids: mu }, { merge:true });
+    await setDoc(doc(_db,"families",fid,"members",uid), { uid, role: role||"parent", name: memberName||"", code, joinedAt: serverTimestamp() });
+    const f = fsnap.data();
+    window.SB.family = { id: fid, name: f.name, code, role: role||"parent" };
+    return window.SB.family;
+  },
+
+  // Family-scoped app state blob (kids, history, sel). Pragmatic v1:
+  // one document. Normalized subcollections are a later refinement.
+  loadFamilyState: async () => {
+    if(!CONFIGURED || !window.SB.family) return null;
+    const s = await getDoc(doc(_db,"families",window.SB.family.id,"app","state"));
+    return s.exists() ? s.data().blob : null;
+  },
+  saveFamilyState: async (blob) => {
+    if(!CONFIGURED || !window.SB.family) return;
+    await setDoc(doc(_db,"families",window.SB.family.id,"app","state"), { blob, updatedAt: serverTimestamp() });
+  },
+
+  // User-scoped private settings (OpenAI key + model prefs). Lives under
+  // users/{uid}, locked to that uid by security rules — family members
+  // never see each other's keys. Syncs across that user's devices.
+  loadUserPrefs: async () => {
+    if(!CONFIGURED || !window.SB.user) return null;
+    const s = await getDoc(doc(_db,"users",window.SB.user.uid));
+    return s.exists() ? s.data() : null;
+  },
+  saveUserPrefs: async (prefs) => {
+    if(!CONFIGURED || !window.SB.user) return;
+    await setDoc(doc(_db,"users",window.SB.user.uid), prefs, { merge:true });
+  },
+
+  members: async () => {
+    if(!CONFIGURED || !window.SB.family) return [];
+    const ms = await getDocs(collection(_db,"families",window.SB.family.id,"members"));
+    return ms.docs.map(d=>d.data());
+  },
+
+  // INVITE-ONLY gate. The Firestore rules are the real enforcement
+  // (a non-allowlisted user can read/write nothing); this is the
+  // graceful client check so they get a clear message + sign-out.
+  isAllowed: async () => {
+    if(!CONFIGURED || !window.SB.user || !window.SB.user.email) return false;
+    try {
+      const s = await getDoc(doc(_db,"allowlist", window.SB.user.email.toLowerCase()));
+      return s.exists();
+    } catch(e){ console.warn("allowlist check failed:",e); return false; }
+  },
+
+  /* ---- Admin ---- */
+  isAdmin: async () => {
+    if(!CONFIGURED || !window.SB.user || !window.SB.user.email) return false;
+    try {
+      const s = await getDoc(doc(_db,"allowlist", window.SB.user.email.toLowerCase()));
+      return s.exists() && s.data().admin === true;
+    } catch(e){ return false; }
+  },
+  listAllowlist: async () => {
+    const ss = await getDocs(collection(_db,"allowlist"));
+    return ss.docs.map(d=>({ email:d.id, name:(d.data().name||""), admin:!!d.data().admin }));
+  },
+  addToAllowlist: async (email, name) => {
+    email=(email||"").trim().toLowerCase();
+    if(!email || email.indexOf("@")<1) throw new Error("Enter a valid email");
+    await setDoc(doc(_db,"allowlist",email), { name:name||"", admin:false }, { merge:true });
+  },
+  removeFromAllowlist: async (email) => { await deleteDoc(doc(_db,"allowlist",(email||"").toLowerCase())); },
+  setAdminFlag: async (email, val) => { await setDoc(doc(_db,"allowlist",(email||"").toLowerCase()), { admin:!!val }, { merge:true }); },
+  allFamilies: async () => {
+    const ss = await getDocs(collection(_db,"families"));
+    return ss.docs.map(d=>({ id:d.id, ...d.data() }));
+  },
+  familyMembers: async (fid) => {
+    const ss = await getDocs(collection(_db,"families",fid,"members"));
+    return ss.docs.map(d=>d.data());
+  },
+  familyStateBlob: async (fid) => {
+    try { const s=await getDoc(doc(_db,"families",fid,"app","state")); return s.exists()?s.data().blob:null; }
+    catch(e){ return null; }
+  },
+  writeLog: async (entry) => {
+    if(!CONFIGURED || !window.SB.user) return;
+    try {
+      await addDoc(collection(_db,"logs"), {
+        ...entry, at: serverTimestamp(),
+        uid: window.SB.user.uid, email: window.SB.user.email,
+        family: window.SB.family ? window.SB.family.id : null
+      });
+    } catch(e){ /* logging is best-effort, never throw */ }
+  },
+  recentLogs: async (max) => {
+    try {
+      const qs = await getDocs(query(collection(_db,"logs"), orderBy("at","desc"), limit(max||100)));
+      return qs.docs.map(d=>({ id:d.id, ...d.data() }));
+    } catch(e){ console.warn("recentLogs:",e); return []; }
+  }
+};
+
+window.SB.ready = new Promise(resolve => {
+  if(!CONFIGURED){ resolve({ mode:"local" }); return; }
+  onAuthStateChanged(_auth, u => {
+    window.SB.user = u ? { uid:u.uid, name:u.displayName, email:u.email, photo:u.photoURL } : null;
+    if(window.__sprocketAuthChanged) window.__sprocketAuthChanged();
+    resolve({ mode:"cloud" });
+  });
+});
+</script>
+
+<script>
+"use strict";
+
+/* ============================================================
+   CURRICULUM MAP  (K–5, all core subjects)
+   Skills are curated per grade band. A "Something else…" custom
+   option is always available in the UI.
+   ============================================================ */
+const GRADES = [
+  { id:"K", label:"Kindergarten", emoji:"🌱", band:"early" },
+  { id:"1", label:"1st Grade", emoji:"🐣", band:"early" },
+  { id:"2", label:"2nd Grade", emoji:"🦋", band:"early" },
+  { id:"3", label:"3rd Grade", emoji:"🚀", band:"upper" },
+  { id:"4", label:"4th Grade", emoji:"🔭", band:"upper" },
+  { id:"5", label:"5th Grade", emoji:"🏆", band:"upper" }
+];
+
+const SUBJECTS = [
+  { id:"math", label:"Math", emoji:"➕", color:"#7C4DFF" },
+  { id:"reading", label:"Reading", emoji:"📖", color:"#2BB8F0" },
+  { id:"writing", label:"Writing", emoji:"✏️", color:"#FF6F61" },
+  { id:"science", label:"Science", emoji:"🔬", color:"#2BD4A8" },
+  { id:"social", label:"Social Studies", emoji:"🌎", color:"#FFC23C" }
+];
+
+/* skills[subject][bandKey] -> list. bandKey: K,1,2,3,4,5 specific where it matters */
+const SKILLS = {
+  math: {
+    K:["Counting to 20","Number recognition 0–10","Shapes & sorting","More / fewer / equal","Simple patterns","Adding within 5"],
+    1:["Addition within 20","Subtraction within 20","Place value (tens & ones)","Counting to 120","Telling time (hour/half)","2D & 3D shapes","Comparing numbers"],
+    2:["Addition within 100","Subtraction with regrouping","Place value (hundreds)","Skip counting","Money (coins)","Telling time (5 min)","Intro to arrays"],
+    3:["Multiplication facts","Division facts","Fractions on a number line","Area & perimeter","Rounding","Elapsed time","Multi-step word problems"],
+    4:["Multi-digit multiplication","Long division","Equivalent fractions","Decimals (tenths/hundredths)","Factors & multiples","Angles & lines","Word problems"],
+    5:["Multiply/divide decimals","Add/subtract fractions (unlike)","Volume","Order of operations","Coordinate plane","Powers of 10","Multi-step problems"]
+  },
+  reading: {
+    K:["Letter sounds (phonics)","Rhyming words","Beginning sounds","Sight words (set 1)","Story sequencing (picture)","Print awareness"],
+    1:["Decoding CVC words","Blends & digraphs","Sight words (set 2)","Main idea (picture+text)","Asking & answering questions","Retelling a story"],
+    2:["Long vowel patterns","Prefixes & suffixes","Reading comprehension","Context clues","Compare two stories","Fluency passage"],
+    3:["Main idea & details","Inferencing","Character traits","Nonfiction text features","Vocabulary in context","Theme"],
+    4:["Summarizing","Author's purpose","Cause & effect","Point of view","Text evidence","Figurative language"],
+    5:["Theme & symbolism","Comparing texts","Analyzing arguments","Summarize informational text","Context-based vocabulary","Inference & evidence"]
+  },
+  writing: {
+    K:["Letter tracing (uppercase)","Letter tracing (lowercase)","Name writing","Draw & label","Beginning sentence (picture)"],
+    1:["Sentence building","Capital & period","Sequence words (first/next)","Personal narrative (3 sent.)","Opinion sentence"],
+    2:["Paragraph structure","Descriptive writing","Friendly letter","Story with beginning/middle/end","Editing & revising"],
+    3:["Topic sentence & details","Opinion paragraph","How-to writing","Narrative with dialogue","Proofreading marks"],
+    4:["5-paragraph plan","Persuasive writing","Compare/contrast essay","Research notes","Strong word choice"],
+    5:["Argument essay","Informational report","Narrative craft (show don't tell)","Citing sources","Revising for voice"]
+  },
+  science: {
+    K:["Five senses","Living vs nonliving","Weather & seasons","Animal needs","Push & pull"],
+    1:["Plant parts","Animal habitats","Day & night sky","States of matter (intro)","Light & shadow"],
+    2:["Life cycles","Food chains","Earth materials","Properties of matter","Sound & vibration"],
+    3:["Forces & motion","Ecosystems","Water cycle","Adaptations","Magnets"],
+    4:["Energy (forms & transfer)","Earth's layers","Food webs","Electricity (circuits)","Waves (light/sound)"],
+    5:["Matter & chemical change","Solar system","Ecosystems & energy flow","Human body systems","Engineering design"]
+  },
+  social: {
+    K:["My family & me","Community helpers","Rules at home/school","Maps (my classroom)","Wants vs needs"],
+    1:["Neighborhoods","Goods & services","National symbols","Past vs present","Map keys & directions"],
+    2:["Community & government","Continents & oceans","Famous Americans","Timelines","Producers & consumers"],
+    3:["Branches of government","Geography landforms","Native American cultures","Local history","Economics: trade"],
+    4:["U.S. regions","State history","Explorers","Government & citizenship","Reading thematic maps"],
+    5:["U.S. history (colonies→nation)","Constitution & rights","Geography of the Americas","Economics: supply/demand","Primary vs secondary sources"]
+  }
+};
+
+/* ============================================================
+   ACCOMMODATION ENGINE
+   Each toggle/profile attribute maps to:
+     - promptDirectives: text injected into the model system context
+     - render: CSS class(es) added to the worksheet for print
+   ============================================================ */
+const ACCOMMODATIONS = [
+  {
+    id:"dyslexia", title:"Dyslexia support", emoji:"🔤",
+    sub:"Decodable words, syllable breaks, roomy spacing, dyslexia-friendly font",
+    render:["acc-dyslexia","acc-spaced"],
+    promptDirectives:
+      "LEARNER HAS DYSLEXIA. Prefer phonetically regular / decodable vocabulary appropriate to the grade. Keep sentences short (8–12 words max). Break multisyllable words with middle dots (e.g., 'cat·er·pil·lar') the first time they appear. Never use justified text or all-caps for body content. Avoid clusters of visually similar words. Reduce total reading load by ~20% vs. grade default."
+  },
+  {
+    id:"adhd", title:"ADHD / attention", emoji:"⚡",
+    sub:"Fewer items, lots of whitespace, checkboxes, bold action words, brain breaks",
+    render:["acc-big","acc-spaced"],
+    promptDirectives:
+      "LEARNER HAS ADHD / ATTENTION DIFFERENCES. Reduce item count by ~30% vs grade default. Make every instruction ONE short sentence beginning with a bolded action verb. Group work into small chunks (max 4 items per section). Add a short 'Brain Break' suggestion between sections (e.g., '🤸 Stand up and do 5 jumping jacks!'). Add a checkbox concept to each item (the renderer draws it). Keep visual language playful and momentum-building."
+  },
+  {
+    id:"tracking", title:"Reading line-tracking", emoji:"👁️",
+    sub:"Numbered lines, short chunks, line guides, finger-tracking cues",
+    render:["acc-spaced"],
+    promptDirectives:
+      "LEARNER LOSES THEIR PLACE WHEN READING. Keep any passage to short numbered lines of ≤8 words each. Number every passage line. After the passage, remind the learner they can use a finger or card to track. Keep questions directly below the passage in order of appearance."
+  },
+  {
+    id:"focus_endurance", title:"Stamina / staying on task", emoji:"🔋",
+    sub:"Shorter overall sheet, visible progress, encouraging checkpoints",
+    render:[],
+    promptDirectives:
+      "LEARNER HAS LIMITED TASK STAMINA. Keep the whole worksheet completable in ≤10 minutes. Add an encouraging checkpoint line after each section (e.g., 'You're halfway — awesome!'). End with a clear finish celebration."
+  },
+  {
+    id:"handwriting", title:"Handwriting / fine motor", emoji:"✍️",
+    sub:"Bigger writing space with handwriting guide lines, tracing, fewer written items",
+    render:["acc-big"],
+    promptDirectives:
+      "LEARNER HAS HANDWRITING / FINE-MOTOR DIFFICULTY. Minimize the amount of writing required; prefer circle/match/check responses over long written answers. Where writing is needed, keep it to single words or numbers. The renderer will provide handwriting guide lines and tracing rows — design at least one tracing or single-letter/number formation activity."
+  },
+  {
+    id:"tint", title:"Visual stress (tinted page)", emoji:"🌅",
+    sub:"Soft cream background to reduce glare",
+    render:["acc-tint"],
+    promptDirectives:
+      "LEARNER EXPERIENCES VISUAL STRESS. Keep the layout uncluttered with generous whitespace and avoid dense blocks of text."
+  },
+  {
+    id:"dyscalculia", title:"Dyscalculia support", emoji:"🔢",
+    sub:"Number lines, concrete models, reduced load, no time pressure",
+    render:["acc-big","acc-spaced"],
+    promptDirectives:
+      "LEARNER HAS DYSCALCULIA (number-sense difficulty — distinct from 'struggles with numbers'). Anchor EVERY math item in a concrete or pictorial representation before any abstract symbol (Concrete→Pictorial→Abstract is mandatory, not optional). Provide a printed number line or ten-frame the child can use on number items. Keep numeric range small and reduce item count ~30%. Never imply speed matters. Spell out place value explicitly. One operation per item."
+  },
+  {
+    id:"dysgraphia", title:"Dysgraphia support", emoji:"🖊️",
+    sub:"Word banks, circle/select answers, minimal writing, big guides",
+    render:["acc-big"],
+    promptDirectives:
+      "LEARNER HAS DYSGRAPHIA. MINIMIZE handwriting demand: prefer circle-the-answer, match, fill-from-a-WORD-BANK, or single-symbol responses over any sustained writing. Always provide a word/answer bank when a written answer is needed. Where writing is unavoidable keep it to one word/number and use 'hwlines' response with large guides. Add a parent note that an oral answer or scribing is a fully valid way to complete this sheet."
+  },
+  {
+    id:"gifted2e", title:"Gifted / twice-exceptional", emoji:"🧠",
+    sub:"Depth & complexity, not just 'harder' — enrich and extend",
+    render:[],
+    promptDirectives:
+      "LEARNER IS GIFTED / TWICE-EXCEPTIONAL. Do NOT merely add more or numerically-harder items. Increase DEPTH and COMPLEXITY: open-ended/multiple-solution tasks, 'explain your reasoning', 'find another way', spot-the-error, real-world application, and one genuinely novel transfer problem. Compact routine practice (fewer rote items, assume fluency) and spend the space on a rich extension. If any accommodation for a disability is also active, keep the intellectual challenge HIGH while applying that access support — never dumb the content down to accommodate the disability."
+  }
+];
+
+/* ============================================================
+   THEMES
+   ============================================================ */
+const THEMES = [
+  { id:"minecraft", label:"Minecraft", emoji:"⛏️" },
+  { id:"disney", label:"Disney", emoji:"🏰" },
+  { id:"princesses", label:"Princesses", emoji:"👑" },
+  { id:"dinosaurs", label:"Dinosaurs", emoji:"🦕" },
+  { id:"space", label:"Space & Astronauts", emoji:"🚀" },
+  { id:"superheroes", label:"Superheroes", emoji:"🦸" },
+  { id:"unicorns", label:"Unicorns", emoji:"🦄" },
+  { id:"ocean", label:"Ocean Animals", emoji:"🐠" },
+  { id:"safari", label:"Safari Animals", emoji:"🦁" },
+  { id:"monsters", label:"Friendly Monsters", emoji:"👾" },
+  { id:"sports", label:"Sports", emoji:"⚽" },
+  { id:"cars", label:"Cars & Trucks", emoji:"🏎️" },
+  { id:"pirates", label:"Pirates", emoji:"🏴‍☠️" },
+  { id:"fairytale", label:"Fairy Tales", emoji:"🧚" },
+  { id:"robots", label:"Robots", emoji:"🤖" },
+  { id:"candy", label:"Candy Land", emoji:"🍭" }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const LS = "sprocket.v1";
+function defaultState(){
+  return {
+    apiKey: "",
+    textModel: "gpt-4o",
+    imageModel: "gpt-image-1",
+    generateImage: true,
+    bwMode: false,        // true = print-friendly black & white (ink-saving)
+    kids: [],            // {id,name,emoji,color,grade,accoms:[],letters:"",numbers:"",notes:""}
+    activeKidId: null,
+    history: [],         // {id,kidId,date,title,params,worksheet}
+    sel: { grade:null, subject:null, skill:null, customSkill:"", theme:null, customTheme:"" }
+  };
+}
+let S = load();
+function load(){
+  try { const r = localStorage.getItem(LS); return r ? {...defaultState(), ...JSON.parse(r)} : defaultState(); }
+  catch(e){ return defaultState(); }
+}
+function localSave(){
+  try { localStorage.setItem(LS, JSON.stringify(S)); return true; }
+  catch(e){
+    try{
+      for(let keep=8; keep>=0; keep-=2){
+        S.history.forEach((h,idx)=>{ if(idx>=keep){ delete h.image; delete h.gradeThumb; } });
+        try{ localStorage.setItem(LS, JSON.stringify(S)); toast("Storage was full — trimmed old worksheet images."); return true; }catch(_){}
+      }
+    }catch(_){}
+    toast("Couldn't save (browser storage full or blocked).", true);
+    return false;
+  }
+}
+let _cloudSaveT;
+function save(){
+  // Always keep a localStorage mirror (offline cache + migration source).
+  localSave();
+  // Cloud mode: debounce-write the family slice + user prefs to Firestore.
+  if(window.SB && SB.configured && SB.family){
+    clearTimeout(_cloudSaveT);
+    _cloudSaveT=setTimeout(async ()=>{
+      try{
+        await SB.saveFamilyState({ kids:S.kids, history:S.history, sel:S.sel, activeKidId:S.activeKidId });
+        await SB.saveUserPrefs({ apiKey:S.apiKey, textModel:S.textModel, imageModel:S.imageModel, generateImage:S.generateImage, bwMode:S.bwMode });
+      }catch(e){ console.warn("cloud save failed (kept local):",e); toast("Cloud sync hiccup — saved locally, will retry.",true); }
+    }, 1200);
+  }
+}
+/* Lazy-init the learning model on a kid so older saved profiles don't break */
+function ensureLearning(k){
+  if(!k) return k;
+  if(!k.mastery) k.mastery={};        // { "subject::skill": {attempts:[], score:null} }
+  if(!k.patterns) k.patterns={};      // { patternId: {count, lastSeen, examples:[], status} }
+  if(!k.suggestions) k.suggestions=[];// [{id,type,text,payload,status}]
+  if(!k.fluency) k.fluency=[];        // [{date,title,words,errors,wcpm,passageId,attempt}]
+  if(!k.passages) k.passages={};      // { passageId: {title,text,attempts} } for re-reads
+  return k;
+}
+function skillKey(subject, skill){ return subject+"::"+skill; }
+/* Count trailing attempts below a frustration threshold (consecutive lows) */
+function consecutiveLows(k, sk, thresh){
+  ensureLearning(k);
+  const at=(k.mastery[sk]&&k.mastery[sk].attempts)||[];
+  let n=0;
+  for(let i=at.length-1;i>=0;i--){ if(at[i].pct<thresh) n++; else break; }
+  return n;
+}
+let _frustrationGuard=null; // {skill, lows} set by buildUserPrompt, consumed by renderWorksheet
+let _prereqCatchup=null;    // {from,to} set by remediate(), consumed by buildUserPrompt
+
+/* ============================================================
+   PREREQUISITE GRAPH (pragmatic v1 — math spine + core literacy)
+   On failure we diagnose down to the missing prerequisite rather
+   than only making the same skill "easier".
+   Keys are subject::skill exactly as in SKILLS.
+   ============================================================ */
+const PREREQ = {
+  // math spine
+  "math::Addition within 20":["math::Counting to 20","math::Adding within 5"],
+  "math::Subtraction within 20":["math::Addition within 20"],
+  "math::Place value (tens & ones)":["math::Counting to 20"],
+  "math::Addition within 100":["math::Addition within 20","math::Place value (tens & ones)"],
+  "math::Subtraction with regrouping":["math::Subtraction within 20","math::Place value (hundreds)"],
+  "math::Place value (hundreds)":["math::Place value (tens & ones)"],
+  "math::Multiplication facts":["math::Skip counting","math::Addition within 100"],
+  "math::Division facts":["math::Multiplication facts"],
+  "math::Multi-digit multiplication":["math::Multiplication facts","math::Place value (hundreds)"],
+  "math::Long division":["math::Division facts","math::Multi-digit multiplication"],
+  "math::Fractions on a number line":["math::Counting to 120"],
+  "math::Equivalent fractions":["math::Fractions on a number line","math::Multiplication facts"],
+  "math::Add/subtract fractions (unlike)":["math::Equivalent fractions"],
+  "math::Decimals (tenths/hundredths)":["math::Place value (hundreds)"],
+  "math::Multiply/divide decimals":["math::Decimals (tenths/hundredths)","math::Multi-digit multiplication"],
+  "math::Area & perimeter":["math::Multiplication facts"],
+  "math::Volume":["math::Area & perimeter"],
+  "math::Order of operations":["math::Multiplication facts","math::Division facts"],
+  "math::Multi-step word problems":["math::Subtraction with regrouping","math::Multiplication facts"],
+  // literacy spine (Scarborough's rope — word recognition strand)
+  "reading::Rhyming words":["reading::Letter sounds (phonics)"],
+  "reading::Beginning sounds":["reading::Letter sounds (phonics)"],
+  "reading::Decoding CVC words":["reading::Letter sounds (phonics)","reading::Beginning sounds"],
+  "reading::Blends & digraphs":["reading::Decoding CVC words"],
+  "reading::Sight words (set 2)":["reading::Sight words (set 1)"],
+  "reading::Long vowel patterns":["reading::Blends & digraphs"],
+  "reading::Prefixes & suffixes":["reading::Long vowel patterns"],
+  "reading::Reading comprehension":["reading::Decoding CVC words","reading::Sight words (set 2)"],
+  "reading::Main idea & details":["reading::Reading comprehension"],
+  "reading::Inferencing":["reading::Main idea & details"],
+  "reading::Summarizing":["reading::Main idea & details"],
+  "writing::Sentence building":["writing::Name writing"],
+  "writing::Paragraph structure":["writing::Sentence building"],
+  "writing::Topic sentence & details":["writing::Paragraph structure"]
+};
+function prereqsFor(subject, skill){ return PREREQ[skillKey(subject,skill)]||[]; }
+
+/* Common misconceptions to pre-empt (pragmatic v1 — highest-yield skills) */
+const MISCONCEPTIONS = {
+  "math::Subtraction within 20":"Subtracting the smaller digit from the larger regardless of position (e.g., 23−7 → answers 24 by doing 7−3).",
+  "math::Subtraction with regrouping":"Not regrouping across a zero, or always subtracting smaller-from-larger per column.",
+  "math::Place value (tens & ones)":"Treating a two-digit number as two separate single digits (the '5' in 53 means five, not fifty).",
+  "math::Multiplication facts":"Thinking multiplication is just 'adding the two numbers' or that 0×n = n.",
+  "math::Fractions on a number line":"Believing a bigger denominator always means a bigger fraction (1/8 > 1/4).",
+  "math::Equivalent fractions":"Adding the same number to top and bottom instead of multiplying/dividing.",
+  "math::Add/subtract fractions (unlike)":"Adding numerators AND denominators straight across.",
+  "math::Decimals (tenths/hundredths)":"Thinking 0.5 < 0.45 because 45 > 5 ('longer decimal is bigger').",
+  "math::Order of operations":"Strict left-to-right evaluation, ignoring ×/÷ before +/−.",
+  "reading::Decoding CVC words":"Guessing the word from the first letter or picture instead of sounding all phonemes.",
+  "reading::Long vowel patterns":"Using the short-vowel sound when a silent-e or vowel team signals a long vowel.",
+  "reading::Inferencing":"Answering only from the literal text, or from personal opinion not text evidence.",
+  "writing::Sentence building":"Run-ons / no capital start or end punctuation; fragments treated as sentences."
+};
+function misconceptionFor(subject, skill){ return MISCONCEPTIONS[skillKey(subject,skill)]||null; }
+
+/* ---- robust mastery + SM-2-lite spaced retrieval ---- */
+function median(xs){ if(!xs.length) return null; const s=[...xs].sort((a,b)=>a-b); const m=s.length>>1;
+  return s.length%2 ? s[m] : Math.round((s[m-1]+s[m])/2); }
+function diffAdj(pct, difficulty){ // make scores comparable across sheet difficulty
+  return Math.max(0,Math.min(100, pct + (difficulty==="below"?-15:difficulty==="above"?10:0))); }
+function robustScore(mk){ // median of last 3 adjusted attempts — resists one off-day
+  if(!mk||!mk.attempts||!mk.attempts.length) return null;
+  const r=mk.attempts.slice(-3).map(a=>diffAdj(a.pct, a.difficulty||"on"));
+  return median(r);
+}
+function planDifficulty(k, sk){ // shared by generate() + prompt so storage matches intent
+  if(_frustrationGuard && _frustrationGuard._sk===sk) return "below";
+  const mk=k.mastery&&k.mastery[sk];
+  const rs=robustScore(mk);
+  if(rs==null) return "on";
+  if(rs<60) return "below";
+  if(rs>=85 && mk.attempts.length>=2) return "above";
+  return "on";
+}
+function updateSchedule(mk, pass){ // SM-2-lite per skill
+  if(mk.interval==null) mk.interval=2;
+  mk.interval = pass ? Math.min(mk.interval*2, 60) : 1;
+  mk.ease = Math.max(1.3, Math.min(2.6, (mk.ease||2.0) + (pass?0.1:-0.2)));
+  mk.nextReview = Date.now() + mk.interval*864e5;
+}
+function dueReviews(k){ // mastered-ish skills past their review date, most-overdue first
+  ensureLearning(k); const now=Date.now(); const out=[];
+  for(const sk in k.mastery){ const mk=k.mastery[sk];
+    if(!mk.attempts||mk.attempts.length<2) continue;
+    if((robustScore(mk)||0)<70) continue;            // only review things roughly learned
+    if(mk.nextReview && mk.nextReview<=now) out.push({sk, over: now-mk.nextReview});
+  }
+  return out.sort((a,b)=>b.over-a.over).map(x=>x.sk);
+}
+
+const EMOJIS = ["🦄","🚀","🐯","🦖","🐬","🦊","🐼","🦋","⚡","🌟","🐙","🦉"];
+const COLORS = ["#7C4DFF","#2BB8F0","#FF6F61","#2BD4A8","#FFC23C","#FF8FCf"];
+
+/* ============================================================
+   ROBOT / SPEECH
+   ============================================================ */
+function say(text, sub, mood){
+  document.getElementById("speechText").innerHTML = text;
+  document.getElementById("speechSub").textContent = sub || "";
+  const r = document.getElementById("robot");
+  r.classList.remove("think","happy");
+  if (mood) r.classList.add(mood);
+}
+
+/* ============================================================
+   SCREEN ROUTER
+   ============================================================ */
+const STEPS = ["profile","grade","subject","skill","theme","review"];
+function show(id){
+  ["auth","denied","family","welcome","profile","grade","subject","skill","theme","review","loading","worksheet","capture","grading","gradereview","results","progress","orf","admin"]
+    .forEach(s => { const el=document.getElementById("screen-"+s); el.classList.add("hidden"); el.classList.remove("print-on"); });
+  const cur=document.getElementById("screen-"+id);
+  cur.classList.remove("hidden");
+  if(id==="worksheet"||id==="progress") cur.classList.add("print-on"); // printable screens
+  renderProgress(id);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderProgress(id){
+  const wrap = document.getElementById("progress");
+  if (!STEPS.includes(id)) { wrap.innerHTML=""; return; }
+  const cur = STEPS.indexOf(id);
+  wrap.innerHTML = STEPS.map((s,i)=>{
+    const cls = i<cur ? "done" : i===cur ? "active" : "";
+    const labels = {profile:"Kid",grade:"Grade",subject:"Subject",skill:"Skill",theme:"Theme",review:"Go!"};
+    return `<div class="pdot ${cls}"><span class="n">${i<cur?"✓":i+1}</span>${labels[s]}</div>`;
+  }).join('<span style="color:var(--line-dk);font-weight:900">›</span>');
+}
+
+/* ============================================================
+   WELCOME
+   ============================================================ */
+function renderWelcome(){
+  const hasKey = !!S.apiKey;
+  document.getElementById("screen-welcome").innerHTML = `
+    <h2>Hi! I'm Sprocket. 🤖</h2>
+    <p class="lead">I build amazing, made-just-for-your-kid worksheets. Themed however they like. Tuned to exactly how they learn.</p>
+    ${ hasKey ? "" : `
+      <div style="background:var(--bg-2);border-radius:16px;padding:16px;margin-bottom:14px">
+        <b>First, plug in an OpenAI key.</b>
+        <p class="muted" style="margin:6px 0 0">This is your tool — it uses <i>your</i> OpenAI key, stored only in this browser. Nothing goes anywhere else.</p>
+      </div>`}
+    <div class="btn-row">
+      ${ hasKey
+        ? `<button class="btn" onclick="goProfiles()">Let's make a worksheet ✨</button>
+           ${S.activeKidId?`<button class="btn sky" onclick="startORF()">🎤 Reading fluency</button>
+           <button class="btn ghost" onclick="renderProgressReport()">📈 Progress</button>`:``}
+           <button class="btn ghost" onclick="openDrawer('settings')">Settings</button>`
+        : `<button class="btn" onclick="openDrawer('settings')">Add my OpenAI key 🔑</button>` }
+    </div>`;
+  show("welcome");
+  say(hasKey ? "Ready when you are! Who are we making magic for today? ✨"
+             : "Let's get set up — I just need your OpenAI key to get started. 🔑",
+      "", "happy");
+}
+
+/* ============================================================
+   PROFILES
+   ============================================================ */
+function goProfiles(){
+  if (!S.kids.length){ renderProfileEditor(); return; }
+  renderProfilePick();
+}
+function renderProfilePick(){
+  const el = document.getElementById("screen-profile");
+  el.innerHTML = `
+    <h2>Who is this worksheet for? 🧒</h2>
+    <p class="lead">Pick a kid, or add a new one. Each kid's learning profile shapes every worksheet I make.</p>
+    <div class="kid-row" style="margin-bottom:16px">
+      ${S.kids.map(k=>`
+        <button class="kid-chip ${S.activeKidId===k.id?'sel':''}" onclick="pickKid('${k.id}')">
+          <span class="kid-ava" style="background:${k.color}">${k.emoji}</span>
+          <span>${esc(k.name)}<br><span class="muted" style="font-size:.78rem">${gradeLabel(k.grade)} · ${k.accoms.length} support${k.accoms.length===1?'':'s'}</span></span>
+        </button>`).join("")}
+      <button class="kid-chip" onclick="renderProfileEditor()" style="border-style:dashed">
+        <span class="kid-ava" style="background:var(--bg-2);color:var(--grape)">＋</span><span>Add a kid</span>
+      </button>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="pf-next" onclick="afterProfile()" ${S.activeKidId?'':'disabled'}>Next ›</button>
+    </div>`;
+  show("profile");
+  const k = activeKid();
+  say(k ? `<b>${esc(k.name)}</b> it is! Tap Next, or pick someone else.` : "Tap a kid to pick them — or add a new learner.","","");
+}
+function pickKid(id){ S.activeKidId=id; save(); renderProfilePick(); }
+function afterProfile(){ if(S.activeKidId){ renderGrade(); } }
+
+function renderProfileEditor(editId){
+  const k = editId ? S.kids.find(x=>x.id===editId) : null;
+  const el = document.getElementById("screen-profile");
+  el.innerHTML = `
+    <h2>${k?'Edit':'New'} learner profile 🌟</h2>
+    <p class="lead">The more I know about how this child learns, the more the worksheet meets them exactly where they are.</p>
+    <label class="fld">Name</label>
+    <input class="in" id="k-name" value="${k?esc(k.name):''}" placeholder="First name or nickname">
+    <label class="fld">Grade level</label>
+    <select class="in" id="k-grade">
+      ${GRADES.map(g=>`<option value="${g.id}" ${k&&k.grade===g.id?'selected':''}>${g.label}</option>`).join("")}
+    </select>
+    <label class="fld">Pick an avatar</label>
+    <div class="grid cols4" id="k-ava" style="gap:8px">
+      ${EMOJIS.map((e,i)=>`<button type="button" class="choice" style="justify-content:center;font-size:1.5rem;padding:10px"
+        data-emoji="${e}" onclick="pickAva(this)">${e}</button>`).join("")}
+    </div>
+    <label class="fld">Learning supports <span class="fld-hint">— tick anything that helps this child. Every sheet adapts.</span></label>
+    <div class="accom" id="k-accoms">
+      ${ACCOMMODATIONS.map(a=>`
+        <label class="toggle" data-id="${a.id}">
+          <input type="checkbox" ${k&&k.accoms.includes(a.id)?'checked':''} onchange="this.closest('.toggle').classList.toggle('on',this.checked)">
+          <span><span class="t-title">${a.emoji} ${a.title}</span><br><span class="t-sub">${a.sub}</span></span>
+        </label>`).join("")}
+    </div>
+    <label class="fld">Specific letters to focus on <span class="fld-hint">— reading or writing, e.g. "b, d, p, q"</span></label>
+    <input class="in" id="k-letters" value="${k?esc(k.letters||''):''}" placeholder="Leave blank if none">
+    <label class="fld">Specific numbers to focus on <span class="fld-hint">— e.g. "6, 9, 7"</span></label>
+    <input class="in" id="k-numbers" value="${k?esc(k.numbers||''):''}" placeholder="Leave blank if none">
+    <label class="fld">Anything else I should know? <span class="fld-hint">— interests, what motivates them, what to avoid</span></label>
+    <textarea class="in" id="k-notes" placeholder="e.g. Loves space facts. Gets discouraged by big blocks of text. Reward sticker at the end works wonders.">${k?esc(k.notes||''):''}</textarea>
+    <div class="btn-row">
+      <button class="btn" onclick="saveKid('${k?k.id:''}')">${k?'Save changes':'Create profile'} ✓</button>
+      ${S.kids.length?`<button class="btn ghost" onclick="renderProfilePick()">Cancel</button>`:''}
+      ${k?`<button class="btn coral sm" onclick="deleteKid('${k.id}')">Delete</button>`:''}
+    </div>`;
+  show("profile");
+  // preselect avatar — and initialize the working var so save() keeps it if untouched
+  _ava = k ? k.emoji : EMOJIS[0];
+  setTimeout(()=>{ [...document.querySelectorAll('#k-ava .choice')].forEach(b=>b.classList.toggle('sel',b.dataset.emoji===_ava)); },0);
+  say("Tell me about this learner. The 'learning supports' are my secret sauce — flip on anything that helps. 🧪","","");
+}
+let _ava = EMOJIS[0];
+function pickAva(btn){ _ava=btn.dataset.emoji; [...btn.parentNode.children].forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); }
+function saveKid(id){
+  const name=document.getElementById("k-name").value.trim();
+  if(!name){ toast("Give your learner a name 🙂",true); return; }
+  const accoms=[...document.querySelectorAll('#k-accoms .toggle')]
+    .filter(t=>t.querySelector('input').checked).map(t=>t.dataset.id);
+  const data={
+    name, emoji:_ava, grade:document.getElementById("k-grade").value,
+    accoms, letters:document.getElementById("k-letters").value.trim(),
+    numbers:document.getElementById("k-numbers").value.trim(),
+    notes:document.getElementById("k-notes").value.trim()
+  };
+  if(id){
+    const k=S.kids.find(x=>x.id===id);
+    const before=(k.accoms||[]).slice().sort().join(",");
+    Object.assign(k,data);
+    // log accommodation changes (dated) so the Progress report can show efficacy
+    if(before!==accoms.slice().sort().join(",")){
+      ensureLearning(k); k.accomLog=k.accomLog||[];
+      k.accomLog.push({date:Date.now(), accoms:accoms.slice()});
+    }
+  }
+  else {
+    const k={id:uid(),color:COLORS[S.kids.length%COLORS.length],...data};
+    ensureLearning(k); k.accomLog=[{date:Date.now(), accoms:accoms.slice()}];
+    S.kids.push(k); S.activeKidId=k.id;
+  }
+  save(); toast("Profile saved! 🌟"); renderProfilePick();
+}
+function deleteKid(id){
+  S.kids=S.kids.filter(k=>k.id!==id);
+  if(S.activeKidId===id) S.activeKidId=S.kids[0]?S.kids[0].id:null;
+  save(); S.kids.length?renderProfilePick():renderProfileEditor();
+}
+function activeKid(){ return S.kids.find(k=>k.id===S.activeKidId)||null; }
+
+/* ============================================================
+   GRADE / SUBJECT / SKILL / THEME
+   ============================================================ */
+function renderGrade(){
+  const k=activeKid();
+  // default to the kid's profile grade
+  if(!S.sel.grade) S.sel.grade=k?k.grade:null;
+  document.getElementById("screen-grade").innerHTML=`
+    <h2>What grade level? 🎒</h2>
+    <p class="lead">Starting at <b>${esc(k.name)}</b>'s profile grade. Bump it up or down for a stretch or a confidence-builder.</p>
+    <div class="grid cols3">
+      ${GRADES.map(g=>`<button class="choice ${S.sel.grade===g.id?'sel':''}" onclick="setGrade('${g.id}')">
+        <span class="emoji">${g.emoji}</span><span>${g.label}</span></button>`).join("")}
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="renderProfilePick()">‹ Back</button>
+      <button class="btn" id="g-next" onclick="renderSubject()" ${S.sel.grade?'':'disabled'}>Next ›</button>
+    </div>`;
+  show("grade");
+  say("What grade should this worksheet target? 🎯","Tip: a level below the profile grade is great for building confidence.","");
+}
+function setGrade(g){ S.sel.grade=g; save(); renderGrade(); }
+
+function renderSubject(){
+  document.getElementById("screen-subject").innerHTML=`
+    <h2>Pick a subject 📚</h2>
+    <div class="grid cols3">
+      ${SUBJECTS.map(s=>`<button class="choice ${S.sel.subject===s.id?'sel':''}" onclick="setSubject('${s.id}')">
+        <span class="emoji">${s.emoji}</span><span>${s.label}</span></button>`).join("")}
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="renderGrade()">‹ Back</button>
+      <button class="btn" onclick="renderSkill()" ${S.sel.subject?'':'disabled'}>Next ›</button>
+    </div>`;
+  show("subject");
+  say("Which subject are we practicing today? 📚","","");
+}
+function setSubject(s){ S.sel.subject=s; S.sel.skill=null; save(); renderSubject(); }
+
+function currentSkillList(){ return (SKILLS[S.sel.subject] && SKILLS[S.sel.subject][S.sel.grade]) || []; }
+function renderSkill(){
+  const list=currentSkillList();
+  document.getElementById("screen-skill").innerHTML=`
+    <h2>Which skill? 🎯</h2>
+    <p class="lead">${subjLabel(S.sel.subject)} · ${gradeLabel(S.sel.grade)}</p>
+    <div class="grid cols2">
+      ${list.map((sk,i)=>`<button class="choice ${S.sel.skill===sk?'sel':''}" onclick="setSkillByIndex(${i})">
+        <span class="emoji">▸</span><span>${esc(sk)}</span></button>`).join("")}
+      <button class="choice ${S.sel.skill==='__custom__'?'sel':''}" onclick="setSkillCustom()">
+        <span class="emoji">✨</span><span>Something else…</span></button>
+    </div>
+    <div id="custom-skill-wrap" class="${S.sel.skill==='__custom__'?'':'hidden'}">
+      <label class="fld">Describe the skill</label>
+      <input class="in" id="custom-skill" value="${esc(S.sel.customSkill||'')}" placeholder="e.g. Regrouping in 3-digit subtraction with zeros">
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="renderSubject()">‹ Back</button>
+      <button class="btn" id="skill-next" onclick="afterSkill()" ${S.sel.skill?'':'disabled'}>Next ›</button>
+    </div>`;
+  show("skill");
+  say("What exact skill should we drill? Pick one, or describe your own. 🎯","","");
+}
+function _skillSelectUI(isCustom){
+  document.getElementById("custom-skill-wrap").classList.toggle("hidden", !isCustom);
+  [...document.querySelectorAll('#screen-skill .choice')].forEach(b=>b.classList.remove('sel'));
+  if(event&&event.currentTarget) event.currentTarget.classList.add('sel');
+  document.getElementById("skill-next").disabled=false;
+}
+function setSkillByIndex(i){ S.sel.skill=currentSkillList()[i]; save(); _skillSelectUI(false); }
+function setSkillCustom(){ S.sel.skill="__custom__"; save(); _skillSelectUI(true); }
+function afterSkill(){
+  if(S.sel.skill==="__custom__"){
+    const v=document.getElementById("custom-skill").value.trim();
+    if(!v){ toast("Describe the skill first 🙂",true); return; }
+    S.sel.customSkill=v;
+  }
+  save(); renderTheme();
+}
+
+function renderTheme(){
+  document.getElementById("screen-theme").innerHTML=`
+    <h2>Pick a theme! 🎨</h2>
+    <p class="lead">This makes the whole worksheet feel like an adventure. Characters, story, art — all themed.</p>
+    <div class="grid cols4">
+      ${THEMES.map(t=>`<button class="choice theme-card ${S.sel.theme===t.id?'sel':''}" onclick="setTheme('${t.id}')">
+        <span class="emoji">${t.emoji}</span><span>${t.label}</span></button>`).join("")}
+      <button class="choice theme-card ${S.sel.theme==='__custom__'?'sel':''}" onclick="setTheme('__custom__')">
+        <span class="emoji">✏️</span><span>My own idea</span></button>
+    </div>
+    <div id="custom-theme-wrap" class="${S.sel.theme==='__custom__'?'':'hidden'}">
+      <label class="fld">Describe the theme</label>
+      <input class="in" id="custom-theme" value="${esc(S.sel.customTheme||'')}" placeholder="e.g. Grandma's bakery, ninja cats, the solar system">
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="renderSkill()">‹ Back</button>
+      <button class="btn mint" onclick="afterTheme()" ${S.sel.theme?'':'disabled'}>Review ›</button>
+    </div>`;
+  show("theme");
+  say("Now the fun part — what theme should I weave through everything? 🎨","Type your own if you don't see their current obsession.","happy");
+}
+function setTheme(t){
+  S.sel.theme=t; save();
+  document.getElementById("custom-theme-wrap").classList.toggle("hidden", t!=="__custom__");
+  [...document.querySelectorAll('#screen-theme .choice')].forEach(b=>b.classList.remove('sel'));
+  event.currentTarget.classList.add('sel');
+  document.querySelector('#screen-theme .btn.mint').disabled=false;
+}
+function afterTheme(){
+  if(S.sel.theme==="__custom__"){
+    const v=document.getElementById("custom-theme").value.trim();
+    if(!v){ toast("Describe the theme first 🙂",true); return; }
+    S.sel.customTheme=v;
+  }
+  save(); renderReview();
+}
+
+/* ============================================================
+   REVIEW + GENERATE
+   ============================================================ */
+function currentSkillText(){ return S.sel.skill==="__custom__"?S.sel.customSkill:S.sel.skill; }
+function currentThemeText(){
+  if(S.sel.theme==="__custom__") return S.sel.customTheme;
+  const t=THEMES.find(x=>x.id===S.sel.theme); return t?t.label:S.sel.theme;
+}
+function setBw(v){ S.bwMode=!!v; save(); renderReview(); }
+function renderReview(){
+  const k=activeKid();
+  const accs=k.accoms.map(id=>ACCOMMODATIONS.find(a=>a.id===id)).filter(Boolean);
+  document.getElementById("screen-review").innerHTML=`
+    <h2>Here's the plan 📋</h2>
+    <p class="lead">Double-check, then I'll build it.</p>
+    <div style="display:grid;gap:8px;font-weight:800;margin-bottom:10px">
+      <div>🧒 Learner: ${esc(k.name)} <span class="muted">(profile: ${gradeLabel(k.grade)})</span></div>
+      <div>🎒 Grade target: ${gradeLabel(S.sel.grade)}</div>
+      <div>📚 Subject: ${subjLabel(S.sel.subject)}</div>
+      <div>🎯 Skill: ${esc(currentSkillText())}</div>
+      <div>🎨 Theme: ${esc(currentThemeText())}</div>
+      <div>🧪 Adapting for: ${accs.length?accs.map(a=>`<span class="pill">${a.emoji} ${a.title}</span>`).join(""):'<span class="muted">no special supports</span>'}
+        ${k.letters?`<span class="pill">🔤 Letters: ${esc(k.letters)}</span>`:''}
+        ${k.numbers?`<span class="pill">🔢 Numbers: ${esc(k.numbers)}</span>`:''}</div>
+      <div>🎨 Print style:
+        <button class="btn ghost sm" id="rv-color" onclick="setBw(false)" style="${S.bwMode?'':'background:var(--grape);color:#fff'}">Color</button>
+        <button class="btn ghost sm" id="rv-bw" onclick="setBw(true)" style="${S.bwMode?'background:var(--grape);color:#fff':''}">B&amp;W (ink-saving)</button>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="renderTheme()">‹ Back</button>
+      <button class="btn mint" onclick="generate(false)">✨ Build my worksheet!</button>
+    </div>`;
+  show("review");
+  say(`Ready to build a <b>${esc(currentThemeText())}</b> ${esc(subjLabel(S.sel.subject))} sheet for <b>${esc(k.name)}</b>? 🚀`,"","happy");
+}
+
+/* ============================================================
+   PROMPT BUILDER  — the pedagogical secret sauce
+   ============================================================ */
+function buildSystemPrompt(){
+  return [
+"You are Sprocket, a master curriculum designer and child learning specialist. You design single-page, print-ready worksheets for K–5 children that are pedagogically world-class.",
+"",
+"Follow Rosenshine's Principles of Instruction. Structure EVERY sheet as the gradual-release sequence:",
+"  1. ACTIVATE prior knowledge — one short 'You already know…' hook that connects to something easier the child can do.",
+"  2. I DO — one fully solved warm-up example modeling the exact thinking, narrated step by step.",
+"  3. WE DO — 2–3 GUIDED items with visible scaffolds/sentence-frames/partial steps that FADE (more support on the first, less on the last). This guided step is mandatory; it is where consolidation happens.",
+"  4. YOU DO — independent items, easy→hard.",
+"  5. REFLECT — a feeling self-check AND a self-explanation prompt ('Explain how you solved #N in your own words') — self-explanation is one of the highest-utility learning techniques.",
+"",
+"Other evidence-based rules, applied automatically:",
+"• Desirable difficulty: target ~80% success for the stated difficulty — challenging, not frustrating.",
+"• Cognitive load (chunking): one task per item, short instructions starting with a bold action verb, generous whitespace.",
+"• Concrete→Pictorial→Abstract for math; for early reading use systematic synthetic phonics (Science of Reading) — see reading rules below.",
+"• Dual coding: weave the theme concretely into problems so words + visuals reinforce meaning.",
+"• Mistake-positive culture: include one line normalizing mistakes ('Mistakes help your brain grow — try your best thinking!'). Praise PROCESS and strategy, never just 'good job'. Use competence/mastery language. NEVER use points, stars, coins, prizes, or reward-economy framing.",
+"• Grade-appropriate norms: K = 4–6 items; G1–2 = 6–10; G3 = 8–12; G4–5 = 10–16. Adjust DOWN for accommodations.",
+"• READING LOAD DECOUPLING: unless the subject IS reading, keep all reading/vocabulary at or BELOW the learner's independent reading level so the TARGET skill is what's practiced, not reading. A struggling reader doing math should not be blocked by word-problem text.",
+"• SCIENCE OF READING (reading/writing, K–2 especially): align to a systematic phonics progression; control decodability (only use words the child can decode with phonics taught so far, plus listed sight words); include an explicit phonemic-awareness micro-activity for K–1; never rely on guessing-from-pictures as a decoding strategy.",
+"• MISCONCEPTION PRE-EMPTION: you will be told the skill's common misconception (and any confirmed error pattern). Proactively address it. If a confirmed error pattern is supplied, include a short 'Let's fix this together' RE-TEACH (a targeted worked example repairing that exact misconception) — re-teach, don't just re-drill.",
+"• Accuracy: SOLVE every item yourself before writing its answer. No ambiguous or multi-answer items.",
+"",
+"CHILD SAFETY (absolute, overrides theme): age-appropriate for a young child. Even for monsters/pirates/superheroes/dinosaurs: NO violence, gore, weapons-to-harm, death, frightening peril, romance, bias/stereotypes, or anything a cautious parent would object to. Friendly and whimsical only; soften any theme automatically.",
+"",
+"Learner-accommodation directives you receive are mandatory and override defaults.",
+"",
+"Return ONLY valid JSON, no markdown, matching exactly this schema:",
+'{',
+'  "title": string,',
+'  "estimatedMinutes": number,',
+'  "teacherNotes": string,                 // for the PARENT: what this targets + accommodations applied + a "if they get stuck, SAY this (don\'t give the answer)" scaffolding script + a "STOP if…" frustration cue + ideal session length for the age',
+'  "priorKnowledge": string,               // one short "You already know…" activation hook',
+'  "warmUp": { "exampleProblem": string, "workedSolution": string },',
+'  "misconceptionRepair": { "misconception": string, "fix": string } | null,  // only if a confirmed error pattern was supplied',
+'  "guidedPractice": { "instructions": string, "items": [ { "prompt": string, "scaffold": string, "answer": string } ] },  // the WE DO — scaffolds fade across items',
+'  "sections": [ { "heading": string, "instructions": string,',
+'     "items": [ { "number": number, "prompt": string, "answer": string,',
+'        "response": "blank"|"lines"|"grid"|"hwlines"|"tracing", "hint": string|null } ] } ],',
+'  "challenge": { "prompt": string, "answer": string } | null,',
+'  "reflection": { "feeling": string, "selfExplain": string },  // feeling = short self-check; selfExplain = "Explain how you solved #N…"',
+'  "answerKey": [ { "number": number, "answer": string } ],',
+'  "imagePrompt": string                   // friendly themed header illustration; no text/letters; reads well in grayscale'
+].join("\n");
+}
+
+function buildUserPrompt(){
+  const k=activeKid();
+  const accs=k.accoms.map(id=>ACCOMMODATIONS.find(a=>a.id===id)).filter(Boolean);
+  let directives = accs.map(a=>"• "+a.promptDirectives).join("\n");
+  if(k.letters) directives += `\n• TARGET LETTERS: weave deliberate practice (recognition, formation/tracing, and words featuring them) for these letters the child is working on: ${k.letters}. Add a clear multisensory memory cue (e.g., the 'b/d bed' trick) where relevant.`;
+  if(k.numbers) directives += `\n• TARGET NUMBERS: weave deliberate practice and numeral formation/tracing for these numbers: ${k.numbers}.`;
+  if(k.notes) directives += `\n• PARENT NOTES ABOUT THIS CHILD (honor these): ${k.notes}`;
+  if(!directives) directives="• (no special accommodations — use clean grade-level defaults)";
+
+  // ---- Adaptive context from past graded performance ----
+  ensureLearning(k);
+  const adaptive=[];
+  const skNow=skillKey(S.sel.subject,currentSkillText());
+  const mk=k.mastery[skNow];
+
+  // frustration hard-rail first (planDifficulty reads _frustrationGuard)
+  _frustrationGuard=null;
+  const lows=consecutiveLows(k, skNow, 55);
+  if(lows>=2){
+    _frustrationGuard={ skill:currentSkillText(), lows, _sk:skNow };
+    adaptive.push("FRUSTRATION SAFEGUARD (HARD OVERRIDE — ignore any 'level up' or 'hold' instruction): this learner has had "+lows+" tough sessions in a row on this skill. This sheet MUST be a confidence rebuild: drop clearly BELOW grade level, use ONLY the simplest form of the skill the child has previously succeeded at, no more than 5 short items, every item heavily scaffolded with a visible model, language is warm and celebratory, near-certain success. Do NOT introduce new difficulty.");
+  }
+
+  const rs=robustScore(mk);
+  if(mk && mk.attempts && mk.attempts.length){
+    const recent=mk.attempts.slice(-3);
+    adaptive.push(`Recent performance on this exact skill: ${recent.map(a=>a.pct+"% ("+(a.difficulty||"on")+")").join(", ")}. Robust skill estimate (difficulty-adjusted, off-day-resistant): ${rs}%.`);
+    if(!_frustrationGuard){
+      const diff=planDifficulty(k, skNow);
+      if(diff==="below"){
+        adaptive.push("CONFIDENCE PACING: struggling here. Make this a notch EASIER than grade default, add a second worked example, reduce items ~25%, extra-warm encouraging voice, briefly re-touch the prerequisite.");
+        const pq=prereqsFor(S.sel.subject,currentSkillText());
+        if(pq.length) adaptive.push("PREREQUISITE TOUCH: include 2 gentle items practicing the prerequisite skill \""+pq[0].split("::")[1]+"\" so any underlying gap gets shored up.");
+      } else if(diff==="above"){
+        adaptive.push("LEVEL UP: solid mastery (robust "+rs+"%). Nudge slightly above grade default and add a real stretch challenge.");
+      } else {
+        adaptive.push("Hold at grade level; consolidate. Uncertainty guard: do not make a big jump on a single data point.");
+      }
+    }
+    const missed=[...new Set(recent.flatMap(a=>a.missedConcepts||[]))].filter(Boolean);
+    if(missed.length) adaptive.push(`SPACED RE-PRACTICE: deliberately include 2 items targeting previously-missed concepts: ${missed.join("; ")}.`);
+  }
+
+  // cross-skill spaced retrieval: fold in the single most-overdue OTHER skill
+  const due=dueReviews(k).filter(s=>s!==skNow);
+  if(due.length && !_frustrationGuard){
+    const dskill=due[0].split("::")[1];
+    adaptive.push(`DISTRIBUTED REVIEW: include exactly 1–2 quick mixed-review items on the previously-learned skill "${dskill}" (it's due for spaced retrieval). Keep them brief and clearly marked as review.`);
+  }
+
+  if(_prereqCatchup){
+    adaptive.push(`PREREQUISITE CATCH-UP: the learner struggled with "${_prereqCatchup.from}". This sheet targets the foundational prerequisite "${_prereqCatchup.to}" to repair the underlying gap. Make it gentle and confidence-building, then end with 1–2 "bridge" items that connect "${_prereqCatchup.to}" back toward "${_prereqCatchup.from}" so the learner sees the link.`);
+  }
+  const accPats=Object.entries(k.patterns).filter(([id,p])=>p.status==="accepted");
+  if(accPats.length){
+    adaptive.push("CONFIRMED RECURRING ERROR PATTERNS — do targeted RE-TEACHING (a short 'let's fix this together' worked example addressing the misconception), not just more practice: "+
+      accPats.map(([id,p])=>`${id}${p.examples&&p.examples.length?" (e.g. "+p.examples.slice(-2).join(", ")+")":""}`).join("; ")+".");
+  }
+  if(adaptive.length){
+    directives += "\n\nADAPTIVE LEARNING CONTEXT (from this child's graded work — weight heavily):\n• "+adaptive.join("\n• ");
+  }
+
+  return [
+`Design a worksheet.`,
+`Learner: ${k.name}, profile grade ${gradeLabel(k.grade)}.`,
+`Target grade for THIS sheet: ${gradeLabel(S.sel.grade)}.`,
+`Subject: ${subjLabel(S.sel.subject)}.`,
+`Skill focus: ${currentSkillText()}.`,
+`Theme (weave it through titles, characters, scenarios, and the image): ${currentThemeText()}.`,
+(S.sel.subject!=="reading"
+  ? `Reading-load ceiling: keep all text decodable/at-or-below grade ${gradeLabel(k.grade)} independent reading level — the target skill is "${currentSkillText()}", NOT reading.`
+  : `This IS a reading sheet — control decodability to a systematic phonics progression for grade ${gradeLabel(S.sel.grade)}.`),
+(misconceptionFor(S.sel.subject,currentSkillText())
+  ? `COMMON MISCONCEPTION for this skill to pre-empt in the warm-up/guided steps: ${misconceptionFor(S.sel.subject,currentSkillText())}`
+  : ``),
+``,
+`LEARNER ACCOMMODATION DIRECTIVES (mandatory):`,
+directives,
+``,
+`Put the child's name in the title or warm-up where natural. Make it feel like it was made just for them. Output JSON only.`
+].filter(Boolean).join("\n");
+}
+
+/* ============================================================
+   OPENAI CALLS  (BYOK, direct from browser)
+   ============================================================ */
+async function openaiChat(messages){
+  const res = await fetch("https://api.openai.com/v1/chat/completions",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+S.apiKey },
+    body: JSON.stringify({
+      model: S.textModel,
+      messages,
+      response_format:{ type:"json_object" },
+      temperature: 0.8
+    })
+  });
+  if(!res.ok){
+    const t = await res.text();
+    throw new Error(parseApiErr(res.status, t));
+  }
+  const data = await res.json();
+  return data.choices[0].message.content;
+}
+async function openaiImage(prompt){
+  const res = await fetch("https://api.openai.com/v1/images/generations",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+S.apiKey },
+    body: JSON.stringify({
+      model: S.imageModel,
+      prompt: prompt + (S.bwMode
+        ? " — clean black-and-white line-art / coloring-book style illustration, bold outlines, NO color, NO grayscale shading, pure white background, wide banner composition, no text, no letters, no words, optimized to print perfectly on a black-and-white printer and to be colored in by the child"
+        : " — friendly, colorful, kid-safe cartoon illustration, wide banner composition, clean background, no text, no letters, no words, prints clearly in black and white"),
+      size: "1536x1024",
+      n: 1
+    })
+  });
+  if(!res.ok){ throw new Error(parseApiErr(res.status, await res.text())); }
+  const data = await res.json();
+  const d = data.data[0];
+  return d.b64_json ? ("data:image/png;base64,"+d.b64_json) : d.url;
+}
+function parseApiErr(status, text){
+  let msg=text;
+  try{ msg=JSON.parse(text).error.message || text; }catch(e){}
+  if(status===401) return "That OpenAI key was rejected (401). Check it in Settings.";
+  if(status===429) return "OpenAI is rate-limiting or you're out of credit (429). Try again shortly.";
+  if(status===404) return "Model '"+S.textModel+"' not found (404). Pick a model you have access to in Settings.";
+  return "OpenAI error "+status+": "+msg;
+}
+
+/* ============================================================
+   GENERATE
+   ============================================================ */
+const LOAD_LINES=[
+  "Reading the learning profile… 🧠",
+  "Choosing the perfect difficulty… 🎚️",
+  "Writing a warm-up example… ✏️",
+  "Weaving in the theme… 🎨",
+  "Applying learning supports… 🧪",
+  "Double-checking the answer key… ✅",
+  "Drawing something fun… 🖍️"
+];
+/* ============================================================
+   P0: ANSWER-KEY VERIFICATION
+   Independent second solve + deterministic arithmetic guard.
+   A wrong key corrupts grading→mastery→adaptation, so this runs
+   before any sheet is shown.
+   ============================================================ */
+function tryArithmetic(prompt){
+  // Only fires on a clean pure-arithmetic expression — a safe bonus check.
+  const m=String(prompt).match(/(-?\d+(?:\.\d+)?)\s*([+\-x×*\/÷])\s*(-?\d+(?:\.\d+)?)\s*=\s*(?:\?|_+|\bblank\b)?\s*$/i);
+  if(!m) return null;
+  const a=parseFloat(m[1]), b=parseFloat(m[3]); let op=m[2];
+  if(op==='x'||op==='×'||op==='*') return a*b;
+  if(op==='/'||op==='÷') return b===0?null:a/b;
+  if(op==='+') return a+b;
+  if(op==='-') return a-b;
+  return null;
+}
+function collectItems(ws){
+  const out=[];
+  if(ws.guidedPractice) (ws.guidedPractice.items||[]).forEach((g,i)=>out.push({number:"G"+(i+1),prompt:g.prompt,answer:g.answer,_guided:i}));
+  (ws.sections||[]).forEach(s=>(s.items||[]).forEach(it=>out.push(it)));
+  if(ws.challenge) out.push({number:"★",prompt:ws.challenge.prompt,answer:ws.challenge.answer,_challenge:true});
+  return out;
+}
+async function verifyWorksheet(ws){
+  const items=collectItems(ws);
+  if(!items.length) return ws;
+  const payload=items.map(it=>({n:it.number,q:it.prompt}));
+  const vsys=[
+"You are a meticulous answer-checker for a children's worksheet. Independently SOLVE each item from scratch. Do not assume any prior answer.",
+"For each item return the single correct answer. If an item is ambiguous, unsolvable, or has multiple correct answers, set ok=false and explain briefly.",
+'Return ONLY JSON: { "solved":[ {"n":number|string,"answer":string,"ok":boolean,"issue":string|null} ] }'
+  ].join("\n");
+  const vraw=await openaiChat([
+    {role:"system",content:vsys},
+    {role:"user",content:"Solve these and return JSON:\n"+JSON.stringify(payload)}
+  ]);
+  let v; try{ v=JSON.parse(vraw); }catch(e){ v=JSON.parse(vraw.replace(/^[^{]*/,"").replace(/[^}]*$/,"")); }
+  const solved={}; (v.solved||[]).forEach(s=>solved[String(s.n)]=s);
+
+  let fixes=0, flags=[];
+  const norm=x=>String(x==null?"":x).trim().toLowerCase().replace(/\s+/g,"").replace(/[.,]$/,"");
+  items.forEach(it=>{
+    const key=String(it.number);
+    const det=tryArithmetic(it.prompt);
+    if(det!==null){
+      const want=Number.isInteger(det)?String(det):String(+det.toFixed(4));
+      if(norm(it.answer)!==norm(want)){ setItemAnswer(ws,it,want); fixes++; }
+      return;
+    }
+    const s=solved[key]; if(!s) return;
+    if(s.ok===false){ flags.push("Q"+key+": "+(s.issue||"flagged ambiguous")); }
+    if(s.answer!=null && norm(s.answer)!==norm(it.answer)){ setItemAnswer(ws,it,String(s.answer)); fixes++; }
+  });
+  // rebuild answerKey from the (now corrected) items
+  ws.answerKey=collectItems(ws).filter(i=>!i._challenge && i._guided==null).map(i=>({number:i.number,answer:i.answer}));
+  if(flags.length){
+    ws.teacherNotes=(ws.teacherNotes||"")+"  ⚠️ Auto-check flagged: "+flags.join("; ")+
+      " — review these before use.";
+  }
+  ws._verified={fixes,flags:flags.length,at:Date.now()};
+  return ws;
+}
+function setItemAnswer(ws,item,ans){
+  if(item._challenge){ if(ws.challenge) ws.challenge.answer=ans; return; }
+  if(item._guided!=null){ if(ws.guidedPractice&&ws.guidedPractice.items[item._guided]) ws.guidedPractice.items[item._guided].answer=ans; item.answer=ans; return; }
+  (ws.sections||[]).forEach(s=>(s.items||[]).forEach(it=>{ if(it===item||String(it.number)===String(item.number)) it.answer=ans; }));
+  item.answer=ans;
+}
+
+async function generate(isVariation, mode){
+  if(!S.apiKey){ toast("Add your OpenAI key in Settings first 🔑",true); openDrawer('settings'); return; }
+  document.getElementById("screen-loading").innerHTML=`
+    <div class="loading">
+      <h2 style="color:var(--grape-dk)">Building your worksheet… ⚙️</h2>
+      <div class="loadbar"><i></i></div>
+      <div class="load-status" id="loadStatus">Warming up…</div>
+      <p class="muted" style="margin-top:14px">Sprocket is thinking hard. This takes ~15–40 seconds.</p>
+    </div>`;
+  show("loading");
+  document.getElementById("robot").classList.add("think");
+  document.getElementById("rgear").classList.add("fast");
+  say("Hang tight — I'm crafting something great. 🛠️","","think");
+  let li=0; const liT=setInterval(()=>{ document.getElementById("loadStatus").textContent=LOAD_LINES[li++%LOAD_LINES.length]; },2200);
+  document.getElementById("loadStatus").textContent=LOAD_LINES[0];
+
+  try{
+    const sys=buildSystemPrompt();
+    let usr=buildUserPrompt();
+    _prereqCatchup=null; // one-shot: consumed by the prompt just built
+    if(isVariation && mode==="harder") usr+="\n\nThis is a NEW VARIATION: keep same skill/theme but make it a notch harder and use fresh problems.";
+    if(isVariation && mode==="easier") usr+="\n\nThis is a NEW VARIATION: keep same skill/theme but make it gentler, with more scaffolding and fresh problems.";
+    if(isVariation && mode==="different") usr+="\n\nThis is a NEW VARIATION: same skill/theme/difficulty, but completely different problems and scenarios.";
+
+    const raw=await openaiChat([{role:"system",content:sys},{role:"user",content:usr}]);
+    let ws;
+    try{ ws=JSON.parse(raw); }
+    catch(e){ ws=JSON.parse(raw.replace(/^[^{]*/,"").replace(/[^}]*$/,"")); }
+
+    // ---- P0: answer-key verification pass ----
+    document.getElementById("loadStatus").textContent="Double-checking every answer… ✅";
+    try{ ws=await verifyWorksheet(ws); }
+    catch(e){ console.warn("verification pass failed (continuing with unverified key):",e); }
+
+    let img=null;
+    if(S.generateImage && ws.imagePrompt){
+      try{ document.getElementById("loadStatus").textContent="Drawing something fun… 🖍️";
+           img=await openaiImage(ws.imagePrompt); }
+      catch(e){ console.warn("image gen failed (non-fatal):",e); }
+    }
+    clearInterval(liT);
+    const _k=activeKid(); const _sk=skillKey(S.sel.subject,currentSkillText());
+    const plannedDiff = _k ? planDifficulty(ensureLearning(_k), _sk) : "on";
+    const rec={ id:uid(), kidId:S.activeKidId, date:Date.now(),
+      title:ws.title||"Worksheet",
+      params:{ grade:S.sel.grade, subject:S.sel.subject, skill:currentSkillText(), theme:currentThemeText(), difficulty:plannedDiff },
+      worksheet:ws, image:img };
+    S.history.unshift(rec); if(S.history.length>40) S.history.pop(); save();
+    logEvent("generate", (rec.params.subject||"")+" / "+(rec.params.skill||""), { grade:rec.params.grade, theme:rec.params.theme });
+    renderWorksheet(rec);
+    burstConfetti();
+  }catch(e){
+    logEvent("error", "generate failed: "+(e&&e.message||e), null);
+    clearInterval(liT);
+    document.getElementById("robot").classList.remove("think");
+    document.getElementById("rgear").classList.remove("fast");
+    document.getElementById("screen-loading").innerHTML=`
+      <div class="loading">
+        <h2 style="color:var(--err)">Hmm, that didn't work 😟</h2>
+        <p style="font-weight:700">${esc(e.message||String(e))}</p>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn" onclick="generate(${isVariation?'true':'false'}${mode?",'"+mode+"'":""})">Try again</button>
+          <button class="btn ghost" onclick="openDrawer('settings')">Check Settings</button>
+          <button class="btn ghost" onclick="renderReview()">‹ Back</button>
+        </div>
+      </div>`;
+    say("Something tripped me up. Peek at the message — usually it's the API key or model. 🔧","","");
+  }
+}
+
+/* ============================================================
+   RENDER WORKSHEET (print-perfect)
+   ============================================================ */
+function renderWorksheet(rec){
+  const ws=rec.worksheet, k=S.kids.find(x=>x.id===rec.kidId)||activeKid();
+  const accs=(k?k.accoms:[]).map(id=>ACCOMMODATIONS.find(a=>a.id===id)).filter(Boolean);
+  const accClasses=[...new Set(accs.flatMap(a=>a.render))].join(" ") + (S.bwMode?" bw":"");
+
+  const itemHTML=(it)=>{
+    const resp=it.response||"blank";
+    const box = resp==="lines" ? `<div class="ws-write lines"></div>`
+      : resp==="grid" ? `<div class="ws-write grid"></div>`
+      : resp==="hwlines" ? `<div class="ws-write hwlines"></div>`
+      : resp==="tracing" ? `<div class="ws-write tracing">${esc(it.prompt)}</div>`
+      : `<div class="ws-write"></div>`;
+    const checkbox = (k&&k.accoms.includes("adhd")) ? `<span style="border:2px solid #7C4DFF;width:18px;height:18px;border-radius:5px;display:inline-block;flex-shrink:0;margin-top:2px"></span>` : "";
+    return `<div class="ws-item">
+      ${checkbox}<span class="qn">${it.number}.</span>
+      <div class="qbody">
+        <div class="ws-q">${esc(it.prompt)}</div>
+        ${it.hint?`<div class="ws-hint">💡 ${esc(it.hint)}</div>`:""}
+        ${resp==="tracing"?box:(resp==="blank"&&isShortAnswer(it)?`<span style="border-bottom:2px solid #999;display:inline-block;min-width:120px;margin-left:8px">&nbsp;</span>`:box)}
+      </div></div>`;
+  };
+
+  const guard=_frustrationGuard; _frustrationGuard=null;
+  const guardBanner = guard ? `
+    <div style="background:#fff7e6;border:3px solid var(--sun);border-radius:16px;padding:16px 18px;margin-bottom:14px">
+      <div style="font-weight:900;color:#a9740a;font-size:1.05rem">💛 A note for the grown-up</div>
+      <p style="margin:6px 0 0;font-weight:700;color:var(--ink)">
+        ${esc(k?k.name:"Your learner")} has had a couple of tough sessions on <b>${esc(guard.skill)}</b> in a row.
+        This sheet is <b>deliberately a confidence-builder</b> — well below the struggle point, near-certain success.
+        Sit with them, keep it light and warm, and celebrate effort over answers. If frustration shows again,
+        <b>take a real break from this skill</b> for a day or two and come back — pushing through repeated failure
+        backfires. Switching to a different subject they enjoy is a great next move.
+      </p>
+    </div>` : "";
+  document.getElementById("screen-worksheet").innerHTML=`
+    ${guardBanner}
+    <div class="ws-actions">
+      <button class="btn sun" onclick="window.print()">🖨️ Print</button>
+      <button class="btn coral" onclick="startGrading('${rec.id}')">📸 Grade it</button>
+      <button class="btn mint sm" onclick="generate(true,'different')">🔄 New version</button>
+      <button class="btn ghost sm" onclick="generate(true,'easier')">😌 Easier</button>
+      <button class="btn ghost sm" onclick="generate(true,'harder')">💪 Harder</button>
+      <button class="btn ghost sm" onclick="renderReview()">⚙️ Change setup</button>
+      <button class="btn ghost sm" onclick="renderWelcome()">🏠 Start over</button>
+    </div>
+
+    <div class="sheet ${accClasses}">
+      <div class="ws-header">
+        <div>
+          <h1 class="ws-title">${esc(ws.title||"Worksheet")}</h1>
+          <div class="muted" style="font-weight:800;color:#7C4DFF">${esc(subjLabel(rec.params.subject))} · ${esc(rec.params.skill)} · ${esc(currentThemeOf(rec))}</div>
+        </div>
+        <div class="ws-meta">⭐ ${gradeLabel(rec.params.grade)}<br>⏱️ ~${ws.estimatedMinutes||10} min<br>🤖 Sprocket</div>
+      </div>
+      <div class="ws-nameline"><span>Name: <span class="u">&nbsp;</span></span><span>Date: <span class="u">&nbsp;</span></span></div>
+      ${rec.image?`<img class="ws-banner" src="${rec.image}" alt="">`:""}
+
+      ${ws.priorKnowledge?`<div class="ws-prior">🔑 You already know this: ${esc(ws.priorKnowledge)}</div>`:""}
+
+      ${ws.warmUp?`<div class="ws-warm">
+        <div class="lbl">⭐ I do — watch how it's done</div>
+        <div style="font-weight:800;margin:6px 0">${esc(ws.warmUp.exampleProblem)}</div>
+        <div style="white-space:pre-wrap">${esc(ws.warmUp.workedSolution)}</div>
+      </div>`:""}
+
+      ${ws.misconceptionRepair?`<div class="ws-repair">
+        <div class="lbl">🛠️ Let's fix a tricky spot together</div>
+        <div style="font-weight:700;margin:6px 0">Careful: ${esc(ws.misconceptionRepair.misconception)}</div>
+        <div style="white-space:pre-wrap">✅ ${esc(ws.misconceptionRepair.fix)}</div>
+      </div>`:""}
+
+      ${ws.guidedPractice && (ws.guidedPractice.items||[]).length?`<div class="ws-guided">
+        <div class="lbl">🤝 We do — try these together</div>
+        <div class="sec-instr">${esc(ws.guidedPractice.instructions||"")}</div>
+        ${(ws.guidedPractice.items||[]).map((g,i)=>`<div class="g-item">
+          <div class="ws-q"><b>G${i+1}.</b> ${esc(g.prompt)}</div>
+          ${g.scaffold?`<div class="g-scaffold">💬 ${esc(g.scaffold)}</div>`:""}
+          <div class="ws-write"></div></div>`).join("")}
+      </div>`:""}
+
+      ${(ws.sections||[]).map(sec=>`
+        <div class="ws-section">
+          <h3>${esc(sec.heading)}</h3>
+          <div class="sec-instr">${esc(sec.instructions)}</div>
+          ${(sec.items||[]).map(itemHTML).join("")}
+        </div>`).join("")}
+
+      ${ws.challenge?`<div class="ws-challenge">
+        <span class="lbl">🌟 Challenge Star:</span> ${esc(ws.challenge.prompt)}
+        <div class="ws-write" style="margin-top:8px"></div></div>`:""}
+
+      ${(()=>{ const rf=ws.reflection;
+        const feeling = rf && typeof rf==='object' ? rf.feeling : (typeof rf==='string'?rf:"How did this feel?");
+        const se = rf && typeof rf==='object' ? rf.selfExplain : "";
+        return rf?`<div class="ws-reflect">
+          <div style="font-weight:800;color:#5E35E0;margin-bottom:4px">💜 Mistakes help your brain grow — be proud of your thinking!</div>
+          ${esc(feeling)}<div class="ws-faces">😀&nbsp;&nbsp;🙂&nbsp;&nbsp;😐&nbsp;&nbsp;🤔</div>
+          ${se?`<div style="margin-top:10px;font-weight:700">✏️ ${esc(se)}</div><div class="ws-write lines"></div>`:""}
+        </div>`:""; })()}
+
+      <div class="ws-foot">Made just for ${esc(k?k.name:"you")} by Sprocket 🤖 · Worksheet Lab</div>
+    </div>
+
+    <div class="sheet answerkey ${accClasses}">
+      <h2>🔑 Answer Key — ${esc(ws.title||"")}</h2>
+      <p class="muted" style="font-weight:700">For the grown-up. ${esc(ws.teacherNotes||"")}</p>
+      <div class="ak-grid">
+        ${(ws.guidedPractice&&(ws.guidedPractice.items||[]).length)?(ws.guidedPractice.items||[]).map((g,i)=>`<div><b>G${i+1}.</b> ${esc(String(g.answer))}</div>`).join(""):""}
+        ${(ws.answerKey||[]).map(a=>`<div><b>${a.number}.</b> ${esc(String(a.answer))}</div>`).join("")}
+        ${ws.challenge?`<div><b>★</b> ${esc(String(ws.challenge.answer))}</div>`:""}
+      </div>
+    </div>`;
+
+  document.getElementById("robot").classList.remove("think");
+  document.getElementById("rgear").classList.remove("fast");
+  show("worksheet");
+  say(`Done! 🎉 A <b>${esc(currentThemeOf(rec))}</b> sheet for <b>${esc(k?k.name:'your learner')}</b>. Print it, or ask me for another version.`,"Tip: 'New version' keeps everything but makes fresh problems.","happy");
+}
+function isShortAnswer(it){ return (it.answer&&String(it.answer).length<=12); }
+function currentThemeOf(rec){ return rec.params.theme; }
+
+/* ============================================================
+   DRAWER (settings / profiles)
+   ============================================================ */
+function openDrawer(which){
+  const d=document.getElementById("drawer");
+  if(which==="settings"){
+    const ok=!!S.apiKey;
+    d.innerHTML=`
+      <h2>⚙️ Settings</h2>
+      <label class="fld">OpenAI API key
+        <span class="keytag ${ok?'ok':'no'}">${ok?'key saved':'no key'}</span></label>
+      <input class="in" id="set-key" type="password" placeholder="sk-..." value="${esc(S.apiKey)}">
+      <p class="fld-hint" style="margin-top:6px">Stored only in this browser (localStorage). Calls go straight from your browser to OpenAI. Get a key at platform.openai.com.</p>
+      <label class="fld">Text model</label>
+      <input class="in" id="set-tmodel" value="${esc(S.textModel)}" placeholder="gpt-4o">
+      <p class="fld-hint">Any chat model you have access to. Bump this as newer models ship.</p>
+      <label class="fld">Image model</label>
+      <input class="in" id="set-imodel" value="${esc(S.imageModel)}" placeholder="gpt-image-1">
+      <label class="toggle on" style="margin-top:12px">
+        <input type="checkbox" id="set-genimg" ${S.generateImage?'checked':''}>
+        <span><span class="t-title">🎨 Generate a themed header picture</span><br>
+        <span class="t-sub">Costs an image credit per worksheet. Turn off to save money / go faster.</span></span>
+      </label>
+      <label class="toggle ${S.bwMode?'on':''}" style="margin-top:10px">
+        <input type="checkbox" id="set-bw" ${S.bwMode?'checked':''} onchange="this.closest('.toggle').classList.toggle('on',this.checked)">
+        <span><span class="t-title">🖨️ Black & white (print-friendly)</span><br>
+        <span class="t-sub">Ink-saving: line-art images + grayscale sheets, great for B&W printers and coloring in.</span></span>
+      </label>
+      <div class="btn-row">
+        <button class="btn" onclick="saveSettings()">Save</button>
+        <button class="btn ghost" onclick="testKey()">Test key</button>
+      </div>
+      <p class="fld-hint" id="set-test" style="margin-top:10px"></p>
+      <hr style="border:0;border-top:2px solid var(--line);margin:20px 0">
+      <button class="btn ghost sm" onclick="exportAll()">⤓ Back up everything</button>
+      <button class="btn ghost sm" onclick="document.getElementById('imp').click()">⤒ Restore</button>
+      <input type="file" id="imp" accept=".json" class="hidden" onchange="importAll(event)">
+      ${(window.SB&&SB.configured&&SB.family)?`
+      <hr style="border:0;border-top:2px solid var(--line);margin:18px 0">
+      <h3 style="color:var(--grape-dk)">${esc(SB.family.name)}</h3>
+      <p class="fld-hint">Your role: <b>${esc(SB.family.role)}</b> · Signed in as ${esc(SB.user&&SB.user.email||'')}</p>
+      <div style="background:var(--bg-2);border-radius:12px;padding:12px 14px;margin:8px 0">
+        <div class="fld-hint">Family code — share to add a parent/teacher/guardian</div>
+        <div style="font-size:1.4rem;font-weight:900;letter-spacing:.12em;color:var(--grape-dk)">${esc(SB.family.code)}</div>
+      </div>
+      ${_isAdmin?`<button class="btn sm" onclick="closeDrawer();renderAdmin()" style="margin-right:8px">🛠️ Admin console</button>`:``}
+      <button class="btn ghost sm" onclick="SB.signOutNow()">Sign out</button>`:``}
+      <p class="fld-hint" style="margin-top:14px">${(window.SB&&SB.configured)?'cloud':'local'} mode · BYOK. Worksheet history: ${S.history.length} saved.</p>`;
+  } else {
+    d.innerHTML=`
+      <h2>👧 Kid Profiles</h2>
+      <p class="fld-hint" style="margin-bottom:12px">Each learner's profile drives every worksheet's difficulty and supports.</p>
+      ${S.kids.map(k=>`
+        <div class="kid-chip" style="width:100%;margin-bottom:10px;justify-content:space-between">
+          <span style="display:flex;align-items:center;gap:10px">
+            <span class="kid-ava" style="background:${k.color}">${k.emoji}</span>
+            <span>${esc(k.name)}<br><span class="muted" style="font-size:.76rem">${gradeLabel(k.grade)} · ${k.accoms.length} support(s)</span></span>
+          </span>
+          <span style="display:flex;gap:6px">
+            <button class="btn ghost sm" onclick="closeDrawer();renderProgressReport('${k.id}')">📈</button>
+            <button class="btn ghost sm" onclick="closeDrawer();renderProfileEditor('${k.id}')">Edit</button>
+          </span>
+        </div>`).join("") || '<p class="muted">No profiles yet.</p>'}
+      <div class="btn-row">
+        <button class="btn" onclick="closeDrawer();renderProfileEditor()">＋ Add a kid</button>
+      </div>
+      ${S.history.length?`<hr style="border:0;border-top:2px solid var(--line);margin:20px 0">
+        <h3 style="color:var(--grape-dk)">Recent worksheets</h3>
+        ${S.history.slice(0,12).map(h=>{const kk=S.kids.find(x=>x.id===h.kidId);return `
+          <div class="kid-chip" style="width:100%;margin-bottom:8px;justify-content:space-between">
+            <span style="font-size:.86rem">${esc(h.title)}<br><span class="muted" style="font-size:.72rem">${kk?esc(kk.name):'?'} · ${new Date(h.date).toLocaleDateString()}</span></span>
+            <button class="btn ghost sm" onclick="closeDrawer();reopenHistory('${h.id}')">Open</button>
+          </div>`;}).join("")}`:''}`;
+  }
+  document.getElementById("scrim").classList.add("show");
+  d.classList.add("show");
+}
+function closeDrawer(){ document.getElementById("scrim").classList.remove("show"); document.getElementById("drawer").classList.remove("show"); }
+function saveSettings(){
+  S.apiKey=document.getElementById("set-key").value.trim();
+  S.textModel=document.getElementById("set-tmodel").value.trim()||"gpt-4o";
+  S.imageModel=document.getElementById("set-imodel").value.trim()||"gpt-image-1";
+  S.generateImage=document.getElementById("set-genimg").checked;
+  S.bwMode=document.getElementById("set-bw").checked;
+  save(); toast("Settings saved ✓"); closeDrawer();
+  if(document.getElementById("screen-welcome").classList.contains("hidden")===false) renderWelcome();
+}
+async function testKey(){
+  const el=document.getElementById("set-test");
+  const key=document.getElementById("set-key").value.trim();
+  if(!key){ el.textContent="Paste a key first."; return; }
+  el.textContent="Testing… ⏳";
+  try{
+    const r=await fetch("https://api.openai.com/v1/models",{headers:{"Authorization":"Bearer "+key}});
+    el.innerHTML = r.ok ? '<span style="color:var(--ok);font-weight:800">✓ Key works!</span>'
+      : '<span style="color:var(--err);font-weight:800">✗ '+parseApiErr(r.status,await r.text())+'</span>';
+  }catch(e){ el.innerHTML='<span style="color:var(--err)">✗ Network error: '+esc(e.message)+'</span>'; }
+}
+function reopenHistory(id){ const h=S.history.find(x=>x.id===id); if(h) renderWorksheet(h); }
+
+/* ============================================================
+   BACKUP / RESTORE
+   ============================================================ */
+function exportAll(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="sprocket-backup-"+new Date().toISOString().slice(0,10)+".json"; a.click();
+  URL.revokeObjectURL(a.href); toast("Backup downloaded ✓");
+}
+function importAll(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{ try{ S={...defaultState(),...JSON.parse(ev.target.result)}; save(); closeDrawer(); renderWelcome(); toast("Restored ✓"); }
+    catch(err){ toast("Bad backup file",true); } };
+  r.readAsText(f);
+}
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function esc(s){ return s==null?"":String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function gradeLabel(id){ const g=GRADES.find(x=>x.id===id); return g?g.label:id; }
+function subjLabel(id){ const s=SUBJECTS.find(x=>x.id===id); return s?s.label:id; }
+let toastT;
+function toast(msg,err){ const t=document.getElementById("toast"); t.textContent=msg; t.className="toast show"+(err?" err":"");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.className="toast"+(err?" err":""),2600); }
+function burstConfetti(){
+  const c=document.getElementById("confetti"); c.classList.remove("hidden"); c.innerHTML="";
+  const cols=["#7C4DFF","#2BB8F0","#2BD4A8","#FFC23C","#FF6F61","#FF8FCf"];
+  for(let i=0;i<70;i++){ const d=document.createElement("div"); d.className="conf";
+    d.style.left=Math.random()*100+"vw"; d.style.background=cols[i%cols.length];
+    d.style.animationDuration=(2+Math.random()*2)+"s"; d.style.animationDelay=(Math.random()*0.5)+"s";
+    d.style.top=(-10-Math.random()*20)+"vh"; c.appendChild(d); }
+  setTimeout(()=>c.classList.add("hidden"),4200);
+}
+
+/* ============================================================
+   GRADING — capture
+   ============================================================ */
+let _gradeRecId=null, _camStream=null, _capImg=null;
+
+function startGrading(recId){
+  _gradeRecId=recId; _capImg=null;
+  renderCapture("camera");
+}
+function renderCapture(mode){
+  const el=document.getElementById("screen-capture");
+  el.innerHTML=`
+    <h2>Snap the finished worksheet 📸</h2>
+    <p class="lead">I'll read it, grade it, and learn what to practice next. You get to double-check before anything counts.</p>
+    <div class="cap-tabs">
+      <button class="cap-tab ${mode==='camera'?'on':''}" onclick="renderCapture('camera')">📷 Camera</button>
+      <button class="cap-tab ${mode==='upload'?'on':''}" onclick="renderCapture('upload')">📁 Upload photo</button>
+    </div>
+    ${ mode==='camera' ? `
+      <div class="cap-stage" id="capStage">
+        ${ _capImg ? `<img src="${_capImg}">` : `<video id="cam" autoplay playsinline muted></video>` }
+      </div>
+      <div class="btn-row">
+        ${ _capImg
+          ? `<button class="btn mint" onclick="useCapture()">✓ Use this photo</button>
+             <button class="btn ghost" onclick="_capImg=null;renderCapture('camera')">↻ Retake</button>`
+          : `<button class="btn" id="snapBtn" onclick="snap()">📸 Capture</button>` }
+        <button class="btn ghost" onclick="cancelGrading()">Cancel</button>
+      </div>
+      <p class="fld-hint" id="camHint" style="margin-top:10px"></p>
+    ` : `
+      <div class="cap-drop" id="drop" ondragover="event.preventDefault();this.classList.add('drag')"
+           ondragleave="this.classList.remove('drag')" ondrop="dropImg(event)">
+        ${ _capImg ? `<img src="${_capImg}" style="max-width:100%;border-radius:12px">` :
+          `📁 Drag a photo here, or<br><br>
+           <button class="btn" onclick="document.getElementById('fileImg').click()">Choose a file</button>`}
+        <input type="file" id="fileImg" accept="image/*" capture="environment" class="hidden" onchange="fileImg(event)">
+      </div>
+      <div class="btn-row">
+        ${ _capImg ? `<button class="btn mint" onclick="useCapture()">✓ Use this photo</button>
+             <button class="btn ghost" onclick="_capImg=null;renderCapture('upload')">↻ Choose another</button>` : `` }
+        <button class="btn ghost" onclick="cancelGrading()">Cancel</button>
+      </div>
+    `}`;
+  show("capture");
+  say("Lay the worksheet flat with good light, and get the whole page in frame. 📸","","");
+  stopCam();
+  if(mode==='camera' && !_capImg) startCam();
+}
+async function startCam(){
+  try{
+    _camStream=await navigator.mediaDevices.getUserMedia({ video:{ facingMode:"environment", width:{ideal:1920} } });
+    const v=document.getElementById("cam"); if(v){ v.srcObject=_camStream; }
+  }catch(e){
+    const h=document.getElementById("camHint");
+    if(h) h.innerHTML='⚠️ Camera unavailable ('+esc(e.name||e.message)+'). Use <b>Upload photo</b> instead.';
+  }
+}
+function stopCam(){ if(_camStream){ _camStream.getTracks().forEach(t=>t.stop()); _camStream=null; } }
+function snap(){
+  const v=document.getElementById("cam"); if(!v||!v.videoWidth){ toast("Camera still warming up…",true); return; }
+  _capImg=downscale(v, v.videoWidth, v.videoHeight, 1280, 0.72);
+  stopCam(); renderCapture("camera");
+}
+function fileImg(e){ const f=e.target.files[0]; if(f) loadImgFile(f); }
+function dropImg(e){ e.preventDefault(); e.currentTarget.classList.remove('drag');
+  const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith("image/")) loadImgFile(f); }
+function loadImgFile(f){
+  const r=new FileReader();
+  r.onload=ev=>{ const im=new Image(); im.onload=()=>{ _capImg=downscale(im, im.width, im.height, 1280, 0.72); renderCapture("upload"); }; im.src=ev.target.result; };
+  r.readAsDataURL(f);
+}
+function downscale(src, w, h, max, q){
+  const sc=Math.min(1, max/Math.max(w,h));
+  const c=document.createElement("canvas"); c.width=Math.round(w*sc); c.height=Math.round(h*sc);
+  c.getContext("2d").drawImage(src,0,0,c.width,c.height);
+  return c.toDataURL("image/jpeg", q);
+}
+function thumbOf(dataUri){
+  return new Promise(res=>{ const im=new Image(); im.onload=()=>res(downscale(im,im.width,im.height,240,0.6)); im.src=dataUri; });
+}
+function cancelGrading(){ stopCam(); _capImg=null; const r=S.history.find(x=>x.id===_gradeRecId); if(r) renderWorksheet(r); else renderWelcome(); }
+function useCapture(){ if(!_capImg){ toast("Take or choose a photo first",true); return; } gradePhoto(); }
+
+/* ============================================================
+   GRADING — vision call
+   ============================================================ */
+const PATTERN_LIB = {
+  math_regrouping:"Regrouping / borrowing-carrying errors",
+  math_place_value:"Place-value confusion",
+  math_fact_recall:"Shaky basic-fact recall",
+  math_operation_confusion:"Mixed up the operation",
+  math_wordproblem_setup:"Trouble setting up word problems",
+  letter_reversal:"Letter reversals",
+  number_reversal:"Number reversals",
+  letter_formation:"Letter formation / handwriting",
+  number_formation:"Number formation",
+  spelling_phonetic:"Phonetic spelling errors",
+  reading_detail:"Missed explicit details",
+  reading_inference:"Inference difficulty",
+  sequencing:"Sequencing / ordering",
+  incomplete:"Left items blank",
+  stamina_dropoff:"Accuracy drops in later items (stamina)",
+  careless:"Right method, careless final answer (rushing)",
+  directions:"Didn't follow directions"
+};
+function buildGradePrompt(rec){
+  const ws=rec.worksheet;
+  const items=(ws.sections||[]).flatMap(s=>s.items||[]).map(it=>({n:it.number,q:it.prompt,correct:it.answer}));
+  if(ws.challenge) items.push({n:"★",q:ws.challenge.prompt,correct:ws.challenge.answer});
+  return [
+"You are an expert, kind elementary teacher grading a scanned/photographed worksheet a child completed by hand.",
+"You are given the answer key. For EACH item: transcribe what the child appears to have written, decide correct/incorrect/blank, and give a 0-1 confidence in your reading of THEIR handwriting (not in the answer).",
+"Be charitable with messy handwriting and equivalent forms (e.g., '7' vs '7.0', 'cat' vs 'Cat'). If you genuinely can't read it, mark verdict 'unsure' with low confidence.",
+"Also identify recurring ERROR PATTERNS from this list only: "+Object.keys(PATTERN_LIB).join(", ")+".",
+"For each pattern give the item numbers and one concrete evidence example.",
+"",
+"ITEMS + ANSWER KEY:",
+JSON.stringify(items),
+"",
+"Return ONLY JSON: {",
+'  "items":[{"n":number|string,"read":string,"verdict":"correct"|"incorrect"|"blank"|"unsure","confidence":number}],',
+'  "patterns":[{"id":string,"itemNumbers":[...],"evidence":string,"severity":"low"|"med"|"high"}],',
+'  "overall":string  // 2 warm sentences for the parent: what went well + the single best next focus',
+"}"
+].join("\n");
+}
+async function gradePhoto(){
+  const rec=S.history.find(x=>x.id===_gradeRecId); if(!rec){ renderWelcome(); return; }
+  document.getElementById("screen-grading").innerHTML=`
+    <div class="loading">
+      <h2 style="color:var(--grape-dk)">Reading the worksheet… 👀</h2>
+      <div class="loadbar"><i></i></div>
+      <div class="load-status">Sprocket is checking every answer carefully…</div>
+      <p class="muted" style="margin-top:12px">You'll review everything before it counts.</p>
+    </div>`;
+  show("grading");
+  document.getElementById("robot").classList.add("think");
+  document.getElementById("rgear").classList.add("fast");
+  say("Reading every answer carefully… 🔍","","think");
+  try{
+    const res=await fetch("https://api.openai.com/v1/chat/completions",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json","Authorization":"Bearer "+S.apiKey },
+      body:JSON.stringify({
+        model:S.textModel,
+        response_format:{type:"json_object"},
+        temperature:0.2,
+        messages:[
+          {role:"system",content:buildGradePrompt(rec)},
+          {role:"user",content:[
+            {type:"text",text:"Here is the completed worksheet photo. Grade it and return the JSON."},
+            {type:"image_url",image_url:{url:_capImg}}
+          ]}
+        ]
+      })
+    });
+    if(!res.ok) throw new Error(parseApiErr(res.status, await res.text()));
+    const data=await res.json();
+    let g; const c=data.choices[0].message.content;
+    try{ g=JSON.parse(c); }catch(e){ g=JSON.parse(c.replace(/^[^{]*/,"").replace(/[^}]*$/,"")); }
+    renderReviewGrades(rec, g);
+  }catch(e){
+    document.getElementById("robot").classList.remove("think");
+    document.getElementById("rgear").classList.remove("fast");
+    document.getElementById("screen-grading").innerHTML=`
+      <div class="loading"><h2 style="color:var(--err)">Couldn't grade that 😟</h2>
+      <p style="font-weight:700">${esc(e.message||String(e))}</p>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn" onclick="gradePhoto()">Try again</button>
+        <button class="btn ghost" onclick="renderCapture('camera')">↻ New photo</button>
+        <button class="btn ghost" onclick="cancelGrading()">Cancel</button></div></div>`;
+    say("Hmm, grading tripped. Often a clearer, brighter photo fixes it. 📸","","");
+  }
+}
+
+/* ============================================================
+   GRADING — parent review / override
+   ============================================================ */
+let _grade=null;
+function renderReviewGrades(rec, g){
+  _grade=g;
+  g.items=(g.items||[]).map(it=>({ ...it, finalVerdict: it.verdict==="unsure" ? "incorrect" : it.verdict }));
+  document.getElementById("robot").classList.remove("think");
+  document.getElementById("rgear").classList.remove("fast");
+  const lowConf=g.items.filter(i=>i.verdict==="unsure"||i.confidence<0.6).length;
+  document.getElementById("screen-gradereview").innerHTML=`
+    <h2>Quick check before it counts ✅</h2>
+    <p class="lead">I marked each answer and tried to read the handwriting. ${lowConf?`<b>${lowConf}</b> were hard to read — tap to fix any I got wrong.`:`Tap any verdict to override me.`}</p>
+    <div>
+      ${g.items.map((it,idx)=>`
+        <div class="grade-item ${it.finalVerdict==='correct'?'ok':it.verdict==='unsure'?'unsure':'no'}" id="gi-${idx}">
+          <div class="gi-head">
+            <span>Q${it.n}</span>
+            <span class="gi-verdict">
+              <button class="gi-v ${it.finalVerdict==='correct'?'sel-ok':''}" onclick="setVerdict(${idx},'correct')">✓ Right</button>
+              <button class="gi-v ${it.finalVerdict==='incorrect'?'sel-no':''}" onclick="setVerdict(${idx},'incorrect')">✗ Wrong</button>
+              <button class="gi-v ${it.finalVerdict==='blank'?'sel-skip':''}" onclick="setVerdict(${idx},'blank')">— Blank</button>
+            </span>
+          </div>
+          <div class="gi-read">Sprocket read: <b>${esc(it.read||"(nothing)")}</b> <span class="muted">· confidence ${Math.round((it.confidence||0)*100)}%</span></div>
+        </div>`).join("")}
+    </div>
+    <div class="btn-row">
+      <button class="btn mint" onclick="commitGrades()">Looks right — save it ✓</button>
+      <button class="btn ghost" onclick="renderCapture('camera')">↻ Re-shoot photo</button>
+      <button class="btn ghost" onclick="cancelGrading()">Cancel</button>
+    </div>`;
+  show("gradereview");
+  say("Here's how I scored it. Fix anything I misread — your corrections make me smarter. 🧠","","");
+}
+function setVerdict(idx,v){
+  _grade.items[idx].finalVerdict=v;
+  _grade.items[idx].overridden = (v!==(_grade.items[idx].verdict==='unsure'?'incorrect':_grade.items[idx].verdict));
+  const el=document.getElementById("gi-"+idx);
+  el.className="grade-item "+(v==='correct'?'ok':v==='blank'?'unsure':'no');
+  el.querySelectorAll(".gi-v").forEach(b=>b.className="gi-v");
+  el.querySelectorAll(".gi-v")[v==='correct'?0:v==='incorrect'?1:2].classList.add(v==='correct'?'sel-ok':v==='incorrect'?'sel-no':'sel-skip');
+}
+
+/* ============================================================
+   GRADING — commit to mastery model + suggestions
+   ============================================================ */
+function commitGrades(){
+  const rec=S.history.find(x=>x.id===_gradeRecId);
+  const k=ensureLearning(S.kids.find(x=>x.id===rec.kidId)); if(!k){ renderWelcome(); return; }
+  const items=_grade.items;
+  const total=items.length;
+  const correct=items.filter(i=>i.finalVerdict==='correct').length;
+  const pct=total?Math.round(correct/total*100):0;
+
+  // missed concepts: pull the prompts of wrong/blank items for spaced re-practice
+  const allItems=(rec.worksheet.sections||[]).flatMap(s=>s.items||[]);
+  const missedConcepts=items.filter(i=>i.finalVerdict!=='correct')
+    .map(i=>{ const src=allItems.find(x=>String(x.number)===String(i.n)); return src?src.prompt:null; })
+    .filter(Boolean).slice(0,6);
+
+  const sk=skillKey(rec.params.subject, rec.params.skill);
+  if(!k.mastery[sk]) k.mastery[sk]={attempts:[]};
+  const diff=rec.params.difficulty||"on";
+  k.mastery[sk].attempts.push({ date:Date.now(), pct, correct, total, difficulty:diff, worksheetId:rec.id, missedConcepts });
+  // robust, difficulty-adjusted, off-day-resistant skill estimate
+  k.mastery[sk].score=robustScore(k.mastery[sk]);
+  // SM-2-lite: schedule next spaced review based on this attempt
+  updateSchedule(k.mastery[sk], diffAdj(pct,diff)>=80);
+
+  // accumulate error patterns (only count ones tied to items actually marked wrong, plus parent overrides)
+  const wrongNs=new Set(items.filter(i=>i.finalVerdict!=='correct').map(i=>String(i.n)));
+  (_grade.patterns||[]).forEach(p=>{
+    if(!PATTERN_LIB[p.id]) return;
+    const relevant=(p.itemNumbers||[]).some(n=>wrongNs.has(String(n))) || p.severity==='high';
+    if(!relevant) return;
+    if(!k.patterns[p.id]) k.patterns[p.id]={count:0,examples:[],status:'observed'};
+    k.patterns[p.id].count++; k.patterns[p.id].lastSeen=Date.now();
+    if(p.evidence) k.patterns[p.id].examples=[...(k.patterns[p.id].examples||[]),p.evidence].slice(-4);
+  });
+
+  // generate approval-gated suggestions when thresholds cross
+  const newSugs=[];
+  const addSug=(id,type,text,payload)=>{ if(!k.suggestions.some(s=>s.sigId===id&&s.status==='pending')) newSugs.push({id:uid(),sigId:id,type,text,payload,status:'pending'}); };
+  Object.entries(k.patterns).forEach(([pid,p])=>{
+    if(p.status!=='observed') return;
+    if(pid==='letter_reversal' && p.count>=2) addSug('lr','letters',`I keep seeing letter reversals. Add the letters from "${(p.examples||[]).slice(-1)[0]||'b/d'}" to ${k.name}'s focus letters?`,{});
+    if(pid==='number_reversal' && p.count>=2) addSug('nr','numbers',`Recurring number reversals. Add them to ${k.name}'s focus numbers?`,{});
+    if((pid==='stamina_dropoff'||pid==='incomplete') && p.count>=2 && !k.accoms.includes('focus_endurance'))
+      addSug('fe','accom',`${k.name} fades on later items repeatedly. Turn on the "Stamina / staying on task" support?`,{accom:'focus_endurance'});
+    if((pid==='reading_detail'||pid==='reading_inference') && p.count>=3 && !k.accoms.includes('tracking'))
+      addSug('tk','accom',`Comprehension misses are adding up. Turn on "Reading line-tracking" support, or try a grade lower on reading?`,{accom:'tracking'});
+  });
+  const m=k.mastery[sk];
+  if(m.attempts.length>=2 && m.score<55)
+    addSug('rem-'+sk,'remediation',`${k.name} is finding "${rec.params.skill}" tough (avg ${m.score}%). Want a gentler focused catch-up sheet on just this?`,{subject:rec.params.subject,skill:rec.params.skill});
+  k.suggestions.push(...newSugs);
+
+  // store a slim grading record (thumb only, not full photo)
+  thumbOf(_capImg).then(th=>{
+    rec.grading={ at:Date.now(), pct, correct, total,
+      items:items.map(i=>({n:i.n,read:i.read,verdict:i.finalVerdict,overridden:!!i.overridden})),
+      overall:_grade.overall };
+    rec.gradeThumb=th;
+    save();
+  });
+  save();
+  logEvent("grade", (rec.params.skill||"")+" → "+pct+"%", { kid:k.name, correct, total });
+  renderResults(rec, k, {pct,correct,total,missedConcepts,newSugs});
+}
+
+/* ============================================================
+   GRADING — results + adaptation summary
+   ============================================================ */
+function renderResults(rec,k,r){
+  const sk=skillKey(rec.params.subject,rec.params.skill);
+  const m=k.mastery[sk];
+  const tone = r.pct>=85?"crushed it":r.pct>=60?"solid work":"good effort — this one was tricky";
+  const pend=k.suggestions.filter(s=>s.status==='pending');
+  const adaptLine = r.pct<60
+    ? "Next sheet on this skill will be gentler with extra scaffolding and encouragement."
+    : r.pct>=85
+      ? "Next sheet will step up the challenge a notch."
+      : "Next sheet will consolidate at this level and re-practice the misses.";
+  document.getElementById("screen-results").innerHTML=`
+    <h2>${esc(k.name)} ${tone}! 🌟</h2>
+    <div class="center" style="margin:14px 0">
+      <div class="ring" style="--p:${r.pct}"><div class="inner"><span class="scorebig">${r.pct}%</span></div></div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+        <span class="mini-stat">${r.correct}<small>correct</small></span>
+        <span class="mini-stat">${r.total-r.correct}<small>to practice</small></span>
+        <span class="mini-stat">${m.score}%<small>skill mastery</small></span>
+        <span class="mini-stat">${m.attempts.length}<small>attempts</small></span>
+      </div>
+    </div>
+    ${_grade.overall?`<p style="background:var(--bg-2);border-radius:14px;padding:14px;font-weight:700">🤖 ${esc(_grade.overall)}</p>`:""}
+    <div style="background:var(--bg-2);border-radius:14px;padding:12px 14px;margin:10px 0">
+      <div style="font-weight:800;margin-bottom:6px">How did this session feel for ${esc(k.name)}?</div>
+      <div class="btn-row" style="margin:0">
+        <button class="btn ghost sm" onclick="setAffect('${rec.id}','smooth',this)">😊 Smooth</button>
+        <button class="btn ghost sm" onclick="setAffect('${rec.id}','struggle',this)">😐 Some struggle</button>
+        <button class="btn ghost sm" onclick="setAffect('${rec.id}','hard',this)">😢 Lots of tears</button>
+      </div>
+      <div class="fld-hint" style="margin-top:6px">One tap — this signal shapes pacing more honestly than the score alone.</div>
+    </div>
+    <p class="muted" style="font-weight:800">🔁 ${adaptLine}</p>
+    ${pend.length?`<h3 style="color:var(--grape-dk);margin-top:16px">Sprocket noticed something 👀</h3>
+      ${pend.map(s=>`<div class="sugg" id="sug-${s.id}">
+        <div style="font-weight:800">💡 ${esc(s.text)}</div>
+        <div class="btn-row">
+          <button class="btn mint sm" onclick="acceptSug('${s.id}')">Yes, do it</button>
+          <button class="btn ghost sm" onclick="dismissSug('${s.id}')">No thanks</button>
+        </div></div>`).join("")}`:""}
+    <div class="btn-row" style="margin-top:18px">
+      ${r.pct<60?`<button class="btn coral" onclick="remediate()">🎯 Make a catch-up sheet</button>`:""}
+      <button class="btn mint" onclick="generate(false)">✨ Next worksheet (adapted)</button>
+      <button class="btn ghost" onclick="renderProgressReport('${rec.kidId}')">📈 Progress</button>
+      <button class="btn ghost" onclick="renderWelcome()">🏠 Home</button>
+    </div>`;
+  show("results");
+  burstConfetti();
+  say(r.pct>=60
+      ? `<b>${r.pct}%</b> — nice work by ${esc(k.name)}! I've learned from this and the next sheet will adapt. 🎉`
+      : `${esc(k.name)} gave it a real go. I'll make the next one meet them right where they are. 💪`,
+      "","happy");
+}
+function setAffect(recId, affect, btn){
+  const rec=S.history.find(x=>x.id===recId); if(!rec) return;
+  const k=ensureLearning(S.kids.find(x=>x.id===rec.kidId)); if(!k) return;
+  const mk=k.mastery[skillKey(rec.params.subject,rec.params.skill)];
+  if(mk && mk.attempts && mk.attempts.length) mk.attempts[mk.attempts.length-1].affect=affect;
+  rec.affect=affect; save();
+  if(btn){ [...btn.parentNode.children].forEach(b=>b.classList.add('ghost')); btn.classList.remove('ghost'); btn.classList.add('mint'); }
+  // a "lots of tears" session is a strong stop signal regardless of score
+  if(affect==='hard') say("Thanks for telling me. Tears mean it's time for a break, not a push. Try a fun subject next, or come back tomorrow. 💛","","");
+}
+
+/* ============================================================
+   PROGRESS REPORT (kid growth view + parent report, printable)
+   ============================================================ */
+function renderProgressReport(kidId){
+  const k=ensureLearning(S.kids.find(x=>x.id===(kidId||S.activeKidId)));
+  if(!k){ toast("Pick a learner first",true); renderWelcome(); return; }
+  const skills=Object.entries(k.mastery).filter(([sk,m])=>m.attempts&&m.attempts.length);
+  const due=dueReviews(k);
+  const totalAttempts=skills.reduce((s,[,m])=>s+m.attempts.length,0);
+  const avg = skills.length ? Math.round(skills.reduce((s,[,m])=>s+(robustScore(m)||0),0)/skills.length) : 0;
+  const color=v=>v>=80?'var(--mint)':v>=60?'var(--sun)':'var(--coral)';
+  const trend=m=>{ const a=m.attempts; if(a.length<2) return ['·','var(--ink-soft)'];
+    const d=diffAdj(a[a.length-1].pct,a[a.length-1].difficulty||'on')-diffAdj(a[a.length-2].pct,a[a.length-2].difficulty||'on');
+    return d>5?['▲','var(--mint)']:d<-5?['▼','var(--coral)']:['▬','var(--ink-soft)']; };
+
+  // accommodation efficacy: avg robust score of attempts before vs after the latest accom change
+  let effHtml="";
+  const lastLog=(k.accomLog||[]).slice(-1)[0];
+  if(lastLog && (k.accomLog||[]).length>1){
+    const cut=lastLog.date;
+    const before=[], after=[];
+    skills.forEach(([,m])=>m.attempts.forEach(a=>{ const v=diffAdj(a.pct,a.difficulty||'on'); (a.date<cut?before:after).push(v); }));
+    const mean=xs=>xs.length?Math.round(xs.reduce((s,x)=>s+x,0)/xs.length):null;
+    const b=mean(before), af=mean(after);
+    if(b!=null && af!=null) effHtml=`<p style="font-weight:700;background:var(--bg-2);border-radius:12px;padding:10px 14px">
+      🧪 Since the last support change (${new Date(cut).toLocaleDateString()}): average moved <b>${b}% → ${af}%</b> ${af>=b?'📈':'📉'}.
+      <span class="fld-hint">${af>=b+5?'Looks like it is helping.':af<b-5?'Not obviously helping yet — give it more sessions or revisit the mix.':'About the same so far — needs more data.'}</span></p>`;
+  }
+
+  document.getElementById("screen-progress").innerHTML=`
+    <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn sun" onclick="window.print()">🖨️ Save / print report</button>
+      <button class="btn ghost" onclick="renderWelcome()">🏠 Home</button>
+    </div>
+    <h2>${esc(k.name)}'s Progress 🌱</h2>
+    <p class="lead">${gradeLabel(k.grade)} · ${skills.length} skill${skills.length===1?'':'s'} practiced · ${totalAttempts} graded worksheet${totalAttempts===1?'':'s'}</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 16px">
+      <span class="mini-stat">${avg}%<small>overall mastery</small></span>
+      <span class="mini-stat">${skills.filter(([,m])=>(robustScore(m)||0)>=80).length}<small>skills strong</small></span>
+      <span class="mini-stat">${due.length}<small>due to review</small></span>
+    </div>
+    ${effHtml}
+    ${k.accoms.length?`<p style="font-weight:700">🧩 Active supports: ${k.accoms.map(id=>{const a=ACCOMMODATIONS.find(x=>x.id===id);return a?`<span class="pill">${a.emoji} ${a.title}</span>`:''}).join("")}</p>`:""}
+    <h3 style="color:var(--grape-dk);margin-top:14px">Skill by skill</h3>
+    ${skills.length? skills.sort((a,b)=>(robustScore(a[1])||0)-(robustScore(b[1])||0)).map(([sk,m])=>{
+      const v=robustScore(m)||0; const [tg,tc]=trend(m); const isDue=due.includes(sk);
+      const lastAff=(m.attempts.slice(-1)[0]||{}).affect;
+      const affIcon=lastAff==='hard'?' 😢':lastAff==='struggle'?' 😐':lastAff==='smooth'?' 😊':'';
+      return `<div class="prog-skill">
+        <div>
+          <div style="font-weight:800">${esc(sk.split("::")[1])} <span class="muted" style="font-size:.78rem">· ${esc(subjLabel(sk.split("::")[0]))}${affIcon}</span>
+            ${isDue?'<span class="prog-due">review due</span>':''}</div>
+          <div class="prog-bar"><i style="width:${v}%;background:${color(v)}"></i></div>
+          <div class="fld-hint">${m.attempts.length} attempt${m.attempts.length===1?'':'s'} · last ${new Date(m.attempts.slice(-1)[0].date).toLocaleDateString()}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:1.5rem;font-weight:900;color:${color(v)}">${v}%</div>
+          <div class="prog-trend" style="color:${tc}">${tg}</div>
+        </div>
+      </div>`; }).join("")
+      : '<p class="muted">No graded worksheets yet. Grade a sheet (📸) and progress shows up here.</p>'}
+    ${(k.fluency&&k.fluency.length)?(()=>{
+        const f=k.fluency.slice(-12); const mx=Math.max(wcpmTarget(k.grade), ...f.map(x=>x.wcpm))||1;
+        const latest=f[f.length-1].wcpm, first=f[0].wcpm;
+        return `<h3 style="color:var(--grape-dk);margin-top:18px">Reading fluency (WCPM) 🎤</h3>
+        <p class="muted" style="font-weight:700">Latest <b>${latest}</b> words/min · ${f.length} read${f.length===1?'':'s'} logged · typical ${gradeLabel(k.grade)} ≈ ${wcpmTarget(k.grade)} · ${latest>=first?'<span style="color:var(--mint)">▲ growing</span>':'<span style="color:var(--coral)">▼ dipped</span>'} since first logged</p>
+        <div class="wcpm-row">${f.map(x=>`<div class="wcpm-bar" style="height:${Math.max(8,Math.round(x.wcpm/mx*100))}%" title="${esc(x.title)} (read #${x.attempt}) — ${x.wcpm} WCPM, ${x.errors} miss"><span>${x.wcpm}</span></div>`).join("")}</div>
+        <p class="fld-hint">Each bar = one timed read. Re-reads of the same passage should climb. Norm line ≈ ${wcpmTarget(k.grade)} WCPM (spring, 50th %ile guidance — not a diagnosis).</p>`;
+      })():""}
+    ${due.length?`<h3 style="color:var(--grape-dk);margin-top:16px">Due for a quick review</h3>
+      <p class="muted" style="font-weight:700">Spaced practice locks learning in. Sprocket folds these into new sheets automatically — or make a focused review now:</p>
+      <div class="btn-row no-print">${due.slice(0,4).map(sk=>`<button class="btn ghost sm" data-sk="${esc(sk)}" onclick="reviewSkill(this.dataset.sk)">${esc(sk.split("::")[1])}</button>`).join("")}</div>`:""}
+    <p class="ws-foot" style="margin-top:24px">Sprocket · generated ${new Date().toLocaleDateString()} · share this with a teacher or tutor</p>`;
+  show("progress");
+  say(`Here's how ${esc(k.name)} is growing. 🌱 Print this to share with a teacher or tutor.`,"","happy");
+}
+function reviewSkill(sk){
+  const [sub,skill]=sk.split("::");
+  S.sel.subject=sub; S.sel.customSkill=skill;
+  S.sel.skill=(SKILLS[sub]&&SKILLS[sub][S.sel.grade]&&SKILLS[sub][S.sel.grade].includes(skill))?skill:"__custom__";
+  save(); generate(true,'different');
+}
+
+// which pattern ids a given suggestion (by sigId) governs
+function sugPatterns(sigId){
+  if(sigId==='lr') return ['letter_reversal'];
+  if(sigId==='nr') return ['number_reversal'];
+  if(sigId==='fe') return ['stamina_dropoff','incomplete'];
+  if(sigId==='tk') return ['reading_detail','reading_inference'];
+  return [];
+}
+function findSug(id){
+  for(const k of S.kids){ const s=(k.suggestions||[]).find(x=>x.id===id); if(s) return {k:ensureLearning(k),s}; }
+  return null;
+}
+function acceptSug(id){
+  const f=findSug(id); if(!f) return; const {k,s}=f;
+  if(s.type==='accom' && s.payload.accom && !k.accoms.includes(s.payload.accom)) k.accoms.push(s.payload.accom);
+  // only the patterns this suggestion governs become 'accepted' (these then drive future prompts)
+  sugPatterns(s.sigId).forEach(pid=>{ if(k.patterns[pid]) k.patterns[pid].status='accepted'; });
+  s.status='accepted'; save();
+  const el=document.getElementById("sug-"+id);
+  if(el) el.innerHTML='<div style="font-weight:800;color:var(--ok)">✓ Done — this now shapes future worksheets.</div>';
+  if(s.type==='remediation') remediate(s.payload.subject,s.payload.skill);
+}
+function dismissSug(id){
+  const f=findSug(id); if(!f) return; const {k,s}=f;
+  s.status='dismissed';
+  // park only this suggestion's patterns so it stops nagging, without killing other tracking
+  sugPatterns(s.sigId).forEach(pid=>{ if(k.patterns[pid] && k.patterns[pid].status==='observed') k.patterns[pid].status='dismissed'; });
+  save();
+  const el=document.getElementById("sug-"+id);
+  if(el) el.innerHTML='<div class="muted" style="font-weight:800">Okay, I won’t suggest that again.</div>';
+}
+function remediate(subject, skill){
+  // No args → derive from the worksheet that was just graded (avoids embedding
+  // skill text in inline onclick, which would HTML-entity-encode "&","/").
+  if(!subject||!skill){
+    const rec=S.history.find(x=>x.id===_gradeRecId);
+    if(rec){ subject=rec.params.subject; skill=rec.params.skill; }
+  }
+  if(!subject||!skill){ toast("Couldn't find the skill to catch up on",true); return; }
+  // Prerequisite-aware: if this skill has prerequisites and the learner is
+  // genuinely low, the fix is usually the missing foundation, not "easier X".
+  const k=ensureLearning(activeKid());
+  const rs = k ? robustScore(k.mastery[skillKey(subject,skill)]) : null;
+  const pq = prereqsFor(subject, skill);
+  if(pq.length && (rs==null || rs<55)){
+    const [psub,pskill]=pq[0].split("::");
+    _prereqCatchup={ from:skill, to:pskill };
+    S.sel.subject=psub; S.sel.customSkill=pskill;
+    S.sel.skill = (SKILLS[psub]&&SKILLS[psub][S.sel.grade]&&SKILLS[psub][S.sel.grade].includes(pskill)) ? pskill : "__custom__";
+    save();
+    toast("Going back to the foundation: "+pskill+" 🧱");
+    generate(true,'easier');
+    return;
+  }
+  _prereqCatchup=null;
+  S.sel.subject=subject; S.sel.customSkill=skill;
+  S.sel.skill = currentSkillList().includes(skill) ? skill : "__custom__";
+  save();
+  generate(true,'easier');
+}
+
+/* ============================================================
+   ORF — Oral Reading Fluency (timed repeated reading + WCPM)
+   Evidence base: repeated reading is the most-proven fluency
+   intervention; WCPM is the standard progress metric.
+   ============================================================ */
+let _orf=null; // { passageId, title, words[], misses:Set, lastIdx, attempt, timeLeft, timerH, running }
+
+function startORF(reread){
+  const k=ensureLearning(activeKid());
+  if(!k){ toast("Pick a learner first",true); goProfiles(); return; }
+  if(!S.apiKey){ toast("Add your OpenAI key first 🔑",true); openDrawer('settings'); return; }
+  if(reread && _lastPassageId && k.passages[_lastPassageId]){
+    const p=k.passages[_lastPassageId];
+    beginORF(_lastPassageId, p.title, p.text, (p.attempts||1)+1);
+    return;
+  }
+  document.getElementById("screen-loading").innerHTML=`
+    <div class="loading"><h2 style="color:var(--grape-dk)">Writing a just-right passage… 📖</h2>
+    <div class="loadbar"><i></i></div><div class="load-status">Leveled for ${esc(k.name)}…</div></div>`;
+  show("loading");
+  document.getElementById("robot").classList.add("think");
+  genORFPassage(k);
+}
+let _lastPassageId=null;
+async function genORFPassage(k){
+  const grade=gradeLabel(k.grade);
+  const accs=k.accoms.map(id=>ACCOMMODATIONS.find(a=>a.id===id)).filter(Boolean);
+  const sys=[
+"You write SHORT leveled reading passages for oral-reading-fluency practice (timed repeated reading) for K–5.",
+"Rules: decodable + grade-appropriate vocabulary for the stated grade; natural connected prose (a tiny story or fun fact), NOT a word list; 40–120 words scaled to grade (K~40, G5~120); warm, engaging, child-safe; one clear topic.",
+"Honor any learner accommodations (e.g., dyslexia → shorter sentences, decodable words; ADHD → high-interest, brisk).",
+'Return ONLY JSON: { "title": string, "text": string, "wordCount": number }'
+  ].join("\n");
+  const usr=`Grade: ${grade}. Learner interests/notes: ${k.notes||"(none)"}. Accommodations: ${accs.map(a=>a.title).join(", ")||"none"}. Write the passage.`;
+  try{
+    const raw=await openaiChat([{role:"system",content:sys},{role:"user",content:usr}]);
+    let p; try{ p=JSON.parse(raw); }catch(e){ p=JSON.parse(raw.replace(/^[^{]*/,"").replace(/[^}]*$/,"")); }
+    const pid=uid();
+    k.passages[pid]={ title:p.title||"Reading Passage", text:p.text||"", attempts:1 };
+    _lastPassageId=pid; save();
+    beginORF(pid, k.passages[pid].title, k.passages[pid].text, 1);
+  }catch(e){
+    document.getElementById("robot").classList.remove("think");
+    document.getElementById("screen-loading").innerHTML=`<div class="loading">
+      <h2 style="color:var(--err)">Couldn't write a passage 😟</h2><p style="font-weight:700">${esc(e.message||e)}</p>
+      <div class="btn-row" style="justify-content:center">
+      <button class="btn" onclick="startORF()">Try again</button>
+      <button class="btn ghost" onclick="renderWelcome()">Home</button></div></div>`;
+  }
+}
+function beginORF(pid,title,text,attempt){
+  document.getElementById("robot").classList.remove("think");
+  const words=String(text).trim().split(/\s+/);
+  _orf={ passageId:pid, title, words, misses:new Set(), lastIdx:words.length-1, attempt, timeLeft:60, timerH:null, running:false };
+  renderORF();
+}
+function renderORF(){
+  const o=_orf, big = (activeKid()&&activeKid().accoms.includes('dyslexia'));
+  document.getElementById("screen-orf").innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <h2 style="margin:0">${esc(o.title)} ${o.attempt>1?`<span class="pill">re-read #${o.attempt}</span>`:''}</h2>
+      <div class="orf-timer ${o.running?'go':''}" id="orfTimer">${o.timeLeft}s</div>
+    </div>
+    <p class="lead">Child reads aloud. You tap any word they miss or skip. Tap the <b>last word they reached</b> when time's up.</p>
+    <div class="orf-passage ${big?'big':''}" id="orfPassage">
+      ${o.words.map((w,i)=>`<span class="orf-w" data-i="${i}" onclick="orfWord(${i})">${esc(w)}</span>`).join(" ")}
+    </div>
+    <div class="btn-row">
+      ${!o.running && o.timeLeft===60 ? `<button class="btn sky" onclick="orfStart()">▶ Start (60s)</button>` : ''}
+      ${o.running ? `<button class="btn coral" onclick="orfStop()">⏹ Done / Time's up</button>` : ''}
+      ${!o.running && o.timeLeft<60 ? `<button class="btn mint" onclick="orfScore()">✓ Score it</button>
+        <button class="btn ghost" onclick="beginORF(o_p(),o_t(),o_x(),_orf.attempt)">↻ Redo</button>` : ''}
+      <button class="btn ghost" onclick="renderWelcome()">Cancel</button>
+    </div>
+    <p class="fld-hint" id="orfHint">Tip: a calm, no-pressure read gives the truest score. Repeated reads of the SAME passage build fluency fastest.</p>`;
+  show("orf");
+  say(o.attempt>1
+      ? `Re-read #${o.attempt} of the same passage — this is exactly how fluency grows. Tap misses, I'll track the climb. 📈`
+      : `Reading time! ${esc(activeKid()?activeKid().name:'')} reads aloud, you tap the tricky words. 🎤`,"","");
+}
+function o_p(){return _orf.passageId;} function o_t(){return _orf.title;}
+function o_x(){return _orf.words.join(" ");}
+function orfWord(i){
+  if(!_orf) return;
+  if(_orf._pickLast){
+    // one tap after Stop = mark the last word the child actually reached
+    _orf.lastIdx=i; _orf._pickLast=false;
+    document.querySelectorAll('#orfPassage .orf-w').forEach(el=>{
+      const idx=+el.dataset.i;
+      el.classList.toggle('last', idx===i);
+      el.style.opacity = idx>i ? .35 : 1;   // grey out words past the stopping point
+    });
+    const h=document.getElementById("orfHint");
+    if(h) h.innerHTML='✓ Stopping point set. Adjust misses if needed, then <b>Score it</b>.';
+    return;
+  }
+  if(_orf.misses.has(i)) _orf.misses.delete(i); else _orf.misses.add(i);
+  const el=document.querySelector('#orfPassage .orf-w[data-i="'+i+'"]');
+  if(el) el.classList.toggle('miss',_orf.misses.has(i));
+}
+function orfStart(){
+  _orf.running=true; _orf.timeLeft=60; renderORFTimer();
+  _orf.timerH=setInterval(()=>{ _orf.timeLeft--; renderORFTimer();
+    if(_orf.timeLeft<=0) orfStop(); },1000);
+  renderORF();
+}
+function renderORFTimer(){ const t=document.getElementById("orfTimer"); if(t){ t.textContent=_orf.timeLeft+"s"; t.classList.toggle('go',_orf.running); } }
+function orfStop(){
+  if(_orf.timerH) clearInterval(_orf.timerH);
+  _orf.running=false;
+  document.getElementById("orfHint").innerHTML='⛳ Now tap the <b>last word</b> the child reached, then "Score it". (Skip if they finished the whole passage.)';
+  // re-render to show Score button; keep misses
+  const html=document.getElementById("screen-orf");
+  renderORF();
+  // attach a one-time "set last word" behavior: next tap on a non-miss word marks lastIdx
+  _orf._pickLast=true;
+}
+function orfScore(){
+  const o=_orf, k=ensureLearning(activeKid());
+  const reached=o.lastIdx+1;                 // words attempted
+  const errors=[...o.misses].filter(i=>i<=o.lastIdx).length;
+  const correct=Math.max(0, reached-errors);
+  const wcpm=correct;                        // 60-second read → WCPM == correct words
+  const rec={ date:Date.now(), title:o.title, passageId:o.passageId, attempt:o.attempt,
+              words:reached, errors, wcpm };
+  k.fluency.push(rec);
+  if(k.passages[o.passageId]) k.passages[o.passageId].attempts=o.attempt;
+  save();
+  const prev=k.fluency.filter(f=>f.passageId===o.passageId && f.attempt<o.attempt).slice(-1)[0];
+  const delta=prev? wcpm-prev.wcpm : null;
+  const band=wcpmBand(k.grade,wcpm);
+  document.getElementById("screen-orf").innerHTML=`
+    <h2>${esc(k.name)} — ${wcpm} WCPM 🎤</h2>
+    <div class="center" style="margin:12px 0">
+      <div class="ring" style="--p:${Math.min(100,Math.round(wcpm/ (wcpmTarget(k.grade)||60) *100))}">
+        <div class="inner"><span class="scorebig">${wcpm}</span></div></div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+        <span class="mini-stat">${rec.words}<small>words read</small></span>
+        <span class="mini-stat">${errors}<small>misses</small></span>
+        <span class="mini-stat">${o.attempt}<small>read #</small></span>
+        ${delta!=null?`<span class="mini-stat" style="color:${delta>=0?'var(--mint)':'var(--coral)'}">${delta>=0?'+':''}${delta}<small>vs last read</small></span>`:''}
+      </div>
+    </div>
+    <p style="background:var(--bg-2);border-radius:14px;padding:14px;font-weight:700">${band}</p>
+    <div class="btn-row">
+      ${o.attempt<3?`<button class="btn sky" onclick="startORF(true)">🔁 Re-read this passage (read #${o.attempt+1})</button>`:''}
+      <button class="btn mint" onclick="startORF()">📖 New passage</button>
+      <button class="btn ghost" onclick="renderProgressReport('${k.id}')">📈 Progress</button>
+      <button class="btn ghost" onclick="renderWelcome()">🏠 Home</button>
+    </div>
+    <p class="fld-hint">Repeated reading works: aim for 3 reads of the same passage across a few days and watch WCPM climb. Sprocket logs every read.</p>`;
+  show("orf");
+  burstConfetti();
+  say(delta!=null && delta>0
+      ? `Up ${delta} words from last time — that's fluency growing in real time! 🎉`
+      : `Logged: ${wcpm} words per minute. Re-reading the same passage is the proven way to grow this. 💪`,"","happy");
+}
+// rough ORF norms (Hasbrouck-Tindal-ish, spring, 50th %ile) — guidance only
+function wcpmTarget(g){ return {K:20,"1":60,"2":100,"3":120,"4":135,"5":150}[g]||100; }
+function wcpmBand(g,w){
+  const t=wcpmTarget(g);
+  if(w>=t) return `🌟 At or above a typical spring ${gradeLabel(g)} pace (~${t} WCPM). Keep the variety coming.`;
+  if(w>=t*0.75) return `👍 Approaching the typical ${gradeLabel(g)} range (~${t} WCPM). Repeated reading will close the gap.`;
+  return `🌱 Below the typical ${gradeLabel(g)} range (~${t} WCPM) — exactly what this practice is for. Re-read the same passage 2–3×; expect a jump. If it stays well below, shorter/easier passages and a phonics check help.`;
+}
+
+/* ============================================================
+   AUTH + FAMILY ONBOARDING (cloud mode)
+   ============================================================ */
+function renderAuth(){
+  document.getElementById("screen-auth").innerHTML=`
+    <h2>Welcome to Sprocket 🤖</h2>
+    <p class="lead">Sign in to set up your family and sync across every device — phone, tablet, laptop.</p>
+    <div class="btn-row">
+      <button class="btn" onclick="doSignIn()">🔑 Sign in with Google</button>
+    </div>
+    <p class="fld-hint" style="margin-top:12px">Your data is private to your family. You'll still use your own OpenAI key — it stays yours, locked to your account.</p>`;
+  show("auth");
+  say("Hi! I'm Sprocket. Sign in with Google and we'll get your family set up. ✨","","happy");
+}
+async function doSignIn(){
+  _denied=false;
+  try{ await SB.signIn(); /* onAuthStateChanged → __sprocketAuthChanged drives the rest */ }
+  catch(e){ toast("Sign-in cancelled or failed.",true); }
+}
+let _denied=false;
+function renderDenied(email){
+  _denied=true;
+  document.getElementById("screen-denied").innerHTML=`
+    <h2>This is a private app 🔒</h2>
+    <p class="lead"><b>${esc(email||"That account")}</b> isn't on the invite list, so you've been signed out.</p>
+    <p class="muted" style="font-weight:600">Sprocket is invite-only — only people the owner has added can sign in. If you think you should have access, ask Parker to add your Google email.</p>
+    <div class="btn-row">
+      <button class="btn" onclick="doSignIn()">Try a different Google account</button>
+    </div>`;
+  show("denied");
+  say("Sorry — this one's invite-only. Ask Parker to add your email and you'll be right in. 🔒","","");
+}
+function renderFamily(){
+  document.getElementById("screen-family").innerHTML=`
+    <h2>Set up your family 👪</h2>
+    <p class="lead">Hi ${esc(SB.user&&SB.user.name?SB.user.name.split(" ")[0]:"there")}! Create a new family, or join one someone shared a code with.</p>
+    <div class="grid cols2" style="gap:14px">
+      <div class="card" style="margin:0">
+        <h3 style="color:var(--grape-dk)">Create a family</h3>
+        <label class="fld">Family name</label>
+        <input class="in" id="fam-name" placeholder="e.g. The Swanson Family">
+        <label class="fld">Your name</label>
+        <input class="in" id="fam-pname" value="${esc(SB.user&&SB.user.name||'')}" placeholder="Your name">
+        <div class="btn-row"><button class="btn" onclick="doCreateFamily()">Create ✨</button></div>
+      </div>
+      <div class="card" style="margin:0">
+        <h3 style="color:var(--grape-dk)">Join a family</h3>
+        <label class="fld">Family code</label>
+        <input class="in" id="fam-code" placeholder="7-letter code" style="text-transform:uppercase">
+        <label class="fld">Your name</label>
+        <input class="in" id="fam-jname" value="${esc(SB.user&&SB.user.name||'')}">
+        <label class="fld">Your role</label>
+        <select class="in" id="fam-role">
+          <option value="parent">Parent</option><option value="teacher">Teacher</option><option value="guardian">Guardian</option>
+        </select>
+        <div class="btn-row"><button class="btn ghost" onclick="doJoinFamily()">Join →</button></div>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:14px"><button class="btn ghost sm" onclick="SB.signOutNow()">Sign out</button></div>`;
+  show("family");
+  say("Create your family, or punch in a code if someone invited you. 👪","","");
+}
+async function doCreateFamily(){
+  const n=document.getElementById("fam-name").value.trim();
+  if(!n){ toast("Give your family a name 🙂",true); return; }
+  try{
+    await SB.createFamily(n, document.getElementById("fam-pname").value.trim());
+    toast("Family created! Your code: "+SB.family.code);
+    await enterApp();
+  }catch(e){ toast("Couldn't create family: "+e.message,true); }
+}
+async function doJoinFamily(){
+  const c=document.getElementById("fam-code").value.trim();
+  if(!c){ toast("Enter the family code 🙂",true); return; }
+  try{
+    await SB.joinFamily(c, document.getElementById("fam-jname").value.trim(), document.getElementById("fam-role").value);
+    toast("Joined "+SB.family.name+"! 🎉");
+    await enterApp();
+  }catch(e){ toast(e.message||"Couldn't join.",true); }
+}
+
+/* Load family + user data, run migration if needed, then start the app. */
+let _isAdmin=false;
+async function enterApp(){
+  try{ _isAdmin = await SB.isAdmin(); }catch(e){ _isAdmin=false; }
+  logEvent("session","signed in");
+  // user prefs (private key/model) override the local defaults
+  try{
+    const up=await SB.loadUserPrefs();
+    if(up){ S.apiKey=up.apiKey||S.apiKey; S.textModel=up.textModel||S.textModel;
+            S.imageModel=up.imageModel||S.imageModel;
+            if(typeof up.generateImage==="boolean") S.generateImage=up.generateImage;
+            if(typeof up.bwMode==="boolean") S.bwMode=up.bwMode; }
+  }catch(e){ console.warn("prefs load:",e); }
+
+  let blob=null;
+  try{ blob=await SB.loadFamilyState(); }catch(e){ console.warn("family state load:",e); }
+
+  if(blob){
+    S.kids=blob.kids||[]; S.history=blob.history||[]; S.sel=blob.sel||S.sel; S.activeKidId=blob.activeKidId||null;
+    renderWelcome();
+  } else {
+    // No cloud data yet. Offer to migrate existing localStorage data.
+    const local=(()=>{ try{ return JSON.parse(localStorage.getItem(LS)||"null"); }catch(_){ return null; } })();
+    if(local && (local.kids||[]).length){
+      document.getElementById("screen-welcome").innerHTML=`
+        <h2>Bring your data over? 📦</h2>
+        <p class="lead">Found ${local.kids.length} learner profile(s) and ${ (local.history||[]).length } worksheet(s) saved on this device. Import them into <b>${esc(SB.family.name)}</b>?</p>
+        <div class="btn-row">
+          <button class="btn" onclick="doMigrate()">Yes, import everything ✓</button>
+          <button class="btn ghost" onclick="startFresh()">Start fresh instead</button>
+        </div>`;
+      show("welcome");
+      say("I found your existing kids and progress on this device. Want me to bring them into your family? 📦","","happy");
+    } else {
+      renderWelcome();
+    }
+  }
+}
+async function doMigrate(){
+  try{
+    const local=JSON.parse(localStorage.getItem(LS)||"{}");
+    S.kids=local.kids||[]; S.history=local.history||[]; S.sel=local.sel||S.sel; S.activeKidId=local.activeKidId||null;
+    await SB.saveFamilyState({ kids:S.kids, history:S.history, sel:S.sel, activeKidId:S.activeKidId });
+    toast("Imported into "+SB.family.name+" ✓");
+    renderWelcome();
+  }catch(e){ toast("Import failed: "+e.message,true); }
+}
+function startFresh(){ S.kids=[]; S.history=[]; S.activeKidId=null; save(); renderWelcome(); }
+
+/* Auth state listener (set before SB.ready resolves) */
+window.__sprocketAuthChanged = async function(){
+  if(!SB.configured) return;
+  if(!SB.user){
+    // signed out — if it was a denial, keep the denied screen visible
+    if(_denied) return;
+    renderAuth(); return;
+  }
+  // INVITE-ONLY gate: verify the email is on the allowlist before anything else
+  const ok = await SB.isAllowed();
+  if(!ok){
+    const email = SB.user.email;
+    renderDenied(email);          // show first so the message persists
+    try{ await SB.signOutNow(); }catch(e){}  // re-fires authChanged(null); _denied guard holds the screen
+    return;
+  }
+  try{
+    const fam=await SB.resolveFamily();
+    if(!fam){ renderFamily(); return; }
+    await enterApp();
+  }catch(e){ console.warn("auth-change resolve:",e); renderFamily(); }
+};
+
+/* ============================================================
+   LOGGING (best-effort → Firestore logs collection, admin-readable)
+   ============================================================ */
+let _logT=0;
+function logEvent(type, msg, meta){
+  try{
+    if(!(window.SB && SB.configured && SB.user)) return;       // only when cloud-authed
+    const now=Date.now();
+    if(type!=="error" && now-_logT<800) return;                // throttle non-errors
+    _logT=now;
+    SB.writeLog({ type, msg:String(msg||"").slice(0,500), meta: meta? String(JSON.stringify(meta)).slice(0,800):null });
+  }catch(e){}
+}
+window.addEventListener("error", e=>{
+  logEvent("error", (e && e.message)||"window error",
+    { src:(e&&e.filename)||"", line:(e&&e.lineno)||0, stack:(e&&e.error&&e.error.stack||"").slice(0,600) });
+});
+window.addEventListener("unhandledrejection", e=>{
+  logEvent("error", "unhandled promise: "+((e&&e.reason&&(e.reason.message||e.reason))||""), null);
+});
+
+/* ============================================================
+   ADMIN SCREEN  (only reachable if SB.isAdmin())
+   ============================================================ */
+let _adminTab="people", _adminCache={};
+async function renderAdmin(){
+  if(!_isAdmin){ toast("Admins only",true); renderWelcome(); return; }
+  document.getElementById("screen-admin").innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0">🛠️ Admin</h2>
+      <button class="btn ghost sm" onclick="renderWelcome()">← Back to app</button>
+    </div>
+    <div class="cap-tabs" style="margin:14px 0">
+      ${["people","families","activity","errors","usage"].map(t=>
+        `<button class="cap-tab ${_adminTab===t?'on':''}" onclick="adminTab('${t}')">${
+          {people:"👥 People",families:"👪 Families",activity:"📊 Activity",errors:"⚠️ Errors",usage:"📈 Usage"}[t]}</button>`).join("")}
+    </div>
+    <div id="adminBody"><div class="loading"><div class="loadbar"><i></i></div><div class="load-status">Loading…</div></div></div>`;
+  show("admin");
+  say("Admin console. You're the boss here. 🛠️","","");
+  adminRenderBody();
+}
+function adminTab(t){ _adminTab=t; renderAdmin(); }
+async function adminRenderBody(){
+  const b=()=>document.getElementById("adminBody"); if(!b()) return;
+  try{
+    if(_adminTab==="people"){
+      const list=await SB.listAllowlist();
+      b().innerHTML=`
+        <div style="background:var(--bg-2);border-radius:14px;padding:14px;margin-bottom:14px">
+          <div style="font-weight:800;margin-bottom:8px">➕ Invite someone (Gmail)</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <input class="in" id="adm-email" placeholder="name@gmail.com" style="flex:2;min-width:180px">
+            <input class="in" id="adm-name" placeholder="Display name" style="flex:1;min-width:120px">
+            <button class="btn sm" onclick="adminAdd()">Add</button>
+          </div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:.9rem">
+          <tr style="text-align:left;color:var(--ink-soft)"><th style="padding:6px">Email</th><th>Name</th><th>Admin</th><th></th></tr>
+          ${list.map(u=>`<tr style="border-top:1px solid var(--line)">
+            <td style="padding:8px 6px;font-weight:700">${esc(u.email)}</td>
+            <td>${esc(u.name||"—")}</td>
+            <td><button class="btn ghost sm" data-em="${esc(u.email)}" data-mk="${u.admin?'0':'1'}" onclick="adminToggleAdmin(this.dataset.em,this.dataset.mk==='1')">${u.admin?"✅ admin":"— make admin"}</button></td>
+            <td>${u.email===(SB.user&&SB.user.email)?'<span class="muted">(you)</span>':`<button class="btn coral sm" data-em="${esc(u.email)}" onclick="adminKick(this.dataset.em)">Kick</button>`}</td>
+          </tr>`).join("")}
+        </table>`;
+    } else if(_adminTab==="families"){
+      const fams=await SB.allFamilies(); _adminCache.fams=fams;
+      let html="";
+      for(const f of fams){
+        const ms=await SB.familyMembers(f.id);
+        const blob=await SB.familyStateBlob(f.id);
+        const kids=(blob&&blob.kids||[]).length, ws=(blob&&blob.history||[]).length;
+        html+=`<div class="card" style="margin:0 0 10px;padding:14px">
+          <div style="font-weight:800">${esc(f.name||"(unnamed)")} <span class="muted" style="font-size:.78rem">· code ${esc(f.code||"?")} · ${kids} learner(s) · ${ws} worksheet(s)</span></div>
+          <div class="fld-hint" style="margin-top:4px">${ms.map(m=>esc(m.name||m.uid)+" ("+esc(m.role)+")").join(" · ")||"no members"}</div>
+        </div>`;
+      }
+      b().innerHTML=html||'<p class="muted">No families yet.</p>';
+    } else if(_adminTab==="activity"||_adminTab==="errors"){
+      const logs=await SB.recentLogs(150);
+      const want = _adminTab==="errors" ? logs.filter(l=>l.type==="error") : logs.filter(l=>l.type!=="error");
+      b().innerHTML = want.length? `<div style="font-family:var(--mono,monospace);font-size:.82rem">${
+        want.map(l=>{ const d=l.at&&l.at.toDate?l.at.toDate().toLocaleString():"";
+          return `<div style="border-top:1px solid var(--line);padding:8px 4px">
+            <span class="muted">${esc(d)}</span> · <b>${esc(l.type)}</b> · ${esc(l.email||"")}<br>
+            ${esc(l.msg||"")}${l.meta?`<div class="muted" style="font-size:.74rem;white-space:pre-wrap">${esc(l.meta)}</div>`:""}</div>`;
+        }).join("")}</div>` : '<p class="muted">Nothing logged yet.</p>';
+    } else if(_adminTab==="usage"){
+      const [list,fams,logs]=await Promise.all([SB.listAllowlist(),SB.allFamilies(),SB.recentLogs(300)]);
+      let kids=0,ws=0;
+      for(const f of fams){ const blob=await SB.familyStateBlob(f.id); kids+=(blob&&blob.kids||[]).length; ws+=(blob&&blob.history||[]).length; }
+      const gens=logs.filter(l=>l.type==="generate").length, errs=logs.filter(l=>l.type==="error").length;
+      b().innerHTML=`
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+          <span class="mini-stat">${list.length}<small>invited</small></span>
+          <span class="mini-stat">${fams.length}<small>families</small></span>
+          <span class="mini-stat">${kids}<small>learners</small></span>
+          <span class="mini-stat">${ws}<small>worksheets</small></span>
+          <span class="mini-stat">${gens}<small>generations*</small></span>
+          <span class="mini-stat">${errs}<small>errors*</small></span>
+        </div>
+        <p class="fld-hint">* from the last 300 log entries.</p>
+        <div style="background:var(--bg-2);border-radius:14px;padding:14px;margin-top:10px">
+          <div style="font-weight:800;margin-bottom:6px">Real numbers (BYOK + free Spark = no in-app metering)</div>
+          <p class="fld-hint" style="margin:0 0 10px">Firestore byte usage and OpenAI $ aren't available client-side. Each person's AI spend is on <b>their own</b> OpenAI key. Use these dashboards for actuals:</p>
+          <div class="btn-row" style="margin:0">
+            <a class="btn ghost sm" href="https://console.firebase.google.com/project/sprocket-app-8a67b/firestore/usage" target="_blank" rel="noopener">Firestore usage →</a>
+            <a class="btn ghost sm" href="https://console.firebase.google.com/project/sprocket-app-8a67b/usage" target="_blank" rel="noopener">Project usage →</a>
+            <a class="btn ghost sm" href="https://platform.openai.com/usage" target="_blank" rel="noopener">OpenAI usage →</a>
+          </div>
+        </div>`;
+    }
+  }catch(e){ b().innerHTML=`<p style="color:var(--err);font-weight:700">Couldn't load: ${esc(e.message||e)}</p>`; }
+}
+async function adminAdd(){
+  const e=document.getElementById("adm-email").value, n=document.getElementById("adm-name").value;
+  try{ await SB.addToAllowlist(e,n); toast("Added "+e+" ✓"); adminRenderBody(); }
+  catch(err){ toast(err.message||"Add failed",true); }
+}
+async function adminKick(email){
+  try{ await SB.removeFromAllowlist(email); toast(email+" removed"); adminRenderBody(); }
+  catch(err){ toast(err.message||"Remove failed",true); }
+}
+async function adminToggleAdmin(email,val){
+  try{ await SB.setAdminFlag(email,val); toast("Updated "+email); adminRenderBody(); }
+  catch(err){ toast(err.message||"Update failed",true); }
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+(async function boot(){
+  await SB.ready;
+  if(!SB.configured){
+    // LOCAL MODE — no Firebase config yet. Behaves exactly like the
+    // old single-file app: localStorage only, no login. Lets Parker
+    // keep using it offline until the cloud config is pasted in.
+    renderWelcome();
+    return;
+  }
+  // CLOUD MODE — onAuthStateChanged already fired (or will) and
+  // __sprocketAuthChanged routes to auth → family → app.
+  if(SB.user){ window.__sprocketAuthChanged(); }
+  else renderAuth();
+})();
+</script>
+</body>
+</html>
