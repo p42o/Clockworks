@@ -426,6 +426,19 @@
   .sheet .ws-yourturn { background:#7C4DFF; color:#fff; font-weight:900; font-size:1.05rem;
     text-align:center; padding:9px 14px; border-radius:10px; margin:6px 0 16px; letter-spacing:.02em; }
   .sheet .ws-prior { font-weight:800; color:#2BB8F0; background:#eaf7fe; border-radius:10px; padding:8px 14px; margin-bottom:14px; }
+  /* Circle-one answer choices — the child draws a circle around their pick */
+  .sheet .ws-choices { display:flex; flex-wrap:wrap; gap:10px 14px; margin:8px 0 4px; }
+  .sheet .ws-choice { display:inline-flex; align-items:center; justify-content:center;
+    min-width:46px; padding:8px 18px; border:2px solid #b9a9e6; border-radius:999px;
+    background:#fff; color:#111; font-weight:800; font-size:1.02rem; line-height:1.1; }
+  .sheet.acc-big .ws-choice { font-size:1.16rem; padding:11px 22px; }
+  /* Word bank the child pulls answers from */
+  .sheet .ws-wordbank { border:2px dashed #7C4DFF; border-radius:12px; padding:10px 14px;
+    margin:8px 0 14px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; }
+  .sheet .ws-wordbank .wb-label { font-weight:900; color:#5E35E0; text-transform:uppercase;
+    font-size:.72rem; letter-spacing:.08em; margin-right:6px; }
+  .sheet .ws-wordbank .wb-w { background:#f3eefe; border:1px solid #cdbaf0; color:#3d2a66;
+    font-weight:800; font-size:.98rem; padding:4px 12px; border-radius:8px; }
   /* on-screen only: separates the child sheet from the grown-up guide (print uses a real page break) */
   .grownup-sep { display:flex; align-items:center; justify-content:center; gap:10px; margin:8px auto 18px;
     max-width:8.5in; text-align:center; }
@@ -551,7 +564,7 @@
     .sheet { box-shadow:none; border-radius:0; padding: 0.35in 0.45in; max-width:none; margin:0; }
     /* NEVER split a question (or any teaching block) across a page break */
     .ws-item, .ws-warm, .ws-prior, .ws-repair, .ws-challenge, .ws-reflect,
-    .ws-guided .g-item, .ak-row, .pg-block, .prog-skill {
+    .ws-guided .g-item, .ws-wordbank, .ws-howto, .ak-row, .pg-block, .prog-skill {
       break-inside: avoid; page-break-inside: avoid;
     }
     /* keep a section heading + its intro glued to the first item */
@@ -1726,7 +1739,24 @@ function buildSystemPrompt(){
 "• MISCONCEPTION PRE-EMPTION: you will be told the skill's common misconception (and any confirmed error pattern). Proactively address it. If a confirmed error pattern is supplied, include a short 'Let's fix this together' RE-TEACH (a targeted worked example repairing that exact misconception) — re-teach, don't just re-drill.",
 "• Accuracy: SOLVE every item yourself before writing its answer. No ambiguous or multi-answer items.",
 "",
+"PAPER-DOABLE — ABSOLUTE (this is the #1 failure to prevent):",
+"• The sheet has NO instructional pictures. There is exactly ONE decorative header illustration the child never interacts with. Therefore NEVER write a task that depends on looking at a picture/image/illustration/icon: no 'circle the picture', 'match the picture', 'look at the picture', 'which picture shows…'. If a task would need a picture, redesign it to use PRINTED WORDS/LETTERS/NUMBERS instead.",
+"• Every item must be 100% completable with only the printed text on the page and the child's pencil. Before finalizing each item ask: 'Could a child do this with just this text and a pencil?' If not, rewrite it.",
+"• For any 'choose / circle / pick the correct one' task you MUST supply `options`: 2–4 SHORT printed choices (words, letters, sounds, or numbers) the child circles. The renderer prints them as circle-able chips. Put the correct choice (verbatim, exactly as it appears in options) in `answer`.",
+"• To have the child supply a word with support, set a section `wordBank` (printed words) and use blank/lines items.",
+"• `tracing` is allowed only when the child literally traces given letters/numbers; put exactly what to trace in `tracingText` (NOT the prompt sentence).",
+"• HINTS leak answers — forbidden. A hint must NOT state, spell, name, count out, or otherwise contain the answer OR the target sound/letter/number being asked for. Phonics example: item 'Circle the blend in: brave' — 'Listen for the /br/ sound' is FORBIDDEN (br IS the answer); 'Say the word slowly — which two letters blend together at the very start?' is good. Math example: answer 12 — 'Count on from the bigger number' good; 'It's 12' or 'count 10, 11, 12' forbidden.",
+"• Independent (`sections`) items: prefer NO `hint` at all — independent practice is retrieval; the warm-up + guided steps already scaffolded. Only add a section-item hint if it is a pure strategy that reveals nothing. Strategy hints belong in `guidedPractice.scaffold`.",
+"",
+"SKILL PURITY & COMPREHENSIVENESS:",
+"• Practice ONLY the one stated skill. Do not drift into adjacent skills, single-letter sounds when the skill is blends/digraphs, or off-target content. Pick a tight, systematic set (e.g., one or two target blends/digraphs taught thoroughly, not a scattershot).",
+"• Accommodations change the FORMAT and QUANTITY (more choices vs. writing, word banks, fewer items, more white space, oral options) — they NEVER change or replace the learning objective. A handwriting/fine-motor or dysgraphia support must NOT turn a reading sheet into a letter-tracing sheet: keep practicing the reading skill, just make responses low-writing (circle/choose/word-bank). Letter/number FORMATION-tracing items are only appropriate when the subject itself is Writing, or as a clearly-separate, optional, SMALL 'Extra: warm-up your hand' add-on that does not crowd out the target-skill practice.",
+"• Be comprehensive — HARD FLOOR: the independent `sections` must total at least 6 on-skill items for K–2 and at least 8 for G3–5 (this is in ADDITION to the warm-up and 2–3 guided items). ADHD/stamina supports are satisfied by CHUNKING this into small labelled groups (≤4 items each) with a one-line brain break between groups and generous spacing — NOT by dropping below the floor. Reduce decoration and prose, never the core-skill practice. The child must leave having genuinely worked the skill several times in more than one way (e.g., identify, then apply).",
+"• Decodability vs. theme: the theme is FLAVOR only. The specific words/sounds the child must decode, segment, or choose between must obey the grade decodability rules. Never make the answer depend on first reading an undecodable proper noun (e.g., a 1st grader shouldn't have to read 'Mickey Mouse' to do a phonics item). Use the theme in art, names of friendly characters in directions, and scenarios — never as the decodable target itself.",
+"",
 "CHILD SAFETY (absolute, overrides theme): age-appropriate for a young child. Even for monsters/pirates/superheroes/dinosaurs: NO violence, gore, weapons-to-harm, death, frightening peril, romance, bias/stereotypes, or anything a cautious parent would object to. Friendly and whimsical only; soften any theme automatically.",
+"",
+"Plain text only — NO markdown anywhere (no **bold**, *italics*, _underscores_, # headings, backticks). The renderer prints characters literally; markdown will show as ugly symbols. Use normal words for emphasis.",
 "",
 "Learner-accommodation directives you receive are mandatory and override defaults.",
 "",
@@ -1738,11 +1768,14 @@ function buildSystemPrompt(){
 '  "priorKnowledge": string,               // one short "You already know…" activation hook',
 '  "warmUp": { "exampleProblem": string, "workedSolution": string },',
 '  "misconceptionRepair": { "misconception": string, "fix": string } | null,  // only if a confirmed error pattern was supplied',
-'  "guidedPractice": { "instructions": string, "items": [ { "prompt": string, "scaffold": string, "answer": string } ] },  // scaffold = a SHORT strategy hint that does NOT reveal/compute the answer; answer is key-only, never shown to child',
-'  "sections": [ { "heading": string, "instructions": string,   // heading: plain kid-facing topic name, NO pedagogy jargon. instructions: one imperative sentence + a tiny format model using different values than the items',
+'  "guidedPractice": { "instructions": string, "items": [ { "prompt": string, "scaffold": string, "answer": string, "options": [string]|null } ] },  // scaffold = strategy nudge, never the answer. If a choose-task, give options + put the exact correct option in answer.',
+'  "sections": [ { "heading": string, "instructions": string,   // heading: plain kid-facing topic name, NO jargon. instructions: one imperative sentence + a tiny FORMAT model using different values than the items',
+'     "wordBank": [string]|null,             // optional: printed words the child draws from (use with blank/lines items)',
 '     "items": [ { "number": number, "prompt": string, "answer": string,',
-'        "response": "blank"|"lines"|"grid"|"hwlines"|"tracing", "hint": string|null } ] } ],',
-'  "challenge": { "prompt": string, "answer": string } | null,',
+'        "options": [string]|null,           // 2–4 printed choices the child CIRCLES (required for any choose/circle/pick task; answer must equal one option verbatim)',
+'        "tracingText": string|null,         // ONLY for response:"tracing" — the exact letters/numbers to trace',
+'        "response": "blank"|"lines"|"grid"|"hwlines"|"tracing", "hint": string|null } ] } ],  // hint = strategy only, never reveals the answer',
+'  "challenge": { "prompt": string, "answer": string, "options": [string]|null } | null,  // must also be paper-doable (no picture dependency)',
 '  "reflection": { "feeling": string, "selfExplain": string },  // feeling = short self-check; selfExplain = "Explain how you solved #N…"',
 '  "answerKey": [ { "number": number, "answer": string } ],',
 '  "parentGuide": {                         // a real little teacher guide for the grown-up — concrete, observable, jargon-light',
@@ -2207,21 +2240,36 @@ function renderWorksheet(rec){
   const accs=(k?k.accoms:[]).map(id=>ACCOMMODATIONS.find(a=>a.id===id)).filter(Boolean);
   const accClasses=[...new Set(accs.flatMap(a=>a.render))].join(" ") + (S.bwMode?" bw":"");
 
-  const itemHTML=(it)=>{
+  // Shared response renderer. Selectable choices (the child circles one)
+  // make MC / phonics / sorting actually doable on paper without art.
+  const respBox=(it)=>{
+    const opts=Array.isArray(it.options)?it.options.filter(o=>o!=null&&String(o).trim()!==""):[];
+    if(opts.length>=2){
+      return `<div class="ws-choices">${opts.map(o=>`<span class="ws-choice">${esc(String(o))}</span>`).join("")}</div>`;
+    }
     const resp=it.response||"blank";
-    const box = resp==="lines" ? `<div class="ws-write lines"></div>`
-      : resp==="grid" ? `<div class="ws-write grid"></div>`
-      : resp==="hwlines" ? `<div class="ws-write hwlines"></div>`
-      : resp==="tracing" ? `<div class="ws-write tracing">${esc(it.prompt)}</div>`
-      : `<div class="ws-write"></div>`;
+    if(resp==="tracing") return `<div class="ws-write tracing">${esc(it.tracingText||it.answer||it.prompt)}</div>`;
+    if(resp==="lines")   return `<div class="ws-write lines"></div>`;
+    if(resp==="grid")    return `<div class="ws-write grid"></div>`;
+    if(resp==="hwlines") return `<div class="ws-write hwlines"></div>`;
+    if(resp==="blank" && isShortAnswer(it))
+      return `<span style="border-bottom:2px solid #999;display:inline-block;min-width:120px;margin-left:8px">&nbsp;</span>`;
+    return `<div class="ws-write"></div>`;
+  };
+  const itemHTML=(it)=>{
     const checkbox = (k&&k.accoms.includes("adhd")) ? `<span style="border:2px solid #7C4DFF;width:18px;height:18px;border-radius:5px;display:inline-block;flex-shrink:0;margin-top:2px"></span>` : "";
     return `<div class="ws-item">
       ${checkbox}<span class="qn">${it.number}.</span>
       <div class="qbody">
-        <div class="ws-q">${esc(it.prompt)}</div>
+        <div class="ws-q">${esc(stripMd(it.prompt))}</div>
         ${it.hint?`<div class="ws-hint">💡 ${esc(it.hint)}</div>`:""}
-        ${resp==="tracing"?box:(resp==="blank"&&isShortAnswer(it)?`<span style="border-bottom:2px solid #999;display:inline-block;min-width:120px;margin-left:8px">&nbsp;</span>`:box)}
+        ${respBox(it)}
       </div></div>`;
+  };
+  const wordBankHTML=(wb)=>{
+    const w=Array.isArray(wb)?wb.filter(x=>x!=null&&String(x).trim()!==""):[];
+    if(!w.length) return "";
+    return `<div class="ws-wordbank"><span class="wb-label">Word Bank</span>${w.map(x=>`<span class="wb-w">${esc(String(x))}</span>`).join("")}</div>`;
   };
 
   const guard=_frustrationGuard; _frustrationGuard=null;
@@ -2275,13 +2323,13 @@ function renderWorksheet(rec){
         </div>`;
       })()}
 
-      ${ws.priorKnowledge?`<div class="ws-prior">💡 Before we start: ${esc(ws.priorKnowledge)}</div>`:""}
+      ${ws.priorKnowledge?`<div class="ws-prior">💡 Before we start: ${esc(stripMd(ws.priorKnowledge))}</div>`:""}
 
       ${ws.warmUp?`<div class="ws-warm">
         <div class="lbl">👀 Example — just look, don't write here</div>
         <div class="ex-tag">DONE FOR YOU</div>
-        <div style="font-weight:800;margin:6px 0">${esc(ws.warmUp.exampleProblem)}</div>
-        <div style="white-space:pre-wrap">${esc(ws.warmUp.workedSolution)}</div>
+        <div style="font-weight:800;margin:6px 0">${esc(stripMd(ws.warmUp.exampleProblem))}</div>
+        <div style="white-space:pre-wrap">${esc(stripMd(ws.warmUp.workedSolution))}</div>
       </div>`:""}
 
       ${ws.misconceptionRepair?`<div class="ws-repair">
@@ -2292,24 +2340,25 @@ function renderWorksheet(rec){
 
       ${ws.guidedPractice && (ws.guidedPractice.items||[]).length?`<div class="ws-guided">
         <div class="lbl">🤝 Warm Up — do these with a grown-up</div>
-        <div class="sec-instr">${esc(ws.guidedPractice.instructions||"")}</div>
+        <div class="sec-instr">${esc(stripMd(ws.guidedPractice.instructions||""))}</div>
         ${(ws.guidedPractice.items||[]).map((g,i)=>`<div class="g-item">
-          <div class="ws-q"><b>${i+1}.</b> ${esc(g.prompt)}</div>
+          <div class="ws-q"><b>${i+1}.</b> ${esc(stripMd(g.prompt))}</div>
           ${g.scaffold?`<div class="g-scaffold">💬 Hint: ${esc(g.scaffold)}</div>`:""}
-          <div class="ws-write"></div></div>`).join("")}
+          ${respBox(g)}</div>`).join("")}
       </div>`:""}
 
       <div class="ws-yourturn">✏️ Your Turn — do these by yourself</div>
       ${(ws.sections||[]).map(sec=>`
         <div class="ws-section">
           <h3>${esc(cleanHeading(sec.heading))}</h3>
-          <div class="sec-instr">${esc(sec.instructions)}</div>
+          <div class="sec-instr">${esc(stripMd(sec.instructions))}</div>
+          ${wordBankHTML(sec.wordBank)}
           ${(sec.items||[]).map(itemHTML).join("")}
         </div>`).join("")}
 
       ${ws.challenge?`<div class="ws-challenge">
-        <span class="lbl">🌟 Challenge Star:</span> ${esc(ws.challenge.prompt)}
-        <div class="ws-write" style="margin-top:8px"></div></div>`:""}
+        <span class="lbl">🌟 Challenge Star:</span> ${esc(stripMd(ws.challenge.prompt))}
+        <div style="margin-top:8px">${respBox(ws.challenge)}</div></div>`:""}
 
       ${(()=>{ const rf=ws.reflection;
         const feeling = rf && typeof rf==='object' ? rf.feeling : (typeof rf==='string'?rf:"How did this feel?");
@@ -2338,6 +2387,14 @@ function renderWorksheet(rec){
    ("YOU DO: …", "Section 2 – …") so the child sheet stays plain. */
 function cleanHeading(h){
   return String(h||"Practice").replace(/^\s*(you\s*do|we\s*do|i\s*do|independent(?:\s*practice)?|guided(?:\s*practice)?|section|part|step)\s*\d*\s*[:.\-–—]\s*/i,"").trim() || "Practice";
+}
+/* Belt-and-suspenders: strip stray markdown the model might still emit
+   so it never renders as literal **asterisks** / #hashes on the sheet. */
+function stripMd(s){
+  return String(s==null?"":s)
+    .replace(/\*\*(.+?)\*\*/g,"$1").replace(/__(.+?)__/g,"$1")
+    .replace(/(^|\s)[*_]([^*_\n]+)[*_](?=\s|$|[.,!?])/g,"$1$2")
+    .replace(/`([^`]+)`/g,"$1").replace(/^\s{0,3}#{1,6}\s+/gm,"").trim();
 }
 function isShortAnswer(it){ return (it.answer&&String(it.answer).length<=12); }
 function currentThemeOf(rec){ return rec.params.theme; }
