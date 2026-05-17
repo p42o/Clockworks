@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sprocket — Worksheet Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
      SPROCKET — kid-friendly worksheet generator
@@ -399,72 +402,93 @@
      WORKSHEET — print-perfect output
      ========================================================= */
   .ws-actions { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  /* ============================================================
+     WORKSHEET — Education.com-style print aesthetic
+     One bold accent color per sheet (--ws-accent, set inline by
+     subject), big uppercase rounded title, ruled Name/Date line,
+     bold inline "Part N:" labels, NO colored boxes/bands, lots of
+     air, clean underline answer spaces. Calm and print-native.
+     ============================================================ */
   .sheet {
-    background:#fff; color:#111; border-radius: 14px;
-    box-shadow: var(--shadow); padding: 46px 50px;
+    --ws-accent:#5B4BD6; --ws-ink:#1f2430;
+    background:#fff; color:var(--ws-ink); border-radius: 14px;
+    box-shadow: var(--shadow); padding: 0.5in 0.62in 0.55in;
     max-width: 8.5in; margin: 0 auto;
-    font-family: "Nunito", "Baloo 2", system-ui, sans-serif;
+    font-family: "Nunito","Quicksand",-apple-system,system-ui,sans-serif;
+    font-size: 1.02rem;
   }
-  .sheet .ws-header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; border-bottom:3px solid #111; padding-bottom:12px; margin-bottom:6px; }
-  .sheet .ws-banner { width:100%; border-radius:12px; margin:14px 0 18px; display:block; }
-  .sheet h1.ws-title { font-size: 1.7rem; color:#111; margin:0; }
-  .sheet .ws-meta { font-size:.82rem; color:#444; font-weight:700; text-align:right; line-height:1.5; }
-  .sheet .ws-nameline { display:flex; gap:24px; font-weight:800; font-size:.95rem; margin: 6px 0 14px; }
-  .sheet .ws-nameline .u { flex:1; border-bottom:2px solid #999; }
-  .sheet .ws-instr { background:#f3eefe; border-left:5px solid #7C4DFF; padding:10px 14px; border-radius:8px; font-weight:700; margin: 10px 0 16px; }
-  /* "How to do this page" — plain directions, top of every sheet */
-  .sheet .ws-howto { background:#eef6ff; border:2px solid #2BB8F0; border-radius:12px; padding:12px 16px 12px; margin:6px 0 18px; }
-  .sheet .ws-howto .lbl { font-weight:900; color:#1f7fb0; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
-  .sheet .ws-howto ol { margin:8px 0 0; padding-left:22px; }
-  .sheet .ws-howto li { font-weight:700; font-size:.96rem; margin:5px 0; }
-  /* Example = clearly "watch only", greyed so it never reads as a problem to solve or a leaked answer */
-  .sheet .ws-warm { border:2px solid #c9c9d4; background:#f3f3f7; border-radius:12px; padding:14px 16px 12px; margin-bottom:18px; position:relative; }
-  .sheet .ws-warm .lbl { font-weight:900; color:#5b5570; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
-  .sheet .ws-warm .ex-tag { position:absolute; top:10px; right:12px; background:#5b5570; color:#fff;
-    font-weight:900; font-size:.62rem; letter-spacing:.1em; padding:3px 9px; border-radius:99px; }
-  /* "Your Turn" divider band — the unmistakable start of the do-it-yourself part */
-  .sheet .ws-yourturn { background:#7C4DFF; color:#fff; font-weight:900; font-size:1.05rem;
-    text-align:center; padding:9px 14px; border-radius:10px; margin:6px 0 16px; letter-spacing:.02em; }
-  .sheet .ws-prior { font-weight:800; color:#2BB8F0; background:#eaf7fe; border-radius:10px; padding:8px 14px; margin-bottom:14px; }
-  /* Circle-one answer choices — the child draws a circle around their pick */
-  .sheet .ws-choices { display:flex; flex-wrap:wrap; gap:10px 14px; margin:8px 0 4px; }
+  .sheet .ws-banner { width:100%; max-height:1.7in; object-fit:cover; border-radius:10px; margin:4px 0 16px; display:block; }
+  /* Name / Date ruled line at the very top */
+  .sheet .ws-nameline { display:flex; gap:32px; font-weight:700; font-size:.95rem; color:#3a3f4b; margin:0 0 14px; }
+  .sheet .ws-nameline > span { flex:1; display:flex; align-items:flex-end; gap:8px; white-space:nowrap; }
+  .sheet .ws-nameline .u { flex:1; border-bottom:1.5px solid #c7ccd6; height:1.15em; }
+  /* Title — huge, bold, UPPERCASE, single accent color, left aligned */
+  .sheet .ws-header { margin:2px 0 4px; }
+  .sheet h1.ws-title {
+    font-family:"Baloo 2","Quicksand","Nunito",system-ui,sans-serif;
+    font-size: 2.55rem; line-height:1.04; font-weight:800;
+    text-transform:uppercase; letter-spacing:.005em;
+    color:var(--ws-accent); margin:0 0 2px;
+  }
+  .sheet .ws-meta { font-size:.82rem; color:#8a8f9c; font-weight:700; letter-spacing:.02em; margin:0 0 2px; }
+  .sheet .ws-titlerule { height:3px; background:var(--ws-accent); border-radius:3px; opacity:.22; margin:8px 0 16px; }
+  /* "How to" — one calm muted line, NOT a box */
+  .sheet .ws-howto { font-size:.92rem; color:#5a6070; font-weight:600; margin:0 0 16px; }
+  .sheet .ws-howto b { color:var(--ws-ink); }
+  .sheet .ws-howto ol { margin:6px 0 0; padding-left:20px; }
+  .sheet .ws-howto li { margin:3px 0; }
+  /* Section / part label — bold, inline, accent "Part N:", no box */
+  .sheet .ws-section { margin:0 0 22px; }
+  .sheet .ws-section h3, .sheet .ws-part {
+    font-size:1.12rem; font-weight:800; color:var(--ws-ink);
+    margin:0 0 3px; padding:0; border:0;
+  }
+  .sheet .ws-section h3 .pt, .sheet .ws-part .pt { color:var(--ws-accent); margin-right:6px; }
+  .sheet .ws-section .sec-instr { font-weight:600; color:#444b59; margin:0 0 12px; font-size:1rem; }
+  /* Example = the "first one is done for you", clean accent style (no grey card) */
+  .sheet .ws-warm { border:0; border-left:4px solid var(--ws-accent); background:transparent;
+    padding:2px 0 6px 16px; margin:0 0 20px; }
+  .sheet .ws-warm .lbl { font-weight:800; color:var(--ws-accent); text-transform:uppercase; font-size:.74rem; letter-spacing:.1em; }
+  .sheet .ws-warm .ex-tag { display:none; }
+  .sheet .ws-warm .ex-q { font-weight:800; margin:5px 0 3px; font-size:1.05rem; }
+  .sheet .ws-warm .ex-a { color:var(--ws-accent); font-weight:800; white-space:pre-wrap; }
+  .sheet .ws-prior { font-weight:600; color:#5a6070; margin:0 0 14px; font-size:.95rem; }
+  .sheet .ws-prior b { color:var(--ws-accent); }
+  /* Circle-one choices — clean accent oval the child circles */
+  .sheet .ws-choices { display:flex; flex-wrap:wrap; gap:9px 12px; margin:7px 0 3px; }
   .sheet .ws-choice { display:inline-flex; align-items:center; justify-content:center;
-    min-width:46px; padding:8px 18px; border:2px solid #b9a9e6; border-radius:999px;
-    background:#fff; color:#111; font-weight:800; font-size:1.02rem; line-height:1.1; }
-  .sheet.acc-big .ws-choice { font-size:1.16rem; padding:11px 22px; }
-  /* Word bank the child pulls answers from */
-  .sheet .ws-wordbank { border:2px dashed #7C4DFF; border-radius:12px; padding:10px 14px;
-    margin:8px 0 14px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; }
-  .sheet .ws-wordbank .wb-label { font-weight:900; color:#5E35E0; text-transform:uppercase;
-    font-size:.72rem; letter-spacing:.08em; margin-right:6px; }
-  .sheet .ws-wordbank .wb-w { background:#f3eefe; border:1px solid #cdbaf0; color:#3d2a66;
-    font-weight:800; font-size:.98rem; padding:4px 12px; border-radius:8px; }
-  /* on-screen only: separates the child sheet from the grown-up guide (print uses a real page break) */
-  .grownup-sep { display:flex; align-items:center; justify-content:center; gap:10px; margin:8px auto 18px;
+    min-width:42px; padding:7px 18px; border:2px solid var(--ws-accent); border-radius:999px;
+    background:#fff; color:var(--ws-ink); font-weight:800; font-size:1.04rem; line-height:1.1; }
+  .sheet.acc-big .ws-choice { font-size:1.18rem; padding:10px 22px; }
+  /* Word bank — light accent box */
+  .sheet .ws-wordbank { border:1.5px solid var(--ws-accent); border-radius:10px; padding:9px 14px;
+    margin:7px 0 14px; display:flex; flex-wrap:wrap; align-items:center; gap:7px 12px; }
+  .sheet .ws-wordbank .wb-label { font-weight:800; color:var(--ws-accent); text-transform:uppercase;
+    font-size:.68rem; letter-spacing:.1em; margin-right:6px; }
+  .sheet .ws-wordbank .wb-w { color:var(--ws-ink); font-weight:800; font-size:1rem; padding:2px 4px; }
+  /* on-screen only: separates child sheet from grown-up guide (print = real page break) */
+  .grownup-sep { display:flex; align-items:center; justify-content:center; gap:10px; margin:10px auto 18px;
     max-width:8.5in; text-align:center; }
-  .grownup-sep span { background:var(--tint-sun); color:var(--ink); border:1px dashed var(--sun);
-    font-weight:800; font-size:.9rem; padding:10px 18px; border-radius:14px; }
-  .sheet .ws-repair { border:2px solid #FF6F61; background:#fff3f1; border-radius:12px; padding:12px 16px; margin-bottom:18px; }
-  .sheet .ws-repair .lbl { font-weight:900; color:#d64530; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
-  .sheet .ws-guided { border:2px solid #2BD4A8; background:#effcf7; border-radius:12px; padding:12px 16px; margin-bottom:18px; }
-  .sheet .ws-guided .lbl { font-weight:900; color:#1aa886; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
-  .sheet .ws-guided .g-item { padding:7px 0; }
-  .sheet .ws-guided .g-scaffold { font-size:.85rem; color:#1aa886; font-style:italic; margin:3px 0 4px; }
-  .sheet .ws-section { margin-bottom: 20px; }
-  .sheet .ws-section h3 { font-size:1.15rem; color:#5E35E0; border-bottom:2px dotted #cbb9ee; padding-bottom:4px; }
-  .sheet .ws-section .sec-instr { font-weight:700; color:#333; margin:6px 0 12px; }
-  .sheet .ws-item { display:flex; gap:12px; padding:9px 0; align-items:flex-start; }
-  /* circle-choice items are compact: stem + chips, no dead write line */
+  .grownup-sep span { background:var(--surface-2); color:var(--ink-soft); border:1px dashed var(--line-dk);
+    font-weight:800; font-size:.86rem; padding:9px 18px; border-radius:12px; }
+  /* Re-teach + challenge — minimal accent left-rule, no fill */
+  .sheet .ws-repair { border:0; border-left:4px solid var(--ws-accent); background:transparent; padding:2px 0 4px 16px; margin:0 0 18px; }
+  .sheet .ws-repair .lbl { font-weight:800; color:var(--ws-accent); text-transform:uppercase; font-size:.74rem; letter-spacing:.1em; }
+  .sheet .ws-guided { border:0; background:transparent; padding:0; margin:0 0 20px; }
+  .sheet .ws-guided .lbl, .sheet .ws-guided.as-part { display:none; }
+  .sheet .ws-guided .g-item { padding:6px 0; }
+  .sheet .ws-guided .g-scaffold { font-size:.85rem; color:#6a7080; font-style:italic; margin:2px 0 3px; }
+  .sheet .ws-item { display:flex; gap:12px; padding:8px 0; align-items:flex-start; }
   .sheet .ws-item.compact { padding:7px 0; align-items:center; }
   .sheet .ws-item.compact .qbody { display:flex; align-items:center; flex-wrap:wrap; gap:6px 14px; }
   .sheet .ws-item.compact .ws-q { margin:0; }
   .sheet .ws-item.compact .ws-choices { margin:0; }
-  .sheet .ws-item .qn { font-weight:900; color:#5E35E0; min-width:26px; }
+  .sheet .ws-item .qn { font-weight:800; color:var(--ws-accent); min-width:24px; }
   .sheet .ws-item .qbody { flex:1; }
-  .sheet .ws-q { font-weight:700; font-size:1.02rem; }
-  .sheet .ws-hint { font-size:.8rem; color:#666; font-style:italic; margin-top:3px; }
-  .sheet .ws-write { border-bottom:2px solid #bbb; height: 30px; margin-top:8px; }
-  .sheet .ws-write.lines { background-image: repeating-linear-gradient(#fff 0 28px, #ddd 28px 30px); border:0; height: 92px; }
+  .sheet .ws-q { font-weight:700; font-size:1.04rem; }
+  .sheet .ws-hint { font-size:.8rem; color:#6a7080; font-style:italic; margin-top:3px; }
+  .sheet .ws-write { border-bottom:2px solid #333; height: 30px; margin-top:8px; }
+  .sheet .ws-write.lines { background-image: repeating-linear-gradient(#fff 0 28px, #c7ccd6 28px 30px); border:0; height: 92px; }
   .sheet .ws-write.hwlines {
     border:0; height:84px;
     background-image:
@@ -484,30 +508,30 @@
       linear-gradient(#e5e5e5 1px, transparent 1px),
       linear-gradient(90deg,#e5e5e5 1px, transparent 1px);
     background-size: 26px 26px; border:1px solid #ccc; border-radius:6px; }
-  .sheet .ws-write.tracing { border:0; height:60px; display:flex; align-items:center; font-size:2.4rem; letter-spacing:.5rem; color:#cdc4dd; font-weight:800; }
-  .sheet .ws-challenge { background:#fff7e6; border:2px solid #FFC23C; border-radius:12px; padding:12px 16px; margin:14px 0; }
-  .sheet .ws-challenge .lbl { font-weight:900; color:#a9740a; }
-  .sheet .ws-reflect { margin-top:18px; border-top:2px dashed #bbb; padding-top:12px; font-weight:700; }
-  .sheet .ws-faces { font-size:1.7rem; letter-spacing:14px; }
-  .sheet .ws-foot { margin-top:22px; text-align:center; font-size:.72rem; color:#999; font-weight:700; }
+  .sheet .ws-write.tracing { border:0; height:58px; display:flex; align-items:center; font-size:2.4rem; letter-spacing:.5rem; color:color-mix(in srgb, var(--ws-accent) 32%, #fff); font-weight:800; }
+  .sheet .ws-challenge { border:0; border-left:4px solid var(--ws-accent); background:transparent; padding:2px 0 6px 16px; margin:18px 0; }
+  .sheet .ws-challenge .lbl { font-weight:800; color:var(--ws-accent); text-transform:uppercase; font-size:.74rem; letter-spacing:.1em; }
+  .sheet .ws-reflect { margin-top:20px; border-top:1.5px solid #d8dce4; padding-top:14px; font-weight:600; color:#5a6070; }
+  .sheet .ws-reflect b { color:var(--ws-accent); }
+  .sheet .ws-faces { font-size:1.6rem; letter-spacing:16px; }
+  .sheet .ws-foot { margin-top:24px; padding-top:10px; border-top:1px solid #e6e9ef; text-align:center; font-size:.7rem; color:#aab0bd; font-weight:700; letter-spacing:.02em; }
   .answerkey { page-break-before: always; }
-  .answerkey h2 { color:#5E35E0; }
+  .answerkey h2 { color:var(--ws-accent); }
   .ak-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:6px 22px; font-weight:700; font-size:.95rem; }
   /* ===== Parent & Teacher Guide (its own printable page) ===== */
-  .parentguide { page-break-before: always; }
-  .parentguide h2 { color:#5E35E0; margin-bottom:2px; }
-  .parentguide .pg-sub { color:#666; font-weight:700; font-size:.84rem; margin-bottom:14px; }
-  .pg-block { border:1.5px solid #e6def5; border-radius:12px; padding:13px 17px; margin-bottom:12px; }
-  .pg-block.obj { background:#f3eefe; border-color:#cdbaf0; }
-  .pg-block.coach { background:#effcf7; border-color:#bfead9; }
-  .pg-block.watch { background:#fff3f1; border-color:#f3c9c2; }
-  .pg-block.key { background:#fff; }
-  .pg-block h3 { font-size:1.02rem; color:#5E35E0; margin:0 0 7px; text-transform:uppercase; letter-spacing:.05em; }
+  .parentguide { --ws-accent:#5B4BD6; page-break-before: always; }
+  .parentguide h2 { color:var(--ws-accent); margin-bottom:2px; }
+  .parentguide .pg-sub { color:#7a8090; font-weight:700; font-size:.84rem; margin-bottom:16px; }
+  .pg-block { border:0; border-left:3px solid #dfe3ea; border-radius:0; padding:4px 0 8px 16px; margin-bottom:16px; }
+  .pg-block.obj { border-left-color:var(--ws-accent); }
+  .pg-block.coach { border-left-color:#1aa886; }
+  .pg-block.watch { border-left-color:#d64530; }
+  .pg-block h3 { font-size:.86rem; color:var(--ws-accent); margin:0 0 7px; text-transform:uppercase; letter-spacing:.08em; font-weight:800; }
   .pg-block.coach h3 { color:#1aa886; } .pg-block.watch h3 { color:#d64530; }
   .pg-block ul { margin:6px 0 0; padding-left:20px; } .pg-block li { margin:4px 0; font-weight:600; }
   .pg-block p { font-weight:600; margin:4px 0; }
   .pg-comps { display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; }
-  .pg-comp { background:#fff; border:1.5px solid #cdbaf0; color:#5E35E0; font-weight:800; font-size:.8rem; padding:3px 11px; border-radius:99px; }
+  .pg-comp { background:#fff; border:1.5px solid var(--ws-accent); color:var(--ws-accent); font-weight:800; font-size:.8rem; padding:3px 11px; border-radius:99px; }
   .pg-rubric { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
   @media (max-width:560px){ .pg-rubric{ grid-template-columns:1fr; } }
   .pg-rcard { border-radius:10px; padding:11px 13px; font-weight:600; font-size:.92rem; }
@@ -2291,8 +2315,8 @@ function parentGuideHTML(ws,k,accClasses,rec){
   const cA=ws.challenge?`<div class="ak-row"><b>★</b><span>${esc(String(ws.challenge.answer==null?'—':ws.challenge.answer))}</span></div>`:"";
   const r=pg.looksLike||{};
   const hasGuide = pg.objective||comps||pg.howToIntroduce||(pg.coaching&&pg.coaching.length)||(pg.watchFors&&pg.watchFors.length)||r.strong||pg.nextStep;
-  return `<div class="sheet parentguide ${accClasses}">
-    <h2>👩‍🏫 Parent &amp; Teacher Guide</h2>
+  return `<div class="sheet parentguide ${accClasses}" style="--ws-accent:${accentFor(rec&&rec.params?rec.params.subject:(S.sel&&S.sel.subject))}">
+    <h2>Parent &amp; Teacher Guide</h2>
     <div class="pg-sub">${esc(ws.title||"")} · ${esc(subj||"")} · for ${esc(k?k.name:"your learner")}${accs.length?` · supports: ${accs.map(a=>esc(a.title)).join(", ")}`:""}</div>
     ${ hasGuide ? `
     <div class="pg-block obj">
@@ -2395,83 +2419,78 @@ function renderWorksheet(rec){
       💾 <b>Save as PDF</b> opens your print box — pick <b>“Save as PDF”</b> (or “PDF → Save as PDF”) as the destination. Page 1 is the child's worksheet; page 2 is the grown-up answer/guide.
     </p>
 
-    <div class="sheet ${accClasses}">
+    <div class="sheet ${accClasses}" style="--ws-accent:${accentFor(rec.params.subject)}">
+      <div class="ws-nameline"><span>Name <span class="u">&nbsp;</span></span><span>Date <span class="u">&nbsp;</span></span></div>
       <div class="ws-header">
-        <div>
-          <h1 class="ws-title">${esc(ws.title||"Worksheet")}</h1>
-          <div class="muted" style="font-weight:800;color:#7C4DFF">${esc(subjLabel(rec.params.subject))} · ${esc(rec.params.skill)} · ${esc(currentThemeOf(rec))}</div>
-        </div>
-        <div class="ws-meta">⭐ ${gradeLabel(rec.params.grade)}<br>⏱️ ~${ws.estimatedMinutes||10} min<br>🤖 Sprocket</div>
+        <h1 class="ws-title">${esc(ws.title||"Worksheet")}</h1>
+        <div class="ws-meta">${esc(subjLabel(rec.params.subject))} &nbsp;·&nbsp; ${esc(rec.params.skill)} &nbsp;·&nbsp; ${gradeLabel(rec.params.grade)} &nbsp;·&nbsp; about ${ws.estimatedMinutes||10} minutes</div>
       </div>
-      <div class="ws-nameline"><span>Name: <span class="u">&nbsp;</span></span><span>Date: <span class="u">&nbsp;</span></span></div>
+      <div class="ws-titlerule"></div>
       ${rec.image?`<img class="ws-banner" src="${rec.image}" alt="">`:""}
 
-      ${(()=>{
-        const hasEx=!!ws.warmUp, hasTog=ws.guidedPractice&&(ws.guidedPractice.items||[]).length;
-        const steps=[];
-        if(hasEx) steps.push("👀 <b>Look at the Example.</b> It's already done for you — just read it. You do <u>not</u> write there.");
-        if(hasTog) steps.push("🤝 <b>Warm Up together.</b> Do these with a grown-up helping.");
-        steps.push("✏️ <b>Your Turn.</b> Now do the numbered problems by yourself. Write your answers on the lines.");
-        return `<div class="ws-howto">
-          <div class="lbl">How to do this page</div>
-          <ol>${steps.map(s=>`<li>${s}</li>`).join("")}</ol>
-        </div>`;
-      })()}
-
-      ${ws.priorKnowledge?`<div class="ws-prior">💡 Before we start: ${esc(stripMd(ws.priorKnowledge))}</div>`:""}
+      ${ws.priorKnowledge?`<div class="ws-prior"><b>Remember:</b> ${esc(stripMd(ws.priorKnowledge))}</div>`:""}
 
       ${ws.warmUp?`<div class="ws-warm">
-        <div class="lbl">👀 Example — just look, don't write here</div>
-        <div class="ex-tag">DONE FOR YOU</div>
-        <div style="font-weight:800;margin:6px 0">${esc(stripMd(ws.warmUp.exampleProblem))}</div>
+        <div class="lbl">Example — done for you, just read it</div>
+        <div class="ex-q">${esc(stripMd(ws.warmUp.exampleProblem))}</div>
         ${ws.warmUp._weak
-          ? `<div class="muted" style="font-weight:700">👆 Read this one with a grown-up — it shows you how. You don't write here.</div>`
-          : `<div style="white-space:pre-wrap">${esc(stripMd(ws.warmUp.workedSolution))}</div>`}
+          ? `<div class="ex-a">Read this one with a grown-up — it shows you how. You don't write here.</div>`
+          : `<div class="ex-a">${esc(stripMd(ws.warmUp.workedSolution))}</div>`}
       </div>`:""}
 
       ${ws.misconceptionRepair?`<div class="ws-repair">
-        <div class="lbl">⚠️ Watch out for a tricky part</div>
-        <div style="font-weight:700;margin:6px 0">Careful: ${esc(ws.misconceptionRepair.misconception)}</div>
-        <div style="white-space:pre-wrap">✅ ${esc(ws.misconceptionRepair.fix)}</div>
+        <div class="lbl">Watch out for a tricky part</div>
+        <div style="font-weight:700;margin:5px 0">Careful: ${esc(stripMd(ws.misconceptionRepair.misconception))}</div>
+        <div style="white-space:pre-wrap">${esc(stripMd(ws.misconceptionRepair.fix))}</div>
       </div>`:""}
 
-      ${ws.guidedPractice && (ws.guidedPractice.items||[]).length?`<div class="ws-guided">
-        <div class="lbl">🤝 Warm Up — do these with a grown-up</div>
-        <div class="sec-instr">${esc(stripMd(ws.guidedPractice.instructions||""))}</div>
-        ${(ws.guidedPractice.items||[]).map((g,i)=>{ const gq=stripMd(g.prompt||"").trim();
-          return `<div class="g-item">
-          <div class="ws-q"><b>${i+1}.</b>${gq?" "+esc(gq):""}</div>
-          ${g.scaffold?`<div class="g-scaffold">💬 Hint: ${esc(stripMd(g.scaffold))}</div>`:""}
-          ${respBox(g)}</div>`; }).join("")}
-      </div>`:""}
-
-      <div class="ws-yourturn">✏️ Your Turn — do these by yourself</div>
-      ${(ws.sections||[]).map(sec=>`
-        <div class="ws-section">
-          <h3>${esc(cleanHeading(sec.heading))}</h3>
-          <div class="sec-instr">${esc(stripMd(sec.instructions))}</div>
-          ${wordBankHTML(sec.wordBank)}
-          ${(sec.items||[]).map(itemHTML).join("")}
-        </div>`).join("")}
+      ${(()=>{
+        let pn=0; const parts=[];
+        const gi=ws.guidedPractice&&(ws.guidedPractice.items||[]);
+        if(gi&&gi.length){ pn++;
+          parts.push(`<div class="ws-section ws-guided">
+            <h3><span class="pt">Part ${pn}:</span> Practice together</h3>
+            <div class="sec-instr">${esc(stripMd(ws.guidedPractice.instructions||"Do these with a grown-up helping."))}</div>
+            ${gi.map((g,i)=>{ const gq=stripMd(g.prompt||"").trim();
+              return `<div class="ws-item${(Array.isArray(g.options)&&g.options.length>=2)?' compact':''}">
+                <span class="qn">${i+1}.</span>
+                <div class="qbody">
+                  ${gq?`<div class="ws-q">${esc(gq)}</div>`:""}
+                  ${g.scaffold?`<div class="ws-hint">Hint: ${esc(stripMd(g.scaffold))}</div>`:""}
+                  ${respBox(g)}
+                </div></div>`; }).join("")}
+          </div>`);
+        }
+        (ws.sections||[]).forEach(sec=>{ pn++;
+          parts.push(`<div class="ws-section">
+            <h3><span class="pt">Part ${pn}:</span> ${esc(cleanHeading(sec.heading))}</h3>
+            <div class="sec-instr">${esc(stripMd(sec.instructions))}</div>
+            ${wordBankHTML(sec.wordBank)}
+            ${(sec.items||[]).map(itemHTML).join("")}
+          </div>`);
+        });
+        return parts.join("");
+      })()}
 
       ${ws.challenge?`<div class="ws-challenge">
-        <span class="lbl">🌟 Challenge Star:</span> ${esc(stripMd(ws.challenge.prompt))}
-        <div style="margin-top:8px">${respBox(ws.challenge)}</div></div>`:""}
+        <div class="lbl">Challenge</div>
+        <div class="ws-q" style="margin:5px 0">${esc(stripMd(ws.challenge.prompt))}</div>
+        ${respBox(ws.challenge)}</div>`:""}
 
       ${(()=>{ const rf=ws.reflection;
         const feeling = rf && typeof rf==='object' ? rf.feeling : (typeof rf==='string'?rf:"How did this feel?");
         const se = rf && typeof rf==='object' ? rf.selfExplain : "";
         return rf?`<div class="ws-reflect">
-          <div style="font-weight:800;color:#5E35E0;margin-bottom:4px">💜 Mistakes help your brain grow — be proud of your thinking!</div>
-          ${esc(feeling)}<div class="ws-faces">😀&nbsp;&nbsp;🙂&nbsp;&nbsp;😐&nbsp;&nbsp;🤔</div>
-          ${se?`<div style="margin-top:10px;font-weight:700">✏️ ${esc(se)}</div><div class="ws-write lines"></div>`:""}
+          <div style="font-weight:700;color:var(--ws-accent);margin-bottom:5px">Mistakes help your brain grow — be proud of your thinking!</div>
+          ${esc(stripMd(feeling))}<div class="ws-faces">😀&nbsp;&nbsp;🙂&nbsp;&nbsp;😐&nbsp;&nbsp;🤔</div>
+          ${se?`<div style="margin-top:10px;font-weight:700">${esc(stripMd(se))}</div><div class="ws-write lines"></div>`:""}
         </div>`:""; })()}
 
-      <div class="ws-foot">Made just for ${esc(k?k.name:"you")} by Sprocket 🤖 · Worksheet Lab</div>
+      <div class="ws-foot">Made just for ${esc(k?k.name:"you")} &nbsp;·&nbsp; Sprocket Worksheet Lab</div>
     </div>
 
     <div class="grownup-sep no-print">
-      <span>👇 Grown-up section below: answers + a teaching guide. Your child only needs the page above. 👆</span>
+      <span>Grown-up section below: answers + teaching guide. Your child only needs the page above.</span>
     </div>
 
     ${parentGuideHTML(ws,k,accClasses,rec)}`;
@@ -2480,6 +2499,12 @@ function renderWorksheet(rec){
   document.getElementById("rgear").classList.remove("fast");
   show("worksheet");
   say(`Done! 🎉 A <b>${esc(currentThemeOf(rec))}</b> sheet for <b>${esc(k?k.name:'your learner')}</b>. Print it, or ask me for another version.`,"Tip: 'New version' keeps everything but makes fresh problems.","happy");
+}
+/* One bold print-legible accent color per subject (grayscale-safe),
+   in the spirit of Education.com's single-accent worksheets. */
+function accentFor(subject){
+  return ({ math:"#5B4BD6", reading:"#1CA6C4", writing:"#E0553C",
+            science:"#1FAE8A", social:"#E0922A" })[subject] || "#5B4BD6";
 }
 /* Strip teacher-jargon prefixes the model sometimes adds to headings
    ("YOU DO: …", "Section 2 – …") so the child sheet stays plain. */
