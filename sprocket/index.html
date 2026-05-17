@@ -422,16 +422,17 @@
   .sheet .ws-nameline { display:flex; gap:32px; font-weight:700; font-size:.95rem; color:#3a3f4b; margin:0 0 14px; }
   .sheet .ws-nameline > span { flex:1; display:flex; align-items:flex-end; gap:8px; white-space:nowrap; }
   .sheet .ws-nameline .u { flex:1; border-bottom:1.5px solid #c7ccd6; height:1.15em; }
-  /* Title — huge, bold, UPPERCASE, single accent color, left aligned */
-  .sheet .ws-header { margin:2px 0 4px; }
+  /* Title — bold UPPERCASE accent, CENTERED (Education.com's dominant look) */
+  .sheet .ws-header { margin:2px 0 0; text-align:center; }
   .sheet h1.ws-title {
     font-family:"Baloo 2","Quicksand","Nunito",system-ui,sans-serif;
-    font-size: 2.55rem; line-height:1.04; font-weight:800;
+    font-size: 2.15rem; line-height:1.06; font-weight:800;
     text-transform:uppercase; letter-spacing:.005em;
-    color:var(--ws-accent); margin:0 0 2px;
+    color:var(--ws-accent); margin:0 auto 4px; max-width:7.4in;
   }
-  .sheet .ws-meta { font-size:.82rem; color:#8a8f9c; font-weight:700; letter-spacing:.02em; margin:0 0 2px; }
-  .sheet .ws-titlerule { height:3px; background:var(--ws-accent); border-radius:3px; opacity:.22; margin:8px 0 16px; }
+  .sheet .ws-meta { font-size:.82rem; color:#8a8f9c; font-weight:700; letter-spacing:.03em; margin:0; }
+  /* short centered accent underline beneath the title (their calm divider) */
+  .sheet .ws-titlerule { width:74px; height:4px; background:var(--ws-accent); border-radius:4px; margin:11px auto 18px; }
   /* "How to" — one calm muted line, NOT a box */
   .sheet .ws-howto { font-size:.92rem; color:#5a6070; font-weight:600; margin:0 0 16px; }
   .sheet .ws-howto b { color:var(--ws-ink); }
@@ -452,7 +453,7 @@
   .sheet .ws-warm .ex-tag { display:none; }
   .sheet .ws-warm .ex-q { font-weight:800; margin:5px 0 3px; font-size:1.05rem; }
   .sheet .ws-warm .ex-a { color:var(--ws-accent); font-weight:800; white-space:pre-wrap; }
-  .sheet .ws-prior { font-weight:600; color:#5a6070; margin:0 0 14px; font-size:.95rem; }
+  .sheet .ws-prior { font-weight:600; color:#5a6070; margin:0 auto 18px; font-size:.97rem; text-align:center; max-width:6.6in; }
   .sheet .ws-prior b { color:var(--ws-accent); }
   /* Circle-one choices — clean accent oval the child circles */
   .sheet .ws-choices { display:flex; flex-wrap:wrap; gap:9px 12px; margin:7px 0 3px; }
