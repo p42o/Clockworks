@@ -412,9 +412,25 @@
   .sheet .ws-nameline { display:flex; gap:24px; font-weight:800; font-size:.95rem; margin: 6px 0 14px; }
   .sheet .ws-nameline .u { flex:1; border-bottom:2px solid #999; }
   .sheet .ws-instr { background:#f3eefe; border-left:5px solid #7C4DFF; padding:10px 14px; border-radius:8px; font-weight:700; margin: 10px 0 16px; }
-  .sheet .ws-warm { border:2px dashed #7C4DFF; border-radius:12px; padding:12px 16px; margin-bottom:18px; }
-  .sheet .ws-warm .lbl { font-weight:900; color:#5E35E0; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
+  /* "How to do this page" — plain directions, top of every sheet */
+  .sheet .ws-howto { background:#eef6ff; border:2px solid #2BB8F0; border-radius:12px; padding:12px 16px 12px; margin:6px 0 18px; }
+  .sheet .ws-howto .lbl { font-weight:900; color:#1f7fb0; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
+  .sheet .ws-howto ol { margin:8px 0 0; padding-left:22px; }
+  .sheet .ws-howto li { font-weight:700; font-size:.96rem; margin:5px 0; }
+  /* Example = clearly "watch only", greyed so it never reads as a problem to solve or a leaked answer */
+  .sheet .ws-warm { border:2px solid #c9c9d4; background:#f3f3f7; border-radius:12px; padding:14px 16px 12px; margin-bottom:18px; position:relative; }
+  .sheet .ws-warm .lbl { font-weight:900; color:#5b5570; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
+  .sheet .ws-warm .ex-tag { position:absolute; top:10px; right:12px; background:#5b5570; color:#fff;
+    font-weight:900; font-size:.62rem; letter-spacing:.1em; padding:3px 9px; border-radius:99px; }
+  /* "Your Turn" divider band — the unmistakable start of the do-it-yourself part */
+  .sheet .ws-yourturn { background:#7C4DFF; color:#fff; font-weight:900; font-size:1.05rem;
+    text-align:center; padding:9px 14px; border-radius:10px; margin:6px 0 16px; letter-spacing:.02em; }
   .sheet .ws-prior { font-weight:800; color:#2BB8F0; background:#eaf7fe; border-radius:10px; padding:8px 14px; margin-bottom:14px; }
+  /* on-screen only: separates the child sheet from the grown-up guide (print uses a real page break) */
+  .grownup-sep { display:flex; align-items:center; justify-content:center; gap:10px; margin:8px auto 18px;
+    max-width:8.5in; text-align:center; }
+  .grownup-sep span { background:var(--tint-sun); color:var(--ink); border:1px dashed var(--sun);
+    font-weight:800; font-size:.9rem; padding:10px 18px; border-radius:14px; }
   .sheet .ws-repair { border:2px solid #FF6F61; background:#fff3f1; border-radius:12px; padding:12px 16px; margin-bottom:18px; }
   .sheet .ws-repair .lbl { font-weight:900; color:#d64530; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; }
   .sheet .ws-guided { border:2px solid #2BD4A8; background:#effcf7; border-radius:12px; padding:12px 16px; margin-bottom:18px; }
@@ -1685,16 +1701,18 @@ function buildSystemPrompt(){
 "DIRECTIONS CLARITY (non-negotiable — children must NEVER be confused about what to do):",
 "• Every section and item instruction must be a single, unambiguous imperative sentence a child of the target grade can read independently, starting with a concrete action verb (Circle, Write, Draw, Match, Solve, Underline, Fill in, Count).",
 "• State EXACTLY what to produce and WHERE (e.g., 'Write your answer on the line.', 'Circle the correct picture.', 'Show your work in the box, then write the answer on the line.').",
-"• Every section's instruction line MUST embed one tiny model of a correct response in the expected format (e.g., 'Like this: 2 + 3 = 5').",
+"• Every section's instruction line MUST show the FORMAT with a tiny model that uses DIFFERENT numbers/words than any real item (e.g., 'Write the total on the line. Like this: 2 + 3 = 5') — so a child never mistakes the example for an answered problem.",
 "• No item should require an instruction the child can't decode — instructions obey the same reading-load rules as the items.",
 "• One task per item. If an item needs two steps, number them within the item.",
 "",
-"Follow Rosenshine's Principles of Instruction. Structure EVERY sheet as the gradual-release sequence:",
-"  1. ACTIVATE prior knowledge — one short 'You already know…' hook that connects to something easier the child can do.",
-"  2. I DO — one fully solved warm-up example modeling the exact thinking, narrated step by step.",
-"  3. WE DO — 2–3 GUIDED items with visible scaffolds/sentence-frames/partial steps that FADE (more support on the first, less on the last). This guided step is mandatory; it is where consolidation happens.",
-"  4. YOU DO — independent items, easy→hard.",
-"  5. REFLECT — a feeling self-check AND a self-explanation prompt ('Explain how you solved #N in your own words') — self-explanation is one of the highest-utility learning techniques.",
+"Use Rosenshine's gradual release UNDER THE HOOD, but the page must look and read like a clean, ordinary worksheet a non-teacher parent instantly recognizes — NOT a lesson plan. Pedagogy is invisible scaffolding, never academic labels.",
+"  1. priorKnowledge — ONE short, friendly, plain sentence ('You can already count to 10!'). Optional; keep it light, not a heading.",
+"  2. warmUp — exactly ONE fully worked EXAMPLE that models the thinking. This is the ONLY place on the child's page where a complete answer is shown, and it is clearly a demonstration the child only reads (the app labels it 'Example — just look'). Make exampleProblem DIFFERENT numbers/words from every real item.",
+"  3. guidedPractice — 2–3 'warm up together' items. The `scaffold` is a SHORT STRATEGY HINT only (e.g., 'Start with the bigger number.', 'Stretch each sound.'). CRITICAL: the scaffold must NOT state the answer, must NOT count/spell out the steps that arrive at the answer, and must NOT fill any of it in. The child still solves it. `answer` is for the answer key only and is never printed on the child page.",
+"  4. sections — the independent practice, easy→hard. This is the bulk of the page.",
+"  5. reflection — a tiny feeling self-check; selfExplain only for grade 3+ (omit/empty for K–2; one task per item for little kids).",
+"",
+"HEADINGS & LABELS (critical — this is what confuses families): NEVER put 'I DO', 'WE DO', 'YOU DO', 'Guided Practice', 'Independent Practice', 'Section 1', 'Part A' or any pedagogy jargon in titles, headings, or instructions. Section `heading` must be a plain, fun, kid-facing topic name ('Dino Addition', 'Spaceship Sums'). The child must never wonder 'why are some problems already answered?' — only the single Example shows work; everything else is blank for them to fill in.",
 "",
 "Other evidence-based rules, applied automatically:",
 "• Desirable difficulty: target ~80% success for the stated difficulty — challenging, not frustrating.",
@@ -1720,8 +1738,8 @@ function buildSystemPrompt(){
 '  "priorKnowledge": string,               // one short "You already know…" activation hook',
 '  "warmUp": { "exampleProblem": string, "workedSolution": string },',
 '  "misconceptionRepair": { "misconception": string, "fix": string } | null,  // only if a confirmed error pattern was supplied',
-'  "guidedPractice": { "instructions": string, "items": [ { "prompt": string, "scaffold": string, "answer": string } ] },  // the WE DO — scaffolds fade across items',
-'  "sections": [ { "heading": string, "instructions": string,   // instructions: one imperative sentence + a tiny worked model in the exact answer format',
+'  "guidedPractice": { "instructions": string, "items": [ { "prompt": string, "scaffold": string, "answer": string } ] },  // scaffold = a SHORT strategy hint that does NOT reveal/compute the answer; answer is key-only, never shown to child',
+'  "sections": [ { "heading": string, "instructions": string,   // heading: plain kid-facing topic name, NO pedagogy jargon. instructions: one imperative sentence + a tiny format model using different values than the items',
 '     "items": [ { "number": number, "prompt": string, "answer": string,',
 '        "response": "blank"|"lines"|"grid"|"hwlines"|"tracing", "hint": string|null } ] } ],',
 '  "challenge": { "prompt": string, "answer": string } | null,',
@@ -2221,6 +2239,7 @@ function renderWorksheet(rec){
   document.getElementById("screen-worksheet").innerHTML=`
     ${guardBanner}
     <div class="ws-actions">
+      <button class="btn" onclick="savePDF()">⬇️ Save as PDF</button>
       <button class="btn sun" onclick="window.print()">🖨️ Print</button>
       <button class="btn coral" onclick="startGrading('${rec.id}')">📸 Grade it</button>
       <button class="btn mint sm" onclick="generate(true,'different')">🔄 New version</button>
@@ -2229,6 +2248,9 @@ function renderWorksheet(rec){
       <button class="btn ghost sm" onclick="renderReview()">⚙️ Change setup</button>
       <button class="btn ghost sm" onclick="renderWelcome()">🏠 Start over</button>
     </div>
+    <p class="no-print muted" style="font-weight:700;margin:-4px 0 14px;font-size:.86rem">
+      💾 <b>Save as PDF</b> opens your print box — pick <b>“Save as PDF”</b> (or “PDF → Save as PDF”) as the destination. Page 1 is the child's worksheet; page 2 is the grown-up answer/guide.
+    </p>
 
     <div class="sheet ${accClasses}">
       <div class="ws-header">
@@ -2241,32 +2263,46 @@ function renderWorksheet(rec){
       <div class="ws-nameline"><span>Name: <span class="u">&nbsp;</span></span><span>Date: <span class="u">&nbsp;</span></span></div>
       ${rec.image?`<img class="ws-banner" src="${rec.image}" alt="">`:""}
 
-      ${ws.priorKnowledge?`<div class="ws-prior">🔑 You already know this: ${esc(ws.priorKnowledge)}</div>`:""}
+      ${(()=>{
+        const hasEx=!!ws.warmUp, hasTog=ws.guidedPractice&&(ws.guidedPractice.items||[]).length;
+        const steps=[];
+        if(hasEx) steps.push("👀 <b>Look at the Example.</b> It's already done for you — just read it. You do <u>not</u> write there.");
+        if(hasTog) steps.push("🤝 <b>Warm Up together.</b> Do these with a grown-up helping.");
+        steps.push("✏️ <b>Your Turn.</b> Now do the numbered problems by yourself. Write your answers on the lines.");
+        return `<div class="ws-howto">
+          <div class="lbl">How to do this page</div>
+          <ol>${steps.map(s=>`<li>${s}</li>`).join("")}</ol>
+        </div>`;
+      })()}
+
+      ${ws.priorKnowledge?`<div class="ws-prior">💡 Before we start: ${esc(ws.priorKnowledge)}</div>`:""}
 
       ${ws.warmUp?`<div class="ws-warm">
-        <div class="lbl">⭐ I do — watch how it's done</div>
+        <div class="lbl">👀 Example — just look, don't write here</div>
+        <div class="ex-tag">DONE FOR YOU</div>
         <div style="font-weight:800;margin:6px 0">${esc(ws.warmUp.exampleProblem)}</div>
         <div style="white-space:pre-wrap">${esc(ws.warmUp.workedSolution)}</div>
       </div>`:""}
 
       ${ws.misconceptionRepair?`<div class="ws-repair">
-        <div class="lbl">🛠️ Let's fix a tricky spot together</div>
+        <div class="lbl">⚠️ Watch out for a tricky part</div>
         <div style="font-weight:700;margin:6px 0">Careful: ${esc(ws.misconceptionRepair.misconception)}</div>
         <div style="white-space:pre-wrap">✅ ${esc(ws.misconceptionRepair.fix)}</div>
       </div>`:""}
 
       ${ws.guidedPractice && (ws.guidedPractice.items||[]).length?`<div class="ws-guided">
-        <div class="lbl">🤝 We do — try these together</div>
+        <div class="lbl">🤝 Warm Up — do these with a grown-up</div>
         <div class="sec-instr">${esc(ws.guidedPractice.instructions||"")}</div>
         ${(ws.guidedPractice.items||[]).map((g,i)=>`<div class="g-item">
-          <div class="ws-q"><b>G${i+1}.</b> ${esc(g.prompt)}</div>
-          ${g.scaffold?`<div class="g-scaffold">💬 ${esc(g.scaffold)}</div>`:""}
+          <div class="ws-q"><b>${i+1}.</b> ${esc(g.prompt)}</div>
+          ${g.scaffold?`<div class="g-scaffold">💬 Hint: ${esc(g.scaffold)}</div>`:""}
           <div class="ws-write"></div></div>`).join("")}
       </div>`:""}
 
+      <div class="ws-yourturn">✏️ Your Turn — do these by yourself</div>
       ${(ws.sections||[]).map(sec=>`
         <div class="ws-section">
-          <h3>${esc(sec.heading)}</h3>
+          <h3>${esc(cleanHeading(sec.heading))}</h3>
           <div class="sec-instr">${esc(sec.instructions)}</div>
           ${(sec.items||[]).map(itemHTML).join("")}
         </div>`).join("")}
@@ -2287,12 +2323,21 @@ function renderWorksheet(rec){
       <div class="ws-foot">Made just for ${esc(k?k.name:"you")} by Sprocket 🤖 · Worksheet Lab</div>
     </div>
 
+    <div class="grownup-sep no-print">
+      <span>👇 Grown-up section below: answers + a teaching guide. Your child only needs the page above. 👆</span>
+    </div>
+
     ${parentGuideHTML(ws,k,accClasses,rec)}`;
 
   document.getElementById("robot").classList.remove("think");
   document.getElementById("rgear").classList.remove("fast");
   show("worksheet");
   say(`Done! 🎉 A <b>${esc(currentThemeOf(rec))}</b> sheet for <b>${esc(k?k.name:'your learner')}</b>. Print it, or ask me for another version.`,"Tip: 'New version' keeps everything but makes fresh problems.","happy");
+}
+/* Strip teacher-jargon prefixes the model sometimes adds to headings
+   ("YOU DO: …", "Section 2 – …") so the child sheet stays plain. */
+function cleanHeading(h){
+  return String(h||"Practice").replace(/^\s*(you\s*do|we\s*do|i\s*do|independent(?:\s*practice)?|guided(?:\s*practice)?|section|part|step)\s*\d*\s*[:.\-–—]\s*/i,"").trim() || "Practice";
 }
 function isShortAnswer(it){ return (it.answer&&String(it.answer).length<=12); }
 function currentThemeOf(rec){ return rec.params.theme; }
@@ -2410,6 +2455,17 @@ async function testKey(){
   }catch(e){ el.innerHTML='<span style="color:var(--err);font-weight:800">✗ '+esc(e.message||String(e))+'</span>'; }
 }
 function reopenHistory(id){ const h=S.history.find(x=>x.id===id); if(h) renderWorksheet(h); }
+/* Save as PDF = the browser's print-to-PDF (no libraries, keeps crisp text +
+   all our print CSS). Set document.title so the PDF gets a sensible filename. */
+function savePDF(){
+  const prev=document.title;
+  const t=document.querySelector(".sheet .ws-title");
+  document.title=((t&&t.textContent.trim())||"Sprocket Worksheet").replace(/[\\/:*?"<>|]/g,"").slice(0,80);
+  const restore=()=>{ document.title=prev; window.removeEventListener("afterprint",restore); };
+  window.addEventListener("afterprint",restore);
+  setTimeout(restore, 60000); // safety net if afterprint never fires
+  window.print();
+}
 
 /* ============================================================
    BACKUP / RESTORE
