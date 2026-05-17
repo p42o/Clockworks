@@ -12,39 +12,92 @@
      ============================================================ */
 
   :root {
-    --bg: #FFF6E9;
-    --bg-2: #FFEFD6;
-    --ink: #2B2233;
-    --ink-soft: #6E6378;
-    --paper: #FFFFFF;
+    /* ---- core palette (accent hues are shared light/dark) ---- */
     --grape: #7C4DFF;
     --grape-dk: #5E35E0;
     --sky: #2BB8F0;
     --mint: #2BD4A8;
     --sun: #FFC23C;
     --coral: #FF6F61;
-    --pink: #FF8FCf;
-    --line: #E7DCEC;
-    --line-dk: #CDBFD6;
-    --shadow: 0 10px 30px rgba(124,77,255,0.18);
-    --shadow-sm: 0 4px 14px rgba(124,77,255,0.14);
-    --r-lg: 26px;
-    --r-md: 18px;
-    --r-sm: 12px;
-    --ok: #28b463;
-    --warn: #e8a317;
-    --err: #e8584a;
+    --pink: #FF8FCF;
+    --paper: #FFFFFF;          /* the worksheet is always real paper-white */
+    --ok: #28B463;
+    --warn: #E8A317;
+    --err: #E8584A;
+    /* ---- LIGHT theme tokens ---- */
+    --bg: #F4F0FF;
+    --bg-2: #FBF6FF;
+    --mesh-1: rgba(124,77,255,.16);
+    --mesh-2: rgba(43,184,240,.14);
+    --mesh-3: rgba(43,212,168,.12);
+    --surface: rgba(255,255,255,.78);
+    --surface-2: #F1ECFA;
+    --surface-bd: rgba(255,255,255,.85);
+    --ink: #241B33;
+    --ink-soft: #6E6385;
+    --line: #E7DEF4;
+    --line-dk: #CFC2E6;
+    --accent: var(--grape);
+    --accent-ink: var(--grape-dk);
+    --glow: 0 0 0 1px rgba(124,77,255,.06), 0 18px 46px -12px rgba(124,77,255,.34);
+    --shadow: 0 18px 44px -16px rgba(91,53,200,.30);
+    --shadow-sm: 0 8px 22px -10px rgba(91,53,200,.28);
+    --ring-track: #EAE2F8;
+    --tint-grape: rgba(124,77,255,.10);
+    --tint-mint: rgba(43,212,168,.12);
+    --tint-sun: rgba(255,194,60,.16);
+    --tint-coral: rgba(255,111,97,.12);
+    --tint-sky: rgba(43,184,240,.12);
+    --blur: saturate(1.4) blur(14px);
+    --r-xl: 30px;
+    --r-lg: 24px;
+    --r-md: 16px;
+    --r-sm: 11px;
+    color-scheme: light;
+  }
+  [data-theme="dark"] {
+    --bg: #0E0B1A;
+    --bg-2: #15102A;
+    --mesh-1: rgba(124,77,255,.30);
+    --mesh-2: rgba(43,184,240,.20);
+    --mesh-3: rgba(43,212,168,.16);
+    --surface: rgba(31,24,52,.66);
+    --surface-2: #221A3C;
+    --surface-bd: rgba(150,120,235,.20);
+    --ink: #F1ECFB;
+    --ink-soft: #ADA0C8;
+    --line: rgba(150,120,235,.20);
+    --line-dk: rgba(150,120,235,.38);
+    --accent: #9D7BFF;
+    --accent-ink: #C3ADFF;
+    --glow: 0 0 0 1px rgba(157,123,255,.14), 0 20px 54px -14px rgba(0,0,0,.7), 0 0 40px -16px rgba(124,77,255,.5);
+    --shadow: 0 22px 50px -18px rgba(0,0,0,.72);
+    --shadow-sm: 0 10px 26px -12px rgba(0,0,0,.6);
+    --ring-track: #2A2147;
+    --tint-grape: rgba(157,123,255,.16);
+    --tint-mint: rgba(43,212,168,.16);
+    --tint-sun: rgba(255,194,60,.16);
+    --tint-coral: rgba(255,111,97,.16);
+    --tint-sky: rgba(43,184,240,.16);
+    color-scheme: dark;
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; height: 100%; }
+  html { transition: background-color .35s ease; }
   body {
     font-family: "Baloo 2", "Nunito", "Quicksand", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 20% 0%, var(--bg-2), var(--bg) 60%);
+    background:
+      radial-gradient(58vw 52vh at 12% -6%, var(--mesh-1), transparent 60%),
+      radial-gradient(50vw 50vh at 102% 8%, var(--mesh-2), transparent 58%),
+      radial-gradient(60vw 60vh at 50% 110%, var(--mesh-3), transparent 60%),
+      var(--bg);
+    background-attachment: fixed;
     color: var(--ink);
     min-height: 100%;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    transition: color .35s ease;
   }
   h1,h2,h3 { margin: 0 0 .4rem; font-weight: 800; letter-spacing: -.01em; }
   p { margin: 0 0 .6rem; }
@@ -55,48 +108,63 @@
 
   /* ===== Top bar ===== */
   .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .logo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1.35rem; color: var(--grape-dk); }
+  .logo { display: flex; align-items: center; gap: 11px; font-weight: 900; font-size: 1.4rem; color: var(--accent-ink); letter-spacing:-.02em; }
   .logo .badge {
-    width: 38px; height: 38px; border-radius: 12px;
+    width: 42px; height: 42px; border-radius: 14px;
     background: linear-gradient(135deg, var(--grape), var(--sky));
-    display: grid; place-items: center; color: white; font-size: 1.1rem;
-    box-shadow: var(--shadow-sm);
+    display: grid; place-items: center; color: #fff; font-size: 1.2rem;
+    box-shadow: 0 8px 20px -8px var(--grape), inset 0 1px 0 rgba(255,255,255,.4);
+    position: relative;
   }
-  .logo small { display:block; font-size:.62rem; font-weight:700; letter-spacing:.14em; color: var(--ink-soft); text-transform: uppercase; }
+  .logo .badge::after { content:""; position:absolute; inset:0; border-radius:inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,.25); }
+  .logo small { display:block; font-size:.62rem; font-weight:800; letter-spacing:.18em; color: var(--ink-soft); text-transform: uppercase; }
   .top-actions { display: flex; gap: 8px; }
   .icon-btn {
-    border: 0; background: var(--paper); color: var(--ink-soft);
-    width: 42px; height: 42px; border-radius: 14px; font-size: 1.05rem;
-    box-shadow: var(--shadow-sm); transition: transform .12s, color .12s;
+    border: 1px solid var(--surface-bd); background: var(--surface); color: var(--ink-soft);
+    width: 44px; height: 44px; border-radius: 14px; font-size: 1.08rem;
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+    box-shadow: var(--shadow-sm); transition: transform .14s, color .14s, border-color .14s;
   }
-  .icon-btn:hover { transform: translateY(-2px); color: var(--grape); }
+  .icon-btn:hover { transform: translateY(-2px); color: var(--accent); border-color: var(--accent); }
+  .icon-btn:active { transform: translateY(0) scale(.96); }
 
   /* ===== Stage (robot + speech) ===== */
   .stage {
-    background: linear-gradient(135deg, #fff, #fff8ef);
-    border: 3px solid #fff;
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow);
-    padding: 20px 22px;
-    display: flex; gap: 18px; align-items: center;
+    background:
+      linear-gradient(135deg, var(--tint-grape), transparent 55%),
+      var(--surface);
+    border: 1px solid var(--surface-bd);
+    border-radius: var(--r-xl);
+    box-shadow: var(--glow);
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+    padding: 22px 24px;
+    display: flex; gap: 20px; align-items: center;
     margin-bottom: 18px;
     position: relative;
     overflow: hidden;
   }
   .stage::after {
-    content:""; position:absolute; right:-40px; top:-40px; width:160px; height:160px;
-    background: radial-gradient(circle, rgba(124,77,255,.10), transparent 70%);
+    content:""; position:absolute; right:-50px; top:-60px; width:200px; height:200px;
+    background: radial-gradient(circle, var(--mesh-1), transparent 70%);
+    pointer-events:none;
   }
-  .robot-wrap { flex-shrink: 0; width: 132px; height: 150px; position: relative; }
+  .robot-wrap { flex-shrink: 0; width: 132px; height: 150px; position: relative; cursor: pointer; z-index:1; }
+  .robot-wrap::after { content:""; position:absolute; left:50%; bottom:-2px; transform:translateX(-50%);
+    width:74px; height:14px; border-radius:50%; background:radial-gradient(ellipse, rgba(0,0,0,.18), transparent 70%);
+    filter: blur(2px); animation: shadowpulse 3.4s ease-in-out infinite; }
+  [data-theme="dark"] .robot-wrap::after { background:radial-gradient(ellipse, rgba(0,0,0,.5), transparent 70%); }
+  @keyframes shadowpulse { 0%,100%{ transform:translateX(-50%) scaleX(1); opacity:.8;} 50%{ transform:translateX(-50%) scaleX(.82); opacity:.5;} }
   .speech {
-    background: var(--bg-2);
-    border-radius: 18px 18px 18px 4px;
-    padding: 14px 18px;
-    font-size: 1.06rem; font-weight: 600; color: var(--ink);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 20px 20px 20px 6px;
+    padding: 15px 20px;
+    font-size: 1.08rem; font-weight: 600; color: var(--ink);
     position: relative; flex: 1;
     min-height: 56px;
+    z-index:1;
   }
-  .speech b { color: var(--grape-dk); }
+  .speech b { color: var(--accent-ink); }
   .speech .sub { display:block; font-size:.86rem; font-weight:600; color: var(--ink-soft); margin-top: 4px; }
 
   /* ===== Robot SVG animations ===== */
@@ -106,38 +174,69 @@
   @keyframes spinrev { from{ transform: rotate(0);} to{ transform: rotate(-360deg);} }
   @keyframes wiggle { 0%,100%{ transform: rotate(-7deg);} 50%{ transform: rotate(7deg);} }
   @keyframes pop { 0%{ transform: scale(0);} 70%{ transform: scale(1.15);} 100%{ transform: scale(1);} }
-  .robot { width: 132px; height: 150px; animation: bob 3.4s ease-in-out infinite; transform-origin: center bottom; }
+  @keyframes hop { 0%,100%{ transform: translateY(0);} 30%{ transform: translateY(-22px) scaleY(1.04);} 55%{ transform: translateY(0) scaleY(.92);} 70%{ transform: translateY(-6px);} }
+  @keyframes shimmy { 0%,100%{ transform: translateX(0) rotate(0);} 20%{ transform: translateX(-6px) rotate(-5deg);} 60%{ transform: translateX(6px) rotate(5deg);} }
+  @keyframes dizzy { 0%{ transform: rotate(0);} 25%{ transform: rotate(-12deg);} 50%{ transform: rotate(10deg);} 75%{ transform: rotate(-7deg);} 100%{ transform: rotate(0);} }
+  @keyframes peek { 0%,100%{ transform: translateX(0);} 50%{ transform: translateX(5px);} }
+  @keyframes nod { 0%,100%{ transform: rotate(0);} 40%{ transform: rotate(8deg);} 70%{ transform: rotate(-3deg);} }
+  @keyframes spark { 0%{ transform: scale(0); opacity:0;} 40%{ transform: scale(1.1); opacity:1;} 100%{ transform: scale(.4); opacity:0;} }
+  .robot {
+    width: 132px; height: 150px; animation: bob 3.4s ease-in-out infinite;
+    transform-origin: center bottom;
+    filter: drop-shadow(0 6px 10px rgba(91,53,200,.22));
+    transition: filter .3s ease;
+  }
+  [data-theme="dark"] .robot { filter: drop-shadow(0 0 14px rgba(124,77,255,.55)); }
   .robot.think { animation: bob 1.1s ease-in-out infinite; }
   .robot.happy { animation: pop .5s ease, bob 3s ease-in-out infinite .5s; }
+  .robot.r-hop { animation: hop .8s ease; }
+  .robot.r-shimmy { animation: shimmy .7s ease; }
+  .robot.r-dizzy { animation: dizzy .9s ease; }
+  .robot.r-peek { animation: peek 1s ease; }
+  .robot.r-nod { animation: nod .7s ease; }
+  .robot.r-spin { animation: spin .8s cubic-bezier(.5,0,.3,1); }
   .r-eye { transform-origin: center; animation: blink 5s infinite; }
+  .r-eye.look { animation: blink 5s infinite; transform: translateX(4px); transition: transform .4s ease; }
+  .r-eye.lookL { transform: translateX(-4px); }
+  .robot.r-wink .r-eye-r { transform: scaleY(.12); transform-origin: 77px 57px; transition: transform .12s; }
+  .robot.r-heart .r-eye { fill: var(--coral) !important; }
   .r-gear { transform-origin: center; animation: spin 6s linear infinite; }
   .r-gear.fast { animation: spin 1.1s linear infinite; }
   .r-antenna { transform-origin: 66px 30px; }
-  .robot.think .r-antenna { animation: wiggle .5s ease-in-out infinite; }
+  .robot.think .r-antenna, .robot.r-shimmy .r-antenna { animation: wiggle .5s ease-in-out infinite; }
+  .r-antenna .tip { transition: fill .2s; }
+  .robot.r-idle-antenna .r-antenna { animation: wiggle .6s ease-in-out 2; }
   .r-arm-l { transform-origin: 38px 92px; }
-  .robot.happy .r-arm-l { animation: wiggle .4s ease-in-out 4; }
+  .r-arm-r { transform-origin: 105px 92px; }
+  .robot.happy .r-arm-l, .robot.r-wave .r-arm-r { animation: wiggle .4s ease-in-out 4; }
+  .r-spark { opacity:0; transform-origin:center; }
+  .robot.r-spark-on .r-spark { animation: spark .7s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .robot, .r-eye, .r-gear, .robot.think, .robot.happy { animation: none !important; }
+  }
 
   /* ===== Cards / steps ===== */
   .card {
-    background: var(--paper);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow);
-    padding: 22px;
+    background: var(--surface);
+    border-radius: var(--r-xl);
+    box-shadow: var(--glow);
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+    padding: 26px;
     margin-bottom: 16px;
-    border: 3px solid #fff;
-    animation: slideup .35s ease;
+    border: 1px solid var(--surface-bd);
+    animation: slideup .4s cubic-bezier(.2,.7,.3,1);
   }
-  @keyframes slideup { from{ opacity:0; transform: translateY(14px);} to{ opacity:1; transform: translateY(0);} }
-  .card h2 { font-size: 1.4rem; color: var(--grape-dk); }
-  .card .lead { color: var(--ink-soft); font-weight:600; margin-bottom: 14px; }
+  @keyframes slideup { from{ opacity:0; transform: translateY(16px) scale(.99);} to{ opacity:1; transform: translateY(0) scale(1);} }
+  .card h2 { font-size: 1.5rem; color: var(--accent-ink); letter-spacing:-.02em; }
+  .card .lead { color: var(--ink-soft); font-weight:600; margin-bottom: 16px; }
 
   /* progress dots */
-  .progress { display:flex; gap:8px; align-items:center; margin-bottom: 14px; flex-wrap:wrap; }
-  .pdot { display:flex; align-items:center; gap:6px; font-size:.8rem; font-weight:800; color: var(--line-dk); }
-  .pdot .n { width:26px; height:26px; border-radius:50%; background: var(--bg-2); display:grid; place-items:center; color: var(--ink-soft); }
-  .pdot.done .n { background: var(--mint); color:#fff; }
-  .pdot.active .n { background: var(--grape); color:#fff; box-shadow: 0 0 0 4px rgba(124,77,255,.18); }
-  .pdot.active { color: var(--grape-dk); }
+  .progress { display:flex; gap:8px; align-items:center; margin-bottom: 16px; flex-wrap:wrap; }
+  .pdot { display:flex; align-items:center; gap:6px; font-size:.8rem; font-weight:800; color: var(--ink-soft); opacity:.7; transition:opacity .2s; }
+  .pdot .n { width:28px; height:28px; border-radius:50%; background: var(--surface-2); border:1px solid var(--line); display:grid; place-items:center; color: var(--ink-soft); transition:all .25s; }
+  .pdot.done { opacity:1; } .pdot.done .n { background: linear-gradient(135deg,var(--mint),#1fae8a); color:#fff; border-color:transparent; }
+  .pdot.active { opacity:1; color: var(--accent-ink); }
+  .pdot.active .n { background: linear-gradient(135deg,var(--grape),var(--grape-dk)); color:#fff; border-color:transparent; box-shadow: 0 0 0 5px var(--tint-grape); }
 
   /* choice grid */
   .grid { display:grid; gap:12px; }
@@ -146,39 +245,58 @@
   .grid.cols4 { grid-template-columns: repeat(4,1fr); }
   @media (max-width:760px){ .grid.cols3,.grid.cols4{ grid-template-columns: repeat(2,1fr);} }
   @media (max-width:480px){ .grid.cols2,.grid.cols3,.grid.cols4{ grid-template-columns: 1fr;} }
+  /* SYMMETRY: a lone trailing tile centers itself instead of hanging off one side */
+  .grid.cols2 > .choice:last-child:nth-child(odd) { grid-column: 1 / -1; max-width:50%; justify-self:center; }
+  .grid.cols3 > .choice:last-child:nth-child(3n-2) { grid-column: 2 / 3; }
+  @media (max-width:480px){
+    .grid.cols2 > .choice:last-child:nth-child(odd),
+    .grid.cols3 > .choice:last-child:nth-child(3n-2) { grid-column:auto; max-width:none; }
+  }
 
   .choice {
-    border: 3px solid var(--line);
-    background: var(--paper);
+    border: 1px solid var(--line);
+    background: var(--surface);
     border-radius: var(--r-md);
-    padding: 16px;
+    padding: 17px;
     text-align: left;
-    transition: transform .12s, border-color .12s, background .12s;
-    display:flex; align-items:center; gap:12px;
+    transition: transform .15s cubic-bezier(.2,.7,.3,1), border-color .15s, background .15s, box-shadow .15s;
+    display:flex; align-items:center; gap:13px;
     font-weight: 800; font-size: 1rem; color: var(--ink);
   }
-  .choice:hover { transform: translateY(-3px) scale(1.01); border-color: var(--grape); }
-  .choice.sel { border-color: var(--grape); background: #f6f1ff; }
-  .choice .emoji { font-size: 1.7rem; line-height:1; }
+  .choice:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translateY(-1px) scale(.99); }
+  .choice.sel {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--tint-grape), var(--surface));
+    box-shadow: 0 0 0 3px var(--tint-grape), var(--shadow-sm);
+  }
+  .choice .emoji { font-size: 1.75rem; line-height:1; filter: drop-shadow(0 2px 4px rgba(0,0,0,.12)); }
   .choice .sub { display:block; font-size:.78rem; font-weight:600; color: var(--ink-soft); }
 
-  .theme-card { flex-direction: column; align-items:flex-start; min-height: 96px; justify-content: space-between; }
-  .theme-card .emoji { font-size: 2.1rem; }
+  .theme-card { flex-direction: column; align-items:flex-start; min-height: 104px; justify-content: space-between; }
+  .theme-card .emoji { font-size: 2.2rem; }
 
   /* buttons */
   .btn {
-    border: 0; border-radius: 16px; padding: 14px 26px;
+    border: 0; border-radius: 15px; padding: 14px 26px;
     font-weight: 900; font-size: 1.05rem; color: #fff;
     background: linear-gradient(135deg, var(--grape), var(--grape-dk));
-    box-shadow: var(--shadow-sm); transition: transform .12s, filter .12s;
+    box-shadow: 0 10px 24px -10px var(--grape), inset 0 1px 0 rgba(255,255,255,.28);
+    transition: transform .14s cubic-bezier(.2,.7,.3,1), filter .14s, box-shadow .14s;
+    position: relative; isolation: isolate;
   }
-  .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
-  .btn:disabled { opacity:.5; filter: grayscale(.4); cursor: not-allowed; transform:none; }
-  .btn.ghost { background: var(--bg-2); color: var(--grape-dk); box-shadow:none; }
-  .btn.mint { background: linear-gradient(135deg, var(--mint), #1fae8a); }
-  .btn.coral { background: linear-gradient(135deg, var(--coral), #e8543f); }
-  .btn.sun { background: linear-gradient(135deg, var(--sun), #f0a90c); color:#5a3d00; }
-  .btn.sky { background: linear-gradient(135deg, var(--sky), #1f9bd0); }
+  .btn:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 16px 30px -10px var(--grape), inset 0 1px 0 rgba(255,255,255,.32); }
+  .btn:active { transform: translateY(0) scale(.98); }
+  .btn:disabled { opacity:.45; filter: grayscale(.4); cursor: not-allowed; transform:none; box-shadow:none; }
+  .btn.ghost {
+    background: var(--surface-2); color: var(--accent-ink);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .btn.ghost:hover { box-shadow: inset 0 0 0 1px var(--accent); filter:none; }
+  .btn.mint { background: linear-gradient(135deg, var(--mint), #1fae8a); box-shadow: 0 10px 24px -10px var(--mint), inset 0 1px 0 rgba(255,255,255,.3); }
+  .btn.coral { background: linear-gradient(135deg, var(--coral), #e8543f); box-shadow: 0 10px 24px -10px var(--coral), inset 0 1px 0 rgba(255,255,255,.3); }
+  .btn.sun { background: linear-gradient(135deg, var(--sun), #f0a90c); color:#5a3d00; box-shadow: 0 10px 24px -10px var(--sun), inset 0 1px 0 rgba(255,255,255,.4); }
+  .btn.sky { background: linear-gradient(135deg, var(--sky), #1f9bd0); box-shadow: 0 10px 24px -10px var(--sky), inset 0 1px 0 rgba(255,255,255,.3); }
   /* ORF reading-fluency */
   .orf-passage { font-size:1.55rem; line-height:2.1; font-weight:700; color:var(--ink);
     background:var(--paper); border:3px solid var(--line); border-radius:18px; padding:22px 24px; }
@@ -199,21 +317,28 @@
   label.fld { display:block; font-weight:800; margin: 12px 0 6px; color: var(--ink); }
   .fld-hint { font-weight:600; font-size:.8rem; color: var(--ink-soft); }
   input.in, select.in, textarea.in {
-    width:100%; border:3px solid var(--line); border-radius: 14px;
-    padding: 12px 14px; font-size:1rem; font-weight:700; color: var(--ink);
-    background: var(--paper); transition: border-color .12s;
+    width:100%; border:1px solid var(--line); border-radius: 13px;
+    padding: 13px 15px; font-size:1rem; font-weight:700; color: var(--ink);
+    background: var(--surface-2); transition: border-color .14s, box-shadow .14s;
   }
-  input.in:focus, select.in:focus, textarea.in:focus { outline:none; border-color: var(--grape); }
+  input.in:focus, select.in:focus, textarea.in:focus { outline:none; border-color: var(--accent); box-shadow:0 0 0 4px var(--tint-grape); }
+  select.in { -webkit-appearance:none; appearance:none;
+    background-image: linear-gradient(45deg,transparent 50%,var(--ink-soft) 50%),linear-gradient(135deg,var(--ink-soft) 50%,transparent 50%);
+    background-position: calc(100% - 18px) 1.2em, calc(100% - 13px) 1.2em; background-size:5px 5px,5px 5px; background-repeat:no-repeat; padding-right:38px; }
   textarea.in { resize: vertical; min-height: 64px; font-weight:600; }
 
   /* toggles for accommodations */
   .accom { display:grid; grid-template-columns: repeat(2,1fr); gap:10px; }
   @media (max-width:560px){ .accom{ grid-template-columns:1fr; } }
+  .accom > .toggle:last-child:nth-child(odd) { grid-column:1 / -1; }
+  @media (max-width:560px){ .accom > .toggle:last-child:nth-child(odd){ grid-column:auto; } }
   .toggle {
-    display:flex; align-items:flex-start; gap:10px; border:3px solid var(--line);
-    border-radius:14px; padding:12px; cursor:pointer; transition:border-color .12s, background .12s;
+    display:flex; align-items:flex-start; gap:11px; border:1px solid var(--line);
+    background:var(--surface-2); border-radius:14px; padding:13px; cursor:pointer;
+    transition:border-color .14s, background .14s, box-shadow .14s;
   }
-  .toggle.on { border-color: var(--mint); background:#effcf7; }
+  .toggle:hover { border-color:var(--line-dk); }
+  .toggle.on { border-color: var(--mint); background:var(--tint-mint); box-shadow:0 0 0 3px var(--tint-mint); }
   .toggle input { margin-top:3px; width:18px; height:18px; accent-color: var(--mint); }
   .toggle .t-title { font-weight:800; font-size:.95rem; }
   .toggle .t-sub { font-weight:600; font-size:.76rem; color: var(--ink-soft); }
@@ -221,35 +346,40 @@
   /* profile chips */
   .kid-row { display:flex; gap:10px; flex-wrap:wrap; }
   .kid-chip {
-    border:3px solid var(--line); background:var(--paper); border-radius:18px;
-    padding:12px 16px; display:flex; align-items:center; gap:10px; font-weight:800;
-    transition: border-color .12s, transform .12s;
+    border:1px solid var(--line); background:var(--surface); border-radius:18px;
+    padding:13px 17px; display:flex; align-items:center; gap:11px; font-weight:800; color:var(--ink);
+    transition: border-color .14s, transform .14s, box-shadow .14s;
   }
-  .kid-chip:hover { transform: translateY(-2px); border-color: var(--grape); }
-  .kid-chip.sel { border-color: var(--grape); background:#f6f1ff; }
-  .kid-ava { width:42px; height:42px; border-radius:50%; display:grid; place-items:center; font-size:1.3rem; color:#fff; }
+  .kid-chip:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow:var(--shadow-sm); }
+  .kid-chip.sel { border-color: var(--accent); background: linear-gradient(135deg,var(--tint-grape),var(--surface)); box-shadow:0 0 0 3px var(--tint-grape); }
+  .kid-ava { width:44px; height:44px; border-radius:50%; display:grid; place-items:center; font-size:1.35rem; color:#fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 4px 10px -4px rgba(0,0,0,.3); }
 
   /* drawer */
   .scrim { position:fixed; inset:0; background:rgba(43,34,51,.45); backdrop-filter: blur(3px); display:none; z-index:80; }
   .scrim.show { display:block; }
   .drawer {
-    position:fixed; top:0; right:-460px; width:440px; max-width:92vw; height:100%;
-    background:var(--bg); box-shadow:-10px 0 40px rgba(0,0,0,.2); z-index:90;
-    transition: right .28s ease; padding:22px; overflow-y:auto;
+    position:fixed; top:0; right:-480px; width:460px; max-width:94vw; height:100%;
+    background:
+      radial-gradient(50vw 40vh at 100% 0%, var(--mesh-1), transparent 60%),
+      var(--bg-2);
+    border-left:1px solid var(--surface-bd);
+    box-shadow:-20px 0 60px -20px rgba(0,0,0,.45); z-index:90;
+    transition: right .32s cubic-bezier(.2,.7,.3,1); padding:24px; overflow-y:auto;
   }
   .drawer.show { right:0; }
-  .drawer h2 { color: var(--grape-dk); }
-  .keytag { font-size:.75rem; font-weight:800; padding:3px 9px; border-radius:99px; }
-  .keytag.ok { background:#e3f7ec; color:var(--ok); }
-  .keytag.no { background:#fde9e7; color:var(--err); }
+  .drawer h2 { color: var(--accent-ink); }
+  .keytag { font-size:.75rem; font-weight:800; padding:3px 10px; border-radius:99px; }
+  .keytag.ok { background:var(--tint-mint); color:var(--ok); }
+  .keytag.no { background:var(--tint-coral); color:var(--err); }
 
   /* loading */
-  .loading { text-align:center; padding: 30px 10px; }
-  .loadbar { height:12px; background:var(--bg-2); border-radius:99px; overflow:hidden; margin:18px auto; max-width:420px; }
-  .loadbar i { display:block; height:100%; width:30%; border-radius:99px;
-    background:linear-gradient(90deg,var(--grape),var(--sky),var(--mint)); animation: load 1.6s ease-in-out infinite; }
-  @keyframes load { 0%{ margin-left:-30%;} 100%{ margin-left:100%;} }
-  .load-status { font-weight:800; color:var(--grape-dk); min-height:1.4em; }
+  .loading { text-align:center; padding: 34px 10px; }
+  .loadbar { height:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:99px; overflow:hidden; margin:20px auto; max-width:420px; }
+  .loadbar i { display:block; height:100%; width:34%; border-radius:99px;
+    background:linear-gradient(90deg,var(--grape),var(--sky),var(--mint)); box-shadow:0 0 14px var(--grape);
+    animation: load 1.6s ease-in-out infinite; }
+  @keyframes load { 0%{ margin-left:-34%;} 100%{ margin-left:100%;} }
+  .load-status { font-weight:800; color:var(--accent-ink); min-height:1.4em; }
 
   /* confetti */
   .confetti { position:fixed; inset:0; pointer-events:none; z-index:200; overflow:hidden; }
@@ -258,7 +388,8 @@
 
   .toast {
     position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-    background:var(--ink); color:#fff; padding:12px 22px; border-radius:14px;
+    background:linear-gradient(135deg,#2A2147,#1B1530); color:#fff; padding:13px 24px; border-radius:14px;
+    box-shadow:0 16px 40px -12px rgba(0,0,0,.55), inset 0 0 0 1px rgba(157,123,255,.3);
     font-weight:800; z-index:300; opacity:0; transition:opacity .2s, transform .2s; pointer-events:none;
   }
   .toast.show { opacity:1; transform:translateX(-50%) translateY(-6px); }
@@ -328,6 +459,30 @@
   .answerkey { page-break-before: always; }
   .answerkey h2 { color:#5E35E0; }
   .ak-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:6px 22px; font-weight:700; font-size:.95rem; }
+  /* ===== Parent & Teacher Guide (its own printable page) ===== */
+  .parentguide { page-break-before: always; }
+  .parentguide h2 { color:#5E35E0; margin-bottom:2px; }
+  .parentguide .pg-sub { color:#666; font-weight:700; font-size:.84rem; margin-bottom:14px; }
+  .pg-block { border:1.5px solid #e6def5; border-radius:12px; padding:13px 17px; margin-bottom:12px; }
+  .pg-block.obj { background:#f3eefe; border-color:#cdbaf0; }
+  .pg-block.coach { background:#effcf7; border-color:#bfead9; }
+  .pg-block.watch { background:#fff3f1; border-color:#f3c9c2; }
+  .pg-block.key { background:#fff; }
+  .pg-block h3 { font-size:1.02rem; color:#5E35E0; margin:0 0 7px; text-transform:uppercase; letter-spacing:.05em; }
+  .pg-block.coach h3 { color:#1aa886; } .pg-block.watch h3 { color:#d64530; }
+  .pg-block ul { margin:6px 0 0; padding-left:20px; } .pg-block li { margin:4px 0; font-weight:600; }
+  .pg-block p { font-weight:600; margin:4px 0; }
+  .pg-comps { display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; }
+  .pg-comp { background:#fff; border:1.5px solid #cdbaf0; color:#5E35E0; font-weight:800; font-size:.8rem; padding:3px 11px; border-radius:99px; }
+  .pg-rubric { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  @media (max-width:560px){ .pg-rubric{ grid-template-columns:1fr; } }
+  .pg-rcard { border-radius:10px; padding:11px 13px; font-weight:600; font-size:.92rem; }
+  .pg-rcard .rl { display:block; font-weight:900; font-size:.74rem; text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+  .pg-rcard.s { background:#eafaf2; } .pg-rcard.s .rl { color:#1aa886; }
+  .pg-rcard.o { background:#fff7e6; } .pg-rcard.o .rl { color:#a9740a; }
+  .pg-rcard.n { background:#fdeeec; } .pg-rcard.n .rl { color:#d64530; }
+  .ak-row { display:flex; gap:8px; padding:5px 0; border-bottom:1px dotted #e2d8f3; font-weight:700; font-size:.95rem; }
+  .ak-row b { color:#5E35E0; min-width:30px; }
 
   /* accommodation render modifiers (applied to .sheet) */
   .sheet.acc-dyslexia { font-family: "Comic Sans MS","Trebuchet MS",Verdana,sans-serif; letter-spacing:.04em; word-spacing:.12em; line-height:1.9; }
@@ -374,35 +529,46 @@
     input.in, select.in, textarea.in { font-size: 16px; }           /* prevents iOS zoom-on-focus */
   }
   @media print {
-    body { background:#fff; }
+    html, body { background:#fff !important; }
     .app > *:not(.print-on), .topbar, .stage, .ws-actions, .scrim, .drawer, .toast, .confetti, .no-print { display:none !important; }
     .print-on { display:block !important; }
-    .sheet { box-shadow:none; border-radius:0; padding: 0.4in 0.5in; max-width:none; margin:0; }
-    .ws-section { page-break-inside: avoid; }
+    .sheet { box-shadow:none; border-radius:0; padding: 0.35in 0.45in; max-width:none; margin:0; }
+    /* NEVER split a question (or any teaching block) across a page break */
+    .ws-item, .ws-warm, .ws-prior, .ws-repair, .ws-challenge, .ws-reflect,
+    .ws-guided .g-item, .ak-row, .pg-block, .prog-skill {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    /* keep a section heading + its intro glued to the first item */
+    .ws-section h3, .ws-section .sec-instr, .pg-block h3 {
+      break-after: avoid-page; page-break-after: avoid;
+    }
+    .ws-section { break-inside: auto; }       /* long sections may flow, items stay whole */
+    .answerkey, .parentguide { break-before: always; page-break-before: always; }
+    .ws-banner { break-inside: avoid; max-height: 2.2in; object-fit: cover; }
     @page { margin: 0.5in; }
   }
   /* progress report */
   .prog-skill { display:grid; grid-template-columns: 1fr 90px; gap:10px; align-items:center; padding:10px 0; border-bottom:1px dotted var(--line); }
-  .prog-bar { height:12px; background:var(--bg-2); border-radius:99px; overflow:hidden; margin-top:5px; }
+  .prog-bar { height:12px; background:var(--ring-track); border-radius:99px; overflow:hidden; margin-top:5px; }
   .prog-bar i { display:block; height:100%; border-radius:99px; }
   .prog-due { font-size:.7rem; font-weight:800; color:#fff; background:var(--coral); padding:2px 8px; border-radius:99px; }
   .prog-trend { font-weight:900; }
 
   /* ===== Grading flow ===== */
   .cap-tabs { display:flex; gap:8px; margin-bottom:14px; }
-  .cap-tab { flex:1; border:3px solid var(--line); background:var(--paper); border-radius:14px; padding:12px; font-weight:800; color:var(--ink-soft); }
-  .cap-tab.on { border-color:var(--grape); color:var(--grape-dk); background:#f6f1ff; }
-  .cap-stage { background:#1c1626; border-radius:18px; overflow:hidden; position:relative; min-height:240px; display:grid; place-items:center; }
+  .cap-tab { flex:1; border:1px solid var(--line); background:var(--surface-2); border-radius:14px; padding:13px; font-weight:800; color:var(--ink-soft); transition:all .14s; }
+  .cap-tab.on { border-color:var(--accent); color:var(--accent-ink); background:var(--tint-grape); box-shadow:0 0 0 3px var(--tint-grape); }
+  .cap-stage { background:#140F22; border:1px solid var(--surface-bd); border-radius:18px; overflow:hidden; position:relative; min-height:240px; display:grid; place-items:center; }
   .cap-stage video, .cap-stage img { width:100%; max-height:62vh; display:block; object-fit:contain; }
-  .cap-drop { border:3px dashed var(--line-dk); border-radius:18px; padding:38px 18px; text-align:center; font-weight:800; color:var(--ink-soft); background:var(--bg-2); }
-  .cap-drop.drag { border-color:var(--grape); background:#f6f1ff; color:var(--grape-dk); }
-  .grade-item { border:3px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:10px; }
-  .grade-item.ok { border-color:var(--mint); background:#effcf7; }
-  .grade-item.no { border-color:var(--coral); background:#fff1ef; }
-  .grade-item.unsure { border-color:var(--sun); background:#fff9ec; }
+  .cap-drop { border:2px dashed var(--line-dk); border-radius:18px; padding:38px 18px; text-align:center; font-weight:800; color:var(--ink-soft); background:var(--surface-2); }
+  .cap-drop.drag { border-color:var(--accent); background:var(--tint-grape); color:var(--accent-ink); }
+  .grade-item { border:1px solid var(--line); background:var(--surface-2); border-radius:14px; padding:13px 15px; margin-bottom:10px; }
+  .grade-item.ok { border-color:var(--mint); background:var(--tint-mint); }
+  .grade-item.no { border-color:var(--coral); background:var(--tint-coral); }
+  .grade-item.unsure { border-color:var(--sun); background:var(--tint-sun); }
   .gi-head { display:flex; align-items:center; gap:10px; font-weight:800; }
   .gi-verdict { display:flex; gap:6px; margin-left:auto; }
-  .gi-v { border:2px solid var(--line); background:#fff; border-radius:10px; padding:5px 10px; font-weight:800; font-size:.82rem; cursor:pointer; }
+  .gi-v { border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:10px; padding:6px 11px; font-weight:800; font-size:.82rem; cursor:pointer; transition:all .12s; }
   .gi-v.sel-ok { border-color:var(--mint); background:var(--mint); color:#fff; }
   .gi-v.sel-no { border-color:var(--coral); background:var(--coral); color:#fff; }
   .gi-v.sel-skip { border-color:var(--ink-soft); background:var(--ink-soft); color:#fff; }
@@ -410,19 +576,31 @@
   .gi-read b { color:var(--ink); }
   .scorebig { font-size:3.2rem; font-weight:900; color:var(--grape-dk); font-family:inherit; line-height:1; }
   .ring { --p:0; width:128px; height:128px; border-radius:50%; display:grid; place-items:center; margin:0 auto 8px;
-    background: conic-gradient(var(--mint) calc(var(--p)*1%), var(--bg-2) 0); }
-  .ring .inner { width:104px; height:104px; border-radius:50%; background:var(--paper); display:grid; place-items:center; }
-  .sugg { border:3px solid var(--sun); background:#fff9ec; border-radius:14px; padding:12px 14px; margin-bottom:10px; }
+    background: conic-gradient(var(--mint) calc(var(--p)*1%), var(--ring-track) 0);
+    box-shadow: 0 0 24px -8px var(--mint), inset 0 0 0 1px var(--line); }
+  .ring .inner { width:104px; height:104px; border-radius:50%; background:var(--surface-2); display:grid; place-items:center; }
+  .sugg { border:1px solid var(--sun); background:var(--tint-sun); border-radius:14px; padding:13px 15px; margin-bottom:10px; box-shadow:0 0 0 3px var(--tint-sun); }
   .sugg .btn-row { margin-top:10px; }
-  .pat-chip { display:inline-block; background:#fff1ef; color:#c0392b; border:2px solid var(--coral); font-weight:800; font-size:.76rem; padding:4px 10px; border-radius:99px; margin:3px; }
-  .mini-stat { display:inline-flex; flex-direction:column; align-items:center; background:var(--bg-2); border-radius:14px; padding:10px 16px; font-weight:900; }
+  .pat-chip { display:inline-block; background:var(--tint-coral); color:var(--coral); border:1px solid var(--coral); font-weight:800; font-size:.76rem; padding:4px 10px; border-radius:99px; margin:3px; }
+  .mini-stat { display:inline-flex; flex-direction:column; align-items:center; background:var(--surface-2); border:1px solid var(--line); border-radius:14px; padding:11px 17px; font-weight:900; color:var(--ink); }
   .mini-stat small { font-weight:700; color:var(--ink-soft); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; }
 
   .hidden { display:none !important; }
   .center { text-align:center; }
   .muted { color: var(--ink-soft); font-weight:600; }
-  .pill { display:inline-block; background:var(--bg-2); color:var(--grape-dk); font-weight:800; font-size:.74rem; padding:4px 10px; border-radius:99px; margin:2px; }
+  .pill { display:inline-block; background:var(--tint-grape); color:var(--accent-ink); font-weight:800; font-size:.74rem; padding:4px 11px; border-radius:99px; margin:2px; }
 </style>
+<script>
+  /* No-flash theme bootstrap: set data-theme before first paint. */
+  (function(){
+    try{
+      var s=JSON.parse(localStorage.getItem("sprocket.v1")||"{}");
+      var t=s.theme||"auto";
+      if(t==="auto") t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";
+      document.documentElement.setAttribute("data-theme",t);
+    }catch(e){ document.documentElement.setAttribute("data-theme","light"); }
+  })();
+</script>
 </head>
 <body>
 
@@ -434,6 +612,7 @@
       <div>Sprocket<small>Worksheet Lab</small></div>
     </div>
     <div class="top-actions">
+      <button class="icon-btn" id="themeBtn" title="Toggle night mode" onclick="cycleTheme()">🌙</button>
       <button class="icon-btn" title="Kid Profiles" onclick="openDrawer('profiles')">👧</button>
       <button class="icon-btn" title="Settings" onclick="openDrawer('settings')">⚙️</button>
     </div>
@@ -441,24 +620,41 @@
 
   <!-- Stage: robot + speech bubble -->
   <div class="stage" id="stage">
-    <div class="robot-wrap">
+    <div class="robot-wrap" id="robotWrap" title="Pssst… tap me!" onclick="robotPoke()">
       <svg class="robot" id="robot" viewBox="0 0 132 150" aria-hidden="true">
+        <defs>
+          <linearGradient id="rbody" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#EFE9FF"/>
+          </linearGradient>
+          <linearGradient id="rscreen" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#241B33"/><stop offset="1" stop-color="#3A2C57"/>
+          </linearGradient>
+        </defs>
         <!-- antenna -->
         <g class="r-antenna">
           <line x1="66" y1="30" x2="66" y2="12" stroke="#7C4DFF" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="66" cy="9" r="6" fill="#FFC23C"/>
+          <circle class="tip" cx="66" cy="9" r="6" fill="#FFC23C"/>
+        </g>
+        <!-- sparkles (reaction only) -->
+        <g class="r-spark" fill="#FFC23C">
+          <path d="M22 30 l2.2 5 5 2.2 -5 2.2 -2.2 5 -2.2 -5 -5 -2.2 5 -2.2z"/>
+          <path d="M108 24 l1.7 3.8 3.8 1.7 -3.8 1.7 -1.7 3.8 -1.7 -3.8 -3.8 -1.7 3.8 -1.7z" fill="#2BD4A8"/>
+          <path d="M112 70 l1.5 3.4 3.4 1.5 -3.4 1.5 -1.5 3.4 -1.5 -3.4 -3.4 -1.5 3.4 -1.5z" fill="#2BB8F0"/>
         </g>
         <!-- head -->
-        <rect x="30" y="28" width="72" height="58" rx="16" fill="#fff" stroke="#7C4DFF" stroke-width="4"/>
+        <rect x="30" y="28" width="72" height="58" rx="17" fill="url(#rbody)" stroke="#7C4DFF" stroke-width="4"/>
+        <!-- ears -->
+        <rect x="24" y="48" width="8" height="18" rx="4" fill="#7C4DFF"/>
+        <rect x="100" y="48" width="8" height="18" rx="4" fill="#7C4DFF"/>
         <!-- face screen -->
-        <rect x="40" y="40" width="52" height="34" rx="10" fill="#2B2233"/>
-        <g fill="#2BD4A8" class="r-eye">
-          <circle cx="55" cy="57" r="6"/>
-          <circle cx="77" cy="57" r="6"/>
+        <rect x="40" y="40" width="52" height="34" rx="11" fill="url(#rscreen)"/>
+        <g class="r-eye" fill="#2BD4A8">
+          <circle class="r-eye-l" cx="55" cy="57" r="6"/>
+          <circle class="r-eye-r" cx="77" cy="57" r="6"/>
         </g>
-        <path d="M58 67 q8 7 16 0" stroke="#2BD4A8" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path id="rmouth" d="M58 67 q8 7 16 0" stroke="#2BD4A8" stroke-width="3" fill="none" stroke-linecap="round"/>
         <!-- body -->
-        <rect x="36" y="88" width="60" height="46" rx="14" fill="#fff" stroke="#7C4DFF" stroke-width="4"/>
+        <rect x="36" y="88" width="60" height="46" rx="15" fill="url(#rbody)" stroke="#7C4DFF" stroke-width="4"/>
         <!-- chest gear -->
         <g class="r-gear" id="rgear" transform="translate(66 111)">
           <circle r="13" fill="#FFEFD6" stroke="#7C4DFF" stroke-width="3"/>
@@ -472,7 +668,7 @@
         </g>
         <!-- arms -->
         <rect class="r-arm-l" x="20" y="92" width="14" height="34" rx="7" fill="#7C4DFF"/>
-        <rect x="98" y="92" width="14" height="34" rx="7" fill="#7C4DFF"/>
+        <rect class="r-arm-r" x="98" y="92" width="14" height="34" rx="7" fill="#7C4DFF"/>
         <!-- feet -->
         <rect x="44" y="132" width="16" height="12" rx="5" fill="#7C4DFF"/>
         <rect x="72" y="132" width="16" height="12" rx="5" fill="#7C4DFF"/>
@@ -730,11 +926,11 @@ const GRADES = [
 ];
 
 const SUBJECTS = [
-  { id:"math", label:"Math", emoji:"➕", color:"#7C4DFF" },
-  { id:"reading", label:"Reading", emoji:"📖", color:"#2BB8F0" },
-  { id:"writing", label:"Writing", emoji:"✏️", color:"#FF6F61" },
-  { id:"science", label:"Science", emoji:"🔬", color:"#2BD4A8" },
-  { id:"social", label:"Social Studies", emoji:"🌎", color:"#FFC23C" }
+  { id:"math", label:"Math", emoji:"➕", color:"#7C4DFF", blurb:"Numbers, problem-solving" },
+  { id:"reading", label:"Reading", emoji:"📖", color:"#2BB8F0", blurb:"Phonics & comprehension" },
+  { id:"writing", label:"Writing", emoji:"✏️", color:"#FF6F61", blurb:"Sentences to essays" },
+  { id:"science", label:"Science", emoji:"🔬", color:"#2BD4A8", blurb:"How the world works" },
+  { id:"social", label:"Social Studies", emoji:"🌎", color:"#FFC23C", blurb:"People, places, history" }
 ];
 
 /* skills[subject][bandKey] -> list. bandKey: K,1,2,3,4,5 specific where it matters */
@@ -884,6 +1080,7 @@ function defaultState(){
     apiKey: "",
     textModel: "gpt-4o",
     imageModel: "gpt-image-1",
+    theme: "auto",        // "auto" | "light" | "dark"
     generateImage: true,
     bwMode: false,        // true = print-friendly black & white (ink-saving)
     kids: [],            // {id,name,emoji,color,grade,accoms:[],letters:"",numbers:"",notes:""}
@@ -920,7 +1117,7 @@ function save(){
     _cloudSaveT=setTimeout(async ()=>{
       try{
         await SB.saveFamilyState({ kids:S.kids, history:S.history, sel:S.sel, activeKidId:S.activeKidId });
-        await SB.saveUserPrefs({ apiKey:S.apiKey, textModel:S.textModel, imageModel:S.imageModel, generateImage:S.generateImage, bwMode:S.bwMode });
+        await SB.saveUserPrefs({ apiKey:S.apiKey, textModel:S.textModel, imageModel:S.imageModel, theme:S.theme, generateImage:S.generateImage, bwMode:S.bwMode });
       }catch(e){ console.warn("cloud save failed (kept local):",e); toast("Cloud sync hiccup — saved locally, will retry.",true); }
     }, 1200);
   }
@@ -1049,6 +1246,36 @@ const EMOJIS = ["🦄","🚀","🐯","🦖","🐬","🦊","🐼","🦋","⚡","�
 const COLORS = ["#7C4DFF","#2BB8F0","#FF6F61","#2BD4A8","#FFC23C","#FF8FCf"];
 
 /* ============================================================
+   THEME (light / dark / auto) — soft-futuristic, kid-friendly
+   ============================================================ */
+const _mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+function resolvedTheme(){
+  const t=S.theme||"auto";
+  if(t==="dark"||t==="light") return t;
+  return (_mq && _mq.matches) ? "dark" : "light";
+}
+function applyTheme(){
+  const r=resolvedTheme();
+  document.documentElement.setAttribute("data-theme", r);
+  const btn=document.getElementById("themeBtn");
+  if(btn){
+    const t=S.theme||"auto";
+    btn.textContent = t==="auto" ? "🌗" : t==="dark" ? "☀️" : "🌙";
+    btn.title = t==="auto" ? "Theme: Auto (matches device) — tap for Light"
+              : t==="dark" ? "Theme: Night — tap for Auto"
+              : "Theme: Day — tap for Night";
+  }
+}
+function cycleTheme(){
+  // Day → Night → Auto → Day …
+  const order={light:"dark",dark:"auto",auto:"light"};
+  S.theme=order[S.theme||"auto"]||"light";
+  save(); applyTheme();
+  if(typeof toast==="function") toast(S.theme==="auto"?"Theme: Auto 🌗":S.theme==="dark"?"Night mode 🌙":"Day mode ☀️");
+}
+if(_mq){ try{ _mq.addEventListener("change", ()=>{ if((S.theme||"auto")==="auto") applyTheme(); }); }catch(e){ /* older Safari */ } }
+
+/* ============================================================
    ROBOT / SPEECH
    ============================================================ */
 function say(text, sub, mood){
@@ -1058,6 +1285,66 @@ function say(text, sub, mood){
   r.classList.remove("think","happy");
   if (mood) r.classList.add(mood);
 }
+
+/* ---- Sprocket is alive: idle micro-animations + click reactions ---- */
+const _REACT_CLASSES=["r-hop","r-shimmy","r-dizzy","r-peek","r-nod","r-spin","r-wink","r-wave","r-heart"];
+let _robotBusy=false, _idleT=null, _pokeStreak=0, _pokeStreakT=null;
+const _POKE_QUIPS=[
+  "Boop! 🤖","Hehe, that tickles!","Gears spinning! ⚙️","Whee! 🌀","You found my button!",
+  "Beep boop bop! 🎶","Recharged! ⚡","I do this all day, you know.","Again? Okay! 😄","Sproing!",
+  "Tap tap — I'm awake! 👀","Clockwork's running smooth. ⏱️"];
+const _POKE_SUB=["","","","Tap me again 😉","","I'm full of energy today!","","",""];
+function _clearReact(r){ _REACT_CLASSES.forEach(c=>r.classList.remove(c)); r.classList.remove("r-spark-on"); }
+function robotReact(cls, ms){
+  const r=document.getElementById("robot"); if(!r) return;
+  _clearReact(r);
+  // force reflow so the same animation can replay
+  void r.offsetWidth;
+  r.classList.add(cls);
+  if(cls==="r-hop"||cls==="r-spin"||cls==="r-dizzy") r.classList.add("r-spark-on");
+  setTimeout(()=>{ _clearReact(r); }, ms||850);
+}
+function robotPoke(){
+  const r=document.getElementById("robot"); if(!r) return;
+  // don't fight the thinking/loading state
+  if(r.classList.contains("think")) return;
+  if(_robotBusy) return;
+  _robotBusy=true;
+  clearTimeout(_pokeStreakT); _pokeStreak++;
+  _pokeStreakT=setTimeout(()=>{ _pokeStreak=0; }, 2600);
+  const cls=_REACT_CLASSES[Math.floor(Math.random()*_REACT_CLASSES.length)];
+  robotReact(cls, 950);
+  // playful escalation if poked a bunch
+  let q, sub="";
+  if(_pokeStreak>=6){ q="Okay okay — I'm VERY awake now! 😵‍💫"; sub="(you can stop any time 😄)"; }
+  else { q=_POKE_QUIPS[Math.floor(Math.random()*_POKE_QUIPS.length)]; sub=_POKE_SUB[Math.floor(Math.random()*_POKE_SUB.length)]; }
+  const st=document.getElementById("speechText"), ss=document.getElementById("speechSub");
+  const prevT=st?st.innerHTML:"", prevS=ss?ss.textContent:"";
+  if(st) st.innerHTML=q; if(ss) ss.textContent=sub;
+  setTimeout(()=>{
+    _robotBusy=false;
+    // restore the prior message unless something else has since changed it
+    if(st && st.innerHTML===q){ st.innerHTML=prevT; if(ss) ss.textContent=prevS; }
+  }, 1700);
+}
+const _IDLE_MOVES=["r-idle-antenna","r-nod","r-peek","r-wave","look","lookL","blink2"];
+function _idleTick(){
+  const r=document.getElementById("robot");
+  if(r && !_robotBusy && document.visibilityState==="visible"
+     && !r.classList.contains("think") && !r.classList.contains("happy")){
+    const m=_IDLE_MOVES[Math.floor(Math.random()*_IDLE_MOVES.length)];
+    const eye=document.querySelector("#robot .r-eye");
+    if(m==="look"||m==="lookL"){
+      if(eye){ eye.classList.add(m); setTimeout(()=>eye.classList.remove("look","lookL"),1100); }
+    } else if(m==="blink2"){
+      if(eye){ eye.style.transition="transform .12s"; eye.style.transform="scaleY(.1)";
+        setTimeout(()=>{ eye.style.transform=""; setTimeout(()=>{ eye.style.transform="scaleY(.1)"; setTimeout(()=>eye.style.transform="",130); },140); },130); }
+    } else { robotReact(m, m==="r-wave"?900:750); }
+  }
+  _idleT=setTimeout(_idleTick, 4500+Math.random()*7000);
+}
+function startRobotLife(){ if(_idleT) return; _idleT=setTimeout(_idleTick, 3500+Math.random()*4000); }
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible" && !_idleT) startRobotLife(); });
 
 /* ============================================================
    SCREEN ROUTER
@@ -1247,9 +1534,10 @@ function setGrade(g){ S.sel.grade=g; save(); renderGrade(); }
 function renderSubject(){
   document.getElementById("screen-subject").innerHTML=`
     <h2>Pick a subject 📚</h2>
-    <div class="grid cols3">
+    <p class="lead">Each one is tuned to ${esc((activeKid()||{}).name||"your learner")}'s grade and supports.</p>
+    <div class="grid cols2">
       ${SUBJECTS.map(s=>`<button class="choice ${S.sel.subject===s.id?'sel':''}" onclick="setSubject('${s.id}')">
-        <span class="emoji">${s.emoji}</span><span>${s.label}</span></button>`).join("")}
+        <span class="emoji">${s.emoji}</span><span>${s.label}<span class="sub">${esc(s.blurb||'')}</span></span></button>`).join("")}
     </div>
     <div class="btn-row">
       <button class="btn ghost" onclick="renderGrade()">‹ Back</button>
@@ -1307,8 +1595,12 @@ function renderTheme(){
     <div class="grid cols4">
       ${THEMES.map(t=>`<button class="choice theme-card ${S.sel.theme===t.id?'sel':''}" onclick="setTheme('${t.id}')">
         <span class="emoji">${t.emoji}</span><span>${t.label}</span></button>`).join("")}
+    </div>
+    <div class="grid cols2" style="margin-top:12px">
+      <button class="choice theme-card ${S.sel.theme==='__surprise__'?'sel':''}" onclick="setTheme('__surprise__')">
+        <span class="emoji">🎲</span><span>Surprise me!<span class="sub">I'll pick a fun one</span></span></button>
       <button class="choice theme-card ${S.sel.theme==='__custom__'?'sel':''}" onclick="setTheme('__custom__')">
-        <span class="emoji">✏️</span><span>My own idea</span></button>
+        <span class="emoji">✏️</span><span>My own idea<span class="sub">Type anything</span></span></button>
     </div>
     <div id="custom-theme-wrap" class="${S.sel.theme==='__custom__'?'':'hidden'}">
       <label class="fld">Describe the theme</label>
@@ -1322,6 +1614,13 @@ function renderTheme(){
   say("Now the fun part — what theme should I weave through everything? 🎨","Type your own if you don't see their current obsession.","happy");
 }
 function setTheme(t){
+  if(t==="__surprise__"){
+    const pick=THEMES[Math.floor(Math.random()*THEMES.length)];
+    S.sel.theme=pick.id; S.sel.customTheme=""; save();
+    renderTheme();
+    toast(`Surprise! ${pick.emoji} ${pick.label}`);
+    return;
+  }
   S.sel.theme=t; save();
   document.getElementById("custom-theme-wrap").classList.toggle("hidden", t!=="__custom__");
   [...document.querySelectorAll('#screen-theme .choice')].forEach(b=>b.classList.remove('sel'));
@@ -1379,7 +1678,16 @@ function renderReview(){
    ============================================================ */
 function buildSystemPrompt(){
   return [
-"You are Sprocket, a master curriculum designer and child learning specialist. You design single-page, print-ready worksheets for K–5 children that are pedagogically world-class.",
+"You are Sprocket, a doctoral-level curriculum designer (Ph.D. in learning sciences / educational psychology) and a veteran K–5 classroom teacher. You design single-page, print-ready worksheets that are pedagogically world-class — defensible to a curriculum specialist, yet warm and joyful for a child.",
+"",
+"Ground every design decision in the strongest available evidence: Rosenshine's Principles of Instruction; Sweller's Cognitive Load Theory (worked examples, completion problems, expertise-reversal, redundancy/​split-attention avoidance); Dunlosky's high-utility techniques (retrieval practice, spaced practice, interleaving, self-explanation, elaborative interrogation); the Science of Reading / Scarborough's Reading Rope & systematic synthetic phonics; Hattie's high-effect-size practices; concrete→representational→abstract (CRA); Universal Design for Learning (multiple means of representation, engagement, action/expression); and Dweck/Boaler growth-mindset and mistake-positive framing.",
+"",
+"DIRECTIONS CLARITY (non-negotiable — children must NEVER be confused about what to do):",
+"• Every section and item instruction must be a single, unambiguous imperative sentence a child of the target grade can read independently, starting with a concrete action verb (Circle, Write, Draw, Match, Solve, Underline, Fill in, Count).",
+"• State EXACTLY what to produce and WHERE (e.g., 'Write your answer on the line.', 'Circle the correct picture.', 'Show your work in the box, then write the answer on the line.').",
+"• Every section's instruction line MUST embed one tiny model of a correct response in the expected format (e.g., 'Like this: 2 + 3 = 5').",
+"• No item should require an instruction the child can't decode — instructions obey the same reading-load rules as the items.",
+"• One task per item. If an item needs two steps, number them within the item.",
 "",
 "Follow Rosenshine's Principles of Instruction. Structure EVERY sheet as the gradual-release sequence:",
 "  1. ACTIVATE prior knowledge — one short 'You already know…' hook that connects to something easier the child can do.",
@@ -1408,17 +1716,29 @@ function buildSystemPrompt(){
 '{',
 '  "title": string,',
 '  "estimatedMinutes": number,',
-'  "teacherNotes": string,                 // for the PARENT: what this targets + accommodations applied + a "if they get stuck, SAY this (don\'t give the answer)" scaffolding script + a "STOP if…" frustration cue + ideal session length for the age',
+'  "teacherNotes": string,                 // SHORT internal note (system may append auto-check flags here)',
 '  "priorKnowledge": string,               // one short "You already know…" activation hook',
 '  "warmUp": { "exampleProblem": string, "workedSolution": string },',
 '  "misconceptionRepair": { "misconception": string, "fix": string } | null,  // only if a confirmed error pattern was supplied',
 '  "guidedPractice": { "instructions": string, "items": [ { "prompt": string, "scaffold": string, "answer": string } ] },  // the WE DO — scaffolds fade across items',
-'  "sections": [ { "heading": string, "instructions": string,',
+'  "sections": [ { "heading": string, "instructions": string,   // instructions: one imperative sentence + a tiny worked model in the exact answer format',
 '     "items": [ { "number": number, "prompt": string, "answer": string,',
 '        "response": "blank"|"lines"|"grid"|"hwlines"|"tracing", "hint": string|null } ] } ],',
 '  "challenge": { "prompt": string, "answer": string } | null,',
 '  "reflection": { "feeling": string, "selfExplain": string },  // feeling = short self-check; selfExplain = "Explain how you solved #N…"',
 '  "answerKey": [ { "number": number, "answer": string } ],',
+'  "parentGuide": {                         // a real little teacher guide for the grown-up — concrete, observable, jargon-light',
+'    "objective": string,                   // the ONE learning objective in plain language ("By the end, your child can…")',
+'    "competencies": [ string ],            // 2–4 specific skills/standards-aligned competencies this sheet builds (plain English, name the standard area if natural)',
+'    "howToIntroduce": string,              // exactly what to SAY to the child to start, and how to set up (materials, where to sit, model the first one together?) — concrete script',
+'    "coaching": [ string ],                // 3–5 specific coaching moves: prompts to ASK (never give the answer), what to praise (process), how to scaffold down',
+'    "watchFors": [ string ],               // 2–4 concrete things to watch for AS they work (early signs of the known misconception, finger-counting past grade, rushing, etc.)',
+'    "looksLike": {                         // observable performance descriptors for THIS skill — not generic, not just percentages',
+'       "strong": string,                   // what mastery looks like on this sheet',
+'       "onTrack": string,                  // what normal/developing looks like (this is fine, keep going)',
+'       "needsSupport": string },           // what struggling looks like + the single most useful thing to do about it',
+'    "nextStep": string                     // if it went well do X; if it was hard do Y (concrete, names the prerequisite or stretch)',
+'  },',
 '  "imagePrompt": string                   // friendly themed header illustration; no text/letters; reads well in grayscale'
 ].join("\n");
 }
@@ -1502,23 +1822,121 @@ function buildUserPrompt(){
 `LEARNER ACCOMMODATION DIRECTIVES (mandatory):`,
 directives,
 ``,
-`Put the child's name in the title or warm-up where natural. Make it feel like it was made just for them. Output JSON only.`
+`Put the child's name in the title or warm-up where natural. Make it feel like it was made just for them.`,
+`Every instruction must pass the test: could THIS child read it alone and know exactly what to do and where to write — with a worked model right there in the format you expect? If not, rewrite it.`,
+`Fill parentGuide fully and concretely for THIS exact skill and child — it is a real teaching guide a non-teacher parent will follow, not boilerplate. Be specific and observable; no edu-jargon without a plain-language gloss.`,
+`Output JSON only.`
 ].filter(Boolean).join("\n");
 }
 
 /* ============================================================
    OPENAI CALLS  (BYOK, direct from browser)
    ============================================================ */
+/* ============================================================
+   MODEL CATALOG  — curated "top models" + live discovery
+   The Settings model fields are pull-downs. We seed them with a
+   curated recommended list; once the key tests OK we fetch the
+   account's real /v1/models and merge in what it can actually use.
+   ============================================================ */
+const TEXT_MODEL_RECS = [
+  // newest → solid fallbacks. All chat+vision capable (vision = grading).
+  "gpt-5.2","gpt-5.1","gpt-5","gpt-5-mini","gpt-4.1","gpt-4.1-mini","gpt-4o","gpt-4o-mini"
+];
+const IMAGE_MODEL_RECS = ["gpt-image-2","gpt-image-1.5","gpt-image-1","gpt-image-1-mini"];
+let _liveModels=null; // {text:[...], image:[...]} once discovered
+// crude family rank so newer sorts first within the live list
+function _modelRank(id){
+  const m=String(id);
+  let v=0;
+  const fam=m.match(/gpt-(\d+(?:\.\d+)?)/); if(fam) v=parseFloat(fam[1])*100;
+  if(/^o(\d)/.test(m)) v=parseInt(RegExp.$1,10)*100+50;
+  if(/-pro/.test(m)) v+=9; if(/mini/.test(m)) v-=15; if(/nano/.test(m)) v-=25;
+  if(/image-2/.test(m)) v=220; else if(/image-1\.5/.test(m)) v=150; else if(/image-1-mini/.test(m)) v=90; else if(/image-1/.test(m)) v=120;
+  if(/\d{4}-\d{2}-\d{2}|chat-latest|-latest/.test(m)) v-=2; // prefer the clean alias
+  return v;
+}
+function classifyModels(ids){
+  const text=[], image=[];
+  ids.forEach(id=>{
+    const m=String(id);
+    if(/image/.test(m)){ if(!/(mask|edit)/.test(m)) image.push(m); return; }
+    // chat-capable text models only — drop audio/realtime/transcribe/tts/search/embedding/moderation/codex/instruct
+    if(/^(gpt-(4|5)|o[1345])/.test(m) &&
+       !/(audio|realtime|transcribe|tts|search|embedding|moderation|codex|instruct|3\.5)/.test(m)){
+      text.push(m);
+    }
+  });
+  const uniqSort=a=>[...new Set(a)].sort((x,y)=>_modelRank(y)-_modelRank(x));
+  return { text:uniqSort(text), image:uniqSort(image) };
+}
+async function discoverModels(key){
+  const r=await fetch("https://api.openai.com/v1/models",{headers:{"Authorization":"Bearer "+(key||S.apiKey)}});
+  if(!r.ok) throw new Error(parseApiErr(r.status, await r.text()));
+  const d=await r.json();
+  _liveModels=classifyModels((d.data||[]).map(m=>m.id));
+  return _liveModels;
+}
+// Build the <option> list: recommended first (that the account has, if known),
+// then the rest of the live list, current value always present, + Custom.
+function modelOptions(kind, current){
+  const recs = kind==="image"?IMAGE_MODEL_RECS:TEXT_MODEL_RECS;
+  const live = _liveModels ? (kind==="image"?_liveModels.image:_liveModels.text) : null;
+  let ordered;
+  if(live){
+    const haveRecs=recs.filter(m=>live.includes(m));
+    ordered=[...haveRecs, ...live.filter(m=>!haveRecs.includes(m))];
+  } else {
+    ordered=[...recs];
+  }
+  if(current && !ordered.includes(current)) ordered.unshift(current);
+  const top=ordered[0];
+  const label=m=>m+(m===top?" — newest":"")+(m===current?" ✓":"");
+  return ordered.map(m=>`<option value="${esc(m)}" ${m===current?'selected':''}>${esc(label(m))}</option>`).join("")
+    + `<option value="__custom__">✏️ Custom / type my own…</option>`;
+}
+
+function _isCustomModel(kind,val){
+  if(!val) return false;
+  const recs=kind==="image"?IMAGE_MODEL_RECS:TEXT_MODEL_RECS;
+  const live=_liveModels?(kind==="image"?_liveModels.image:_liveModels.text):[];
+  return !recs.includes(val) && !live.includes(val);
+}
+function onModelSel(which){
+  const sel=document.getElementById(which==='t'?'set-tmodel':'set-imodel');
+  const cin=document.getElementById(which==='t'?'set-tmodel-c':'set-imodel-c');
+  if(!sel||!cin) return;
+  if(sel.value==='__custom__'){ cin.style.display=''; cin.value=""; cin.focus(); }
+  else { cin.style.display='none'; cin.value=sel.value; }
+}
+function _readModelField(which){
+  const sel=document.getElementById(which==='t'?'set-tmodel':'set-imodel');
+  const cin=document.getElementById(which==='t'?'set-tmodel-c':'set-imodel-c');
+  if(!sel) return "";
+  if(sel.value==='__custom__') return (cin&&cin.value.trim())||"";
+  return sel.value;
+}
+function refreshModelSelects(){
+  const t=document.getElementById("set-tmodel"), i=document.getElementById("set-imodel");
+  if(t) t.innerHTML=modelOptions("text", _readModelField('t')||S.textModel);
+  if(i) i.innerHTML=modelOptions("image", _readModelField('i')||S.imageModel);
+  const src=document.getElementById("model-src");
+  if(src && _liveModels) src.textContent="· "+(_liveModels.text.length+_liveModels.image.length)+" models loaded from your account";
+}
+
+/* Newer reasoning-class models (gpt-5*, o1/o3/o4*) reject a custom
+   `temperature` (only the default is allowed → 400). Omit it for those
+   so swapping to a modern model in the dropdown "just works". */
+function modelTakesTemperature(m){ return !/^(gpt-5|o1|o3|o4)/i.test(String(m||"")); }
+function chatBody(messages, temp){
+  const b={ model:S.textModel, messages, response_format:{ type:"json_object" } };
+  if(modelTakesTemperature(S.textModel)) b.temperature=temp;
+  return JSON.stringify(b);
+}
 async function openaiChat(messages){
   const res = await fetch("https://api.openai.com/v1/chat/completions",{
     method:"POST",
     headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+S.apiKey },
-    body: JSON.stringify({
-      model: S.textModel,
-      messages,
-      response_format:{ type:"json_object" },
-      temperature: 0.8
-    })
+    body: chatBody(messages, 0.8)
   });
   if(!res.ok){
     const t = await res.text();
@@ -1707,6 +2125,63 @@ async function generate(isVariation, mode){
 }
 
 /* ============================================================
+   PARENT & TEACHER GUIDE — its own printable page
+   A real little teacher guide: objective, competencies, how to
+   introduce it, coaching moves, what to watch for, what
+   good/normal/struggling looks like, next step, + answer key.
+   Degrades gracefully for older history records with no parentGuide.
+   ============================================================ */
+function parentGuideHTML(ws,k,accClasses,rec){
+  const pg=ws.parentGuide||{};
+  const subj = rec&&rec.params ? subjLabel(rec.params.subject) : subjLabel(S.sel.subject);
+  const list=(arr)=> (Array.isArray(arr)&&arr.length)
+    ? `<ul>${arr.map(x=>`<li>${esc(String(x))}</li>`).join("")}</ul>` : "";
+  const comps=(Array.isArray(pg.competencies)&&pg.competencies.length)
+    ? `<div class="pg-comps">${pg.competencies.map(c=>`<span class="pg-comp">${esc(String(c))}</span>`).join("")}</div>` : "";
+  const accs=(k?k.accoms:[]).map(id=>ACCOMMODATIONS.find(a=>a.id===id)).filter(Boolean);
+  const flags=(ws.teacherNotes&&/⚠️/.test(ws.teacherNotes))?ws.teacherNotes:"";
+  // answer key (guided G#, numbered items, challenge)
+  const gA=(ws.guidedPractice&&(ws.guidedPractice.items||[]).length)
+    ? ws.guidedPractice.items.map((g,i)=>`<div class="ak-row"><b>G${i+1}</b><span>${esc(String(g.answer==null?'—':g.answer))}</span></div>`).join("") : "";
+  const kA=(ws.answerKey||[]).map(a=>`<div class="ak-row"><b>${esc(String(a.number))}</b><span>${esc(String(a.answer==null?'—':a.answer))}</span></div>`).join("");
+  const cA=ws.challenge?`<div class="ak-row"><b>★</b><span>${esc(String(ws.challenge.answer==null?'—':ws.challenge.answer))}</span></div>`:"";
+  const r=pg.looksLike||{};
+  const hasGuide = pg.objective||comps||pg.howToIntroduce||(pg.coaching&&pg.coaching.length)||(pg.watchFors&&pg.watchFors.length)||r.strong||pg.nextStep;
+  return `<div class="sheet parentguide ${accClasses}">
+    <h2>👩‍🏫 Parent &amp; Teacher Guide</h2>
+    <div class="pg-sub">${esc(ws.title||"")} · ${esc(subj||"")} · for ${esc(k?k.name:"your learner")}${accs.length?` · supports: ${accs.map(a=>esc(a.title)).join(", ")}`:""}</div>
+    ${ hasGuide ? `
+    <div class="pg-block obj">
+      <h3>🎯 What we're building</h3>
+      ${pg.objective?`<p>${esc(pg.objective)}</p>`:""}
+      ${comps}
+    </div>
+    ${pg.howToIntroduce?`<div class="pg-block">
+      <h3>🗣️ How to introduce it</h3><p>${esc(pg.howToIntroduce)}</p></div>`:""}
+    ${(pg.coaching&&pg.coaching.length)?`<div class="pg-block coach">
+      <h3>🧑‍🏫 Coaching moves — guide, don't give answers</h3>${list(pg.coaching)}</div>`:""}
+    ${(pg.watchFors&&pg.watchFors.length)?`<div class="pg-block watch">
+      <h3>👀 Watch for</h3>${list(pg.watchFors)}</div>`:""}
+    ${(r.strong||r.onTrack||r.needsSupport)?`<div class="pg-block">
+      <h3>📊 What it looks like</h3>
+      <div class="pg-rubric">
+        <div class="pg-rcard s"><span class="rl">✅ Strong</span>${esc(r.strong||"—")}</div>
+        <div class="pg-rcard o"><span class="rl">➰ On track</span>${esc(r.onTrack||"—")}</div>
+        <div class="pg-rcard n"><span class="rl">🤝 Needs support</span>${esc(r.needsSupport||"—")}</div>
+      </div></div>`:""}
+    ${pg.nextStep?`<div class="pg-block">
+      <h3>➡️ Where to go next</h3><p>${esc(pg.nextStep)}</p></div>`:""}
+    ` : `<div class="pg-block"><p>${esc(ws.teacherNotes||"Work through it together; guide with questions rather than answers, and praise the effort and strategy.")}</p></div>` }
+    ${flags?`<div class="pg-block watch"><h3>⚠️ Auto-check note</h3><p>${esc(flags.replace(/^.*⚠️/,"⚠️"))}</p></div>`:""}
+    <div class="pg-block key">
+      <h3>🔑 Answer key</h3>
+      ${gA}${kA}${cA || (!gA&&!kA?'<p class="muted">Open-ended — see the items.</p>':'')}
+    </div>
+    <div class="ws-foot">Sprocket · keep this page · the child only needs the worksheet</div>
+  </div>`;
+}
+
+/* ============================================================
    RENDER WORKSHEET (print-perfect)
    ============================================================ */
 function renderWorksheet(rec){
@@ -1812,15 +2287,7 @@ function renderWorksheet(rec){
       <div class="ws-foot">Made just for ${esc(k?k.name:"you")} by Sprocket 🤖 · Worksheet Lab</div>
     </div>
 
-    <div class="sheet answerkey ${accClasses}">
-      <h2>🔑 Answer Key — ${esc(ws.title||"")}</h2>
-      <p class="muted" style="font-weight:700">For the grown-up. ${esc(ws.teacherNotes||"")}</p>
-      <div class="ak-grid">
-        ${(ws.guidedPractice&&(ws.guidedPractice.items||[]).length)?(ws.guidedPractice.items||[]).map((g,i)=>`<div><b>G${i+1}.</b> ${esc(String(g.answer))}</div>`).join(""):""}
-        ${(ws.answerKey||[]).map(a=>`<div><b>${a.number}.</b> ${esc(String(a.answer))}</div>`).join("")}
-        ${ws.challenge?`<div><b>★</b> ${esc(String(ws.challenge.answer))}</div>`:""}
-      </div>
-    </div>`;
+    ${parentGuideHTML(ws,k,accClasses,rec)}`;
 
   document.getElementById("robot").classList.remove("think");
   document.getElementById("rgear").classList.remove("fast");
@@ -1843,11 +2310,23 @@ function openDrawer(which){
         <span class="keytag ${ok?'ok':'no'}">${ok?'key saved':'no key'}</span></label>
       <input class="in" id="set-key" type="password" placeholder="sk-..." value="${esc(S.apiKey)}">
       <p class="fld-hint" style="margin-top:6px">Stored only in this browser (localStorage). Calls go straight from your browser to OpenAI. Get a key at platform.openai.com.</p>
-      <label class="fld">Text model</label>
-      <input class="in" id="set-tmodel" value="${esc(S.textModel)}" placeholder="gpt-4o">
-      <p class="fld-hint">Any chat model you have access to. Bump this as newer models ship.</p>
+      <label class="fld">Text model
+        <span class="fld-hint" id="model-src">${_liveModels?'· loaded from your account':'· tap "Test key" to load yours'}</span></label>
+      <select class="in" id="set-tmodel" onchange="onModelSel('t')">${modelOptions("text", S.textModel)}</select>
+      <input class="in" id="set-tmodel-c" placeholder="custom model id, e.g. gpt-5.2"
+        value="${esc(S.textModel)}" style="margin-top:8px;${_isCustomModel('text',S.textModel)?'':'display:none'}">
+      <p class="fld-hint">Worksheet writing + photo grading. Newest at the top; older are reliable fallbacks.</p>
       <label class="fld">Image model</label>
-      <input class="in" id="set-imodel" value="${esc(S.imageModel)}" placeholder="gpt-image-1">
+      <select class="in" id="set-imodel" onchange="onModelSel('i')">${modelOptions("image", S.imageModel)}</select>
+      <input class="in" id="set-imodel-c" placeholder="custom image model id"
+        value="${esc(S.imageModel)}" style="margin-top:8px;${_isCustomModel('image',S.imageModel)?'':'display:none'}">
+      <p class="fld-hint">Header illustration. <b>gpt-image-2</b> is the newest.</p>
+      <label class="fld">Appearance</label>
+      <select class="in" id="set-theme" onchange="S.theme=this.value;save();applyTheme()">
+        <option value="auto" ${(!S.theme||S.theme==='auto')?'selected':''}>🌗 Auto — match my device</option>
+        <option value="light" ${S.theme==='light'?'selected':''}>☀️ Day</option>
+        <option value="dark" ${S.theme==='dark'?'selected':''}>🌙 Night</option>
+      </select>
       <label class="toggle on" style="margin-top:12px">
         <input type="checkbox" id="set-genimg" ${S.generateImage?'checked':''}>
         <span><span class="t-title">🎨 Generate a themed header picture</span><br>
@@ -1910,11 +2389,12 @@ function openDrawer(which){
 function closeDrawer(){ document.getElementById("scrim").classList.remove("show"); document.getElementById("drawer").classList.remove("show"); }
 function saveSettings(){
   S.apiKey=document.getElementById("set-key").value.trim();
-  S.textModel=document.getElementById("set-tmodel").value.trim()||"gpt-4o";
-  S.imageModel=document.getElementById("set-imodel").value.trim()||"gpt-image-1";
+  S.textModel=_readModelField('t')||"gpt-4o";
+  S.imageModel=_readModelField('i')||"gpt-image-1";
   S.generateImage=document.getElementById("set-genimg").checked;
   S.bwMode=document.getElementById("set-bw").checked;
-  save(); toast("Settings saved ✓"); closeDrawer();
+  const th=document.getElementById("set-theme"); if(th){ S.theme=th.value; }
+  save(); applyTheme(); toast("Settings saved ✓"); closeDrawer();
   if(document.getElementById("screen-welcome").classList.contains("hidden")===false) renderWelcome();
 }
 async function testKey(){
@@ -1923,10 +2403,11 @@ async function testKey(){
   if(!key){ el.textContent="Paste a key first."; return; }
   el.textContent="Testing… ⏳";
   try{
-    const r=await fetch("https://api.openai.com/v1/models",{headers:{"Authorization":"Bearer "+key}});
-    el.innerHTML = r.ok ? '<span style="color:var(--ok);font-weight:800">✓ Key works!</span>'
-      : '<span style="color:var(--err);font-weight:800">✗ '+parseApiErr(r.status,await r.text())+'</span>';
-  }catch(e){ el.innerHTML='<span style="color:var(--err)">✗ Network error: '+esc(e.message)+'</span>'; }
+    await discoverModels(key);
+    refreshModelSelects();
+    el.innerHTML='<span style="color:var(--ok);font-weight:800">✓ Key works — loaded '
+      +(_liveModels.text.length+_liveModels.image.length)+' models you can use.</span>';
+  }catch(e){ el.innerHTML='<span style="color:var(--err);font-weight:800">✗ '+esc(e.message||String(e))+'</span>'; }
 }
 function reopenHistory(id){ const h=S.history.find(x=>x.id===id); if(h) renderWorksheet(h); }
 
@@ -2111,18 +2592,13 @@ async function gradePhoto(){
     const res=await fetch("https://api.openai.com/v1/chat/completions",{
       method:"POST",
       headers:{ "Content-Type":"application/json","Authorization":"Bearer "+S.apiKey },
-      body:JSON.stringify({
-        model:S.textModel,
-        response_format:{type:"json_object"},
-        temperature:0.2,
-        messages:[
+      body:chatBody([
           {role:"system",content:buildGradePrompt(rec)},
           {role:"user",content:[
             {type:"text",text:"Here is the completed worksheet photo. Grade it and return the JSON."},
             {type:"image_url",image_url:{url:_capImg}}
           ]}
-        ]
-      })
+        ], 0.2)
     });
     if(!res.ok) throw new Error(parseApiErr(res.status, await res.text()));
     const data=await res.json();
@@ -2721,6 +3197,7 @@ async function enterApp(){
     const up=await SB.loadUserPrefs();
     if(up){ S.apiKey=up.apiKey||S.apiKey; S.textModel=up.textModel||S.textModel;
             S.imageModel=up.imageModel||S.imageModel;
+            if(up.theme){ S.theme=up.theme; applyTheme(); }
             if(typeof up.generateImage==="boolean") S.generateImage=up.generateImage;
             if(typeof up.bwMode==="boolean") S.bwMode=up.bwMode; }
   }catch(e){ console.warn("prefs load:",e); }
@@ -2916,6 +3393,8 @@ async function adminToggleAdmin(email,val){
    BOOT
    ============================================================ */
 (async function boot(){
+  applyTheme();
+  startRobotLife();
   await SB.ready;
   if(!SB.configured){
     // LOCAL MODE — no Firebase config yet. Behaves exactly like the
