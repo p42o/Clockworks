@@ -454,6 +454,11 @@
   .sheet .ws-section h3 { font-size:1.15rem; color:#5E35E0; border-bottom:2px dotted #cbb9ee; padding-bottom:4px; }
   .sheet .ws-section .sec-instr { font-weight:700; color:#333; margin:6px 0 12px; }
   .sheet .ws-item { display:flex; gap:12px; padding:9px 0; align-items:flex-start; }
+  /* circle-choice items are compact: stem + chips, no dead write line */
+  .sheet .ws-item.compact { padding:7px 0; align-items:center; }
+  .sheet .ws-item.compact .qbody { display:flex; align-items:center; flex-wrap:wrap; gap:6px 14px; }
+  .sheet .ws-item.compact .ws-q { margin:0; }
+  .sheet .ws-item.compact .ws-choices { margin:0; }
   .sheet .ws-item .qn { font-weight:900; color:#5E35E0; min-width:26px; }
   .sheet .ws-item .qbody { flex:1; }
   .sheet .ws-q { font-weight:700; font-size:1.02rem; }
@@ -520,8 +525,10 @@
   .sheet.acc-tint.answerkey, .sheet.acc-tint .answerkey { background:#FBF3DF; }
   .sheet.acc-big { font-size:1.12rem; }
   .sheet.acc-big .ws-item { padding:14px 0; }
-  .sheet.acc-spaced .ws-item { padding: 16px 0; }
-  .sheet.acc-spaced { line-height: 2; }
+  .sheet.acc-spaced .ws-item { padding: 14px 0; }
+  .sheet.acc-spaced { line-height: 1.8; }
+  /* keep compact choice items compact even with spacing accommodations */
+  .sheet.acc-spaced .ws-item.compact, .sheet.acc-big .ws-item.compact { padding: 9px 0; }
   /* Print-friendly black & white: ink-saving, grayscales everything incl. the
      header image, forces a white page even if a tint accommodation is on. */
   .sheet.bw { filter: grayscale(1) contrast(1.05); background:#fff !important; }
@@ -1720,7 +1727,7 @@ function buildSystemPrompt(){
 "",
 "Use Rosenshine's gradual release UNDER THE HOOD, but the page must look and read like a clean, ordinary worksheet a non-teacher parent instantly recognizes — NOT a lesson plan. Pedagogy is invisible scaffolding, never academic labels.",
 "  1. priorKnowledge — ONE short, friendly, plain sentence ('You can already count to 10!'). Optional; keep it light, not a heading.",
-"  2. warmUp — exactly ONE fully worked EXAMPLE that models the thinking. This is the ONLY place on the child's page where a complete answer is shown, and it is clearly a demonstration the child only reads (the app labels it 'Example — just look'). Make exampleProblem DIFFERENT numbers/words from every real item.",
+"  2. warmUp — exactly ONE fully worked EXAMPLE. `exampleProblem` = a sample item (different words/numbers from every real item). `workedSolution` = the THINKING plus the ANSWER actually shown — it MUST be different from exampleProblem and MUST reveal the answer (this is the one place an answer appears). Good: exampleProblem 'Which word has sh: dish, dig?' workedSolution 'I say /sh/ at the end of dish. So I circle dish.' BAD (rejected): workedSolution that just repeats the instruction or names no answer.",
 "  3. guidedPractice — 2–3 'warm up together' items. The `scaffold` is a SHORT STRATEGY HINT only (e.g., 'Start with the bigger number.', 'Stretch each sound.'). CRITICAL: the scaffold must NOT state the answer, must NOT count/spell out the steps that arrive at the answer, and must NOT fill any of it in. The child still solves it. `answer` is for the answer key only and is never printed on the child page.",
 "  4. sections — the independent practice, easy→hard. This is the bulk of the page.",
 "  5. reflection — a tiny feeling self-check; selfExplain only for grade 3+ (omit/empty for K–2; one task per item for little kids).",
@@ -1742,9 +1749,11 @@ function buildSystemPrompt(){
 "PAPER-DOABLE — ABSOLUTE (this is the #1 failure to prevent):",
 "• The sheet has NO instructional pictures. There is exactly ONE decorative header illustration the child never interacts with. Therefore NEVER write a task that depends on looking at a picture/image/illustration/icon: no 'circle the picture', 'match the picture', 'look at the picture', 'which picture shows…'. If a task would need a picture, redesign it to use PRINTED WORDS/LETTERS/NUMBERS instead.",
 "• Every item must be 100% completable with only the printed text on the page and the child's pencil. Before finalizing each item ask: 'Could a child do this with just this text and a pencil?' If not, rewrite it.",
-"• For any 'choose / circle / pick the correct one' task you MUST supply `options`: 2–4 SHORT printed choices (words, letters, sounds, or numbers) the child circles. The renderer prints them as circle-able chips. Put the correct choice (verbatim, exactly as it appears in options) in `answer`.",
+"• For any choose / circle / pick task you MUST supply `options`: 2–4 SHORT printed choices the child circles. CRITICAL: the choice words go ONLY in the `options` array — they must NOT also appear in the `prompt`. The renderer prints `options` as circle-able chips; if you also put them in the prompt they show twice and the sheet looks broken. Put the correct choice verbatim (exactly one of the options) in `answer`.",
+"• ITEM PROMPT vs SECTION INSTRUCTION (this is causing confusing sheets): the imperative + the worked 'Like this:' model belong in the section `instructions` ONCE. An item's `prompt` is ONLY the specific thing to act on — for a choose task that is usually an EMPTY string \"\" (the chips ARE the item) or a 1–4-word stem. NEVER restate 'Circle the word with X:' on every item. Example of a correct item: { prompt:\"\", options:[\"brush\",\"rush\"], answer:\"brush\" }. The section instruction already told them what to do.",
+"• NO matching / 'draw a line' / 'connect' / two-column / ↔ tasks — the sheet cannot draw connector lines. Convert any matching idea into a circle-one-with-`options` item instead.",
 "• To have the child supply a word with support, set a section `wordBank` (printed words) and use blank/lines items.",
-"• `tracing` is allowed only when the child literally traces given letters/numbers; put exactly what to trace in `tracingText` (NOT the prompt sentence).",
+"• `tracing` is allowed only when the child literally traces given letters/numbers; put exactly what to trace in `tracingText` (NOT the prompt sentence). Never use response 'tracing' for a reading/choosing task.",
 "• HINTS leak answers — forbidden. A hint must NOT state, spell, name, count out, or otherwise contain the answer OR the target sound/letter/number being asked for. Phonics example: item 'Circle the blend in: brave' — 'Listen for the /br/ sound' is FORBIDDEN (br IS the answer); 'Say the word slowly — which two letters blend together at the very start?' is good. Math example: answer 12 — 'Count on from the bigger number' good; 'It's 12' or 'count 10, 11, 12' forbidden.",
 "• Independent (`sections`) items: prefer NO `hint` at all — independent practice is retrieval; the warm-up + guided steps already scaffolded. Only add a section-item hint if it is a pure strategy that reveals nothing. Strategy hints belong in `guidedPractice.scaffold`.",
 "",
@@ -1775,7 +1784,7 @@ function buildSystemPrompt(){
 '        "options": [string]|null,           // 2–4 printed choices the child CIRCLES (required for any choose/circle/pick task; answer must equal one option verbatim)',
 '        "tracingText": string|null,         // ONLY for response:"tracing" — the exact letters/numbers to trace',
 '        "response": "blank"|"lines"|"grid"|"hwlines"|"tracing", "hint": string|null } ] } ],  // hint = strategy only, never reveals the answer',
-'  "challenge": { "prompt": string, "answer": string, "options": [string]|null } | null,  // must also be paper-doable (no picture dependency)',
+'  "challenge": { "prompt": string, "answer": string, "options": [string]|null } | null,  // paper-doable: a short written answer OR options to circle. NO tracing, NO matching, NO picture. Keep it ONE clear task.',
 '  "reflection": { "feeling": string, "selfExplain": string },  // feeling = short self-check; selfExplain = "Explain how you solved #N…"',
 '  "answerKey": [ { "number": number, "answer": string } ],',
 '  "parentGuide": {                         // a real little teacher guide for the grown-up — concrete, observable, jargon-light',
@@ -2052,6 +2061,85 @@ function tryArithmetic(prompt){
   if(op==='-') return a-b;
   return null;
 }
+/* ============================================================
+   NORMALIZE — make every item render correctly regardless of how
+   sloppily the model returned it. The model often (a) jams the
+   answer choices into the prompt sentence instead of `options`,
+   (b) repeats the section instruction on every item, (c) uses a
+   match/draw-a-line task the sheet can't draw. We repair all that
+   here so the child gets a clean, doable sheet.
+   ============================================================ */
+function _splitChoices(s){
+  s=String(s||"").trim().replace(/[.?!]+$/,"");
+  if(s.length>70) return null;
+  if(!/[,/;↔]| or | vs /i.test(s)) return null;
+  const toks=s.split(/\s*(?:,| or | vs |;|\/|↔|↔️)\s*/i)
+    .map(t=>t.trim()).filter(Boolean);
+  if(toks.length<2 || toks.length>4) return null;
+  if(toks.some(t=>t.length>24 || t.split(/\s+/).length>3)) return null;
+  return toks;
+}
+function _looksChoosy(t){ return /\b(circle|choose|pick|match|underline|tick|mark|which|connect|draw a line)\b/i.test(String(t||"")); }
+function _coreInstr(s){ return stripMd(String(s||"")).replace(/\bLike this:.*/i,"").replace(/[\s:.\-–—]+$/,"").trim().toLowerCase(); }
+function _normItem(it, secInstr){
+  if(!it) return;
+  let p=stripMd(it.prompt||"").trim();
+  const hasOpts=Array.isArray(it.options)&&it.options.filter(o=>o!=null&&String(o).trim()).length>=2;
+  // 1) extract inline choices into options[] when missing
+  if(!hasOpts && (_looksChoosy(p)||_looksChoosy(secInstr)||_looksChoosy(it.instructions))){
+    let cand=p, head="";
+    const ci=p.lastIndexOf(":");
+    if(ci>=0){ head=p.slice(0,ci).trim(); cand=p.slice(ci+1).trim(); }
+    let toks=_splitChoices(cand);
+    if(!toks && ci<0) toks=_splitChoices(p);
+    if(toks){
+      it.options=toks;
+      // drop the choice list (and a leading restated instruction) from the prompt
+      p = (ci>=0 ? head : "").trim();
+    }
+  }
+  // 2) kill a prompt that just restates the section instruction
+  if(p && secInstr){
+    const cp=_coreInstr(p), cs=_coreInstr(secInstr);
+    if(cp && (cp===cs || (cs.length>8 && cp.startsWith(cs)) || (cp.length>8 && cs.startsWith(cp)))) p="";
+  }
+  it.prompt=p;
+  // 3) de-↔ the answer; if it became a single clean option keep it sane
+  if(it.answer!=null){
+    let a=stripMd(it.answer).replace(/\s*↔.*$/,"").replace(/[.?!]+$/,"").trim();
+    if(Array.isArray(it.options)&&it.options.length){
+      const m=it.options.find(o=>String(o).trim().toLowerCase()===a.toLowerCase());
+      if(m) a=m;
+    }
+    it.answer=a;
+  }
+  // 4) tracing without text → not tracing (avoid an empty tracing strip)
+  if(it.response==="tracing" && !String(it.tracingText||"").trim()){
+    if(Array.isArray(it.options)&&it.options.length>=2) it.response="blank";
+    else { it.tracingText=String(it.answer||"").trim()||null; if(!it.tracingText) it.response="lines"; }
+  }
+}
+function normalizeWS(ws){
+  if(!ws||typeof ws!=="object") return ws;
+  (ws.sections||[]).forEach(sec=>{
+    const si=sec&&sec.instructions||"";
+    (sec&&sec.items||[]).forEach(it=>_normItem(it, si));
+  });
+  if(ws.guidedPractice) (ws.guidedPractice.items||[]).forEach(g=>_normItem(g, ws.guidedPractice.instructions||""));
+  if(ws.challenge) _normItem(ws.challenge, "");
+  // collapse an empty/duplicate worked example so it doesn't print the
+  // instruction twice with no answer shown
+  if(ws.warmUp){
+    const ep=stripMd(ws.warmUp.exampleProblem||"").replace(/\s+/g,"").toLowerCase();
+    let so=stripMd(ws.warmUp.workedSolution||"");
+    const son=so.replace(/\s+/g,"").toLowerCase();
+    if(!son || son===ep || son.indexOf(ep)===0 && so.length<ws.warmUp.exampleProblem.length+4){
+      ws.warmUp._weak=true;
+    }
+  }
+  return ws;
+}
+
 function collectItems(ws){
   const out=[];
   if(ws.guidedPractice) (ws.guidedPractice.items||[]).forEach((g,i)=>out.push({number:"G"+(i+1),prompt:g.prompt,answer:g.answer,_guided:i}));
@@ -2133,6 +2221,11 @@ async function generate(isVariation, mode){
     let ws;
     try{ ws=JSON.parse(raw); }
     catch(e){ ws=JSON.parse(raw.replace(/^[^{]*/,"").replace(/[^}]*$/,"")); }
+
+    // ---- Normalize: guarantee items render correctly even if the model
+    // jams choices into the prompt, repeats the instruction, or uses a
+    // match/draw-a-line task the sheet can't represent. ----
+    try{ normalizeWS(ws); }catch(e){ console.warn("normalize skipped:",e); }
 
     // ---- P0: answer-key verification pass ----
     document.getElementById("loadStatus").textContent="Double-checking every answer… ✅";
@@ -2258,11 +2351,13 @@ function renderWorksheet(rec){
   };
   const itemHTML=(it)=>{
     const checkbox = (k&&k.accoms.includes("adhd")) ? `<span style="border:2px solid #7C4DFF;width:18px;height:18px;border-radius:5px;display:inline-block;flex-shrink:0;margin-top:2px"></span>` : "";
-    return `<div class="ws-item">
+    const q=stripMd(it.prompt||"").trim();
+    const opt=Array.isArray(it.options)&&it.options.filter(o=>o!=null&&String(o).trim()).length>=2;
+    return `<div class="ws-item${opt?' compact':''}">
       ${checkbox}<span class="qn">${it.number}.</span>
       <div class="qbody">
-        <div class="ws-q">${esc(stripMd(it.prompt))}</div>
-        ${it.hint?`<div class="ws-hint">💡 ${esc(it.hint)}</div>`:""}
+        ${q?`<div class="ws-q">${esc(q)}</div>`:""}
+        ${it.hint?`<div class="ws-hint">💡 ${esc(stripMd(it.hint))}</div>`:""}
         ${respBox(it)}
       </div></div>`;
   };
@@ -2329,7 +2424,9 @@ function renderWorksheet(rec){
         <div class="lbl">👀 Example — just look, don't write here</div>
         <div class="ex-tag">DONE FOR YOU</div>
         <div style="font-weight:800;margin:6px 0">${esc(stripMd(ws.warmUp.exampleProblem))}</div>
-        <div style="white-space:pre-wrap">${esc(stripMd(ws.warmUp.workedSolution))}</div>
+        ${ws.warmUp._weak
+          ? `<div class="muted" style="font-weight:700">👆 Read this one with a grown-up — it shows you how. You don't write here.</div>`
+          : `<div style="white-space:pre-wrap">${esc(stripMd(ws.warmUp.workedSolution))}</div>`}
       </div>`:""}
 
       ${ws.misconceptionRepair?`<div class="ws-repair">
@@ -2341,10 +2438,11 @@ function renderWorksheet(rec){
       ${ws.guidedPractice && (ws.guidedPractice.items||[]).length?`<div class="ws-guided">
         <div class="lbl">🤝 Warm Up — do these with a grown-up</div>
         <div class="sec-instr">${esc(stripMd(ws.guidedPractice.instructions||""))}</div>
-        ${(ws.guidedPractice.items||[]).map((g,i)=>`<div class="g-item">
-          <div class="ws-q"><b>${i+1}.</b> ${esc(stripMd(g.prompt))}</div>
-          ${g.scaffold?`<div class="g-scaffold">💬 Hint: ${esc(g.scaffold)}</div>`:""}
-          ${respBox(g)}</div>`).join("")}
+        ${(ws.guidedPractice.items||[]).map((g,i)=>{ const gq=stripMd(g.prompt||"").trim();
+          return `<div class="g-item">
+          <div class="ws-q"><b>${i+1}.</b>${gq?" "+esc(gq):""}</div>
+          ${g.scaffold?`<div class="g-scaffold">💬 Hint: ${esc(stripMd(g.scaffold))}</div>`:""}
+          ${respBox(g)}</div>`; }).join("")}
       </div>`:""}
 
       <div class="ws-yourturn">✏️ Your Turn — do these by yourself</div>
