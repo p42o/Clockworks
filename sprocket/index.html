@@ -2315,7 +2315,7 @@ function parentGuideHTML(ws,k,accClasses,rec){
   const cA=ws.challenge?`<div class="ak-row"><b>★</b><span>${esc(String(ws.challenge.answer==null?'—':ws.challenge.answer))}</span></div>`:"";
   const r=pg.looksLike||{};
   const hasGuide = pg.objective||comps||pg.howToIntroduce||(pg.coaching&&pg.coaching.length)||(pg.watchFors&&pg.watchFors.length)||r.strong||pg.nextStep;
-  return `<div class="sheet parentguide ${accClasses}" style="--ws-accent:${accentFor(rec&&rec.params?rec.params.subject:(S.sel&&S.sel.subject))}">
+  return `<div class="sheet parentguide ${accClasses}" style="--ws-accent:${accentFor(_seedOf(rec,ws))}">
     <h2>Parent &amp; Teacher Guide</h2>
     <div class="pg-sub">${esc(ws.title||"")} · ${esc(subj||"")} · for ${esc(k?k.name:"your learner")}${accs.length?` · supports: ${accs.map(a=>esc(a.title)).join(", ")}`:""}</div>
     ${ hasGuide ? `
@@ -2419,7 +2419,7 @@ function renderWorksheet(rec){
       💾 <b>Save as PDF</b> opens your print box — pick <b>“Save as PDF”</b> (or “PDF → Save as PDF”) as the destination. Page 1 is the child's worksheet; page 2 is the grown-up answer/guide.
     </p>
 
-    <div class="sheet ${accClasses}" style="--ws-accent:${accentFor(rec.params.subject)}">
+    <div class="sheet ${accClasses}" style="--ws-accent:${accentFor(_seedOf(rec,ws))}">
       <div class="ws-nameline"><span>Name <span class="u">&nbsp;</span></span><span>Date <span class="u">&nbsp;</span></span></div>
       <div class="ws-header">
         <h1 class="ws-title">${esc(ws.title||"Worksheet")}</h1>
@@ -2500,11 +2500,19 @@ function renderWorksheet(rec){
   show("worksheet");
   say(`Done! 🎉 A <b>${esc(currentThemeOf(rec))}</b> sheet for <b>${esc(k?k.name:'your learner')}</b>. Print it, or ask me for another version.`,"Tip: 'New version' keeps everything but makes fresh problems.","happy");
 }
-/* One bold print-legible accent color per subject (grayscale-safe),
-   in the spirit of Education.com's single-accent worksheets. */
-function accentFor(subject){
-  return ({ math:"#5B4BD6", reading:"#1CA6C4", writing:"#E0553C",
-            science:"#1FAE8A", social:"#E0922A" })[subject] || "#5B4BD6";
+/* Education.com varies the accent per worksheet (not per subject). We pick
+   from a curated bold, print-legible, grayscale-safe palette via a stable
+   hash of the sheet's identity — so each sheet gets its own color, but the
+   SAME sheet (and its parent guide, and re-prints) stays consistent. */
+const WS_PALETTE = ["#5B4BD6","#1CA6C4","#E0553C","#1FAE8A","#E0922A","#C2459B","#3B6FE0","#0E8F77"];
+function _seedOf(rec, ws){
+  const p=(rec&&rec.params)||{};
+  return [p.subject,p.skill,p.theme,(ws&&ws.title)||""].join("|") || String((S.sel&&S.sel.subject)||"x");
+}
+function accentFor(seed){
+  let h=2166136261>>>0; const s=String(seed||"sprocket");
+  for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+  return WS_PALETTE[h % WS_PALETTE.length];
 }
 /* Strip teacher-jargon prefixes the model sometimes adds to headings
    ("YOU DO: …", "Section 2 – …") so the child sheet stays plain. */
