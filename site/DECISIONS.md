@@ -96,3 +96,14 @@ Everything on the site serves that metaphor with restraint.
   launched in parallel; recon agent mapping legacy site + Clockworks Social schema.
 - **2026-07-03** — Tokens corrected to Brand Guide v2 canon (#D4582A copper, warm lines, ground).
   Rectilinear radii (2–4px) adopted per guide.
+- **2026-07-03** — Verification round (Playwright, desktop+iPhone+reduced-motion) found and fixed:
+  GLSL `tanh` missing in WebGL1 (custom `th()`); WeekFlow hydration mismatch under reduced motion
+  (mount-gated static variant, ref always attached); Reveal/StatCount rebuilt to FAIL VISIBLE
+  (no hidden SSR styles + 3s force fallback — content can never be stuck invisible for crawlers
+  or slow devices); portrait compressed 3.4MB→135KB; GA4 added (skipped on /v3 previews);
+  raw <img> srcs basePath-wrapped via asset(); WeekFlow hint-fade hook hoisted above the early
+  return (hook-order crash for reduced-motion users). Audit flow e2e-verified: Discord delivery
+  204 (real embed on Parker's phone), Firestore formLogs write is PERMISSION_DENIED by rules —
+  pre-existing (legacy site logging silently fails in prod too); flow treats Discord as delivery.
+  Deployed to mnclockworks.com/v3/ (GHA run 37s, live-verified: zero 4xx, canvas mounts,
+  portrait 200, root site + all legacy paths untouched).

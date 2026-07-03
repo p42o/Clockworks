@@ -135,6 +135,8 @@ export default function WeekFlow() {
   const hoursFound = useTransform(scrollYProgress, (v) =>
     Math.round(Math.min(Math.max((v - 0.08) / 0.72, 0), 1) * 9),
   );
+  // must live above the showStatic early return — hooks can't sit in the JSX branch
+  const hintOpacity = useTransform(scrollYProgress, [0.7, 0.85], [1, 0]);
 
   if (showStatic) {
     return (
@@ -171,7 +173,7 @@ export default function WeekFlow() {
           </div>
 
           <motion.p
-            style={{ opacity: useTransform(scrollYProgress, [0.7, 0.85], [1, 0]) }}
+            style={{ opacity: hintOpacity }}
             className="mt-10 text-center text-sm text-ink-faint"
           >
             Keep scrolling — watch the day sort itself out.
