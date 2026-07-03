@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+@theme {
+  /* — Brand Guide v2 palette (April 2026, canonical) — */
+  --color-paper: #f5f1e8;
+  --color-paper-deep: #ede7d8;
+  --color-paper-well: #e2dac5;
+  --color-ground: #0e0e0c;
+  --color-ground-soft: #1a1916;
+  --color-ink: #1a1916;
+  --color-ink-soft: #3a372f;
+  --color-ink-faint: #6e6a5f;
+  --color-line: #d4ccb4;
+  --color-line-soft: #e4dec9;
+  --color-copper: #d4582a;
+  --color-copper-deep: #a8441f;
+  --color-ember: #f2d9c8;
+  --color-patina: #3c5a4a;
+  --color-patina-soft: #d5dbd5;
+  --color-cream-bright: #fdfbf5;
+
+  /* — Type — */
+  --font-display: var(--font-instrument-serif), "Instrument Serif", Georgia, serif;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* — Motion — */
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-tick: tick 1s steps(1) infinite;
+
+  @keyframes tick {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+}
+
+:root {
+  color-scheme: light only;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-copper);
+  color: var(--color-cream-bright);
+}
+
+/* — Paper grain: one static SVG noise layer, no animation cost — */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
+/* — Drafting hairlines (brand: warm line colors, not gray) — */
+.hairline { border-color: var(--color-line); }
+.hairline-soft { border-color: var(--color-line-soft); }
+
+/* — Mono eyebrow labels — */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+/* — Display headings — */
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+}
+
+/* — Links get a copper underline that draws in — */
+.link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.35s var(--ease-spring);
+  padding-bottom: 2px;
+}
+.link-draw:hover { background-size: 100% 1px; }
+
+/* — View transitions: the site reads as one continuous sheet — */
+@media not (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root) {
+    animation: vt-out 0.28s var(--ease-spring) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in 0.34s var(--ease-spring) both;
+  }
+  @keyframes vt-out {
+    to { opacity: 0; transform: translateY(-8px); }
+  }
+  @keyframes vt-in {
+    from { opacity: 0; transform: translateY(10px); }
+  }
+}
+
+/* — Custom cursor dot (desktop pointer devices only) — */
+@media (pointer: fine) {
+  .cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: var(--color-copper);
+    pointer-events: none;
+    z-index: 100;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-copper) 55%, transparent);
+    pointer-events: none;
+    z-index: 100;
+  }
+}
+
+/* — Focus visibly, always — */
+:focus-visible {
+  outline: 2px solid var(--color-copper);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* — Reduced motion: kill nonessential animation dead — */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "mnclockworks",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3010",
+    "build": "next build",
+    "build:preview": "NEXT_PUBLIC_BASE_PATH=/v3 next build",
+    "typecheck": "tsc --noEmit",
+    "export:root": "npm run build && node scripts/sync-out.mjs root",
+    "export:preview": "npm run build:preview && node scripts/sync-out.mjs preview"
+  },
+  "dependencies": {
+    "geist": "^1.7.2",
+    "motion": "^12.42.2",
+    "next": "15.5.20",
+    "next-view-transitions": "^0.3.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.3.2",
+    "typescript": "^5.7.0"
+  }
+}

@@ -22,3 +22,5 @@ jobs:
             **/.git*/**
             **/.DS_Store
             Archive.zip
+            site/**
+            **/node_modules/**
