@@ -217,3 +217,26 @@ while still blocking people from using it to build their projects.
   Still firm (gracefully) on shady advice, jailbreaks, sensitive data. Deployed to clockworks-bot.
   Verified: joke lands + pivots, favorite-model has a real take, weather banter redirects, "build my
   scraper" gets a funny decline, jailbreak still deflects. Still on Grok (Claude key still invalid).
+
+## Round 6 — blog newspaper redesign, de-em-dash, chat-bubble redesign (2026-07-04)
+
+- **Blog in header nav** ("Field notes"); footer deduped (now "Your own agent" + legal).
+- **Newspaper post template** (`blog/[slug]/page.tsx` + `.prose-article` CSS): centered masthead
+  (kicker rules, big serif headline, italic dek from the post description), a **byline with a
+  circular author photo**, a copper **drop cap** on the opening paragraph, and section rules before
+  each h2. New **`AuthorBio.tsx`** at the foot of every post — circular headshot in a copper ring,
+  "Written by Parker Swanson," bio, book/about links (Parker: "my face in a circle like an author").
+- **De-em-dashed all posts:** 5 parallel agents rewrote 26 posts, removing all **416 em-dashes** by
+  restructuring sentences to read naturally (not find-replace), deleting AI-tell sign-offs
+  ("— Parker Swanson, CEO of Clockworks"), light de-robotizing. Facts/numbers/structure untouched;
+  verified 0 em-dashes in every article body. (Remaining em-dashes in the site's UI chrome — hero,
+  footer, CTA, other page bodies — are house-style microcopy, left as-is; a full-site sweep is a
+  one-word ask if wanted.)
+- **Chat launcher redesigned** (`ChatWidget.tsx`): killed the literal 🕰️ clock emoji. Now a copper
+  gradient button with a cream **speech-bubble glyph + copper typing dots**, a radar pulse ring, a
+  live green status dot, a minimize chevron when open, and a **first-visit peek nudge** ("Hey, I'm
+  the front desk…", session-gated, dismissible). AuthorBio em-dash removed too.
+- **Deploy gotcha logged:** never run `npm run build` while `next dev` is running — they share
+  `.next` and the build bakes stale renders. Kill the dev server, `rm -rf .next out`, then build.
+- All live-verified on the root: newspaper template + 2 circular photos/post, 0 article em-dashes,
+  new bubble opens + bot answers, future-dated Dec post still correctly 404s (scheduling intact).
