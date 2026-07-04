@@ -6,15 +6,15 @@ legacyPath: "/blog/5-things-ai.html"
 tags: [prompts, productivity, quick-wins]
 ---
 
-Hey — I'm Parker. I run Clockworks, an AI consulting firm in Maple Grove, MN. Most of the business owners I work with aren't looking for a five-year digital transformation. They want to save time this week. Real time, on real tasks.
+Hey, I'm Parker. I run Clockworks, an AI consulting firm in Maple Grove, MN. Most of the business owners I work with aren't looking for a five-year digital transformation. They want to save time this week. Real time, on real tasks.
 
-So here are five specific things you can do with free AI tools — ChatGPT or Claude, both have free tiers — starting right now. I'm including the exact prompts. Copy them, swap in your details, hit send.
+So here are five specific things you can do with free AI tools (ChatGPT or Claude, both have free tiers) starting right now. I'm including the exact prompts. Copy them, swap in your details, hit send.
 
 ---
 
 ## 1. Draft an email in 60 seconds
 
-**Task 01 — Email**
+**Task 01: Email**
 
 ### The situation
 
@@ -32,7 +32,7 @@ A real estate agent I work with in Wayzata uses this every morning. She has a ba
 
 ## 2. Write a week of social media content
 
-**Task 02 — Social**
+**Task 02: Social**
 
 ### The situation
 
@@ -50,11 +50,11 @@ You'll get a full week of posts in about 90 seconds. Delete the ones that don't 
 
 ## 3. Write a proposal faster
 
-**Task 03 — Proposals**
+**Task 03: Proposals**
 
 ### The situation
 
-Writing proposals takes forever because you start from scratch every time. AI can give you a strong first draft in two minutes that you customize from there — rather than staring at a blank page for an hour.
+Writing proposals takes forever because you start from scratch every time. AI can give you a strong first draft in two minutes that you customize from there, rather than staring at a blank page for an hour.
 
 Try this prompt:
 
@@ -62,17 +62,17 @@ Try this prompt:
 I'm a [type of contractor / service provider]. I'm writing a proposal for [describe the project]. The client is [describe who they are and what they care about]. Draft a one-page proposal with: a project overview, scope of work, timeline, price ([your price]), and a short "why us" closing paragraph. Professional but warm tone.
 ```
 
-You still need to plug in your real numbers and review it carefully before sending. But the structural work — the thing that eats your time — is done. A landscaping client told me this cut his proposal time from 45 minutes to about 12.
+You still need to plug in your real numbers and review it carefully before sending. But the structural work (the thing that eats your time) is done. A landscaping client told me this cut his proposal time from 45 minutes to about 12.
 
 ---
 
 ## 4. Prep for a sales call or meeting
 
-**Task 04 — Meeting Prep**
+**Task 04: Meeting Prep**
 
 ### The situation
 
-You have a call in an hour. You want to walk in prepared — with smart questions, an understanding of what matters to this person, and a clear idea of what you're trying to accomplish.
+You have a call in an hour. You want to walk in prepared, with smart questions, an understanding of what matters to this person, and a clear idea of what you're trying to accomplish.
 
 Try this prompt:
 
@@ -86,7 +86,7 @@ This one feels almost unfair. You walk into calls with sharper questions and a c
 
 ## 5. Summarize a long document
 
-**Task 05 — Summarization**
+**Task 05: Summarization**
 
 ### The situation
 
@@ -102,12 +102,10 @@ This one has saved clients real money. An HVAC business owner I work with used t
 
 ---
 
-Five tasks. All free. All doable this week. Pick the one that would save you the most time and start there. Don't try all five at once — just build one habit before adding the next.
+Five tasks. All free. All doable this week. Pick the one that would save you the most time and start there. Don't try all five at once, just build one habit before adding the next.
 
 The business owners who get the most out of AI aren't the ones who went all-in on day one. They're the ones who started with one small win, got comfortable, and kept adding. That's the whole strategy.
 
 ---
 
-If you want help turning any of these into a repeatable system — or if you're not sure which one to start with — I'm happy to talk through it. That's exactly what the free call is for.
-
-— Parker Swanson, CEO of Clockworks
+If you want help turning any of these into a repeatable system (or if you're not sure which one to start with), I'm happy to talk through it. That's exactly what the free call is for.

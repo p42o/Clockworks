@@ -42,11 +42,11 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <p className="eyebrow mb-4">Notes</p>
+            <p className="eyebrow mb-4">More</p>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/blog/" className="text-paper/70 transition-colors hover:text-paper">
-                  Field notes &amp; articles
+                <Link href="/your-own-agent/" className="text-paper/70 transition-colors hover:text-paper">
+                  Your own agent
                 </Link>
               </li>
               <li>

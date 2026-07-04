@@ -6,9 +6,9 @@ legacyPath: "/blog/claude-for-email.html"
 tags: [claude, email, templates]
 ---
 
-Hey — I'm Parker. I run Clockworks, and email is one of the first things I tackle with every client. Not because it's the biggest time sink — though it often is — but because it's the easiest win. You see the result immediately, and it builds confidence to go tackle the harder stuff.
+Hey, I'm Parker. I run Clockworks, and email is one of the first things I tackle with every client. Not because it's the biggest time sink (though it often is) but because it's the easiest win. You see the result immediately, and it builds confidence to go tackle the harder stuff.
 
-Here's the setup I recommend, the five email templates I use most often, the "rough draft first" technique that changes how you work, and how to make the output actually sound like you — not like a chatbot.
+Here's the setup I recommend, the five email templates I use most often, the "rough draft first" technique that changes how you work, and how to make the output actually sound like you, not like a chatbot.
 
 ---
 
@@ -16,7 +16,7 @@ Here's the setup I recommend, the five email templates I use most often, the "ro
 
 Go to claude.ai, create a free account, and then create a new Project. Call it "Email" or "My Business." Inside the Project settings, there's a field for custom instructions. This is where you tell Claude who you are, once, so you never have to repeat it.
 
-Paste something like this into your Project instructions: "I'm [your name], the owner of [your business], a [describe what you do] based in [your city]. My typical customers are [describe them]. My communication style is [friendly, direct, professional — however you'd describe it]. When you write emails for me, keep them short, warm, and clear. Never use jargon or buzzwords."
+Paste something like this into your Project instructions: "I'm [your name], the owner of [your business], a [describe what you do] based in [your city]. My typical customers are [describe them]. My communication style is [friendly, direct, professional, however you'd describe it]. When you write emails for me, keep them short, warm, and clear. Never use jargon or buzzwords."
 
 That's it. From now on, every conversation in that Project starts with Claude already knowing the basics. You're not re-explaining yourself every time.
 
@@ -26,7 +26,7 @@ That's it. From now on, every conversation in that Project starts with Claude al
 
 ## 5 copy-paste email templates
 
-These are the prompts I use most often with clients. They're generic enough to adapt to any business — just swap in your specifics.
+These are the prompts I use most often with clients. They're generic enough to adapt to any business, just swap in your specifics.
 
 **Template 01**
 
@@ -45,7 +45,7 @@ Write a short follow-up email to a customer who received a quote from me on [day
 For when you need to deliver bad news, correct a misunderstanding, or push back on something without damaging the relationship.
 
 ```
-Write a professional but warm email to a customer about [describe the situation — e.g. "a project delay because a part is backordered" or "a price increase we need to discuss"]. I want to be honest and direct, take responsibility where appropriate, and end with a clear path forward. Keep it under 150 words.
+Write a professional but warm email to a customer about [describe the situation, e.g. "a project delay because a part is backordered" or "a price increase we need to discuss"]. I want to be honest and direct, take responsibility where appropriate, and end with a clear path forward. Keep it under 150 words.
 ```
 
 **Template 03**
@@ -75,18 +75,18 @@ Write a short follow-up email to a customer I completed work for about [X] days 
 For negotiating, requesting information, or communicating professionally with suppliers and business partners.
 
 ```
-Write an email to [vendor/supplier name or type] asking about [what you need — e.g. "updated pricing for the season" or "availability for a large order in June"]. I want to come across as a serious, established business — not a small shop making one-off requests. Professional tone, clear ask, under 100 words.
+Write an email to [vendor/supplier name or type] asking about [what you need, e.g. "updated pricing for the season" or "availability for a large order in June"]. I want to come across as a serious, established business, not a small shop making one-off requests. Professional tone, clear ask, under 100 words.
 ```
 
 ---
 
 ## The "rough draft first" technique
 
-Here's the most underrated thing I teach: before you ask Claude to write an email from scratch, try typing a rough, messy version of what you want to say first. Just get the ideas out — don't worry about grammar or structure. Then paste that into Claude with this prompt: "Rewrite this into a clean, professional email. Keep the main points but clean up the language and tighten it up."
+Here's the most underrated thing I teach: before you ask Claude to write an email from scratch, try typing a rough, messy version of what you want to say first. Just get the ideas out, don't worry about grammar or structure. Then paste that into Claude with this prompt: "Rewrite this into a clean, professional email. Keep the main points but clean up the language and tighten it up."
 
-Why does this work better? Because your rough draft has your actual intent in it. Claude isn't guessing what you meant — it's just making it sound better. The output is closer to what you actually want to say, with way less back-and-forth to get there.
+Why does this work better? Because your rough draft has your actual intent in it. Claude isn't guessing what you meant, it's just making it sound better. The output is closer to what you actually want to say, with way less back-and-forth to get there.
 
-I showed this technique to a property manager in Golden Valley who was spending 45 minutes a day on email. She started doing rough-draft-first on everything, and within two weeks she told me she had cut that to under 20 minutes. Not because she's a better writer — but because she stopped trying to write well in her head before she typed anything.
+I showed this technique to a property manager in Golden Valley who was spending 45 minutes a day on email. She started doing rough-draft-first on everything, and within two weeks she told me she had cut that to under 20 minutes. Not because she's a better writer, but because she stopped trying to write well in her head before she typed anything.
 
 ---
 
@@ -94,14 +94,12 @@ I showed this technique to a property manager in Golden Valley who was spending 
 
 The most common complaint I hear is "the AI sounds too formal" or "it doesn't sound like me." Both are fixable with two things: better instructions and one extra step.
 
-In your Project instructions, add a few phrases you actually use. If you always say "Happy to help" or you tend to be more casual than formal, say so explicitly. The more specific you are about your voice — including what to avoid — the better the output.
+In your Project instructions, add a few phrases you actually use. If you always say "Happy to help" or you tend to be more casual than formal, say so explicitly. The more specific you are about your voice, including what to avoid, the better the output.
 
-Then after you get a draft, read it out loud. Anything that sounds weird coming out of your mouth, change it. This is faster than it sounds. One or two word swaps and you're done. The goal isn't a perfect first draft — it's a draft that takes 30 seconds to clean up instead of 10 minutes to write from scratch.
+Then after you get a draft, read it out loud. Anything that sounds weird coming out of your mouth, change it. This is faster than it sounds. One or two word swaps and you're done. The goal isn't a perfect first draft. It's a draft that takes 30 seconds to clean up instead of 10 minutes to write from scratch.
 
 > You don't need Claude to write perfect emails for you. You need it to write 85% emails so you can get to 100% in two minutes instead of fifteen. That's the real ROI.
 
 ---
 
-If you want help setting this up for your specific business — including the Project instructions and a set of templates that match what you actually send — that's what a Clockworks session is for. Reach out and we'll build it together.
-
-— Parker Swanson, CEO of Clockworks
+If you want help setting this up for your specific business (including the Project instructions and a set of templates that match what you actually send), that's what a Clockworks session is for. Reach out and we'll build it together.

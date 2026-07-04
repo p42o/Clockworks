@@ -245,3 +245,50 @@ body {
 }
 .prose-cw pre code { background: none; border: none; color: inherit; padding: 0; }
 .prose-cw hr { border: 0; border-top: 1px solid var(--color-line); margin: 2.4em 0; }
+
+/* — Editorial article treatment (blog posts) — */
+.prose-article {
+  font-size: 1.14rem;
+  line-height: 1.8;
+}
+/* lead paragraph: darker + slightly larger */
+.prose-article > p:first-child {
+  font-size: 1.24rem;
+  line-height: 1.65;
+  color: var(--color-ink);
+}
+/* drop cap on the opening paragraph */
+.prose-article > p:first-child::first-letter {
+  float: left;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 4.6rem;
+  line-height: 0.72;
+  margin: 0.06em 0.1em 0 0;
+  color: var(--color-copper);
+}
+.prose-article h2 {
+  font-size: 2.05rem;
+  margin-top: 1.9em;
+}
+/* section rule before each h2 (except the first), like a newspaper break */
+.prose-article h2::before {
+  content: "";
+  display: block;
+  width: 44px;
+  height: 2px;
+  background: var(--color-copper);
+  opacity: 0.5;
+  margin-bottom: 0.7em;
+}
+.prose-article > h2:first-child::before { display: none; }
+.prose-article blockquote {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--color-ink);
+  border-left-width: 3px;
+  margin: 1.8em 0;
+  padding-left: 1.4rem;
+}

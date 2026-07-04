@@ -16,9 +16,9 @@ This is the exact setup I run for myself and the one I install for clients on da
 
 Three labels show up in your inbox each morning:
 
-- **🔴 Reply Today** — real customer questions, money-related, time-sensitive
-- **🟡 FYI** — useful but doesn't need a reply (confirmations, receipts, updates)
-- **⚪ Noise** — newsletters, promos, automated junk you forgot to unsubscribe from
+- **🔴 Reply Today**: real customer questions, money-related, time-sensitive
+- **🟡 FYI**: useful but doesn't need a reply (confirmations, receipts, updates)
+- **⚪ Noise**: newsletters, promos, automated junk you forgot to unsubscribe from
 
 You read 🔴 first, skim 🟡 over coffee, and never look at ⚪. That's it.
 
@@ -30,7 +30,7 @@ You read 🔴 first, skim 🟡 over coffee, and never look at ⚪. That's it.
 
 ### 1. Use Gmail's built-in AI labels (free)
 
-Open Gmail on web → Settings (gear) → See all settings → Filters and Blocked Addresses → Create a new filter. Skip this step if you're on Outlook — the equivalent is "Rules → New rule" with similar logic.
+Open Gmail on web → Settings (gear) → See all settings → Filters and Blocked Addresses → Create a new filter. Skip this step if you're on Outlook. The equivalent is "Rules → New rule" with similar logic.
 
 ### 2. Build the "Reply Today" rule
 
@@ -50,7 +50,7 @@ One more rule: `has:nouserlabels` → apply `🟡 FYI`. Anything that didn't mat
 
 ### 5. (Optional) Layer Claude or ChatGPT on top
 
-If you want smarter classification — emails that don't have obvious keywords but are still important — connect your inbox to Claude or ChatGPT via Zapier or Make. The prompt I use:
+If you want smarter classification (emails that don't have obvious keywords but are still important), connect your inbox to Claude or ChatGPT via Zapier or Make. The prompt I use:
 
 *"You are an email triage assistant for a small business owner. Read this email and respond with only one of: REPLY_TODAY, FYI, NOISE. Reply today means it requires the owner's response within 24 hours, involves money, scheduling, or a real customer question."*
 
@@ -65,5 +65,3 @@ I've tried every "AI inbox" SaaS on the market. Most of them fail for the same r
 The setup above lives inside the inbox you already use. Your team already knows it. Nothing to learn. No vendor to fire when prices go up.
 
 Take the 20 minutes today. If you want me to look over your shoulder while you set it up, that's what the free call is for.
-
-— Parker Swanson, CEO of Clockworks

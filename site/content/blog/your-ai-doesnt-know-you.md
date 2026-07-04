@@ -12,7 +12,7 @@ I caught myself this week typing the same paragraph into ChatGPT for what felt l
 
 Sometimes I copy-paste it. Sometimes I rewrite it. Either way, ten seconds vanish before the AI even knows what I’m asking for.
 
-And here’s the thing — I do this. I’m the AI consultant. If I’m doing it, every business owner I’ve ever talked to is doing it too. Except most of them give up after the third or fourth generic answer and decide “AI isn’t really for me.”
+And I do this. I’m the AI consultant. If I’m doing it, every business owner I’ve ever talked to is doing it too. Except most of them give up after the third or fourth generic answer and decide “AI isn’t really for me.”
 
 It’s not that AI isn’t for them. It’s that AI doesn’t *know* them. There’s a difference.
 
@@ -20,13 +20,13 @@ It’s not that AI isn’t for them. It’s that AI doesn’t *know* them. There
 
 ## A year ago I was selling the wrong thing
 
-I built Clockworks to help small businesses use AI for real. For the first year, that meant: “let me build you an automation that runs in the background.” Invoicing, lead follow-up, review requests. Useful. Cool. But also — it required learning a new platform, hooking it into your tools, and trusting a robot to do things while you weren’t looking.
+I built Clockworks to help small businesses use AI for real. For the first year, that meant: “let me build you an automation that runs in the background.” Invoicing, lead follow-up, review requests. Useful. Cool. But also, it required learning a new platform, hooking it into your tools, and trusting a robot to do things while you weren’t looking.
 
 That’s a fine product. It’s not the product I wish I’d been selling.
 
 > The product I wish I’d been selling is: let me get your AI to actually know you.
 
-Not a new app. Not another subscription. Not another login. Just — get Claude, get ChatGPT, get Gemini to read a single document about your business *before* they answer you. Then connect them to the tools you already use so they can do things, not just talk about them.
+Not a new app. Not another subscription. Not another login. Just get Claude, get ChatGPT, get Gemini to read a single document about your business *before* they answer you. Then connect them to the tools you already use so they can do things, not just talk about them.
 
 ---
 
@@ -36,7 +36,7 @@ I call that document a **Context Vault**. I built one for myself almost a year a
 
 The minute I stopped re-explaining myself, two things happened. The answers got dramatically better. And I stopped giving up halfway through a chat because the response was a generic blob that could’ve been written for any random business in America.
 
-The “AI feels generic” complaint — the thing every small business owner I talk to says — that complaint disappeared.
+The “AI feels generic” complaint (the thing every small business owner I talk to says) disappeared.
 
 ---
 
@@ -44,9 +44,9 @@ The “AI feels generic” complaint — the thing every small business owner I 
 
 For the next stretch, Clockworks is one thing:
 
-**I sit down with you for 30 minutes, learn how your business actually runs, build your Context Vault, and wire it into Claude, ChatGPT, and Gemini. I also connect them to the tools you already use — your inbox, calendar, docs, CRM — so your AI can actually do things, not just talk. Two weeks. You own everything I build.**
+**I sit down with you for 30 minutes, learn how your business actually runs, build your Context Vault, and wire it into Claude, ChatGPT, and Gemini. I also connect them to the tools you already use (your inbox, calendar, docs, CRM) so your AI can actually do things, not just talk. Two weeks. You own everything I build.**
 
-I’m taking limited clients to start — this is a real engagement with a real person, not a subscription product. If it sounds like it would change something for your business, get in touch and we’ll talk about whether it’s a fit and what it would cost.
+I’m taking limited clients to start. This is a real engagement with a real person, not a subscription product. If it sounds like it would change something for your business, get in touch and we’ll talk about whether it’s a fit and what it would cost.
 
 That’s the whole pitch.
 
@@ -54,10 +54,8 @@ That’s the whole pitch.
 
 ## If you’ve worked with me before
 
-Nothing’s broken. If we’ve talked about a workflow, an automation, an n8n thing — or you bought one of the Gumroad products — that all still works. You’re not losing anything. I’ll still answer questions and ship things I said I’d ship.
+Nothing’s broken. If we’ve talked about a workflow, an automation, an n8n thing (or you bought one of the Gumroad products), that all still works. You’re not losing anything. I’ll still answer questions and ship things I said I’d ship.
 
 But going forward, this is what I want to be known for. Less “automate this one task in the background.” More “your AI actually knows you now, here are the keys.”
 
-If you’re a small business owner who’s quietly thought “I should probably figure out this AI thing, but every time I open ChatGPT I get nothing useful” — yes. That’s because your AI doesn’t know you. Let’s fix that.
-
-— Parker Swanson, Clockworks
+If you’re a small business owner who’s quietly thought “I should probably figure out this AI thing, but every time I open ChatGPT I get nothing useful.” Yes. That’s because your AI doesn’t know you. Let’s fix that.

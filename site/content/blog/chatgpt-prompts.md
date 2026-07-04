@@ -6,7 +6,7 @@ legacyPath: "/blog/chatgpt-prompts.html"
 tags: [chatgpt, prompts, tips]
 ---
 
-Hey — I'm Parker. I run Clockworks, an AI consulting firm in Maple Grove, MN. Most of my clients come to me after the same frustrating experience: they tried ChatGPT, got garbage back, and concluded that "AI just isn't for me."
+Hey, I'm Parker. I run Clockworks, an AI consulting firm in Maple Grove, MN. Most of my clients come to me after the same frustrating experience: they tried ChatGPT, got garbage back, and concluded that "AI just isn't for me."
 
 Nine times out of ten, the problem isn't the tool. The problem is the prompt. And the fix is simpler than you think.
 
@@ -18,9 +18,9 @@ This post is going to show you exactly why vague prompts fail, the three-part fo
 
 ChatGPT is not a search engine. When you type "help me with my email," it has almost nothing to work with. Who's the email to? What's the situation? What do you want the person to do after reading it? What tone are you going for?
 
-Without that context, the model defaults to the most average, generic response possible. It's not being lazy — it's doing exactly what you asked. You gave it almost no information, so it gave you almost no value back.
+Without that context, the model defaults to the most average, generic response possible. It's not being lazy. It's doing exactly what you asked. You gave it almost no information, so it gave you almost no value back.
 
-Think of it like hiring a contractor. If you say "fix my house," they're going to stare at you. If you say "replace the kitchen faucet, it's leaking from the base, and I need it done by Friday because company's coming" — now they can actually help you.
+Think of it like hiring a contractor. If you say "fix my house," they're going to stare at you. If you say "replace the kitchen faucet, it's leaking from the base, and I need it done by Friday because company's coming." Now they can actually help you.
 
 > The AI isn't the problem. The instructions you're giving it are. A better prompt takes 30 extra seconds to write and gets you 10x better output.
 
@@ -90,11 +90,11 @@ Let's make this concrete. Here are three real prompts I've seen clients use, and
 
 Here's the shift that separates people who get real value from AI and people who give up after one try: they treat it like a conversation, not a one-shot request.
 
-Your first prompt doesn't have to be perfect. Send it, see what comes back, then say "make it shorter" or "make it sound less formal" or "add a line about our warranty." You're not failing when you refine — that's how it's supposed to work.
+Your first prompt doesn't have to be perfect. Send it, see what comes back, then say "make it shorter" or "make it sound less formal" or "add a line about our warranty." You're not failing when you refine. That's how it's supposed to work.
 
-I had a client — a property manager in Plymouth — who spent 20 minutes trying to craft the perfect prompt before hitting send. I watched her do it and finally said, "Just send whatever you have. We'll fix it in two replies." She got exactly what she needed in under four minutes total. The iterating was faster than the over-thinking.
+I had a client (a property manager in Plymouth) who spent 20 minutes trying to craft the perfect prompt before hitting send. I watched her do it and finally said, "Just send whatever you have. We'll fix it in two replies." She got exactly what she needed in under four minutes total. The iterating was faster than the over-thinking.
 
-> Think of ChatGPT as a very capable assistant who needs good directions. You wouldn't hand a new employee a sticky note and expect a finished report. Give them context, give them the task, tell them how you want it delivered — and then course-correct as needed.
+> Think of ChatGPT as a very capable assistant who needs good directions. You wouldn't hand a new employee a sticky note and expect a finished report. Give them context, give them the task, tell them how you want it delivered, and then course-correct as needed.
 
 Once you internalize Context + Task + Format and stop expecting perfection on the first try, you'll be shocked how much faster your workday gets. I've watched people go from "AI doesn't work for me" to "I can't believe I was doing this by hand" in a single afternoon session.
 
@@ -102,6 +102,4 @@ That's the real unlock. Not a new tool, not a subscription upgrade. Just a bette
 
 ---
 
-If you want to practice this with a real task from your business — something you're actually working on this week — that's exactly what a Clockworks session is for. Reach out and we'll dig in together.
-
-— Parker Swanson, CEO of Clockworks
+If you want to practice this with a real task from your business (something you're actually working on this week), that's exactly what a Clockworks session is for. Reach out and we'll dig in together.

@@ -1,14 +1,14 @@
 ---
-title: "The Small Business Owner's Guide to Claude — No Tech Background Needed"
+title: "The Small Business Owner's Guide to Claude: No Tech Background Needed"
 date: "2026-04-13"
 description: "Claude is one of the most useful AI tools available right now. Here's how to actually use it."
 legacyPath: "/blog/guide-to-claude.html"
 tags: [claude, guide, beginners]
 ---
 
-Hey — I'm Parker. I help small business owners in the trades, real estate, and local services actually use AI in their day-to-day work. Not tutorials. Not demos. Real tasks, real results, starting week one.
+Hey, I'm Parker. I help small business owners in the trades, real estate, and local services actually use AI in their day-to-day work. Not tutorials. Not demos. Real tasks, real results, starting week one.
 
-Most of my clients have heard of ChatGPT. Fewer have heard of Claude. That's a problem, because for a lot of the things small business owners actually need — writing, summarizing, analyzing, staying organized — Claude is genuinely better.
+Most of my clients have heard of ChatGPT. Fewer have heard of Claude. That's a problem, because for a lot of the things small business owners actually need (writing, summarizing, analyzing, staying organized) Claude is genuinely better.
 
 This guide is for you if you've never opened Claude before or barely touched it. I'll walk you through what it is, how to set it up, and five prompts you can use today.
 
@@ -16,11 +16,11 @@ This guide is for you if you've never opened Claude before or barely touched it.
 
 ## Claude vs. ChatGPT: what's actually different
 
-Both are AI assistants. Both can write, answer questions, and help you think through problems. The difference is in the feel — and in a few specific strengths that matter for business owners.
+Both are AI assistants. Both can write, answer questions, and help you think through problems. The difference is in the feel, and in a few specific strengths that matter for business owners.
 
 Claude tends to write in a more natural, nuanced way. It's less likely to give you corporate-speak. When I ask it to write an email in my voice, it actually sounds like me after just a little coaching. ChatGPT is fantastic and I use it too, but its default writing style is more "AI assistant" and less "person."
 
-Claude is also very good at reading long documents. You can paste in a 10-page contract, a lease agreement, a competitor's pricing page — and ask it questions. That capability is a game-changer for anyone who deals with a lot of paperwork.
+Claude is also very good at reading long documents. You can paste in a 10-page contract, a lease agreement, a competitor's pricing page, and ask it questions. That capability is a game-changer for anyone who deals with a lot of paperwork.
 
 **ChatGPT**
 
@@ -44,7 +44,7 @@ Claude is also very good at reading long documents. You can paste in a 10-page c
 
 ## How to set up a free account
 
-Go to claude.ai. Click "Sign up." Use your Google account or your email. That's it — you're in. The free tier gives you access to a capable model with daily message limits. It's plenty to get started and figure out if it's worth upgrading.
+Go to claude.ai. Click "Sign up." Use your Google account or your email. That's it. You're in. The free tier gives you access to a capable model with daily message limits. It's plenty to get started and figure out if it's worth upgrading.
 
 If you use it heavily and hit the daily limit, the paid plan is $20/month and gives you access to Claude's most powerful model (Sonnet and Opus) with much higher limits. For most business owners, the free tier is fine for the first couple weeks while you're learning.
 
@@ -82,7 +82,7 @@ Here are five prompts you can use today. Copy them, swap in your details, and hi
 
 ## What Claude is better at than anything else
 
-If I had to pick one thing Claude does better than any other tool I've tried, it's this: reading something messy and turning it into something clear. Long emails, confusing contracts, rambling notes from a job site — give it the raw material and ask it to make sense of it. It does this extraordinarily well.
+If I had to pick one thing Claude does better than any other tool I've tried, it's this: reading something messy and turning it into something clear. Long emails, confusing contracts, rambling notes from a job site. Give it the raw material and ask it to make sense of it. It does this extraordinarily well.
 
 The second thing is maintaining a consistent tone across a lot of writing. Once it understands your voice (which you can teach it in a Project), it can draft emails, social posts, and proposals that all sound like they came from the same person. That coherence is hard to achieve manually when you're running a business and writing things at 6am before a job and 9pm after one.
 
@@ -91,5 +91,3 @@ You don't need a tech background for any of this. You just need to be willing to
 ---
 
 If you want help setting up your Claude Project or want to walk through those starter prompts with someone who can troubleshoot in real time, that's what Clockworks is here for. Reach out and we'll figure it out together.
-
-— Parker Swanson, CEO of Clockworks
