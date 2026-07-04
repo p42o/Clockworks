@@ -200,3 +200,20 @@ Parker: "make my logo a little larger, then deploy over my home page." Also repo
   errors), logo 44px, demos band, chat answering; `/sitesniper/` `/admin.html` `/privacy.html`
   200; `/blog/ai-myths.html`→301→`/blog/ai-myths/`; `/resources.html`→301→`/blog/`. The `/v3`
   preview mirror stays live (noindex) as a fallback. Root build indexes (SEO on).
+
+## Round 5 — bot guardrails re-tuned (2026-07-04)
+
+Parker: the bot was too much of a bouncer — refused a joke, refused to name a favorite AI model,
+gave canned "I'm not that kind of AI" lines. He wants personality + CLEVER improvised re-routes,
+while still blocking people from using it to build their projects.
+- **`guard.ts` narrowed** to genuine prompt-injection/jailbreak ONLY (override-instructions /
+  extract-prompt / DAN-mode). Removed the OFF_TASK + code-blob pre-blocks so jokes, opinions, and
+  "write me X" now reach the model for a witty re-route instead of a canned deflect. Credits still
+  protected by rate limits + 18-turn cap + max_tokens 500 + 1500-char input truncation.
+- **`brain.ts` rewritten:** added a Personality section (tells jokes — actually tells them; has
+  opinions incl. favorite model = Claude with reasons; light small talk) and reframed the boundary
+  to ONE hard line — "you don't do people's actual project work" (code/essays/homework/campaigns) —
+  with explicit "REEL THEM BACK cleverly, never recite" guidance + vibe examples (labeled do-not-copy).
+  Still firm (gracefully) on shady advice, jailbreaks, sensitive data. Deployed to clockworks-bot.
+  Verified: joke lands + pivots, favorite-model has a real take, weather banter redirects, "build my
+  scraper" gets a funny decline, jailbreak still deflects. Still on Grok (Claude key still invalid).
