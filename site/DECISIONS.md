@@ -151,3 +151,29 @@ sample-product chatbot). All live-verified on mnclockworks.com/v3.
 - **Verify:** Playwright over the new surface (blog gating confirmed — Jul-7 post correctly 404s
   on Jul-3; steer demo; all 6 demos; LIVE chat round-trips through the deployed proxy with a
   grounded pricing answer). Zero page errors. Redeployed /v3, live-checked on production.
+
+## Round 3 — feedback build (2026-07-04): homepage density + bot guardrails
+
+- **Homepage now surfaces the demos.** New "Go ahead — poke it / Play with it" band embeds the
+  full `<DemoGallery/>` (all 6 interactives) mid-scroll, after What I Do. Parker: demos should be
+  noted on the scrolling homepage.
+- **Less minimalistic:** hero gains a trust-chip row (48-hr demo · you own everything · no
+  contracts · coffee-bet) + styled tool PILLS (was plain text); "02" drafting-numeral watermark
+  on What I Do; a copper tick-ring/gear ornament on the dark Numbers band. Restraint kept — added
+  structure and drafting motifs, not clutter.
+- **Bot cost + abuse hardening** (the real point of round 3):
+  - `lib/guard.ts` — cheap pre-LLM screen: jailbreak/prompt-injection + code-gen/off-task +
+    raw-code-blob → instant canned redirect, NO paid model call (verified 0.6s).
+  - `store.ts checkRate()` — Firestore rate limiter: per-IP burst (6/min) + per-IP daily (40) +
+    a **GLOBAL daily ceiling (1200)** that fails CLOSED = the hard credit backstop (bounds max
+    daily spend regardless of IP spread). All three tunable from admin-bot.html.
+  - Turn cap 18 (was 40), max_tokens 500 (was 700), input 1500 chars (was 3000).
+  - Brain boundaries rewritten: one subject only (the business + AI-for-business), refuses
+    code/essays/homework/trivia, refuses SHADY advice (fake reviews etc.) with the honest
+    alternative, resists jailbreaks silently, stays warm + teaching. Verified live: warm Socratic
+    answers, clean off-topic redirect, firm fake-reviews refusal, burst throttle at the 7th req.
+  - **Claude:** wired via ANTHROPIC_API_KEY + automatic Grok fallback in `complete()` (a Claude
+    failure never takes the bot down). ⚠️ **The key Parker supplied returned `invalid x-api-key`**
+    (mistyped/revoked/wrong-workspace) — removed it, so the bot runs cleanly on **Grok-4** now.
+    The instant a valid key is added to the clockworks-bot Vercel project, it's on Claude with
+    Grok as fallback (default model logic already prefers claude-opus-4-8 when the key is present).
