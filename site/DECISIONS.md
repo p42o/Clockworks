@@ -240,3 +240,4 @@ while still blocking people from using it to build their projects.
   `.next` and the build bakes stale renders. Kill the dev server, `rm -rf .next out`, then build.
 - All live-verified on the root: newspaper template + 2 circular photos/post, 0 article em-dashes,
   new bubble opens + bot answers, future-dated Dec post still correctly 404s (scheduling intact).
+  ## Redesign study — /preview/ (navy/teal alt direction, 2026-07-04). Master-control dial + Demo Lab w/ 6 human-in-the-loop demos. Source ~/Desktop/MN Clockworks Redesign Prototype.html, repo preview/index.html. CTAs→/book/. Decision open: adopt or leave as study.
