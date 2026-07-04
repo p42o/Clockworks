@@ -1,5 +1,6 @@
 import { Link } from "next-view-transitions";
 import { legacy, nav, site } from "@/lib/site";
+import LogoMark from "@/components/LogoMark";
 
 export default function Footer() {
   return (
@@ -44,9 +45,9 @@ export default function Footer() {
             <p className="eyebrow mb-4">Notes</p>
             <ul className="space-y-2.5">
               <li>
-                <a href={legacy.resources} className="text-paper/70 transition-colors hover:text-paper">
+                <Link href="/blog/" className="text-paper/70 transition-colors hover:text-paper">
                   Field notes &amp; articles
-                </a>
+                </Link>
               </li>
               <li>
                 <a href={legacy.privacy} className="text-paper/70 transition-colors hover:text-paper">
@@ -62,21 +63,24 @@ export default function Footer() {
           </div>
           <div className="col-span-2">
             <p className="eyebrow mb-4">Contact</p>
-            <a
-              href={`mailto:${site.email}`}
-              className="font-mono text-[0.95rem] text-paper underline decoration-copper/60 underline-offset-4 hover:decoration-copper"
+            <Link
+              href="/book/"
+              className="font-medium text-paper underline decoration-copper/60 underline-offset-4 hover:decoration-copper"
             >
-              {site.email}
-            </a>
+              Send a message →
+            </Link>
             <p className="mt-3 max-w-xs text-paper/55">
-              {site.city}, Minnesota. Serving the Twin Cities metro in person and the rest of the
-              country remotely.
+              Every message lands on my phone within minutes, and a real person answers.
+              {" "}{site.city}, Minnesota — serving the Twin Cities in person, everywhere else remotely.
             </p>
           </div>
         </div>
 
         <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-[0.8rem] text-paper/40 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} MN Clockworks · PGS Ventures LLC</p>
+          <p className="flex items-center gap-2">
+            <LogoMark tone="paper" className="h-4 w-4 opacity-60" />
+            © {new Date().getFullYear()} MN Clockworks · PGS Ventures LLC
+          </p>
           <p className="font-mono tracking-wide">Built in Minnesota. Runs like clockwork.</p>
         </div>
       </div>

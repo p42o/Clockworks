@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Bot & Blog — Clockworks Admin</title>
+<style>
+  :root { --paper:#F5F1E8; --ink:#1A1916; --soft:#6E6A5F; --copper:#D4582A; --line:#D4CCB4; --bright:#FDFBF5; }
+  * { box-sizing:border-box; margin:0; }
+  body { font:15px/1.55 -apple-system, system-ui, sans-serif; background:var(--paper); color:var(--ink); padding:24px; max-width:860px; margin:0 auto; }
+  h1 { font-family:Georgia,serif; font-weight:400; font-size:1.8rem; margin-bottom:2px; }
+  h2 { font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--soft); margin:28px 0 10px; font-family:ui-monospace,monospace; }
+  .card { background:var(--bright); border:1px solid var(--line); border-radius:4px; padding:16px; margin-bottom:12px; }
+  button { background:var(--ink); color:var(--paper); border:0; border-radius:3px; padding:9px 16px; cursor:pointer; font-size:.9rem; }
+  button:hover { background:var(--copper); }
+  button.ghost { background:transparent; color:var(--copper); border:1px solid var(--copper); }
+  input[type=text], textarea, select { width:100%; border:1px solid var(--line); border-radius:3px; padding:8px 10px; font:inherit; background:var(--bright); margin-top:4px; }
+  label { font-size:.78rem; color:var(--soft); display:block; margin-top:12px; }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .muted { color:var(--soft); font-size:.82rem; }
+  .convo { border-bottom:1px solid var(--line); padding:9px 0; cursor:pointer; }
+  .convo:hover { color:var(--copper); }
+  pre { white-space:pre-wrap; background:var(--paper); border:1px solid var(--line); border-radius:3px; padding:12px; font-size:.8rem; max-height:340px; overflow:auto; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:99px; font-size:.7rem; background:#D5DBD5; color:#3C5A4A; }
+  a { color:var(--copper); }
+</style>
+</head>
+<body>
+<h1>Bot &amp; Blog<span style="color:var(--copper)">.</span></h1>
+<p class="muted">Front Desk chatbot controls + conversation logs (Firebase <code>clockwork-social</code>) and the v3 blog schedule. Back to <a href="/admin.html">main admin</a>.</p>
+
+<div class="card" id="authCard">
+  <div class="row"><button id="signin">Sign in with Google</button><span class="muted" id="who"></span></div>
+</div>
+
+<div id="app" style="display:none">
+  <h2>Chatbot controls</h2>
+  <div class="card">
+    <div class="row">
+      <label style="margin:0"><input type="checkbox" id="enabled"> Bot enabled (unchecked = polite "closed for a tune-up" message)</label>
+    </div>
+    <label>Model — <span class="muted">claude-opus-4-8 (needs ANTHROPIC_API_KEY in the Vercel project) · grok-4 (current default) · any claude-*/grok-* id</span>
+      <input type="text" id="model" placeholder="grok-4">
+    </label>
+    <label>Extra instructions (appended to the brain at runtime — hours, promos, "mention the fall tune-up special", etc.)
+      <textarea id="extra" rows="4"></textarea>
+    </label>
+    <div class="row" style="margin-top:12px">
+      <button id="save">Save config</button><span class="muted" id="saveMsg"></span>
+    </div>
+    <p class="muted" style="margin-top:10px">The core brain lives in code (<code>clockworks-bot/lib/brain.ts</code> → Vercel). Leads → Discord. Wiring: site bubble → clockworks-bot.vercel.app/api/chat → this project's Firestore.</p>
+  </div>
+
+  <h2>Conversations (latest 25)</h2>
+  <div class="card">
+    <div class="row"><button class="ghost" id="refresh">Refresh</button><button class="ghost" id="export">Export all shown (JSON)</button></div>
+    <div id="list" style="margin-top:8px"></div>
+    <pre id="viewer" style="display:none"></pre>
+  </div>
+
+  <h2>Blog schedule (v3 site)</h2>
+  <div class="card">
+    <div id="blog" class="muted">Loading…</div>
+    <p class="muted" style="margin-top:8px">Posts are markdown files in <code>site/content/blog/</code>. Future-dated posts publish automatically on the 1st of each month via the <code>monthly-publish</code> GitHub Action (also runnable manually from GitHub → Actions).</p>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyCYXFJ1F1WawzkaKOTqgsQKzvcO2n8fjpk",
+  authDomain: "clockwork-social.firebaseapp.com",
+  projectId: "clockwork-social",
+  storageBucket: "clockwork-social.firebasestorage.app",
+  messagingSenderId: "749630699708",
+  appId: "1:749630699708:web:6b6094dfc8a9d2967178b9",
+}, "botadmin");
+const auth = getAuth(app);
+const db = getFirestore(app);
+const $ = (id) => document.getElementById(id);
+let shown = [];
+
+$("signin").onclick = () => signInWithPopup(auth, new GoogleAuthProvider()).catch((e) => alert(e.message));
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+  $("who").textContent = user.email;
+  $("signin").style.display = "none";
+  $("app").style.display = "block";
+  await loadConfig();
+  await loadConvos();
+  loadBlog();
+});
+
+async function loadConfig() {
+  try {
+    const snap = await getDoc(doc(db, "botConfig", "config"));
+    const c = snap.exists() ? snap.data() : {};
+    $("enabled").checked = c.enabled !== false;
+    $("model").value = c.model || "";
+    $("extra").value = c.extraInstructions || "";
+  } catch (e) { $("saveMsg").textContent = "Read failed: " + e.message; }
+}
+
+$("save").onclick = async () => {
+  try {
+    await setDoc(doc(db, "botConfig", "config"), {
+      enabled: $("enabled").checked,
+      model: $("model").value.trim(),
+      extraInstructions: $("extra").value.trim(),
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
+    $("saveMsg").textContent = "Saved ✓ (bot picks it up within 60s)";
+  } catch (e) { $("saveMsg").textContent = "Save failed: " + e.message; }
+};
+
+async function loadConvos() {
+  const list = $("list");
+  list.textContent = "Loading…";
+  try {
+    const snap = await getDocs(query(collection(db, "botConversations"), orderBy("updatedAt", "desc"), limit(25)));
+    shown = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    list.innerHTML = shown.length ? "" : "<span class='muted'>No conversations yet.</span>";
+    for (const c of shown) {
+      const first = (c.transcript?.[0]?.content || "").slice(0, 70);
+      const el = document.createElement("div");
+      el.className = "convo";
+      el.innerHTML = `<strong>${c.turns ?? c.transcript?.length ?? 0} turns</strong> · ${c.meta?.model ?? ""} ${c.meta?.lead ? "<span class='pill'>LEAD</span>" : ""}<br><span class="muted">${first.replace(/</g, "&lt;")}…</span>`;
+      el.onclick = () => {
+        $("viewer").style.display = "block";
+        $("viewer").textContent = (c.transcript || []).map((m) => `${m.role.toUpperCase()}: ${m.content}`).join("\n\n");
+      };
+      list.appendChild(el);
+    }
+  } catch (e) { list.textContent = "Load failed: " + e.message; }
+}
+$("refresh").onclick = loadConvos;
+$("export").onclick = () => {
+  const blob = new Blob([JSON.stringify(shown, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `bot-conversations-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+};
+
+async function loadBlog() {
+  try {
+    const base = location.pathname.startsWith("/v3") ? "/v3" : "";
+    const r = await fetch(base + "/blog-manifest.json");
+    const j = await r.json();
+    $("blog").innerHTML =
+      `<strong>${j.publishedCount} published</strong> · ${j.scheduled.length} scheduled:<br>` +
+      j.scheduled.map((s) => `📅 ${s.date} — ${s.title}`).join("<br>");
+  } catch { $("blog").textContent = "Manifest not reachable (root not flipped yet? try mnclockworks.com/v3/blog-manifest.json)"; }
+}
+</script>
+</body>
+</html>

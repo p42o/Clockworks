@@ -123,32 +123,55 @@ body {
   }
 }
 
-/* — Custom cursor dot (desktop pointer devices only) — */
-@media (pointer: fine) {
-  .cursor-dot {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 8px;
-    height: 8px;
-    border-radius: 9999px;
-    background: var(--color-copper);
-    pointer-events: none;
-    z-index: 100;
-    mix-blend-mode: multiply;
-  }
-  .cursor-ring {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 34px;
-    height: 34px;
-    border-radius: 9999px;
-    border: 1px solid color-mix(in srgb, var(--color-copper) 55%, transparent);
-    pointer-events: none;
-    z-index: 100;
-  }
+/* — Results nav link: a quiet copper glow that breathes — */
+.nav-results {
+  color: var(--color-copper);
+  text-shadow: 0 0 14px rgba(212, 88, 42, 0.0);
+  animation: results-breathe 3.2s ease-in-out infinite;
 }
+.nav-results::after {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-left: 7px;
+  margin-bottom: 1px;
+  border-radius: 9999px;
+  background: var(--color-copper);
+  animation: results-dot 3.2s ease-in-out infinite;
+}
+@keyframes results-breathe {
+  0%, 100% { text-shadow: 0 0 0 rgba(212, 88, 42, 0); }
+  50% { text-shadow: 0 0 16px rgba(212, 88, 42, 0.55); }
+}
+@keyframes results-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 88, 42, 0.5); }
+  50% { box-shadow: 0 0 0 5px rgba(212, 88, 42, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-results { animation: none; }
+  .nav-results::after { animation: none; }
+}
+
+/* — Demo cards: subtle pointer-tracked sheen (set --mx/--my in JS) — */
+.card-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.card-sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(212, 88, 42, 0.07),
+    transparent 65%
+  );
+}
+.card-sheen:hover::before { opacity: 1; }
 
 /* — Focus visibly, always — */
 :focus-visible {
@@ -165,3 +188,60 @@ body {
     transition-duration: 0.001s !important;
   }
 }
+
+/* — Long-form article typography (blog) — */
+.prose-cw {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+}
+.prose-cw h2 {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  line-height: 1.15;
+  color: var(--color-ink);
+  margin: 2.2em 0 0.6em;
+}
+.prose-cw h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--color-ink);
+  margin: 1.8em 0 0.5em;
+}
+.prose-cw p { margin: 1.1em 0; }
+.prose-cw a {
+  color: var(--color-copper);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-copper) 45%, transparent);
+  text-underline-offset: 3px;
+}
+.prose-cw a:hover { text-decoration-color: var(--color-copper); }
+.prose-cw strong { color: var(--color-ink); }
+.prose-cw ul, .prose-cw ol { margin: 1.1em 0; padding-left: 1.4em; }
+.prose-cw li { margin: 0.45em 0; }
+.prose-cw ul li::marker { color: var(--color-copper); }
+.prose-cw blockquote {
+  margin: 1.6em 0;
+  border-left: 2px solid var(--color-copper);
+  padding: 0.2em 0 0.2em 1.2em;
+  font-style: italic;
+  color: var(--color-ink-faint);
+}
+.prose-cw code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--color-paper-deep);
+  border: 1px solid var(--color-line-soft);
+  border-radius: 3px;
+  padding: 0.1em 0.4em;
+}
+.prose-cw pre {
+  background: var(--color-ground);
+  color: var(--color-paper);
+  border-radius: 4px;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+  margin: 1.4em 0;
+}
+.prose-cw pre code { background: none; border: none; color: inherit; padding: 0; }
+.prose-cw hr { border: 0; border-top: 1px solid var(--color-line); margin: 2.4em 0; }

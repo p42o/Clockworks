@@ -35,7 +35,8 @@ export default function Book() {
               ))}
             </ul>
             <p className="mt-8 text-sm text-ink-faint">
-              Rather just email? <a className="text-copper underline underline-offset-2" href={`mailto:${site.email}`}>{site.email}</a> works too.
+              This form is the whole front door — it lands on my phone in seconds, and a
+              human answers it.
             </p>
           </Reveal>
         </div>

@@ -157,14 +157,11 @@ export default function AuditFlow() {
     }
   };
 
-  const mailtoFallback = useMemo(() => {
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nBusiness: ${form.business}\nTrade: ${form.trade}\nBiggest time-sink: ${form.painPoint}\nDetail: ${form.detail}\nPhone: ${form.phone}\nPreferred time: ${form.preferred}\n`,
-    );
-    return `mailto:${site.email}?subject=${encodeURIComponent(
-      `Audit request — ${form.business || form.name}`,
-    )}&body=${body}`;
-  }, [form]);
+  const retry = () => {
+    setError("");
+    setState("idle");
+    void onSubmit();
+  };
 
   if (state === "done") {
     return (
@@ -356,11 +353,11 @@ export default function AuditFlow() {
                     <div className="mt-6 rounded-[3px] border border-copper/50 bg-ember/40 p-4 text-[0.95rem] leading-relaxed">
                       <p className="font-medium">That didn&rsquo;t send — {error}</p>
                       <p className="mt-1 text-ink-soft">
-                        No lead left behind:{" "}
-                        <a href={mailtoFallback} className="text-copper underline underline-offset-2">
-                          click here to email me the same answers
-                        </a>{" "}
-                        and I&rsquo;ll take it from there.
+                        Your answers are safe right here.{" "}
+                        <button type="button" onClick={retry} className="text-copper underline underline-offset-2">
+                          Give it one more try
+                        </button>{" "}
+                        — flaky Wi-Fi loses to stubbornness most days.
                       </p>
                     </div>
                   )}

@@ -563,7 +563,25 @@ mobileMenu.querySelectorAll('a').forEach(a => {
 const TAG_COLORS = { 'GUIDE': '#38bdf8', 'CASE STUDY': '#34d399', 'NEWS': '#C4834A', 'TIP': '#a78bfa' };
 
 // ── BLOG POSTS (static) ──
+// Posts with `publishAt` in the future are auto-hidden until that date.
 const allPosts = [
+  {
+    title: "Anatomy of a Context Vault",
+    tag: 'GUIDE',
+    excerpt: "The seven sections that make up the “memory” your AI is missing — and why one document changes the quality of every answer you get out of it.",
+    date: 'Jun 1, 2026',
+    readTime: '6 min',
+    url: 'blog/2026-06/anatomy-of-a-context-vault.html',
+    publishAt: '2026-06-01T00:00:00-05:00'
+  },
+  {
+    title: "Your AI doesn’t know you. That’s why every answer feels generic.",
+    tag: 'NEWS',
+    excerpt: "The Clockworks pivot, explained. Why I’m moving from workflow automation to AI integration, what a Context Vault is, and why your AI keeps giving generic answers.",
+    date: 'May 22, 2026',
+    readTime: '4 min',
+    url: 'blog/2026-05/your-ai-doesnt-know-you.html'
+  },
   {
     title: "I Sat in a Contractor's Truck for 4 Hours. Here's the AI Playbook I Built From It.",
     tag: 'CASE STUDY',
@@ -618,9 +636,11 @@ function filterPosts(tag) {
 
 function renderPosts() {
   const grid = document.getElementById('resources-grid');
+  const now = Date.now();
+  const visiblePosts = allPosts.filter(p => !p.publishAt || new Date(p.publishAt).getTime() <= now);
   const filtered = activeFilter === 'all'
-    ? allPosts
-    : allPosts.filter(p => p.tag === activeFilter);
+    ? visiblePosts
+    : visiblePosts.filter(p => p.tag === activeFilter);
 
   if (filtered.length === 0) {
     grid.innerHTML = `

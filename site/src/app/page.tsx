@@ -44,6 +44,20 @@ const SYSTEMS = [
     body: "Invoices chased politely until they're paid. Job notes turned into clean records. A Friday summary of what moved and what's stuck — read it in two minutes, done.",
     runs: "QuickBooks · Your inbox",
   },
+  {
+    n: "05",
+    code: "INTEL DESK",
+    title: "Know what the big guys know",
+    body: "Live dashboards on your numbers — plus competitor price moves, local demand spikes, and material costs, read automatically from the public web. The analyst desk, scaled to one truck.",
+    runs: "Public data · QuickBooks · a weekly digest",
+  },
+  {
+    n: "06",
+    code: "FRONT DESK",
+    title: "A website that answers back",
+    body: "A trained agent on your site and your text line: answers questions your way, books jobs at 2am, and shows you what customers keep asking for. You can talk to mine right now — it's the chat bubble.",
+    runs: "Your site · SMS · your knowledge",
+  },
 ] as const;
 
 const FAQS = [
@@ -62,6 +76,10 @@ const FAQS = [
   {
     q: "Am I locked in?",
     a: "No. You own everything I build — the accounts, the numbers, the logic. Cancel the monthly service anytime and the system keeps working; you'd just be maintaining it yourself.",
+  },
+  {
+    q: "Couldn't I just do this myself with ChatGPT?",
+    a: "You could, and for some owners that's the honest answer. Here's the real math, though: the paid tiers add up — ChatGPT, Claude, or Gemini run about $20+ a month each, an automation platform like n8n is roughly $25+ a month hosted (or a $10–20/month server you maintain yourself), and none of it arrives assembled. The tools are maybe $50–100 a month; the hundred hours of wiring them into Jobber and QuickBooks — and keeping it running when something updates — is the actual product. From $99 a month I bring the tooling AND the mechanic. If you enjoy the duct tape, I'll cheer you on; the audit plan works as a DIY map too.",
   },
   {
     q: "Will customers know it's AI?",
@@ -142,7 +160,7 @@ export default function Home() {
           <Reveal>
             <p className="eyebrow">02 — What I do</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
-              Four systems. One quiet machine<span className="text-copper">.</span>
+              Six systems. One quiet machine<span className="text-copper">.</span>
             </h2>
           </Reveal>
           <div className="mt-12 grid gap-px overflow-hidden rounded-[4px] border hairline bg-line sm:grid-cols-2">

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../../images/logo-small.svg" />
+  <title>Anatomy of a Context Vault &mdash; Clockworks</title>
+  <meta name="description" content="The seven sections that make up a Context Vault for a small business, plus what each one actually does for your AI assistant. Read this before you build your own." />
+  <link rel="canonical" href="https://mnclockworks.com/blog/2026-06/anatomy-of-a-context-vault.html" />
+  <meta property="og:title" content="Anatomy of a Context Vault" />
+  <meta property="og:description" content="The seven sections that make up a Context Vault for a small business, and what each one actually does for your AI." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://mnclockworks.com/blog/2026-06/anatomy-of-a-context-vault.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f9f7f2; --ink: #1a1917; --ink-muted: #6b6860; --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1); --border-strong: rgba(26,25,23,0.2);
+      --accent: #C4834A; --accent-bg: #fbf3ec; --accent-text: #7a4a1f;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background-color: var(--cream); color: var(--ink); font-size: 17px; line-height: 1.8; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(249,247,242,0.92); backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; color: var(--ink-muted); text-decoration: none; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; object-position: center top; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-name { font-size: 14px; font-weight: 500; }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+    .body-text p { margin-bottom: 1.5rem; }
+    .body-text p:last-child { margin-bottom: 0; }
+    .body-text ul, .body-text ol { margin: 0 0 1.5rem 1.4rem; }
+    .body-text li { margin-bottom: 0.5rem; line-height: 1.7; }
+    .body-text strong { font-weight: 500; }
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; letter-spacing: -0.01em; }
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+    .pullquote { font-family: var(--serif); font-size: 1.5rem; line-height: 1.4; color: var(--ink); padding: 1.5rem 0; margin: 1.5rem 0; font-style: italic; }
+    .vault-section { background: #fff; border: 0.5px solid var(--border); border-radius: 12px; padding: 1.4rem 1.5rem; margin: 1.2rem 0; }
+    .vault-section-title { display: flex; align-items: baseline; gap: 12px; margin-bottom: 0.6rem; }
+    .vault-num { font-family: var(--serif); font-size: 1.5rem; color: var(--accent); line-height: 1; flex-shrink: 0; }
+    .vault-name { font-family: var(--serif); font-size: 1.3rem; font-weight: 400; color: var(--ink); line-height: 1.25; }
+    .vault-body { font-size: 15px; color: var(--ink-muted); line-height: 1.7; }
+    .vault-body strong { color: var(--ink); font-weight: 500; }
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .sig-name { font-weight: 500; font-size: 1rem; }
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; }
+    .cta-btn:hover { opacity: 0.85; }
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PSNYLVG4V1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PSNYLVG4V1');
+  </script>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../../resources.html">Notes</a>
+      <a href="../../index.html" class="nav-cta">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Guide &mdash; How It Works</div>
+    <h1 class="hero-title">Anatomy of a Context Vault</h1>
+    <p class="hero-subtitle">The seven sections that make up the &ldquo;memory&rdquo; your AI is missing &mdash; and why this one document changes the quality of every answer you get out of it.</p>
+    <div class="byline">
+      <img class="avatar" src="../../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">Founder, Clockworks &nbsp;&middot;&nbsp; June 1, 2026 &nbsp;&middot;&nbsp; 6 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>Last month I wrote about why your AI gives you generic answers: it doesn&rsquo;t know you. And I introduced the idea of a <strong>Context Vault</strong> &mdash; one organized document that holds everything an AI should know about your business so it can stop guessing.</p>
+      <p>That post got the most replies of anything I&rsquo;ve published. About half of them were some version of:</p>
+      <div class="callout">
+        <p>&ldquo;Okay, this makes sense. But what actually <em>goes</em> in a Context Vault?&rdquo;</p>
+      </div>
+      <p>Fair question. Here&rsquo;s the structure I use &mdash; the same one I build for every client. Seven sections. Each one is there because, when it&rsquo;s missing, your AI&rsquo;s answers fall apart in a specific, predictable way.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="article-section body-text">
+      <h2 class="section-heading">The seven sections</h2>
+
+      <div class="vault-section">
+        <div class="vault-section-title">
+          <span class="vault-num">01</span>
+          <span class="vault-name">Who you are</span>
+        </div>
+        <p class="vault-body">The basics: business name, your name, location, years in business, legal structure. <strong>Why it matters:</strong> without this, your AI will draft you a Mailchimp template every time. With it, the AI knows you&rsquo;re a one-person shop in Maple Grove, not a 50-person agency in San Francisco.</p>
+      </div>
+
+      <div class="vault-section">
+        <div class="vault-section-title">
+          <span class="vault-num">02</span>
+          <span class="vault-name">What you sell</span>
+        </div>
+        <p class="vault-body">Your services or products, your pricing, what each one includes and excludes, what&rsquo;s upsell vs. core, what you refuse to sell. <strong>Why it matters:</strong> the AI can&rsquo;t draft a quote, write a service page, or answer a customer question if it doesn&rsquo;t know what you actually offer. Most people forget the &ldquo;what you refuse to sell&rdquo; part &mdash; that&rsquo;s often the most useful detail.</p>
+      </div>
+
+      <div class="vault-section">
+        <div class="vault-section-title">
+          <span class="vault-num">03</span>
+          <span class="vault-name">Who buys from you</span>
+        </div>
+        <p class="vault-body">Your customer types, what their day looks like, what they actually care about, what objections they raise, where they find you. <strong>Why it matters:</strong> good marketing copy is specific. If your AI doesn&rsquo;t know your customer, it writes &ldquo;business owners who want to scale&rdquo; for the tenth time and it&rsquo;s meaningless.</p>
+      </div>
+
+      <div class="vault-section">
+        <div class="vault-section-title">
+          <span class="vault-num">04</span>
+          <span class="vault-name">How you sound</span>
+        </div>
+        <p class="vault-body">Voice and tone. Words you say, words you refuse to say. A few sample paragraphs in your real voice that the AI can pattern off. <strong>Why it matters:</strong> this is the single biggest lever for &ldquo;does the AI sound like me or like a robot.&rdquo; A two-paragraph voice description with examples will outperform any prompting trick on the planet.</p>
+      </div>
+
+      <div class="vault-section">
+        <div class="vault-section-title">
+          <span class="vault-num">05</span>
+          <span class="vault-name">How you actually work</span>
+        </div>
+        <p class="vault-body">Your process. How a customer goes from first contact to paying invoice. What you do, what your team does, what gets outsourced, what gets dropped. The boring operational truth. <strong>Why it matters:</strong> the AI can&rsquo;t help you fix bottlenecks or draft follow-up messages if it doesn&rsquo;t know what comes next in your process.</p>
+      </div>
+
+      <div class="vault-section">
+        <div class="vault-section-title">
+          <span class="vault-num">06</span>
+          <span class="vault-name">The tools you live in</span>
+        </div>
+        <p class="vault-body">Your stack. Gmail or Outlook. Google Calendar or iCal. Which CRM, which scheduler, which docs app, which accounting tool, what&rsquo;s on your phone vs. your desktop. <strong>Why it matters:</strong> this is what makes the &ldquo;do things, not just talk&rdquo; part work. When your AI knows your stack, it can actually draft the email in Gmail, check the calendar in Google, pull the doc from Drive &mdash; instead of giving you a generic list of options.</p>
+      </div>
+
+      <div class="vault-section">
+        <div class="vault-section-title">
+          <span class="vault-num">07</span>
+          <span class="vault-name">What you&rsquo;re working on right now</span>
+        </div>
+        <p class="vault-body">A short, dated &ldquo;current state&rdquo; section. What goals you&rsquo;re chasing this quarter. Active projects. Open decisions. Things you&rsquo;ve already tried that didn&rsquo;t work. <strong>Why it matters:</strong> this is the section that turns your AI from a generic assistant into something closer to a chief of staff. It also keeps the vault alive &mdash; if you update this section monthly, the whole document stays fresh.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="article-section body-text">
+      <h2 class="section-heading">What it&rsquo;s not</h2>
+      <p>A Context Vault is not a knowledge base. It is not your wiki. It is not where you dump every doc in your business. The whole point is that it&rsquo;s short enough to read in a few seconds &mdash; that&rsquo;s why the AI is willing to read it before every answer.</p>
+      <p>Mine is about eight pages. Most of my clients&rsquo; end up between five and twelve.</p>
+      <p class="pullquote">Long enough to actually know you. Short enough that an AI will read it every single time.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="article-section body-text">
+      <h2 class="section-heading">What you do with it</h2>
+      <p>Once it&rsquo;s built, you stop opening a blank chat. You start asking your AI things like:</p>
+      <ul>
+        <li><em>&ldquo;Draft a reply to this lead in my voice.&rdquo;</em></li>
+        <li><em>&ldquo;Write three subject lines for an email to my customers about pricing.&rdquo;</em></li>
+        <li><em>&ldquo;Look at my calendar this week and tell me where I&rsquo;m overcommitted.&rdquo;</em></li>
+        <li><em>&ldquo;A customer just asked X. What would you say?&rdquo;</em></li>
+      </ul>
+      <p>And what comes back is &mdash; for the first time &mdash; something that sounds like you wrote it, on your worst day, in five seconds. That&rsquo;s the bar. That&rsquo;s the unlock.</p>
+    </section>
+
+    <section class="article-section signature body-text">
+      <p>If you&rsquo;d rather not build this yourself, that&rsquo;s what I do at Clockworks: I sit down with you, build your vault, and wire it into Claude, ChatGPT, and Gemini. About two weeks, you own everything. Limited clients &mdash; reach out if you want to talk about it.</p>
+      <p>If you&rsquo;d rather build it yourself, you have everything you need above. Open a doc, start with section 01, and don&rsquo;t skip section 04.</p>
+      <p class="sig-name">&mdash; Parker Swanson, Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Want me to build it for you?</h2>
+      <p>Limited clients. Contact for rates and availability.</p>
+      <a href="../../index.html" class="cta-btn">Get in touch &rarr;</a>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">mnclockworks.com &nbsp;&middot;&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.article-section').forEach(function(el) { observer.observe(el); });
+  </script>
+</body>
+</html>

@@ -87,10 +87,10 @@ export default function About() {
                   PARKER SWANSON
                 </p>
                 <a
-                  href={`mailto:${site.email}`}
+                  href="/book/"
                   className="font-mono text-[0.7rem] tracking-wider text-copper hover:underline"
                 >
-                  {site.email}
+                  SEND A MESSAGE →
                 </a>
               </div>
             </div>

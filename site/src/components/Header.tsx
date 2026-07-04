@@ -5,6 +5,7 @@ import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { nav, site } from "@/lib/site";
+import LogoMark from "@/components/LogoMark";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -36,27 +37,33 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link href="/" className="group flex items-baseline gap-2" aria-label="MN Clockworks home">
-          <span className="eyebrow hidden sm:inline !text-ink-faint">MN</span>
+        <Link href="/" className="group flex items-center gap-2.5" aria-label="MN Clockworks home">
+          <LogoMark className="h-8 w-8 transition-transform duration-700 group-hover:rotate-[24deg]" />
           <span className="display text-[1.55rem] leading-none">
             Clockworks<span className="text-copper transition-opacity group-hover:animate-tick">.</span>
           </span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`link-draw text-[0.9rem] transition-colors ${
-                pathname?.startsWith(item.href.replace(/\/$/, ""))
-                  ? "text-copper"
-                  : "text-ink-soft hover:text-ink"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {nav.map((item) => {
+            const active = pathname?.startsWith(item.href.replace(/\/$/, ""));
+            const isResults = item.href === "/results/";
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`link-draw text-[0.9rem] transition-colors ${
+                  isResults && !active
+                    ? "nav-results font-medium"
+                    : active
+                      ? "text-copper"
+                      : "text-ink-soft hover:text-ink"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
           <Link
             href="/book/"
             className="rounded-[3px] bg-ink px-5 py-2.5 text-[0.875rem] font-medium text-paper transition-colors duration-300 hover:bg-copper"

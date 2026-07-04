@@ -7,7 +7,7 @@ import { ViewTransitions } from "next-view-transitions";
 import { site } from "@/lib/site";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Cursor from "@/components/Cursor";
+import ChatWidget from "@/components/ChatWidget";
 import "./globals.css";
 
 const instrument = Instrument_Serif({
@@ -62,7 +62,6 @@ const jsonLd = {
   "@type": "ProfessionalService",
   name: site.name,
   url: site.url,
-  email: site.email,
   founder: { "@type": "Person", name: site.owner },
   description: site.description,
   address: {
@@ -98,7 +97,7 @@ export default function RootLayout({
         lang="en"
         className={`${instrument.variable} ${GeistSans.variable} ${GeistMono.variable}`}
       >
-        <body className="grain min-h-dvh flex flex-col">
+        <body className="grain min-h-dvh flex flex-col" data-cw="v3">
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -118,10 +117,10 @@ export default function RootLayout({
               </Script>
             </>
           )}
-          <Cursor />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
+          <ChatWidget />
         </body>
       </html>
     </ViewTransitions>

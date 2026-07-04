@@ -72,6 +72,40 @@ const SPECS = [
     truth:
       "Nobody started a plumbing company to do data entry at 9pm. The paperwork doesn’t need you — it needs a system that never gets tired of it.",
   },
+  {
+    n: "05",
+    code: "INTEL DESK",
+    title: "Know what the big guys know",
+    price: "Pilot $2,500–$5,000 · $199–$299/mo",
+    firstIf: "You’ve ever learned about a competitor’s price change from a customer, six months late.",
+    what: [
+      "A live dashboard on your own numbers — calls caught, jobs booked, cash outstanding, review velocity — readable in two minutes with coffee.",
+      "Competitor watch: published prices and offers on local competitors’ sites, checked weekly, changes flagged.",
+      "Demand signals: when searches for your services spike in your service area, you hear about it that week — in time to staff for it.",
+      "Material-cost tracking from supplier lists, so your quotes keep up with copper, not last quarter’s prices.",
+      "One plain-English Tuesday digest. No login required to stay informed.",
+    ],
+    runs: "Public web data · QuickBooks · Jobber",
+    truth:
+      "Big companies pay an analyst for this view. Yours can come from a patient machine that reads the public internet every week and never bills overtime.",
+  },
+  {
+    n: "06",
+    code: "FRONT DESK",
+    title: "A website that answers back",
+    price: "Pilot $2,000–$4,000 · from $99/mo",
+    firstIf: "Your website is a brochure that has never once answered a customer’s question.",
+    what: [
+      "A trained agent living on your site and your text line — answers questions about your services, pricing, and scheduling, in your words, 24/7.",
+      "Books real appointments straight onto your calendar; hands anything sensitive to you fast.",
+      "Every conversation is logged and analyzed: you see what customers keep asking, where they hesitate, which questions turn into jobs.",
+      "You steer its personality and rules with plain-English controls — no code, no tickets.",
+      "Mine is running on this site right now. Go ask it something hard.",
+    ],
+    runs: "Your site · SMS · your knowledge base",
+    truth:
+      "The chat bubble on this site isn’t a support widget — it’s the product, demonstrating itself. What it does for me all day, yours does for you.",
+  },
 ] as const;
 
 export default function WhatIDo() {
@@ -98,7 +132,7 @@ export default function WhatIDo() {
               <div>
                 <div className="flex items-baseline gap-4">
                   <span className="font-mono text-[0.7rem] tracking-[0.2em] text-copper">{s.code}</span>
-                  <span className="font-mono text-[0.7rem] text-ink-faint">{s.n} / 04</span>
+                  <span className="font-mono text-[0.7rem] text-ink-faint">{s.n} / 06</span>
                 </div>
                 <h2 className="display mt-4 text-4xl">{s.title}</h2>
                 <p className="mt-2 font-mono text-[0.8rem] tracking-wide text-ink-soft">{s.price}</p>

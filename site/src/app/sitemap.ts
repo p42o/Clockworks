@@ -1,31 +1,31 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
+import { getPublishedPosts } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
-/** New pages + the legacy blog URLs worth keeping in front of Google. */
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  const pages = ["", "what-i-do/", "how-it-works/", "results/", "about/", "book/"].map((p) => ({
+  const pages = [
+    "",
+    "what-i-do/",
+    "how-it-works/",
+    "results/",
+    "about/",
+    "book/",
+    "your-own-agent/",
+    "blog/",
+  ].map((p) => ({
     url: `${site.url}/${p}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
     priority: p === "" ? 1 : 0.8,
   }));
-  const legacy = [
-    "resources.html",
-    "blog/2026-06/anatomy-of-a-context-vault.html",
-    "blog/2026-05/your-ai-doesnt-know-you.html",
-    "blog/truck-cab-ai-playbook.html",
-    "blog/ai-vs-automation.html",
-    "blog/lead-response-workflow.html",
-    "blog/email-triage-tip.html",
-    "blog/2026-outlook.html",
-  ].map((p) => ({
-    url: `${site.url}/${p}`,
-    lastModified: now,
+  const posts = getPublishedPosts().map((p) => ({
+    url: `${site.url}/blog/${p.slug}/`,
+    lastModified: new Date(p.date + "T12:00:00"),
     changeFrequency: "yearly" as const,
-    priority: 0.4,
+    priority: 0.5,
   }));
-  return [...pages, ...legacy];
+  return [...pages, ...posts];
 }

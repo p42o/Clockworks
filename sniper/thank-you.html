@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You — Clockworks Sniper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ground: #0E0E0C;
+  --paper: #F5F1E8;
+  --signal: #D4582A;
+  --ink-soft: rgba(245,241,232,0.7);
+  --ink-muted: rgba(245,241,232,0.4);
+  --line: rgba(245,241,232,0.1);
+  --font-display: 'Instrument Serif', serif;
+  --font-sans: 'Geist', sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--ground);
+  color: var(--paper);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  -webkit-font-smoothing: antialiased;
+}
+.card {
+  max-width: 560px;
+  width: 100%;
+  border: 1px solid var(--line);
+  padding: 60px 48px;
+  text-align: center;
+  position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--signal);
+}
+.signal-icon {
+  width: 56px; height: 56px;
+  background: rgba(212,88,42,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+}
+.signal-icon svg { width: 28px; height: 28px; stroke: var(--signal); fill: none; stroke-width: 2; }
+h1 {
+  font-family: var(--font-display);
+  font-size: 48px;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+h1 em { font-style: italic; color: var(--signal); }
+.subtitle {
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin-bottom: 40px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+.download-box {
+  background: rgba(212,88,42,0.1);
+  border: 1px solid rgba(212,88,42,0.3);
+  padding: 24px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.download-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--signal);
+  margin-bottom: 12px;
+}
+/*
+  IMPORTANT: Replace the href below with your actual download link.
+  Gumroad handles this automatically — buyers get an email with the link.
+  If using PayPal, either:
+  1. Email the buyer the link manually (check PayPal notifications)
+  2. Use a service like SendOwl or Payhip for auto-delivery
+*/
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--signal);
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+  justify-content: center;
+}
+.download-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+.steps-list {
+  text-align: left;
+  border-top: 1px solid var(--line);
+  padding-top: 28px;
+}
+.steps-list h3 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-muted);
+  margin-bottom: 16px;
+}
+.steps-list ol {
+  list-style: none;
+  counter-reset: steps;
+}
+.steps-list li {
+  counter-increment: steps;
+  display: flex;
+  gap: 14px;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.steps-list li:last-child { border-bottom: none; }
+.steps-list li::before {
+  content: counter(steps);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--signal);
+  background: rgba(212,88,42,0.15);
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.back-link {
+  display: block;
+  margin-top: 32px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+.back-link:hover { color: var(--paper); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="signal-icon">
+    <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <h1>You're <em>in.</em></h1>
+  <p class="subtitle">Your purchase is confirmed. Download below and you'll be up and running in under 5 minutes.</p>
+
+  <div class="download-box">
+    <div class="download-label">Your download</div>
+    <!--
+      IMPORTANT: Replace "#" with your actual download link.
+      If using Gumroad, this page isn't needed — Gumroad emails the link automatically.
+      If using PayPal, host your ZIP somewhere (Dropbox, Google Drive, etc.)
+      and put the direct download link here. Change it occasionally to prevent sharing.
+    -->
+    <a href="#" class="download-btn">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download Clockworks Sniper.zip
+    </a>
+  </div>
+
+  <div class="steps-list">
+    <h3>Getting started</h3>
+    <ol>
+      <li>Unzip the downloaded file anywhere on your Mac</li>
+      <li>Double-click <strong>Launch Clockworks Sniper.command</strong> — it'll set itself up on first run</li>
+      <li>Your browser opens to <strong>localhost:5555</strong> automatically</li>
+      <li>Click <strong>Settings</strong> → paste your Anthropic API key → Save</li>
+      <li>Paste any small business URL and hit <strong>Scrape Site</strong></li>
+    </ol>
+  </div>
+
+  <a href="https://mnclockworks.com" class="back-link">← Back to mnclockworks.com</a>
+</div>
+</body>
+</html>

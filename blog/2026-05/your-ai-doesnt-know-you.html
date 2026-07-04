@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="../../images/logo-small.svg" />
+  <title>Your AI doesn&rsquo;t know you yet. Here&rsquo;s the fix. &mdash; Clockworks</title>
+  <meta name="description" content="The Clockworks pivot, explained. Why I&rsquo;m moving from workflow automation to AI integration, what a Context Vault is, and why your AI keeps giving you generic answers." />
+  <link rel="canonical" href="https://mnclockworks.com/blog/2026-05/your-ai-doesnt-know-you.html" />
+  <meta property="og:title" content="Your AI doesn&rsquo;t know you yet. Here&rsquo;s the fix." />
+  <meta property="og:description" content="The Clockworks pivot, explained. Context Vaults, AI integration, and why your ChatGPT keeps giving you generic answers." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://mnclockworks.com/blog/2026-05/your-ai-doesnt-know-you.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f9f7f2; --ink: #1a1917; --ink-muted: #6b6860; --ink-faint: #b0ada6;
+      --border: rgba(26,25,23,0.1); --border-strong: rgba(26,25,23,0.2);
+      --accent: #C4834A; --accent-bg: #fbf3ec; --accent-text: #7a4a1f;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background-color: var(--cream); color: var(--ink); font-size: 17px; line-height: 1.8; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(249,247,242,0.92); backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .site-logo { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+    .site-nav { display: flex; gap: 2rem; align-items: center; }
+    .site-nav a { font-size: 13px; color: var(--ink-muted); text-decoration: none; }
+    .site-nav a:hover { color: var(--ink); }
+    .nav-cta { font-size: 13px; font-weight: 500; color: var(--accent) !important; padding: 6px 14px; border: 0.5px solid var(--accent); border-radius: 100px; }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+    #progress-bar { position: fixed; top: 56px; left: 0; width: 0%; height: 2px; background: var(--accent); z-index: 200; transition: width 0.1s linear; }
+    .hero { max-width: 760px; margin: 0 auto; padding: 5rem 2rem 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s 0.1s forwards; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--ink-faint); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.15rem; font-weight: 300; color: var(--ink-muted); line-height: 1.65; max-width: 560px; margin-bottom: 2.5rem; }
+    .byline { display: flex; align-items: center; gap: 14px; padding-bottom: 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; object-position: center top; border: 0.5px solid rgba(26,25,23,0.15); }
+    .byline-name { font-size: 14px; font-weight: 500; }
+    .byline-meta { font-size: 13px; color: var(--ink-muted); }
+    .article { max-width: 760px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .article-section { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .article-section.visible { opacity: 1; transform: translateY(0); }
+    .body-text p { margin-bottom: 1.5rem; }
+    .body-text p:last-child { margin-bottom: 0; }
+    .body-text ul, .body-text ol { margin: 0 0 1.5rem 1.4rem; }
+    .body-text li { margin-bottom: 0.5rem; line-height: 1.7; }
+    .body-text strong { font-weight: 500; }
+    .section-heading { font-family: var(--serif); font-size: 1.65rem; font-weight: 400; color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.25; letter-spacing: -0.01em; }
+    .divider { width: 36px; height: 2px; background: var(--border-strong); border-radius: 2px; margin: 2.5rem 0; }
+    .callout { border-left: 3px solid var(--accent); background: var(--accent-bg); padding: 1.1rem 1.4rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+    .callout p { margin: 0 !important; font-size: 1rem; font-style: italic; color: var(--accent-text); line-height: 1.7; }
+    .pullquote { font-family: var(--serif); font-size: 1.5rem; line-height: 1.4; color: var(--ink); border-left: 0; padding: 1.5rem 0 1.5rem 0; margin: 1.5rem 0; font-style: italic; }
+    .signature { margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .sig-name { font-weight: 500; font-size: 1rem; }
+    .cta-block { background: var(--ink); border-radius: 16px; padding: 2.5rem 2rem; margin-top: 3rem; text-align: center; color: var(--cream); }
+    .cta-block h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; }
+    .cta-block p { font-size: 0.95rem; color: rgba(249,247,242,0.65); margin-bottom: 1.5rem; }
+    .cta-btn { display: inline-block; background: var(--cream); color: var(--ink); font-size: 14px; font-weight: 500; padding: 11px 28px; border-radius: 100px; text-decoration: none; }
+    .cta-btn:hover { opacity: 0.85; }
+    .site-footer { border-top: 0.5px solid var(--border); padding: 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; }
+    .footer-text { font-size: 12px; color: var(--ink-muted); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 2rem; }
+      .article { padding: 0 1.25rem 4rem; }
+      .site-nav a:not(.nav-cta) { display: none; }
+      .hero-title { font-size: 2rem; }
+      .cta-block { padding: 2rem 1.25rem; }
+      .site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PSNYLVG4V1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PSNYLVG4V1');
+  </script>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">Clockworks</a>
+    <nav class="site-nav">
+      <a href="../../resources.html">Notes</a>
+      <a href="../../index.html" class="nav-cta">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Notes &mdash; The Pivot</div>
+    <h1 class="hero-title">Your AI doesn&rsquo;t know you. That&rsquo;s why every answer feels generic.</h1>
+    <p class="hero-subtitle">A short explanation of what I&rsquo;m doing differently at Clockworks now, and the one concept &mdash; the Context Vault &mdash; that&rsquo;s behind all of it.</p>
+    <div class="byline">
+      <img class="avatar" src="../../images/Parker.png" alt="Parker Swanson" />
+      <div class="byline-info">
+        <div class="byline-name">Parker Swanson</div>
+        <div class="byline-meta">Founder, Clockworks &nbsp;&middot;&nbsp; May 22, 2026 &nbsp;&middot;&nbsp; 4 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <article class="article">
+
+    <section class="article-section body-text">
+      <p>I caught myself this week typing the same paragraph into ChatGPT for what felt like the fifth time:</p>
+      <div class="callout">
+        <p>&ldquo;I run a small AI consulting business in Maple Grove called Clockworks. I work with small business owners in the Twin Cities. Direct, lightly contrarian, anti-corporate voice. Don&rsquo;t write like a Mailchimp template. Here&rsquo;s what I want to do&hellip;&rdquo;</p>
+      </div>
+      <p>Sometimes I copy-paste it. Sometimes I rewrite it. Either way, ten seconds vanish before the AI even knows what I&rsquo;m asking for.</p>
+      <p>And here&rsquo;s the thing &mdash; I do this. I&rsquo;m the AI consultant. If I&rsquo;m doing it, every business owner I&rsquo;ve ever talked to is doing it too. Except most of them give up after the third or fourth generic answer and decide &ldquo;AI isn&rsquo;t really for me.&rdquo;</p>
+      <p>It&rsquo;s not that AI isn&rsquo;t for them. It&rsquo;s that AI doesn&rsquo;t <em>know</em> them. There&rsquo;s a difference.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="article-section body-text">
+      <h2 class="section-heading">A year ago I was selling the wrong thing</h2>
+      <p>I built Clockworks to help small businesses use AI for real. For the first year, that meant: &ldquo;let me build you an automation that runs in the background.&rdquo; Invoicing, lead follow-up, review requests. Useful. Cool. But also &mdash; it required learning a new platform, hooking it into your tools, and trusting a robot to do things while you weren&rsquo;t looking.</p>
+      <p>That&rsquo;s a fine product. It&rsquo;s not the product I wish I&rsquo;d been selling.</p>
+      <p class="pullquote">The product I wish I&rsquo;d been selling is: let me get your AI to actually know you.</p>
+      <p>Not a new app. Not another subscription. Not another login. Just &mdash; get Claude, get ChatGPT, get Gemini to read a single document about your business <em>before</em> they answer you. Then connect them to the tools you already use so they can do things, not just talk about them.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="article-section body-text">
+      <h2 class="section-heading">The Context Vault</h2>
+      <p>I call that document a <strong>Context Vault</strong>. I built one for myself almost a year ago and have not gone back. Every AI tool I open already knows who Parker is. What Clockworks is. What my voice sounds like. Who&rsquo;s on my team and who isn&rsquo;t. What&rsquo;s on my calendar. Where my work lives. What my kids&rsquo; names are when I&rsquo;m drafting a birthday invitation.</p>
+      <p>The minute I stopped re-explaining myself, two things happened. The answers got dramatically better. And I stopped giving up halfway through a chat because the response was a generic blob that could&rsquo;ve been written for any random business in America.</p>
+      <p>The &ldquo;AI feels generic&rdquo; complaint &mdash; the thing every small business owner I talk to says &mdash; that complaint disappeared.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="article-section body-text">
+      <h2 class="section-heading">So that&rsquo;s the pivot</h2>
+      <p>For the next stretch, Clockworks is one thing:</p>
+      <p><strong>I sit down with you for 30 minutes, learn how your business actually runs, build your Context Vault, and wire it into Claude, ChatGPT, and Gemini. I also connect them to the tools you already use &mdash; your inbox, calendar, docs, CRM &mdash; so your AI can actually do things, not just talk. Two weeks. You own everything I build.</strong></p>
+      <p>I&rsquo;m taking limited clients to start &mdash; this is a real engagement with a real person, not a subscription product. If it sounds like it would change something for your business, get in touch and we&rsquo;ll talk about whether it&rsquo;s a fit and what it would cost.</p>
+      <p>That&rsquo;s the whole pitch.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="article-section body-text">
+      <h2 class="section-heading">If you&rsquo;ve worked with me before</h2>
+      <p>Nothing&rsquo;s broken. If we&rsquo;ve talked about a workflow, an automation, an n8n thing &mdash; or you bought one of the Gumroad products &mdash; that all still works. You&rsquo;re not losing anything. I&rsquo;ll still answer questions and ship things I said I&rsquo;d ship.</p>
+      <p>But going forward, this is what I want to be known for. Less &ldquo;automate this one task in the background.&rdquo; More &ldquo;your AI actually knows you now, here are the keys.&rdquo;</p>
+    </section>
+
+    <section class="article-section signature body-text">
+      <p>If you&rsquo;re a small business owner who&rsquo;s quietly thought &ldquo;I should probably figure out this AI thing, but every time I open ChatGPT I get nothing useful&rdquo; &mdash; yes. That&rsquo;s because your AI doesn&rsquo;t know you. Let&rsquo;s fix that.</p>
+      <p class="sig-name">&mdash; Parker Swanson, Clockworks</p>
+    </section>
+
+    <div class="cta-block article-section">
+      <h2>Get your AI to actually know you.</h2>
+      <p>Limited clients. Contact for rates and availability.</p>
+      <a href="../../index.html" class="cta-btn">Get in touch &rarr;</a>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-logo">Clockworks</div>
+    <div class="footer-text">mnclockworks.com &nbsp;&middot;&nbsp; Maple Grove, MN</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(scrolled, 100) + '%';
+    });
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.article-section').forEach(function(el) { observer.observe(el); });
+  </script>
+</body>
+</html>
