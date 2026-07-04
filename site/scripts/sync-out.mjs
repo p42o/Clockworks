@@ -77,8 +77,12 @@ if (mode === "preview") {
 }
 
 // --- root mode ---
+// OVERLAY: the new blog is merged INTO the legacy blog/ (new index + /<slug>/
+// pages copied on top; legacy *.html files stay put and are 301'd to the new
+// slugs by the managed .htaccess block). Never rm the legacy blog files.
+const OVERLAY = new Set(["blog"]);
 const entries = readdirSync(out);
-const clash = entries.filter((e) => PROTECTED.has(e));
+const clash = entries.filter((e) => PROTECTED.has(e) && !OVERLAY.has(e));
 if (clash.length) {
   console.error(`REFUSING: export would overwrite protected paths: ${clash.join(", ")}`);
   process.exit(1);
@@ -97,9 +101,14 @@ for (const stale of prev.written.filter((w) => !entries.includes(w))) {
 
 for (const entry of entries) {
   const dest = join(repoRoot, entry);
-  rmSync(dest, { recursive: true, force: true });
-  cpSync(join(out, entry), dest, { recursive: true });
-  console.log(`✓ ${entry}`);
+  if (OVERLAY.has(entry)) {
+    cpSync(join(out, entry), dest, { recursive: true }); // merge, keep legacy files
+    console.log(`✓ (overlay) ${entry}`);
+  } else {
+    rmSync(dest, { recursive: true, force: true });
+    cpSync(join(out, entry), dest, { recursive: true });
+    console.log(`✓ ${entry}`);
+  }
 }
 
 writeFileSync(manifestPath, JSON.stringify({ written: entries, at: new Date().toISOString() }, null, 2));

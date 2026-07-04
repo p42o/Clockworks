@@ -37,9 +37,9 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link href="/" className="group flex items-center gap-2.5" aria-label="MN Clockworks home">
-          <LogoMark className="h-8 w-8 transition-transform duration-700 group-hover:rotate-[24deg]" />
-          <span className="display text-[1.55rem] leading-none">
+        <Link href="/" className="group flex items-center gap-3" aria-label="MN Clockworks home">
+          <LogoMark className="h-11 w-11 transition-transform duration-700 group-hover:rotate-[24deg]" />
+          <span className="display text-[1.7rem] leading-none">
             Clockworks<span className="text-copper transition-opacity group-hover:animate-tick">.</span>
           </span>
         </Link>
