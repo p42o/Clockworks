@@ -5,7 +5,11 @@ import MagneticButton from "@/components/MagneticButton";
 import Reveal from "@/components/Reveal";
 import StatCount from "@/components/StatCount";
 import AuditCTA from "@/components/AuditCTA";
+import DemoGallery from "@/components/demos/DemoGallery";
 import { asset, site } from "@/lib/site";
+
+const TOOLS = ["Jobber", "QuickBooks", "Housecall Pro", "Google", "Your phone #"];
+const TRUST = ["Working demo in 48 hrs", "You own everything", "No contracts", "Coffee-bet guarantee"];
 
 /*
  * H1 candidates considered:
@@ -124,14 +128,34 @@ export default function Home() {
             </div>
             <p className="mt-4 text-sm text-ink-faint">{site.cta.sub}</p>
           </Reveal>
+          <Reveal delay={0.32}>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {TRUST.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border hairline bg-cream-bright/60 px-3 py-1.5 font-mono text-[0.68rem] tracking-wide text-ink-soft"
+                >
+                  <span className="text-copper">✓</span> {t}
+                </span>
+              ))}
+            </div>
+          </Reveal>
         </div>
 
-        <div className="relative border-t hairline">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-baseline gap-x-8 gap-y-2 px-5 py-4 sm:px-8">
-            <span className="eyebrow">Built on the tools you already use</span>
-            <span className="font-mono text-[0.75rem] tracking-wider text-ink-soft">
-              Jobber · QuickBooks · Housecall Pro · Google · your phone number
-            </span>
+        <div className="relative border-t hairline bg-cream-bright/30">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4 sm:px-8">
+            <span className="eyebrow shrink-0">Built on the tools you already use</span>
+            <span className="hidden h-3 w-px bg-line sm:inline-block" aria-hidden />
+            <div className="flex flex-wrap gap-1.5">
+              {TOOLS.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-[3px] border hairline-soft bg-paper px-2.5 py-1 font-mono text-[0.68rem] text-ink-soft"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -155,8 +179,14 @@ export default function Home() {
       </section>
 
       {/* ---------- WHAT I DO ---------- */}
-      <section className="border-t hairline">
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+      <section className="relative overflow-clip border-t hairline">
+        <span
+          className="pointer-events-none absolute -left-3 top-6 select-none font-display text-[9rem] leading-none text-ink/[0.04] sm:text-[13rem]"
+          aria-hidden
+        >
+          02
+        </span>
+        <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
           <Reveal>
             <p className="eyebrow">02 — What I do</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
@@ -186,9 +216,68 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---------- TRY IT — interactive demos on the homepage ---------- */}
+      <section className="relative overflow-clip border-t hairline bg-paper-deep/60">
+        <span
+          className="pointer-events-none absolute -right-4 top-4 select-none font-display text-[10rem] leading-none text-copper/[0.06] sm:text-[14rem]"
+          aria-hidden
+        >
+          ▶
+        </span>
+        <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
+          <Reveal>
+            <p className="eyebrow">Go ahead — poke it</p>
+            <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
+              Don&rsquo;t take my word for it. <em>Play with it</em><span className="text-copper">.</span>
+            </h2>
+            <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
+              Every card below is a working demo running right here in your browser, on clearly-labeled
+              sample data. Text the missed-call bot back, run a week of quote follow-ups, poke the
+              dashboards. This is the actual stuff I build — rebuilt around your shop when it&rsquo;s yours.
+            </p>
+          </Reveal>
+          <div className="mt-12">
+            <DemoGallery />
+          </div>
+          <Reveal className="mt-8">
+            <Link href="/results/" className="link-draw text-ink-soft hover:text-ink">
+              More proof, and the honest &ldquo;early days&rdquo; part →
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ---------- NUMBERS ---------- */}
-      <section className="bg-ground text-paper">
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
+      <section className="relative overflow-clip bg-ground text-paper">
+        {/* faint drafting tick-ring ornament */}
+        <svg
+          className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 opacity-[0.07] sm:opacity-[0.1]"
+          viewBox="-1.1 -1.1 2.2 2.2"
+          fill="none"
+          aria-hidden
+        >
+          {Array.from({ length: 60 }, (_, i) => {
+            const a = (i / 60) * Math.PI * 2;
+            const major = i % 5 === 0;
+            const r0 = 0.9;
+            const r1 = 0.9 + (major ? 0.08 : 0.04);
+            return (
+              <line
+                key={i}
+                x1={Math.cos(a) * r0}
+                y1={Math.sin(a) * r0}
+                x2={Math.cos(a) * r1}
+                y2={Math.sin(a) * r1}
+                stroke="#F5F1E8"
+                strokeWidth={major ? 0.012 : 0.007}
+              />
+            );
+          })}
+          <circle r="0.55" stroke="#D4582A" strokeWidth="0.014" />
+          <line x1="0" y1="0" x2="0" y2="-0.5" stroke="#D4582A" strokeWidth="0.016" />
+          <line x1="0" y1="0" x2="0.34" y2="0.2" stroke="#F5F1E8" strokeWidth="0.012" />
+        </svg>
+        <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
           <Reveal>
             <p className="eyebrow !text-copper">03 — Straight numbers</p>
           </Reveal>

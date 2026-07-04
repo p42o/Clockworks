@@ -46,6 +46,12 @@
     <label>Extra instructions (appended to the brain at runtime — hours, promos, "mention the fall tune-up special", etc.)
       <textarea id="extra" rows="4"></textarea>
     </label>
+    <div class="row" style="gap:16px">
+      <label style="flex:1">Per-visitor / day <span class="muted">(default 40)</span><input type="text" id="ipDaily" placeholder="40"></label>
+      <label style="flex:1">Per-visitor / min <span class="muted">(default 6)</span><input type="text" id="ipBurst" placeholder="6"></label>
+      <label style="flex:1">GLOBAL / day <span class="muted">(hard credit ceiling, default 1200)</span><input type="text" id="globalDaily" placeholder="1200"></label>
+    </div>
+    <p class="muted" style="margin-top:6px">The global cap is the backstop: no matter how many people (or bots) hit the bot, it stops calling the model after this many messages per day. Lower it to cap spend harder.</p>
     <div class="row" style="margin-top:12px">
       <button id="save">Save config</button><span class="muted" id="saveMsg"></span>
     </div>
@@ -103,8 +109,13 @@ async function loadConfig() {
     $("enabled").checked = c.enabled !== false;
     $("model").value = c.model || "";
     $("extra").value = c.extraInstructions || "";
+    $("ipDaily").value = c.ipDailyCap ?? "";
+    $("ipBurst").value = c.ipBurstCap ?? "";
+    $("globalDaily").value = c.globalDailyCap ?? "";
   } catch (e) { $("saveMsg").textContent = "Read failed: " + e.message; }
 }
+
+const numOr = (id, def) => { const n = parseInt($(id).value, 10); return Number.isFinite(n) && n > 0 ? n : def; };
 
 $("save").onclick = async () => {
   try {
@@ -112,6 +123,9 @@ $("save").onclick = async () => {
       enabled: $("enabled").checked,
       model: $("model").value.trim(),
       extraInstructions: $("extra").value.trim(),
+      ipDailyCap: numOr("ipDaily", 40),
+      ipBurstCap: numOr("ipBurst", 6),
+      globalDailyCap: numOr("globalDaily", 1200),
       updatedAt: new Date().toISOString(),
     }, { merge: true });
     $("saveMsg").textContent = "Saved ✓ (bot picks it up within 60s)";
