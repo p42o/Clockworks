@@ -23,7 +23,7 @@ export default function AuthorBio() {
           <p className="display mt-1 text-2xl leading-none">Parker Swanson</p>
           <p className="mt-2 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
             I build practical AI systems for Twin Cities trades businesses from my home in
-            {" "}{site.city}, MN — the quiet kind that catch missed calls, chase quotes, and hand
+            {" "}{site.city}, MN. The quiet kind that catch missed calls, chase quotes, and hand
             owners their evenings back. One guy, local, reachable.
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-start">

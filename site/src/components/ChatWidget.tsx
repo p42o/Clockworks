@@ -60,6 +60,7 @@ export default function ChatWidget() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [insights, setInsights] = useState(false);
+  const [nudge, setNudge] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const session = useRef<string>("");
 
@@ -69,6 +70,24 @@ export default function ChatWidget() {
       `s${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36)}`;
     sessionStorage.setItem("cw-bot-session", session.current);
   }, []);
+
+  // first-visit nudge — peeks out once per session, then rests
+  useEffect(() => {
+    if (sessionStorage.getItem("cw-nudge-seen")) return;
+    const show = setTimeout(() => setNudge(true), 4500);
+    const hide = setTimeout(() => setNudge(false), 15000);
+    return () => {
+      clearTimeout(show);
+      clearTimeout(hide);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      setNudge(false);
+      sessionStorage.setItem("cw-nudge-seen", "1");
+    }
+  }, [open]);
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: 99999, behavior: "smooth" });
@@ -100,18 +119,86 @@ export default function ChatWidget() {
     <>
       <InsightsSample open={insights} onClose={() => setInsights(false)} />
 
-      {/* the bubble */}
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close chat" : "Chat with the Front Desk — a live demo"}
-        className="fixed bottom-5 right-5 z-[70] flex h-14 w-14 items-center justify-center rounded-full bg-copper text-cream-bright shadow-[0_14px_36px_-10px_rgba(212,88,42,0.7)] transition-transform hover:scale-105"
-      >
-        {open ? "✕" : <span className="text-2xl" aria-hidden>🕰️</span>}
-        {!open && (
-          <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full border-2 border-paper" style={{ background: CHART.pine }} aria-hidden />
-        )}
-      </button>
+      {/* ---- launcher ---- */}
+      <div className="fixed bottom-5 right-5 z-[70] flex flex-col items-end gap-3">
+        {/* first-visit peek nudge */}
+        <AnimatePresence>
+          {nudge && !open && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.92 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.92 }}
+              transition={{ type: "spring", stiffness: 300, damping: 24 }}
+              className="relative mr-1 max-w-[15.5rem] rounded-[12px] rounded-br-[3px] border hairline bg-cream-bright px-3.5 py-2.5 text-left shadow-[0_18px_44px_-16px_rgba(14,14,12,0.45)]"
+            >
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="block text-[0.82rem] leading-snug text-ink"
+              >
+                <span className="font-medium">Hey, I&rsquo;m the front desk.</span> Ask me anything
+                about getting your evenings back.
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setNudge(false);
+                  sessionStorage.setItem("cw-nudge-seen", "1");
+                }}
+                aria-label="Dismiss"
+                className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border hairline bg-paper text-[0.62rem] text-ink-faint transition-colors hover:text-copper"
+              >
+                ✕
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* the button */}
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Close chat" : "Chat with the Front Desk"}
+          className="group relative flex h-[58px] w-[58px] items-center justify-center rounded-full bg-gradient-to-br from-copper to-copper-deep text-cream-bright shadow-[0_16px_38px_-10px_rgba(212,88,42,0.7),inset_0_1px_0_rgba(255,255,255,0.25)] transition-transform duration-300 hover:scale-105 active:scale-95"
+        >
+          {!open && <span className="launcher-pulse absolute inset-0 rounded-full" aria-hidden />}
+
+          <span className="relative">
+            {open ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path
+                  d="M6 9.5l6 6 6-6"
+                  stroke="currentColor"
+                  strokeWidth="2.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            ) : (
+              <svg width="27" height="27" viewBox="0 0 32 32" fill="none" aria-hidden>
+                {/* speech bubble */}
+                <path
+                  d="M6 5.5h20A3.5 3.5 0 0 1 29.5 9v9A3.5 3.5 0 0 1 26 21.5H13.9l-4.6 3.9A1 1 0 0 1 7.7 24.6V21.5H6A3.5 3.5 0 0 1 2.5 18V9A3.5 3.5 0 0 1 6 5.5Z"
+                  fill="#FDFBF5"
+                />
+                {/* typing dots */}
+                <circle className="launcher-dot" cx="10.5" cy="13.4" r="1.75" fill="#D4582A" />
+                <circle className="launcher-dot" cx="16" cy="13.4" r="1.75" fill="#D4582A" style={{ animationDelay: "0.16s" }} />
+                <circle className="launcher-dot" cx="21.5" cy="13.4" r="1.75" fill="#D4582A" style={{ animationDelay: "0.32s" }} />
+              </svg>
+            )}
+          </span>
+
+          {/* live-status dot */}
+          {!open && (
+            <span
+              className="absolute right-0.5 top-0.5 h-3.5 w-3.5 rounded-full border-[2.5px] border-paper"
+              style={{ background: CHART.pine }}
+              aria-hidden
+            />
+          )}
+        </button>
+      </div>
 
       <AnimatePresence>
         {open && (
