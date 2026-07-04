@@ -177,3 +177,26 @@ sample-product chatbot). All live-verified on mnclockworks.com/v3.
     (mistyped/revoked/wrong-workspace) — removed it, so the bot runs cleanly on **Grok-4** now.
     The instant a valid key is added to the clockworks-bot Vercel project, it's on Claude with
     Grok as fallback (default model logic already prefers claude-opus-4-8 when the key is present).
+
+## Round 4 — GO LIVE at root (2026-07-04)
+
+Parker: "make my logo a little larger, then deploy over my home page." Also reported an
+"Application error: a client-side exception" on the site.
+
+- **Root cause of the exception: no Cache-Control headers from the host.** Browsers heuristically
+  cached the HTML; after a redeploy the stale HTML referenced `_next` chunks the incremental FTP
+  deploy had already deleted → 404 → hydration crash. Cold loads always passed (my tests), which
+  is the tell. **Fixed in `.htaccess`:** `no-cache, must-revalidate` on `*.html` +
+  `max-age=604800` on hashed assets (mod_headers, with a mod_expires fallback). Verified live:
+  HTML now returns `cache-control: no-cache`. This permanently prevents the stale-chunk crash.
+- **Logo enlarged:** mark 32→44px, wordmark 1.55→1.7rem, gap widened.
+- **THE FLIP — mnclockworks.com root is now the new site.** `sync-out.mjs` gained an OVERLAY mode
+  for `blog`: the new Next blog is merged on top of the legacy `blog/*.html` files (which stay and
+  are 301'd to the new slugs) instead of the script refusing on the collision. Ran `export:root`:
+  new index.html + `_next` + all app dirs written to root, blog overlaid, `.htaccess` merged with
+  22 blog 301s + `resources.html`→`/blog/` (cache block preserved above the managed markers).
+  **Zero legacy deletions** — sitesniper, sprocket, admin.html, admin-bot.html, privacy, terms,
+  resources, contact, images, social all intact. Live-verified: root 200 + clean hydration (no
+  errors), logo 44px, demos band, chat answering; `/sitesniper/` `/admin.html` `/privacy.html`
+  200; `/blog/ai-myths.html`→301→`/blog/ai-myths/`; `/resources.html`→301→`/blog/`. The `/v3`
+  preview mirror stays live (noindex) as a fallback. Root build indexes (SEO on).
