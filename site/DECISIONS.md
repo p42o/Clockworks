@@ -107,3 +107,47 @@ Everything on the site serves that metaphor with restraint.
   pre-existing (legacy site logging silently fails in prod too); flow treats Discord as delivery.
   Deployed to mnclockworks.com/v3/ (GHA run 37s, live-verified: zero 4xx, canvas mounts,
   portrait 200, root site + all legacy paths untouched).
+
+## Round 2 — feedback build (2026-07-03/04)
+
+Parker's second brief (positioning doubled to automation + intel/dashboards, plus a live
+sample-product chatbot). All live-verified on mnclockworks.com/v3.
+
+- **Quick wins:** existing gear logo re-colored to the palette (`LogoMark.tsx`), custom cursor
+  DELETED (read as broken), Results nav link gets a breathing copper glow, ALL emails removed
+  (contact is form→Discord only; `site.email` no longer rendered anywhere), FAQ gains a
+  cost-context "couldn't I DIY with ChatGPT?" answer (real tool/VPS pricing), Results receipts
+  swapped: "monitoring/alerts" → custom real-time dashboards/intel, "family calendar" → generic
+  inbox-automation (employer/product/brand deliberately unnamed).
+- **Blog system:** file-based (`content/blog/*.md`, gray-matter + marked). 22 legacy posts
+  extracted from the old HTML + 6 new trades-voice posts (Jul–Dec, one/month). Build-time
+  publish gating (`lib/blog.ts` — future-dated posts aren't exported) = "scheduled publishing"
+  on a static host; the **monthly-publish GHA cron** (1st of month) rebuilds so the next post
+  goes live. `/blog` index + `/blog/[slug]`, JSON-LD, `blog-manifest.json` route for the admin.
+  `sync-out.mjs` root-mode now merges a marker-delimited 301 block into `.htaccess`
+  (legacy `/blog/*.html` → new slugs, `resources.html` → `/blog/`). Prose CSS in globals.
+- **Results = 6 interactive demos** (was 4 static receipts), `components/demos/`: Call Catch
+  (playable text-back sim), Quote Chaser (time-lapse pipeline), Review Engine (happy/unhappy
+  fork), Command Dashboard, Intel Desk (competitor/demand/materials), Inbox Autopilot. Chart
+  palette validated via the dataviz six-checks (`#D4582A/#1F7A50/#946A00/#3D6BA8` on paper —
+  the brand muted tones failed the chroma floor). Every demo hard-labels SAMPLE DATA and shows
+  its assumptions — the data-integrity rule from the brief.
+- **Chatbot "Front Desk"** = the headline sample-product. Brain in `~/Dev/clockworks-bot/lib/
+  brain.ts` (Socratic, genuinely sales-skilled, teaches, illustrative-math-only guardrails,
+  `<lead>` capture tag → Discord). Provider-abstracted proxy DEPLOYED to
+  **clockworks-bot.vercel.app/api/chat** (CORS-locked to mnclockworks.com + localhost). Running
+  **Grok-4 now** (xAI key); flips to **claude-opus-4-8** by setting ANTHROPIC_API_KEY in the
+  Vercel project + model in botConfig — the code already prefers Claude. Conversations + config
+  in Firebase `clockwork-social` (admin SDK via `CW_SA_B64`). Floating widget `ChatWidget.tsx`
+  with a poppable **HVAC sample-insights dashboard** (what an owner learns from site chats).
+- **"Your Own Agent" page** (`/your-own-agent`): non-technical ownership pitch — one brain across
+  web/SMS/Telegram/Discord, logging→insights, tool integrations, a live steer demo (tone dial),
+  training scope, flagship-model comparison w/ rough per-convo pricing, camera-input story, and
+  the cost/control/visibility own-vs-rent argument. Linked from the chat via the
+  "Learn more about having your own agent" tooltip. Positioning doubled per the brief.
+- **Admin:** `admin-bot.html` (Google-auth, clockwork-social) — bot enable/model/extra-
+  instructions config, conversation viewer + JSON export, blog-schedule readout. Linked from
+  `admin.html`. Home grid + spec sheet grew 4→6 systems (added Intel Desk, Front Desk).
+- **Verify:** Playwright over the new surface (blog gating confirmed — Jul-7 post correctly 404s
+  on Jul-3; steer demo; all 6 demos; LIVE chat round-trips through the deployed proxy with a
+  grounded pricing answer). Zero page errors. Redeployed /v3, live-checked on production.
