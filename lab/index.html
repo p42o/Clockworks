@@ -16,6 +16,9 @@
    Floating: COMMS + OPERATIONS windows (draggable)
    Feed: tries ./data/status.json (LIVE) → labeled SIM fallback
    ========================================================================== */
+/* ============ SKIN SYSTEM — build once, reskin many ============
+   Every surface derives from these tokens. New vertical/client =
+   new [data-skin] block (+ optionally swap LAB CONFIG below). */
 :root{
   --void:#0b0c10; --pane:rgba(16,20,28,.82); --pane-2:rgba(22,28,40,.9);
   --seam:#20293c; --seam-hi:#31405f;
@@ -26,12 +29,30 @@
   --vio:#b96bff; --red:#ff3b5c; --you:#ff4d92;
   --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
 }
+:root[data-skin="synthwave"]{
+  --void:#0a0616; --pane:rgba(24,14,40,.82); --pane-2:rgba(32,18,54,.9);
+  --seam:#31204f; --seam-hi:#4a3178;
+  --ink:#e9defc; --dim:#a08cc9; --faint:#5f4a8a;
+  --blu:#ff3df0; --blu-dk:#b31ca8;
+  --org:#00e5ff; --org-dk:#0a93a8;
+  --grn:#b6ff3d; --grn-dk:#6fae14;
+  --vio:#7c5cff; --red:#ff5c7a; --you:#ff9d2e;
+}
+:root[data-skin="redline"]{
+  --void:#0c0808; --pane:rgba(26,14,12,.85); --pane-2:rgba(36,18,14,.92);
+  --seam:#3a201a; --seam-hi:#5c2f22;
+  --ink:#f6ddd2; --dim:#b38a7a; --faint:#7a4f42;
+  --blu:#ff9d2e; --blu-dk:#b36a12;
+  --org:#ff4d2e; --org-dk:#b32912;
+  --grn:#ffd24d; --grn-dk:#b3901c;
+  --vio:#ff7a5c; --red:#ff2e2e; --you:#ff5c8a;
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overscroll-behavior:none;touch-action:manipulation;-webkit-text-size-adjust:100%}
 body{
   background:
-    radial-gradient(900px 500px at 80% -10%,rgba(255,122,26,.05),transparent 55%),
-    radial-gradient(800px 600px at 5% 110%,rgba(37,214,255,.06),transparent 55%),
+    radial-gradient(900px 500px at 80% -10%,color-mix(in srgb,var(--org) 6%,transparent),transparent 55%),
+    radial-gradient(800px 600px at 5% 110%,color-mix(in srgb,var(--blu) 7%,transparent),transparent 55%),
     repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 44px),
     repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 1px,transparent 1px 44px),
     var(--void);
@@ -40,6 +61,22 @@ body{
 .scan{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.4;mix-blend-mode:multiply;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0,rgba(0,0,0,.16) 1px,transparent 1px,transparent 3px)}
 .vig{position:fixed;inset:0;z-index:60;pointer-events:none;box-shadow:inset 0 0 220px 40px rgba(0,0,0,.85)}
+#grain{position:fixed;inset:0;width:100%;height:100%;z-index:58;pointer-events:none;
+  opacity:.06;mix-blend-mode:overlay;image-rendering:pixelated}
+/* camera cut on room switch */
+.world.cut{animation:camcut .32s ease}
+@keyframes camcut{0%{filter:brightness(1.55) saturate(1.5);transform:scale(1.02)}100%{filter:none;transform:none}}
+/* ambient per-room tint wash */
+#roomTint{position:absolute;inset:0;z-index:3;pointer-events:none;transition:background 1.2s ease;
+  background:radial-gradient(80% 70% at 50% 30%,color-mix(in srgb,var(--tc,var(--blu)) 7%,transparent),transparent 75%)}
+/* task orbs — work pulsing down the foundry line */
+.orb{position:absolute;width:8px;height:8px;border-radius:50%;z-index:7;background:var(--org);
+  box-shadow:0 0 16px 5px color-mix(in srgb,var(--org) 55%,transparent);animation:orbrun 9s ease-in-out infinite}
+.orb.o2{animation-delay:-4.5s}
+@keyframes orbrun{
+  0%{left:16%;top:58%;opacity:0}8%{opacity:1}
+  32%{left:36%;top:72%}62%{left:64%;top:70%}
+  82%{left:86%;top:50%;opacity:1}92%,100%{left:88%;top:42%;opacity:0}}
 
 /* ================= ACCESS GATE ================= */
 #gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--void)}
@@ -70,7 +107,10 @@ body{
 #app{display:none;height:100vh;height:100dvh;flex-direction:column}
 #app.on{display:flex}
 .hud{flex:none;display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid var(--seam);
-  background:var(--pane-2);z-index:40}
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 55%),var(--pane-2);
+  backdrop-filter:blur(10px) saturate(1.25);-webkit-backdrop-filter:blur(10px) saturate(1.25);z-index:40}
+.chip.skin{cursor:pointer;transition:.13s}
+.chip.skin:hover{color:#fff;border-color:var(--blu);box-shadow:0 0 12px -4px var(--blu)}
 .hud .logo{font:700 13px var(--mono);letter-spacing:.3em;white-space:nowrap}
 .hud .logo b{color:var(--blu);text-shadow:0 0 10px rgba(37,214,255,.7)}
 .hud .sub{font-size:9px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase}
@@ -249,7 +289,10 @@ body{
 
 /* ================= FLOATING WINDOWS ================= */
 .win{position:absolute;z-index:20;width:340px;max-width:92vw;border:1px solid var(--seam-hi);border-radius:10px;
-  background:var(--pane);backdrop-filter:blur(7px);box-shadow:0 22px 60px -18px #000,0 0 24px -12px var(--wc,var(--blu));
+  background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,0) 34%),var(--pane);
+  backdrop-filter:blur(14px) saturate(1.35);-webkit-backdrop-filter:blur(14px) saturate(1.35);
+  border-top-color:color-mix(in srgb,var(--wc,var(--blu)) 35%,var(--seam-hi));
+  box-shadow:0 22px 60px -18px #000,0 0 24px -12px var(--wc,var(--blu)),inset 0 1px 0 rgba(255,255,255,.06);
   display:flex;flex-direction:column;overflow:hidden}
 .win.focus{border-color:var(--wc,var(--blu))}
 .win .tbar{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:grab;user-select:none;
@@ -347,6 +390,7 @@ body{
 <body>
 <div class="scan" aria-hidden="true"></div>
 <div class="vig" aria-hidden="true"></div>
+<canvas id="grain" aria-hidden="true"></canvas>
 
 <!-- ============ GATE ============ -->
 <div id="gate">
@@ -374,6 +418,7 @@ body{
     <span class="chip sim" id="feedChip"><span class="led"></span><span id="feedLbl">SIM FEED</span></span>
     <span class="chip" id="spendChip"><span class="led" style="background:var(--org);box-shadow:0 0 8px var(--org)"></span>SPEND <b id="hudSpend" style="color:var(--ink)">$0.45</b></span>
     <span class="chip you">REVIEW <b id="hudQueue">1</b></span>
+    <span class="chip skin" id="skinBtn" role="button" tabindex="0" title="cycle facility skin">◐ <b id="skinLbl">NIGHTSHIFT</b></span>
     <span class="clock" id="clock">00:00:00</span>
   </header>
 
@@ -390,6 +435,7 @@ body{
 
     <div class="world" id="world">
       <!-- rooms injected -->
+      <div id="roomTint" aria-hidden="true"></div>
       <div id="winWrap" style="position:absolute;inset:0;pointer-events:none">
         <div class="win" id="winComms" style="--wc:var(--grn);right:14px;bottom:14px;pointer-events:auto">
           <div class="tbar" data-drag="winComms"><span class="ti">◤ COMMS FEED</span><span class="sp"></span><button data-min="winComms">–</button></div>
@@ -451,8 +497,13 @@ function bootSeq(){
 }
 if(sessionStorage.getItem("lab-key")==="1"){gate.remove();bootSeq()}
 
-/* ============ WORLD DATA ============ */
-/* machines: [type, x%, y%, w(px), h(px), label, colorVar, extra] — coords are % of floor area */
+/* ================================================================
+   LAB CONFIG — the reskin/repurpose surface.
+   To spin this factory up for a different venture: edit ROOMS/CREW/
+   COMMS_SCRIPT below (divisions, machines, agents, scripts) and add
+   a [data-skin] token block up top. Everything else is engine.
+   machines: [type, x%, y%, w(px), h(px), label, colorVar, extra]
+   — coords are % of the 720x430 stage ================================ */
 const ROOMS={
   theo:{name:"CEO COMMAND",tag:"penthouse · executive deck",ac:"var(--blu)",hex:true,
     machines:[
@@ -580,6 +631,7 @@ function buildRooms(){
     el.innerHTML=`
       <div class="wall"><span class="rname">${r.name}</span><span class="rtag">${r.tag}</span><span class="slit"></span></div>
       <div class="floorp"><div class="stage">
+        ${k==="vulcan"&&!reduce?'<div class="orb"></div><div class="orb o2"></div>':""}
         ${r.machines.map(machineHTML).join("")}
         ${r.lines.map(l=>`<div class="dline${l[3]?" v":""}" style="left:${l[0]}%;top:${l[1]}%;${l[3]?`height:${l[3]}%`:`width:${l[2]}%`}"></div>`).join("")}
         <div class="ent${r.agent.ghost?" ghost":""}" id="ent-${k}" style="--ac:${r.ac};left:${r.agent.path[0][0]}%;top:${r.agent.path[0][1]}%">
@@ -655,6 +707,30 @@ function toggleSheet(id){
 ["gesturestart","gesturechange","gestureend"].forEach(ev=>
   document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
 
+/* ============ CINEMATIC LAYER: skin cycler + film grain ============ */
+const SKINS=[["","NIGHTSHIFT"],["synthwave","SYNTHWAVE"],["redline","REDLINE"]];
+function applySkin(i){
+  const [key,label]=SKINS[i%SKINS.length];
+  if(key)document.documentElement.setAttribute("data-skin",key);
+  else document.documentElement.removeAttribute("data-skin");
+  const l=$("#skinLbl");if(l)l.textContent=label;
+  try{localStorage.setItem("lab-skin",String(i%SKINS.length))}catch(e){}
+}
+let skinIdx=0;
+try{skinIdx=parseInt(localStorage.getItem("lab-skin")||"0",10)||0}catch(e){}
+applySkin(skinIdx);
+function startGrain(){
+  if(reduce)return;
+  const cv=$("#grain"),cx=cv.getContext("2d");
+  const size=()=>{cv.width=Math.ceil(innerWidth/3);cv.height=Math.ceil(innerHeight/3)};
+  size();addEventListener("resize",size);
+  setInterval(()=>{
+    const d=cx.createImageData(cv.width,cv.height),a=d.data;
+    for(let i=0;i<a.length;i+=4){const v=(Math.random()*255)|0;a[i]=a[i+1]=a[i+2]=v;a[i+3]=26}
+    cx.putImageData(d,0,0);
+  },120);
+}
+
 /* ============ ROOM SELECT + OPS WINDOW ============ */
 function selectRoom(k){
   if(state.room===k)return;
@@ -662,6 +738,11 @@ function selectRoom(k){
   document.querySelectorAll(".room").forEach(r=>r.classList.toggle("on",r.id==="room-"+k));
   document.querySelectorAll(".acard,.dtile[data-k]").forEach(c=>c.classList.toggle("sel",c.getAttribute("data-k")===k));
   renderOps(k);
+  // camera cut + ambient tint crossfade
+  if(!reduce){
+    const w=$("#world");w.classList.remove("cut");void w.offsetWidth;w.classList.add("cut");
+  }
+  $("#roomTint").style.setProperty("--tc",ROOMS[k].ac);
   pushComms("sys","SYS",`viewport → ${ROOMS[k].name}`,"var(--dim)");
   location.hash="#/"+k;
 }
@@ -791,7 +872,10 @@ let started=false;
 function start(){
   if(started)return;started=true;
   $("#app").classList.add("on");
-  buildRoster();buildRooms();buildDock();drags();startComms();startTimers();startWalkers();tryLive();
+  buildRoster();buildRooms();buildDock();drags();startComms();startTimers();startWalkers();startGrain();tryLive();
+  const sb=$("#skinBtn");
+  if(sb){sb.addEventListener("click",()=>{skinIdx=(skinIdx+1)%SKINS.length;applySkin(skinIdx)});
+    sb.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();sb.click()}})}
   const m=location.hash.match(/#\/(\w+)/);
   selectRoom(m&&ROOMS[m[1]]?m[1]:"vulcan");
   fitStages();
