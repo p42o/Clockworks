@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0c10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>THE LAB — facility sim</title>
 <style>
 /* ==========================================================================
@@ -22,8 +26,8 @@
   --vio:#b96bff; --red:#ff3b5c; --you:#ff4d92;
   --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
 }
-*{box-sizing:border-box}
-html,body{margin:0;height:100%}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overscroll-behavior:none;touch-action:manipulation;-webkit-text-size-adjust:100%}
 body{
   background:
     radial-gradient(900px 500px at 80% -10%,rgba(255,122,26,.05),transparent 55%),
@@ -63,7 +67,7 @@ body{
 #boot .bl{white-space:nowrap;overflow:hidden;text-shadow:0 0 8px rgba(57,255,106,.5)}
 
 /* ================= APP FRAME ================= */
-#app{display:none;height:100vh;flex-direction:column}
+#app{display:none;height:100vh;height:100dvh;flex-direction:column}
 #app.on{display:flex}
 .hud{flex:none;display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid var(--seam);
   background:var(--pane-2);z-index:40}
@@ -137,6 +141,11 @@ body{
     repeating-linear-gradient(90deg,rgba(255,255,255,.02) 0 1px,transparent 1px 30px),
     repeating-linear-gradient(150deg,rgba(255,255,255,.02) 0 1px,transparent 1px 30px),
     linear-gradient(180deg,#0b0e15,#080a0f)}
+/* fixed-coordinate game stage — scaled to fit the frame on any screen */
+.stage{position:absolute;left:50%;top:50%;width:720px;height:430px;
+  transform:translate(-50%,-50%) scale(var(--sc,1));pointer-events:none;--inv:1}
+.stage .tag{transform:translateX(-50%) scale(var(--inv));transform-origin:bottom center}
+.stage .plate,.stage .say{transform:scale(var(--inv));transform-origin:bottom center}
 
 /* ---------- machinery (2.5D: top face + darker front strip) ---------- */
 .mach{position:absolute;z-index:6;filter:drop-shadow(0 10px 14px rgba(0,0,0,.6))}
@@ -288,18 +297,49 @@ body{
 .qrow .qp{font-size:10px;color:var(--org)}
 .wire{border:1px dashed var(--seam-hi);border-radius:7px;padding:7px 9px;font-size:8.5px;letter-spacing:.06em;color:var(--faint)}
 
-/* ================= RESPONSIVE ================= */
+/* ================= MOBILE APP SHELL ================= */
+.dock{display:none}
 @media(max-width:880px){
-  body{overflow:auto}
-  #app{height:auto;min-height:100vh}
-  .frame{flex-direction:column}
-  .crew{width:100%;border-right:0;border-bottom:1px solid var(--seam)}
-  .roster{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:8px 10px}
-  .acard{min-width:170px}
-  .crew .ft{display:none}
-  .world{min-height:56vh}
-  .win{position:static!important;width:auto;margin:10px;box-shadow:none}
-  #winWrap{position:static!important}
+  .hud{padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));gap:8px}
+  .hud .sub{display:none}
+  .hud .logo{font-size:12px}
+  .chip{padding:4px 8px;font-size:8.5px}
+  #spendChip{display:none}
+  .crew{display:none}
+  .world{flex:1}
+  /* bottom dock — character select */
+  .dock{display:flex;flex:none;align-items:stretch;gap:6px;z-index:45;
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--seam);background:var(--pane-2)}
+  .dtile{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:6px 2px 5px;border:1px solid var(--seam);border-radius:10px;cursor:pointer;
+    background:rgba(255,255,255,.015);position:relative;transition:.13s;user-select:none;-webkit-user-select:none}
+  .dtile:active{transform:scale(.93)}
+  .dtile .dg{font-size:19px;line-height:1}
+  .dtile .dn{font:700 7.5px var(--mono);letter-spacing:.1em;color:var(--dim);white-space:nowrap}
+  .dtile .dl{position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;
+    background:var(--lc,var(--grn));box-shadow:0 0 7px var(--lc,var(--grn));animation:pulse 2s infinite}
+  .dtile.off .dl{animation:none;opacity:.5}
+  .dtile.sel{border-color:var(--ac);box-shadow:0 0 14px -5px var(--ac);
+    background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 12%,transparent),transparent)}
+  .dtile.sel .dn{color:#fff}
+  .dtile.util{flex:.85}
+  .dtile.util .dg{font-size:16px;padding-top:2px}
+  /* floating windows → bottom sheets */
+  #winWrap{position:fixed!important;inset:0;z-index:70;pointer-events:none}
+  .win{position:fixed;left:0!important;right:0!important;bottom:0!important;top:auto!important;
+    width:auto!important;max-width:none;
+    border-radius:16px 16px 0 0;border-bottom:0;transform:translateY(105%);transition:transform .32s cubic-bezier(.3,.9,.3,1);
+    box-shadow:0 -20px 60px -12px #000;max-height:62dvh;display:flex}
+  .win.open{transform:none}
+  .win .tbar{cursor:default;padding:10px 14px}
+  .win .tbar::before{content:"";position:absolute;left:50%;top:5px;transform:translateX(-50%);
+    width:38px;height:4px;border-radius:2px;background:var(--seam-hi)}
+  .win .tbar button{width:28px;height:28px;font-size:14px}
+  .win .body{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+  #winComms .body{height:min(300px,44dvh)}
+  #winOps .body{max-height:min(430px,50dvh)}
+  .win.min .body{display:block}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -332,7 +372,7 @@ body{
     <span class="sub">facility sim · night shift</span>
     <span class="sp"></span>
     <span class="chip sim" id="feedChip"><span class="led"></span><span id="feedLbl">SIM FEED</span></span>
-    <span class="chip"><span class="led" style="background:var(--org);box-shadow:0 0 8px var(--org)"></span>SPEND <b id="hudSpend" style="color:var(--ink)">$0.45</b></span>
+    <span class="chip" id="spendChip"><span class="led" style="background:var(--org);box-shadow:0 0 8px var(--org)"></span>SPEND <b id="hudSpend" style="color:var(--ink)">$0.45</b></span>
     <span class="chip you">REVIEW <b id="hudQueue">1</b></span>
     <span class="clock" id="clock">00:00:00</span>
   </header>
@@ -362,6 +402,8 @@ body{
       </div>
     </div>
   </div>
+
+  <nav class="dock" id="dock" aria-label="crew dock"></nav>
 </div>
 
 <script>
@@ -537,7 +579,7 @@ function buildRooms(){
     el.className="room"+(r.hex?" hexfloor":"");el.id="room-"+k;el.style.setProperty("--ac",r.ac);
     el.innerHTML=`
       <div class="wall"><span class="rname">${r.name}</span><span class="rtag">${r.tag}</span><span class="slit"></span></div>
-      <div class="floorp">
+      <div class="floorp"><div class="stage">
         ${r.machines.map(machineHTML).join("")}
         ${r.lines.map(l=>`<div class="dline${l[3]?" v":""}" style="left:${l[0]}%;top:${l[1]}%;${l[3]?`height:${l[3]}%`:`width:${l[2]}%`}"></div>`).join("")}
         <div class="ent${r.agent.ghost?" ghost":""}" id="ent-${k}" style="--ac:${r.ac};left:${r.agent.path[0][0]}%;top:${r.agent.path[0][1]}%">
@@ -545,7 +587,7 @@ function buildRooms(){
           <span class="say" data-say="${k}">${r.agent.say[0]}</span>
           <div class="bod">${r.agent.glyph}</div><div class="shadow"></div>
         </div>
-      </div>`;
+      </div></div>`;
     world.insertBefore(el,$("#winWrap"));
   });
 }
@@ -575,12 +617,50 @@ function startWalkers(){
   },4200);
 }
 
+/* ============ MOBILE: fit-to-frame stage + dock + sheets ============ */
+const isMobile=()=>matchMedia("(max-width:880px)").matches;
+const DW=720,DH=430;
+function fitStages(){
+  document.querySelectorAll(".floorp").forEach(fp=>{
+    const st=fp.querySelector(".stage");if(!st)return;
+    const w=fp.clientWidth,h=fp.clientHeight;if(!w||!h)return;
+    const sc=Math.min(w/DW,h/DH,1.35)*.96;
+    st.style.setProperty("--sc",sc.toFixed(3));
+    st.style.setProperty("--inv",Math.min(1/sc,1.6).toFixed(3));
+  });
+}
+function buildDock(){
+  const d=$("#dock");
+  d.innerHTML=ORDER.map(k=>{
+    const c=CREW[k],r=ROOMS[k];
+    return `<div class="dtile${c.off?" off":""}" data-k="${k}" style="--ac:${r.ac};--lc:${c.led}" role="button" tabindex="0">
+      <span class="dl"></span><span class="dg">${r.agent.glyph}</span><span class="dn">${c.nm}</span></div>`;
+  }).join("")
+  +`<div class="dtile util" data-sheet="winOps" role="button" tabindex="0" style="--ac:var(--blu)"><span class="dg">🛠️</span><span class="dn">OPS</span></div>
+    <div class="dtile util" data-sheet="winComms" role="button" tabindex="0" style="--ac:var(--grn)"><span class="dg">🛰️</span><span class="dn">COMMS</span></div>`;
+  d.addEventListener("click",e=>{
+    const t=e.target.closest(".dtile");if(!t)return;
+    const sheet=t.getAttribute("data-sheet");
+    if(sheet){toggleSheet(sheet);return}
+    selectRoom(t.getAttribute("data-k"));
+  });
+}
+function toggleSheet(id){
+  const w=$("#"+id);
+  const opening=!w.classList.contains("open");
+  document.querySelectorAll(".win").forEach(x=>x.classList.remove("open"));
+  if(opening)w.classList.add("open");
+}
+/* kill pinch zoom on iOS (double-tap already killed by touch-action:manipulation) */
+["gesturestart","gesturechange","gestureend"].forEach(ev=>
+  document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
+
 /* ============ ROOM SELECT + OPS WINDOW ============ */
 function selectRoom(k){
   if(state.room===k)return;
   state.room=k;
   document.querySelectorAll(".room").forEach(r=>r.classList.toggle("on",r.id==="room-"+k));
-  document.querySelectorAll(".acard").forEach(c=>c.classList.toggle("sel",c.getAttribute("data-k")===k));
+  document.querySelectorAll(".acard,.dtile[data-k]").forEach(c=>c.classList.toggle("sel",c.getAttribute("data-k")===k));
   renderOps(k);
   pushComms("sys","SYS",`viewport → ${ROOMS[k].name}`,"var(--dim)");
   location.hash="#/"+k;
@@ -653,7 +733,9 @@ function drags(){
     t.addEventListener("pointerup",()=>{drag=null});
   });
   document.querySelectorAll("[data-min]").forEach(b=>{
-    b.addEventListener("click",()=>{const w=$("#"+b.getAttribute("data-min"));w.classList.toggle("min");
+    b.addEventListener("click",()=>{const w=$("#"+b.getAttribute("data-min"));
+      if(isMobile()){w.classList.remove("open");return}   // mobile: button = close sheet
+      w.classList.toggle("min");
       b.textContent=w.classList.contains("min")?"+":"–"});
   });
 }
@@ -709,9 +791,13 @@ let started=false;
 function start(){
   if(started)return;started=true;
   $("#app").classList.add("on");
-  buildRoster();buildRooms();drags();startComms();startTimers();startWalkers();tryLive();
+  buildRoster();buildRooms();buildDock();drags();startComms();startTimers();startWalkers();tryLive();
   const m=location.hash.match(/#\/(\w+)/);
   selectRoom(m&&ROOMS[m[1]]?m[1]:"vulcan");
+  fitStages();
+  addEventListener("resize",fitStages);
+  addEventListener("orientationchange",()=>setTimeout(fitStages,220));
+  if(window.visualViewport)visualViewport.addEventListener("resize",fitStages);
 }
 })();
 </script>
