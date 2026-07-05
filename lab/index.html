@@ -845,26 +845,45 @@ function startTimers(){
   tick();setInterval(tick,1000);
 }
 
-/* ============ LIVE FEED ADAPTER ============ */
+/* ============ LIVE FEED ADAPTER ============
+   Sources, in order: same-origin data/status.json, then the VPS
+   telemetry endpoint (sanitized feed published by the factory).
+   Refreshes every 90s; only re-applies when generated_at changes. */
+const FEEDS=["data/status.json","https://pool.gs-v.net/lab-status/status.json"];
+let lastGen=null;
+function fetchFeed(i){
+  if(i>=FEEDS.length)return Promise.reject(0);
+  return fetch(FEEDS[i],{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()})
+    .catch(()=>fetchFeed(i+1));
+}
+function applyLive(j){
+  if(!j||j.generated_at===lastGen&&state.feed==="live")return;
+  const first=state.feed!=="live";
+  lastGen=j.generated_at||"static";
+  state.feed="live";
+  $("#feedLbl").textContent="LIVE FEED";
+  $("#feedChip").classList.remove("sim");$("#feedChip").classList.add("live");
+  if(j.foundry){
+    const f=j.foundry;
+    if(f.current_task){ROOMS.vulcan.agent.say=[f.current_task];
+      const st=document.querySelector('[data-st="vulcan"]');if(st)st.textContent=f.current_task;
+      const say=document.querySelector('[data-say="vulcan"]');if(say)say.textContent=f.current_task;}
+    if(f.staged_for_review){
+      ROOMS.vulcan.ops.queue=f.staged_for_review.map(p=>["🗂️",p.name,"$"+p.price]);
+      state.queue=f.staged_for_review.length;$("#hudQueue").textContent=state.queue;}
+    if(typeof f.spend_estimate_usd==="number"){state.spend=f.spend_estimate_usd;
+      $("#hudSpend").textContent="$"+state.spend.toFixed(2);}
+    if(f.learnings&&first)pushComms("vulcan","VULCAN","LEARN: "+f.learnings,"var(--org)");
+    if(!first)pushComms("sys","SYS","telemetry sync ✓","var(--dim)");
+    if(state.room==="vulcan")renderOps("vulcan");
+  }
+  if(j.company&&j.company.current_task){
+    const st=document.querySelector('[data-st="theo"]');if(st)st.textContent=j.company.current_task;
+  }
+}
 function tryLive(){
-  fetch("data/status.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()})
-  .then(j=>{
-    state.feed="live";
-    $("#feedLbl").textContent="LIVE FEED";
-    $("#feedChip").classList.remove("sim");$("#feedChip").classList.add("live");
-    if(j.foundry){
-      const f=j.foundry;
-      if(f.current_task){ROOMS.vulcan.agent.say=[f.current_task];
-        const st=document.querySelector('[data-st="vulcan"]');if(st)st.textContent=f.current_task;}
-      if(f.staged_for_review){
-        ROOMS.vulcan.ops.queue=f.staged_for_review.map(p=>["🗂️",p.name,"$"+p.price]);
-        state.queue=f.staged_for_review.length;$("#hudQueue").textContent=state.queue;}
-      if(typeof f.spend_estimate_usd==="number"){state.spend=f.spend_estimate_usd;
-        $("#hudSpend").textContent="$"+state.spend.toFixed(2);}
-      if(f.learnings)pushComms("vulcan","VULCAN","LEARN: "+f.learnings,"var(--org)");
-      if(state.room==="vulcan")renderOps("vulcan");
-    }
-  }).catch(()=>{});
+  fetchFeed(0).then(applyLive).catch(()=>{});
+  setInterval(()=>fetchFeed(0).then(applyLive).catch(()=>{}),90000);
 }
 
 /* ============ START ============ */
