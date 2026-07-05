@@ -447,7 +447,7 @@ body{
   <header class="hud">
     <img class="sg" src="img/logo.png" alt="">
     <span class="logo">THE&nbsp;<b>LAB</b></span>
-    <span class="sub">2 live agents · 2 open slots</span>
+    <span class="sub">3 live agents · 1 open slot</span>
     <span class="sp"></span>
     <span class="chip paused" id="pausedChip" style="display:none"><span class="led" style="background:var(--red);box-shadow:0 0 8px var(--red)"></span>LOOPS PAUSED</span>
     <span class="chip sim" id="feedChip"><span class="led"></span><span id="feedLbl">NO FEED</span></span>
@@ -460,7 +460,7 @@ body{
 
   <div class="frame">
     <aside class="crew">
-      <div class="hd">CREW — 2 LIVE / 2 SLOTS</div>
+      <div class="hd">CREW — 3 LIVE / 1 SLOT</div>
       <div class="roster" id="roster"></div>
       <div class="ft">
         <div class="r"><span>next shift</span><b id="ftShift">--:--:--</b></div>
@@ -559,9 +559,11 @@ function sendCommand(action,payload,onDone){
 function labelFor(a,p){
   return a==="run_shift"?"▶ run Vulcan's shift now"
     :a==="run_standup"?"▶ run Theo's standup now"
+    :a==="run_prospecting"?"▶ run Rollie's prospecting now"
     :a==="pause"?"⏸ pause all loops"
     :a==="resume"?"▶ resume all loops"
     :a==="approve_item"?"✓ approve: "+p
+    :a==="approve_outreach"?"✓ approve outreach: "+p
     :a==="message_theo"?"→ "+p:a;
 }
 
@@ -628,20 +630,31 @@ const ROOMS={
       buttons:[["run_shift","▶ RUN SHIFT NOW","fires the real cron — Vulcan wakes, researches, builds (~$0.50)"]],
       upgs:[["🔍","PHASE 1 · RESEARCH","web search: what's selling"],["⚒️","PHASE 2 · BUILD","files in his VPS workspace"],["✅","PHASE 3 · QC + STAGE","adds to your review queue"],["📝","PHASE 4 · REPORT","learnings + status file"]],
       wire:"Approving here records your decision on the VPS. Actual Gumroad publishing still runs with Claude on your Mac — by design."}},
-  slota:{kind:"slot",img:"img/slot.png",name:"DIVISION SLOT A",tag:"empty template — nothing runs here",ac:"var(--vio)",
-    ops:{pill:"EMPTY",timer:null,
-      kpis:[["Status","<small>no agent</small>"],["Cost","$0"],["Runs","never"],["Owner","—"]],
-      buttons:[],upgs:[],wire:"To activate: tell Claude what business this division should run — that creates a real agent + charter + spend cap + daily cron."}},
+  rollie:{kind:"live",img:"img/rollie.png",name:"SALES & MARKETING",tag:"real agent · clockworks growth · visuals are decor",ac:"var(--vio)",
+    machines:[
+      ["screen",18,4,170,40,"LEAD WALL","var(--vio)"],
+      ["holo",16,40,140,140,"PROSPECT RADAR","var(--vio)"],
+      ["console",50,34,94,56,"DOSSIER DESK","var(--vio)"],
+      ["console",50,74,94,52,"DRAFTING DESK","var(--vio)"],
+      ["rack",84,36,66,96,"ROLODEX","var(--vio)"],
+      ["crates",83,80,86,54,"OUTBOX (STAGED)","var(--vio)"]],
+    lines:[[34,66,14,0],[64,58,16,0]],
+    agent:{name:"ROLLIE",path:[[26,78],[48,64],[70,74],[54,44]]},
+    ops:{pill:"ON THE CLOCK — WEEKDAYS",timer:"prospect",
+      kpis:[["Drafts staged","<span data-live=\"outreach\">—</span>"],["Last shift spend","<span data-live=\"rspend\">—</span>"],["Cap per shift","$1"],["Wakes","09:00<small> CT weekdays</small>"]],
+      buttons:[["run_prospecting","▶ RUN PROSPECTING NOW","fires the real cron — Rollie scouts, digs, drafts (~$0.50)"]],
+      upgs:[["🔭","PHASE 1 · SCOUT","3 new ICP companies near Maple Grove"],["🗂️","PHASE 2 · DIG","dossier with evidence URLs"],["✍️","PHASE 3 · DRAFT","local-neighbor outreach, ≤120 words"],["📥","PHASE 4 · STAGE","your approval queue — he never sends"]],
+      wire:"Per your own playbook: personal trust beats cold volume. Rollie's drafts are ammo for YOU (and dossiers feed your event/warm channels) — approving records it; sending stays human."}},
   slotb:{kind:"slot",img:"img/slot.png",name:"DIVISION SLOT B",tag:"empty template — nothing runs here",ac:"var(--grn)",
     ops:{pill:"EMPTY",timer:null,
       kpis:[["Status","<small>no agent</small>"],["Cost","$0"],["Runs","never"],["Owner","—"]],
       buttons:[],upgs:[],wire:"Ideas floated: content/social division; Clockworks lead-watch desk. Neither exists yet — deliberate."}}
 };
-const ORDER=["theo","vulcan","slota","slotb"];
+const ORDER=["theo","vulcan","rollie","slotb"];
 const CREW={
   theo:{nm:"THEO",rl:"CEO · openclaw `main`",st:"wakes 13:30 CT — telegram brief"},
   vulcan:{nm:"VULCAN",rl:"foundry · openclaw `foundry`",st:"wakes 12:00 CT — builds 1 product"},
-  slota:{nm:"OPEN SLOT",rl:"division a — unassigned",st:"tap to see how to activate",slot:true},
+  rollie:{nm:"ROLLIE",rl:"sales & mktg · openclaw `rollie`",st:"wakes 09:00 CT wkdays — prospects"},
   slotb:{nm:"OPEN SLOT",rl:"division b — unassigned",st:"tap to see how to activate",slot:true}
 };
 const state={spend:null,queue:null,queueItems:null,room:null,feed:"none",meta:null,vulcanTask:null,paused:false,trig:{}};
@@ -651,12 +664,14 @@ const state={spend:null,queue:null,queueItems:null,room:null,feed:"none",meta:nu
    command is in flight. Idle otherwise → machines pause, agents doze. */
 function ctNow(){return new Date(new Date().toLocaleString("en-US",{timeZone:"America/Chicago"}))}
 function inWindow(h,m,durMin){const n=ctNow();const s=new Date(n);s.setHours(h,m,0,0);return n>=s&&n<new Date(s.getTime()+durMin*60000)}
+function isWeekday(){const d=ctNow().getDay();return d>=1&&d<=5}
 function markWorking(k,ms){state.trig[k]=Date.now()+ms;applyStates()}
 function isWorking(k){
   if(state.trig[k]&&Date.now()<state.trig[k])return true;
   if(state.paused)return false;
   if(k==="vulcan")return inWindow(12,0,15);
   if(k==="theo")return inWindow(13,30,10);
+  if(k==="rollie")return isWeekday()&&inWindow(9,0,15);
   return false;
 }
 function applyStates(){
@@ -695,6 +710,7 @@ function buildDock(){
   d.innerHTML=
     `<div class="dtile" data-k="theo" style="--ac:var(--blu)" role="button"><span class="dl"></span><img class="dg" src="img/theo.png" alt=""><span class="dn">THEO</span></div>
      <div class="dtile" data-k="vulcan" style="--ac:var(--org)" role="button"><span class="dl"></span><img class="dg" src="img/vulcan.png" alt=""><span class="dn">VULCAN</span></div>
+     <div class="dtile" data-k="rollie" style="--ac:var(--vio)" role="button"><span class="dl"></span><img class="dg" src="img/rollie.png" alt=""><span class="dn">ROLLIE</span></div>
      <div class="dtile" data-nav="admin" style="--ac:var(--blu)" role="button"><img class="dg" src="img/icon-admin.png" alt=""><span class="dn">ADMIN</span></div>
      <div class="dtile" data-sheet="winOps" style="--ac:var(--org)" role="button"><img class="dg" src="img/icon-ops.png" alt=""><span class="dn">OPS</span></div>
      <div class="dtile" data-sheet="winComms" style="--ac:var(--grn)" role="button"><img class="dg" src="img/icon-log.png" alt=""><span class="dn">COMMS</span></div>`;
@@ -795,6 +811,12 @@ function refreshBubbles(){
     else if(state.paused)ts.textContent="loops paused — zzz";
     else ts.textContent="zzz — standup T-"+fmtMs(nextCT(13,30));
   }
+  const rs=$('[data-say="rollie"]');
+  if(rs){
+    if(isWorking("rollie"))rs.textContent=state.rollieTask||"working the pipeline…";
+    else if(state.paused)rs.textContent="loops paused — zzz";
+    else rs.textContent="zzz — prospecting T-"+fmtMs(nextCT(9,0,true));
+  }
 }
 
 /* ============ FIT / SHEETS / GESTURES ============ */
@@ -875,17 +897,22 @@ function renderOps(k){
   if(k==="vulcan"){
     html+=`<div class="sec-t">REVIEW QUEUE — AWAITING PARKER</div><div id="opsQueue">`+queueHTML()+`</div>`;
   }
+  if(k==="rollie"){
+    html+=`<div class="sec-t">OUTREACH QUEUE — AWAITING PARKER</div><div id="opsOutreach">`+outreachHTML()+`</div>`;
+  }
   if(o.upgs.length)html+=`<div class="sec-t">${r.kind==="live"?"WHAT THE LOOP DOES":"STATIONS"}</div>`+
     o.upgs.map(u=>`<div class="upg"><span class="ui2">${u[0]}</span>
     <div><div class="un">${u[1]}</div><div class="ud">${u[2]}</div></div></div>`).join("");
   if(o.wire)html+=`<div class="wire">▸ ${o.wire}</div>`;
   $("#opsBody").innerHTML=html;
+  wireOutreach();
   $("#opsBody").querySelectorAll("[data-cmd]").forEach(btn=>{
     btn.addEventListener("click",()=>{
       btn.disabled=true;setTimeout(()=>{btn.disabled=false},8000);
       const cmd=btn.getAttribute("data-cmd");
       if(cmd==="run_shift")markWorking("vulcan",12*60000);
       if(cmd==="run_standup")markWorking("theo",6*60000);
+      if(cmd==="run_prospecting")markWorking("rollie",12*60000);
       sendCommand(cmd,null);
     });
   });
@@ -900,6 +927,27 @@ function queueHTML(){
       +`<div class="wire">▸ approval is recorded on the VPS · publishing runs with Claude on your Mac</div>`;
   if(state.feed==="live")return `<div class="wire">▸ queue is empty — Vulcan's next shift is at 12:00 CT</div>`;
   return `<div class="wire">▸ no telemetry reachable — queue unknown (nothing fake shown)</div>`;
+}
+function outreachHTML(){
+  if(state.outreach&&state.outreach.length)
+    return state.outreach.map(o=>`<div class="qrow"><span>✉️</span><span class="qn" title="${o.subject}">${o.company} — ${o.subject}</span>${
+      o.approved?'<span class="ok">✓ APPROVED</span>':'<button class="apv" data-outreach="'+o.company.replace(/"/g,"&quot;")+'">✓ APPROVE</button>'
+    }</div>`).join("")
+      +`<div class="wire">▸ approving records it on the VPS · SENDING stays human — grab drafts from Rollie's workspace or ask Claude</div>`;
+  if(state.feed==="live")return `<div class="wire">▸ queue is empty — Rollie's next shift is 09:00 CT (weekdays)</div>`;
+  return `<div class="wire">▸ no telemetry reachable — queue unknown (nothing fake shown)</div>`;
+}
+function wireOutreach(){
+  document.querySelectorAll("[data-outreach]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      b.disabled=true;b.textContent="…";
+      sendCommand("approve_outreach",b.getAttribute("data-outreach"),d=>{
+        if(d.status==="done"){const q=(state.outreach||[]).find(x=>x.company===b.getAttribute("data-outreach"));if(q)q.approved=true;
+          const oq=$("#opsOutreach");if(oq)oq.innerHTML=outreachHTML();wireOutreach();}
+        else{b.disabled=false;b.textContent="✓ APPROVE"}
+      });
+    });
+  });
 }
 function wireApprove(){
   document.querySelectorAll("[data-approve]").forEach(b=>{
@@ -1069,20 +1117,22 @@ function drags(){
 }
 
 /* ============ TIMERS ============ */
-function nextCT(h,m){
+function nextCT(h,m,weekdaysOnly){
   const n=ctNow();const tgt=new Date(n);tgt.setHours(h,m,0,0);
   if(tgt<=n)tgt.setDate(tgt.getDate()+1);
+  if(weekdaysOnly)while(tgt.getDay()===0||tgt.getDay()===6)tgt.setDate(tgt.getDate()+1);
   return tgt-n;
 }
 function fmtMs(ms){const s=Math.floor(ms/1000),p=n=>(n<10?"0":"")+n;
   return p(Math.floor(s/3600))+":"+p(Math.floor(s%3600/60))+":"+p(s%60)}
 function startTimers(){
   const tick=()=>{
-    const sh=fmtMs(nextCT(12,0)),st=fmtMs(nextCT(13,30));
+    const sh=fmtMs(nextCT(12,0)),st=fmtMs(nextCT(13,30)),pr=fmtMs(nextCT(9,0,true));
+    const pick=k=>k==="shift"?sh:k==="prospect"?pr:st;
     const fs=$("#ftShift");if(fs)fs.textContent=sh;
     const ft=$("#ftStand");if(ft)ft.textContent=st;
-    document.querySelectorAll("[data-tmr]").forEach(t=>{t.innerHTML="T-<b>"+(t.getAttribute("data-tmr")==="shift"?sh:st)+"</b>"});
-    document.querySelectorAll("[data-tmr2]").forEach(t=>{t.textContent=t.getAttribute("data-tmr2")==="shift"?sh:st});
+    document.querySelectorAll("[data-tmr]").forEach(t=>{t.innerHTML="T-<b>"+pick(t.getAttribute("data-tmr"))+"</b>"});
+    document.querySelectorAll("[data-tmr2]").forEach(t=>{t.textContent=pick(t.getAttribute("data-tmr2"))});
     const d=new Date(),p=n=>(n<10?"0":"")+n;
     $("#clock").textContent=p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());
   };
@@ -1122,9 +1172,23 @@ function applyLive(j){
       if(f.learnings)pushLog("VULCAN","learning: "+f.learnings,"var(--org)");
     }else pushLog("FEED","telemetry updated","var(--dim)");
     if(state.room==="vulcan")renderOps("vulcan");
-    fillLiveSpans();refreshBubbles();
-    if($("#view-admin").style.display==="block")renderAdmin();
   }
+  if(j.rollie){
+    const r=j.rollie;
+    state.rollieTask=r.current_task||null;
+    if(r.current_task){const st=document.querySelector('[data-st="rollie"]');if(st)st.textContent=r.current_task}
+    state.outreach=(r.outreach||[]).map(o=>({company:o.company,subject:o.subject,approved:!!o.approved}));
+    state.rollieSpend=typeof r.spend_estimate_usd==="number"?r.spend_estimate_usd:null;
+    document.querySelectorAll('[data-live="outreach"]').forEach(e=>e.textContent=String(state.outreach.length));
+    document.querySelectorAll('[data-live="rspend"]').forEach(e=>e.textContent=state.rollieSpend==null?"—":"$"+state.rollieSpend.toFixed(2));
+    if(first){
+      state.outreach.forEach(o=>pushLog("ROLLIE","drafted: "+o.company+" — “"+o.subject+"”"+(o.approved?" ✓":""),"var(--vio)"));
+      if(r.learnings)pushLog("ROLLIE","learning: "+r.learnings,"var(--vio)");
+    }
+    if(state.room==="rollie")renderOps("rollie");
+  }
+  fillLiveSpans();refreshBubbles();
+  if($("#view-admin").style.display==="block")renderAdmin();
 }
 function tryLive(){
   fetchFeed(0).then(applyLive).catch(()=>{
