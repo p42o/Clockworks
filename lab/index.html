@@ -506,7 +506,7 @@ const $=(s,r)=> (r||document).querySelector(s);
    Commands are executed by the lab-bridge daemon on the VPS.
    ================================================================ */
 const FB_CONFIG={apiKey:"AIzaSyA1l2XHoYRK49j-zKnxhDRJ8RFelaJ6B4c",authDomain:"pitboss-92bba.firebaseapp.com",projectId:"pitboss-92bba"};
-const ALLOWED=["parks.phone@gmail.com","p42o@me.com"];
+const ALLOWED=["parks.phone@gmail.com"];
 let fb=null,db=null,user=null;
 try{fb=firebase.initializeApp(FB_CONFIG);db=firebase.firestore()}catch(e){}
 
