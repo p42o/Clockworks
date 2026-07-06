@@ -20,6 +20,16 @@
    generated sprite art · shipped-product storefront.
    ========================================================================== */
 :root{
+  --void:#060b16; --pane:rgba(13,22,40,.84); --pane-2:rgba(17,29,52,.92);
+  --seam:#1d2c49; --seam-hi:#31456c;
+  --ink:#e7effc; --dim:#93a7c9; --faint:#57698c;
+  --blu:#45c4e8; --blu-dk:#1e86a8;
+  --org:#f6a83b; --org-dk:#a9701a;
+  --grn:#3bd9a0; --grn-dk:#1d9367;
+  --vio:#a78bfa; --red:#f4637d; --you:#ef7fb6;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+}
+:root[data-skin="nightshift"]{
   --void:#0b0c10; --pane:rgba(16,20,28,.82); --pane-2:rgba(22,28,40,.9);
   --seam:#20293c; --seam-hi:#31405f;
   --ink:#d4e2f7; --dim:#7f8fb3; --faint:#4a5878;
@@ -27,7 +37,6 @@
   --org:#ff7a1a; --org-dk:#b34f0a;
   --grn:#39ff6a; --grn-dk:#1a9e40;
   --vio:#b96bff; --red:#ff3b5c; --you:#ff4d92;
-  --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
 }
 :root[data-skin="synthwave"]{
   --void:#0a0616; --pane:rgba(24,14,40,.82); --pane-2:rgba(32,18,54,.9);
@@ -48,13 +57,13 @@
 :root[data-lum="bright"]{ --ink:#e6edff; --dim:#9dafd6; --faint:#6d7ea6; }
 :root[data-lum="max"]{
   --ink:#f4f8ff; --dim:#c6d3ec; --faint:#8a9bc0;
-  --pane:rgba(28,37,56,.9); --pane-2:rgba(36,47,70,.94);
-  --seam:#2a3652; --seam-hi:#41527a;
+  --pane:rgba(26,40,68,.92); --pane-2:rgba(33,50,82,.95);
+  --seam:#2e4368; --seam-hi:#47608f;
 }
-:root[data-lum="max"] .vig{ opacity:.45; }
-:root[data-lum="max"] .scan{ opacity:.22; }
-:root[data-lum="max"] #grain{ opacity:.035; }
-:root[data-lum="bright"] .vig{ opacity:.72; }
+:root[data-lum="max"] .vig{ opacity:.3; }
+:root[data-lum="max"] .scan{ opacity:.05; }
+:root[data-lum="max"] #grain{ opacity:.02; }
+:root[data-lum="bright"] .vig{ opacity:.5; }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overscroll-behavior:none;touch-action:manipulation;-webkit-text-size-adjust:100%}
 body{
@@ -66,13 +75,14 @@ body{
     var(--void);
   color:var(--ink);font-family:var(--mono);-webkit-font-smoothing:antialiased;overflow:hidden;
 }
-.scan{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.4;mix-blend-mode:multiply;
+.scan{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.12;mix-blend-mode:multiply;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0,rgba(0,0,0,.16) 1px,transparent 1px,transparent 3px)}
-.vig{position:fixed;inset:0;z-index:60;pointer-events:none;box-shadow:inset 0 0 220px 40px rgba(0,0,0,.85)}
+:root[data-skin="nightshift"] .scan,:root[data-skin="synthwave"] .scan,:root[data-skin="redline"] .scan{opacity:.38}
+.vig{position:fixed;inset:0;z-index:60;pointer-events:none;box-shadow:inset 0 0 200px 30px rgba(2,6,16,.6)}
 #grain{position:fixed;inset:0;width:100%;height:100%;z-index:58;pointer-events:none;
-  opacity:.06;mix-blend-mode:overlay;image-rendering:pixelated}
+  opacity:.035;mix-blend-mode:overlay;image-rendering:pixelated}
 .world.cut{animation:camcut .32s ease}
-@keyframes camcut{0%{filter:brightness(1.55) saturate(1.5);transform:scale(1.02)}100%{filter:none;transform:none}}
+@keyframes camcut{0%{filter:brightness(1.2) saturate(1.15);transform:scale(1.012)}100%{filter:none;transform:none}}
 #roomTint{position:absolute;inset:0;z-index:3;pointer-events:none;transition:background 1.2s ease;
   background:radial-gradient(80% 70% at 50% 30%,color-mix(in srgb,var(--tc,var(--blu)) 7%,transparent),transparent 75%)}
 .orb{position:absolute;width:8px;height:8px;border-radius:50%;z-index:7;background:var(--org);
@@ -87,9 +97,9 @@ body{
 /* ================= AUTH GATE ================= */
 #gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--void)}
 #gate .term{width:min(380px,92vw);border:1px solid var(--seam-hi);border-radius:12px;padding:28px 26px;text-align:center;
-  background:var(--pane-2);box-shadow:0 0 70px -18px color-mix(in srgb,var(--blu) 40%,transparent),inset 0 0 30px rgba(0,0,0,.5)}
+  background:var(--pane-2);box-shadow:0 0 70px -18px color-mix(in srgb,var(--blu) 24%,transparent),inset 0 0 30px rgba(0,0,0,.4)}
 #gate img.lg{width:84px;height:84px;filter:drop-shadow(0 0 18px color-mix(in srgb,var(--blu) 55%,transparent))}
-#gate h1{margin:10px 0 2px;font:700 16px/1.2 var(--mono);letter-spacing:.32em;color:var(--blu);text-shadow:0 0 12px color-mix(in srgb,var(--blu) 60%,transparent)}
+#gate h1{margin:10px 0 2px;font:700 16px/1.2 var(--mono);letter-spacing:.32em;color:var(--blu);text-shadow:0 0 12px color-mix(in srgb,var(--blu) 38%,transparent)}
 #gate .sub{font-size:10px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase;margin-bottom:22px}
 #gate .gbtn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:9px;cursor:pointer;
   border:1px solid var(--seam-hi);background:linear-gradient(180deg,var(--pane-2),var(--void));color:var(--ink);
@@ -111,7 +121,7 @@ body{
   backdrop-filter:blur(10px) saturate(1.25);-webkit-backdrop-filter:blur(10px) saturate(1.25);z-index:40}
 .hud img.sg{width:26px;height:26px;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--blu) 55%,transparent))}
 .hud .logo{font:700 13px var(--mono);letter-spacing:.3em;white-space:nowrap}
-.hud .logo b{color:var(--blu);text-shadow:0 0 10px color-mix(in srgb,var(--blu) 70%,transparent)}
+.hud .logo b{color:var(--blu);text-shadow:0 0 10px color-mix(in srgb,var(--blu) 38%,transparent)}
 .hud .sub{font-size:9px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase}
 .hud .sp{flex:1}
 .chip{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;border-radius:999px;
@@ -155,7 +165,7 @@ body{
 .crew .ft .r b{color:var(--dim);font-variant-numeric:tabular-nums}
 
 /* ================= WORLD ================= */
-.world{flex:1;position:relative;min-width:0;overflow:hidden;background:#07080c}
+.world{flex:1;position:relative;min-width:0;overflow:hidden;background:#050a13}
 .room{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .35s}
 .room.on{opacity:1;pointer-events:auto}
 /* idle physics: --anim pauses every machine animation; working speeds belts */
@@ -166,7 +176,7 @@ body{
 .wall{position:absolute;left:0;right:0;top:0;height:64px;border-bottom:2px solid var(--seam-hi);
   background:linear-gradient(180deg,#10141d,#0a0d13);display:flex;align-items:center;gap:18px;padding:0 22px;z-index:5}
 .wall .rname{font:700 clamp(14px,2vw,19px) var(--mono);letter-spacing:.34em;color:var(--ac);
-  text-shadow:0 0 16px color-mix(in srgb,var(--ac) 70%,transparent)}
+  text-shadow:0 0 16px color-mix(in srgb,var(--ac) 40%,transparent)}
 .wall .rtag{font-size:9px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase}
 .wall .state{margin-left:auto;font-size:9px;letter-spacing:.22em;padding:4px 10px;border-radius:999px;border:1px solid var(--seam-hi);color:var(--dim)}
 .room.working .wall .state{color:var(--grn);border-color:color-mix(in srgb,var(--grn) 45%,transparent);text-shadow:0 0 8px color-mix(in srgb,var(--grn) 50%,transparent)}
@@ -265,14 +275,14 @@ body{
   transform:translate(-50%,-100%);transition:left var(--mt,3s) ease-in-out,top var(--mt,3s) ease-in-out;will-change:left,top}
 .ent .plate{font-size:8.5px;letter-spacing:.16em;padding:2px 7px;border-radius:4px;white-space:nowrap;
   border:1px solid color-mix(in srgb,var(--ac) 55%,transparent);color:var(--ac);background:rgba(11,12,16,.9);
-  text-shadow:0 0 8px color-mix(in srgb,var(--ac) 60%,transparent)}
+  text-shadow:0 0 8px color-mix(in srgb,var(--ac) 35%,transparent)}
 .ent .say{font-size:8.5px;color:var(--dim);background:rgba(11,12,16,.92);border:1px solid var(--seam-hi);
   border-radius:5px;padding:2px 7px;white-space:nowrap;max-width:210px;overflow:hidden;text-overflow:ellipsis}
 .ent img.bod{width:44px;height:44px;object-fit:contain;
-  filter:drop-shadow(0 0 10px color-mix(in srgb,var(--ac) 50%,transparent)) drop-shadow(0 6px 8px rgba(0,0,0,.8));
+  filter:drop-shadow(0 0 10px color-mix(in srgb,var(--ac) 35%,transparent)) drop-shadow(0 6px 8px rgba(0,0,0,.8));
   animation:bob 1.3s ease-in-out infinite}
 .ent .shadow{width:26px;height:5px;border-radius:50%;background:rgba(0,0,0,.65);margin-top:-3px;filter:blur(1.5px)}
-@keyframes bob{50%{transform:translateY(-3px)}}
+@keyframes bob{50%{transform:translateY(-2px)}}
 .room.idle .ent img.bod{animation:breathe 3.6s ease-in-out infinite;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--ac) 30%,transparent)) drop-shadow(0 6px 8px rgba(0,0,0,.8)) brightness(.85)}
 @keyframes breathe{50%{transform:translateY(-1.5px) scale(1.01)}}
 .room.working .ent img.bod{animation:bob .9s ease-in-out infinite}
@@ -350,7 +360,7 @@ body{
   border-bottom:1px solid var(--seam);background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
 .win .tbar:active{cursor:grabbing}
 .win .tbar .ti{font:700 10px var(--mono);letter-spacing:.22em;color:var(--wc,var(--blu));text-transform:uppercase;
-  text-shadow:0 0 10px color-mix(in srgb,var(--wc,var(--blu)) 55%,transparent)}
+  text-shadow:0 0 10px color-mix(in srgb,var(--wc,var(--blu)) 30%,transparent)}
 .win .tbar .sp{flex:1}
 .win .tbar button{border:1px solid var(--seam-hi);background:transparent;color:var(--dim);border-radius:5px;
   width:20px;height:20px;font-size:11px;line-height:1;cursor:pointer;transition:.12s}
@@ -403,7 +413,7 @@ body{
   border:1px solid color-mix(in srgb,var(--wc,var(--blu)) 55%,transparent);
   background:linear-gradient(180deg,color-mix(in srgb,var(--wc,var(--blu)) 14%,transparent),color-mix(in srgb,var(--wc,var(--blu)) 5%,transparent));
   color:var(--wc,var(--blu));font:700 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;transition:.14s;
-  text-shadow:0 0 10px color-mix(in srgb,var(--wc,var(--blu)) 55%,transparent)}
+  text-shadow:0 0 10px color-mix(in srgb,var(--wc,var(--blu)) 30%,transparent)}
 .cmdbtn:hover{filter:brightness(1.35);box-shadow:0 0 22px -6px var(--wc,var(--blu))}
 .cmdbtn:active{transform:translateY(1px)}
 .cmdbtn:disabled{opacity:.4;cursor:default;filter:none}
@@ -412,7 +422,7 @@ body{
 #view-admin{overflow-y:auto}
 .admin{max-width:860px;margin:0 auto;padding:22px 18px 60px;display:flex;flex-direction:column;gap:16px}
 .admin h1{margin:6px 0 0;font:700 18px var(--mono);letter-spacing:.28em;color:var(--blu);
-  text-shadow:0 0 14px color-mix(in srgb,var(--blu) 55%,transparent)}
+  text-shadow:0 0 14px color-mix(in srgb,var(--blu) 35%,transparent)}
 .admin .lede{font-size:11.5px;line-height:1.7;color:var(--dim);margin:0}
 .apane{border:1px solid var(--seam-hi);border-radius:12px;padding:16px;
   background:linear-gradient(165deg,rgba(255,255,255,.04),rgba(255,255,255,0) 30%),var(--pane)}
@@ -455,7 +465,7 @@ body{
 #view-ceo{overflow-y:auto}
 .ceo{max-width:1140px;margin:0 auto;padding:20px 18px 60px;display:flex;flex-direction:column;gap:16px}
 .ceo-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.ceo h1{margin:2px 0;font:700 19px var(--mono);letter-spacing:.26em;color:var(--blu);text-shadow:0 0 14px color-mix(in srgb,var(--blu) 55%,transparent);display:flex;align-items:center;gap:12px}
+.ceo h1{margin:2px 0;font:700 19px var(--mono);letter-spacing:.26em;color:var(--blu);text-shadow:0 0 14px color-mix(in srgb,var(--blu) 35%,transparent);display:flex;align-items:center;gap:12px}
 .ceo h1 img{width:34px;height:34px;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--blu) 55%,transparent))}
 .ceo-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
 @media(max-width:900px){.ceo-grid{grid-template-columns:1fr}}
@@ -614,7 +624,7 @@ body{
     <span class="chip btn" id="ceoBtn" role="button" tabindex="0" style="color:var(--blu);border-color:color-mix(in srgb,var(--blu) 45%,transparent)">▣ CEO DECK</span>
     <span class="chip btn" id="adminBtn" role="button" tabindex="0">⚙ ADMIN</span>
     <span class="chip btn" id="lumBtn" role="button" tabindex="0" title="brightness">☀ <b id="lumLbl">BRIGHT</b></span>
-    <span class="chip btn" id="skinBtn" role="button" tabindex="0" title="cycle facility skin">◐ <b id="skinLbl">NIGHTSHIFT</b></span>
+    <span class="chip btn" id="skinBtn" role="button" tabindex="0" title="cycle facility skin">◐ <b id="skinLbl">COMMAND</b></span>
     <span class="clock" id="clock">00:00:00</span>
   </header>
 
@@ -1075,7 +1085,7 @@ function toggleSheet(id){
   document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
 
 /* ============ SKINS + GRAIN ============ */
-const SKINS=[["","NIGHTSHIFT"],["synthwave","SYNTHWAVE"],["redline","REDLINE"]];
+const SKINS=[["","COMMAND"],["nightshift","NIGHTSHIFT"],["synthwave","SYNTHWAVE"],["redline","REDLINE"]];
 function applySkin(i){
   const [key,label]=SKINS[i%SKINS.length];
   if(key)document.documentElement.setAttribute("data-skin",key);
