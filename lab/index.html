@@ -4,11 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0b0c10">
+<meta name="theme-color" content="#0f0b07">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>THE LAB — facility</title>
+<meta name="apple-mobile-web-app-title" content="The Lab">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="img/icon-192.png">
+<title>THE LAB — command center</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -675,58 +679,118 @@ body{
   color:var(--blu);border-radius:8px;padding:8px 12px;font:700 9.5px var(--mono);letter-spacing:.08em;cursor:pointer;white-space:nowrap}
 .mdlrow .mdlgo:disabled{opacity:.45;cursor:default}
 
-/* ================= MOBILE ================= */
+/* ================= MOBILE — native app shell ================= */
 .dock{display:none}
+#menuBtn{display:none}
+#menuSheet{display:none}
+.mphead{display:none}
+#ptr{display:none}
 @media(max-width:880px){
-  .hud{padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));gap:7px;overflow-x:auto;scrollbar-width:none}
-  .hud::-webkit-scrollbar{display:none}
+  /* ---- top app bar (slim, contextual) ---- */
+  .hud{position:relative;z-index:40;gap:9px;overflow:visible;
+    padding:calc(8px + env(safe-area-inset-top)) 14px 8px}
   .hud .sub{display:none}
-  .hud .logo{font-size:12px}
-  .chip{padding:4px 8px;font-size:8.5px;flex:none}
-  #spendChip,#skinBtn,#ceoBtn,#adminBtn{display:none}
+  .hud .logo{font-size:13px;letter-spacing:.26em}
+  .hud img.sg{width:24px;height:24px}
+  .chip{padding:5px 9px;font-size:9px;flex:none}
+  #skinBtn,#ceoBtn,#adminBtn,#lumBtn,#reviewChip,#clock{display:none}
+  #menuBtn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:30px;padding:0;font-size:16px;border-radius:9px;cursor:pointer;flex:none}
+  /* ---- body ---- */
   .crew{display:none}
   .world{flex:1}
-  .dock{display:flex;flex:none;align-items:stretch;gap:6px;z-index:45;
-    padding:8px 10px calc(8px + env(safe-area-inset-bottom));
-    border-top:1px solid var(--seam);background:var(--pane-2)}
-  .dtile{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;
-    padding:6px 2px 5px;border:1px solid var(--seam);border-radius:10px;cursor:pointer;
-    background:rgba(255,255,255,.015);position:relative;transition:.13s;user-select:none;-webkit-user-select:none}
-  .dtile:active{transform:scale(.93)}
-  .dtile img.dg{width:26px;height:26px;object-fit:contain}
-  .dtile .dn{font:700 7.5px var(--mono);letter-spacing:.1em;color:var(--dim);white-space:nowrap}
-  .dtile .dl{position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;
-    background:var(--lc,var(--grn));box-shadow:0 0 7px var(--lc,var(--grn));animation:pulse 2s infinite}
-  .dtile.sel{border-color:var(--ac);box-shadow:0 0 14px -5px var(--ac);
-    background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 12%,transparent),transparent)}
-  .dtile.sel .dn{color:#fff}
-  .mission{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;border-left:0;border-top:1px solid var(--seam);
-    border-radius:16px 16px 0 0;transform:translateY(105%);transition:transform .32s cubic-bezier(.3,.9,.3,1);
-    z-index:72;max-height:74dvh;box-shadow:0 -20px 60px -12px #000;background:var(--pane-2)}
-  .mission.open{transform:none}
-  .mtabs::before{content:"";position:absolute;left:50%;top:5px;transform:translateX(-50%);
-    width:38px;height:4px;border-radius:2px;background:var(--seam-hi)}
-  .mtabs{position:relative;padding-top:8px}
-  .mbody{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
-  .mchat{padding-bottom:calc(9px + env(safe-area-inset-bottom))}
-  #winWrap{position:fixed!important;inset:0;z-index:70;pointer-events:none}
-  .win{position:fixed;left:0!important;right:0!important;bottom:0!important;top:auto!important;
-    width:auto!important;max-width:none;
-    border-radius:16px 16px 0 0;border-bottom:0;transform:translateY(105%);transition:transform .32s cubic-bezier(.3,.9,.3,1);
-    box-shadow:0 -20px 60px -12px #000;max-height:66dvh;display:flex}
+  /* ---- mission = full-screen page (native, not a sheet) ---- */
+  .mission{position:fixed;inset:0;width:auto;border-left:0;background:var(--void);z-index:36;display:none;
+    padding-top:calc(52px + env(safe-area-inset-top));
+    padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+  body[data-mpage="inbox"] .mission,body[data-mpage="launch"] .mission,
+  body[data-mpage="trends"] .mission,body[data-mpage="chat"] .mission{display:flex}
+  .mission .mbody.sel{animation:pageIn .28s cubic-bezier(.3,.9,.3,1)}
+  @keyframes pageIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .mtabs{display:none}
+  .mbody{padding:0 15px 22px}
+  .mphead{display:flex;align-items:center;gap:9px;position:sticky;top:0;z-index:3;
+    margin:0 -15px 6px;padding:12px 15px 10px;background:var(--void);
+    border-bottom:1px solid var(--seam)}
+  .mphead .mpi{font-size:18px;line-height:1}
+  .mphead .mpt{font:800 15px var(--mono);letter-spacing:.16em;color:var(--ink)}
+  .mphead .mpc{margin-left:auto;font:700 10px var(--mono);letter-spacing:.1em;color:var(--faint)}
+  /* legibility bumps */
+  .ibx{padding:12px 13px}
+  .ibx .iname{font-size:12.5px}.ibx .isub{font-size:11px;line-height:1.55}
+  .ibx .iapv,.ibx .iok{padding:11px;font-size:11px}
+  .trend{padding:12px 13px}.trend .tt{font-size:12px}.trend .ta{font-size:11px}.trend .tuse{font-size:9.5px}
+  .dsp .lbl{font-size:9.5px}.dsp textarea{font-size:12px;min-height:104px}
+  .dsp .launch{padding:14px}
+  .dsp .agopt img{width:38px;height:38px}
+  .modelsel{font-size:11.5px;padding:11px}
+  #commsBody{font-size:12px;min-height:0;flex:1}
+  .mchat{padding-bottom:6px}.mchat input{font-size:12px;padding:11px}
+  .inbox-zero{font-size:11.5px;padding:22px 16px}
+  /* pull-to-refresh hint */
+  #ptr{display:block;position:absolute;left:0;right:0;top:calc(56px + env(safe-area-inset-top));text-align:center;pointer-events:none;
+    font:700 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--blu);opacity:0;transition:opacity .15s;z-index:1}
+  /* ---- bottom tab bar (native) ---- */
+  .dock{display:grid;grid-template-columns:1fr 1fr 64px 1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:46;align-items:end;
+    padding:7px 4px calc(7px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--seam);background:color-mix(in srgb,var(--pane-2) 90%,transparent);
+    backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3)}
+  .dtile{min-width:0;overflow:visible;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:6px 1px 3px;border:0;border-radius:12px;cursor:pointer;background:transparent;color:var(--faint);
+    position:relative;transition:.14s;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+  .dtile:active{transform:scale(.88)}
+  .dtile .dg{width:23px;height:23px;font-size:21px;line-height:23px;
+    display:grid;place-items:center;filter:grayscale(.55) opacity(.7);transition:.14s}
+  .dtile .dn{font:700 8px var(--mono);letter-spacing:.04em;white-space:nowrap;transition:.14s}
+  .dtile.sel{color:var(--ac)}
+  .dtile.sel .dg{filter:none;opacity:1;transform:translateY(-1px)}
+  .dtile.sel .dn{color:var(--ac)}
+  .dtile .dl{position:absolute;top:2px;right:calc(50% - 17px);min-width:15px;height:15px;padding:0 4px;border-radius:8px;
+    display:none;align-items:center;justify-content:center;font:800 8.5px var(--mono);
+    background:var(--red);color:#fff;box-shadow:0 0 8px -1px var(--red)}
+  .dtile .dl.on{display:inline-flex}
+  /* center LAUNCH — raised FAB (grid column 3) */
+  .dtile.fab{overflow:visible}
+  .dtile.fab .fabc{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:24px;margin-top:-26px;
+    background:linear-gradient(180deg,var(--org),var(--org-dk));color:#1a1206;
+    box-shadow:0 10px 24px -6px var(--org),0 0 0 5px var(--void),inset 0 1px 0 rgba(255,255,255,.45);transition:.16s}
+  .dtile.fab:active .fabc{transform:scale(.9)}
+  .dtile.fab .dn{margin-top:3px;color:var(--org)}
+  /* ---- OPS sheet sits above the tab bar ---- */
+  #winWrap{position:fixed!important;inset:0;z-index:44;pointer-events:none}
+  .win{position:fixed;left:0!important;right:0!important;top:auto!important;
+    bottom:calc(72px + env(safe-area-inset-bottom))!important;width:auto!important;max-width:none;
+    border-radius:18px 18px 0 0;border-bottom:0;transform:translateY(135%);transition:transform .3s cubic-bezier(.3,.9,.3,1);
+    box-shadow:0 -20px 60px -12px #000;max-height:58dvh;display:flex}
   .win.open{transform:none}
-  .win .tbar{cursor:default;padding:10px 14px}
+  .win .tbar{cursor:default;padding:11px 14px}
   .win .tbar::before{content:"";position:absolute;left:50%;top:5px;transform:translateX(-50%);
-    width:38px;height:4px;border-radius:2px;background:var(--seam-hi)}
-  .win .tbar button{width:28px;height:28px;font-size:14px}
-  .win .body{padding-bottom:8px}
+    width:40px;height:4px;border-radius:2px;background:var(--seam-hi)}
+  .win .tbar button{width:30px;height:30px;font-size:15px}
+  .win .body{padding-bottom:10px}
   #winTray{display:none}
-  #winOps .body{max-height:min(430px,48dvh)}
-  #winOps .body{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+  #winOps .body{max-height:min(46dvh,430px)}
   .win.min .body{display:block}
-  .admin,.ceo{padding:16px 12px calc(40px + env(safe-area-inset-bottom))}
+  /* ---- CEO / Admin full overlays ---- */
+  #view-ceo,#view-admin{z-index:38}
+  .admin,.ceo{padding:calc(58px + env(safe-area-inset-top)) 13px calc(88px + env(safe-area-inset-bottom))}
   .tbl{font-size:9.5px}
   .spendrow{grid-template-columns:1fr}
+  /* ---- top ⋯ menu sheet ---- */
+  #menuSheet{display:block;position:fixed;inset:0;z-index:80;pointer-events:none}
+  #menuSheet .mscrim{position:absolute;inset:0;background:rgba(6,4,1,.55);opacity:0;transition:.22s;backdrop-filter:blur(2px)}
+  #menuSheet .mspanel{position:absolute;left:0;right:0;bottom:0;background:var(--pane-2);border-top:1px solid var(--seam-hi);
+    border-radius:22px 22px 0 0;padding:8px 16px calc(18px + env(safe-area-inset-bottom));
+    transform:translateY(112%);transition:transform .3s cubic-bezier(.3,.9,.3,1);box-shadow:0 -24px 70px -14px #000}
+  #menuSheet.on{pointer-events:auto}
+  #menuSheet.on .mscrim{opacity:1}
+  #menuSheet.on .mspanel{transform:none}
+  #menuSheet .mgrab{width:42px;height:4px;border-radius:2px;background:var(--seam-hi);margin:6px auto 10px}
+  .mrow{display:flex;align-items:center;gap:14px;padding:14px 6px;border-bottom:1px solid var(--seam);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .mrow:last-child{border-bottom:0}
+  .mrow .mri{font-size:19px;width:26px;text-align:center}
+  .mrow .mrt{font:700 13px var(--mono);letter-spacing:.05em;color:var(--ink);flex:1}
+  .mrow .mrv{font:600 11px var(--mono);color:var(--dim)}
+  .mrow:active{background:rgba(255,255,255,.04)}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -763,6 +827,7 @@ body{
     <span class="chip btn" id="adminBtn" role="button" tabindex="0">⚙ ADMIN</span>
     <span class="chip btn" id="lumBtn" role="button" tabindex="0" title="brightness">☀ <b id="lumLbl">BRIGHT</b></span>
     <span class="chip btn" id="skinBtn" role="button" tabindex="0" title="cycle facility skin">◐ <b id="skinLbl">COMMAND</b></span>
+    <span class="chip btn" id="menuBtn" role="button" tabindex="0" title="more" aria-label="menu">⋯</span>
     <span class="clock" id="clock">00:00:00</span>
   </header>
 
@@ -796,6 +861,7 @@ body{
     </div>
 
     <aside class="mission" id="mission" aria-label="mission control">
+      <div id="ptr">↓ pull to refresh</div>
       <div class="mtabs">
         <button class="mtab sel" data-mtab="mInbox" style="--mtc:var(--org)"><span class="mi">📥</span>INBOX<span class="mbadge" id="badgeInbox">0</span></button>
         <button class="mtab" data-mtab="mLaunch" style="--mtc:var(--org)"><span class="mi">🚀</span>LAUNCH</button>
@@ -806,6 +872,7 @@ body{
       <div class="mbody" id="mLaunch"></div>
       <div class="mbody" id="mTrends"></div>
       <div class="mbody" id="mComms">
+        <div class="mphead"><span class="mpi">💬</span><span class="mpt">CHAT — THEO</span></div>
         <div id="commsBody"></div>
         <div class="mchat">
           <input id="chatIn" type="text" maxlength="500" placeholder="message Theo… (he'll answer here)" autocomplete="off">
@@ -813,6 +880,19 @@ body{
         </div>
       </div>
     </aside>
+  </div>
+
+  <!-- ⋯ mobile menu sheet (oversight + settings) -->
+  <div id="menuSheet" aria-hidden="true">
+    <div class="mscrim" data-menuclose></div>
+    <div class="mspanel">
+      <div class="mgrab"></div>
+      <div class="mrow" data-menu="ceo"><span class="mri">▣</span><span class="mrt">CEO Deck</span><span class="mrv">spend · health · memos</span></div>
+      <div class="mrow" data-menu="admin"><span class="mri">⚙</span><span class="mrt">Admin — the honest truth</span><span class="mrv">what's real</span></div>
+      <div class="mrow" data-menu="lum"><span class="mri">☀</span><span class="mrt">Brightness</span><span class="mrv" id="menuLum">BRIGHT</span></div>
+      <div class="mrow" data-menu="skin"><span class="mri">◐</span><span class="mrt">Facility skin</span><span class="mrv" id="menuSkin">WORKSHOP</span></div>
+      <div class="mrow" data-menu="signout"><span class="mri">⏻</span><span class="mrt">Sign out</span><span class="mrv" id="menuEmail"></span></div>
+    </div>
   </div>
 
   <nav class="dock" id="dock" aria-label="crew dock"></nav>
@@ -946,8 +1026,10 @@ function missionTab(id){
   document.querySelectorAll(".mbody").forEach(b=>b.classList.toggle("sel",b.id===id));
 }
 function openMission(tab){
-  if(tab)missionTab(tab);
-  if(isMobile()){document.querySelectorAll(".win").forEach(x=>x.classList.remove("open"));$("#mission").classList.add("open");}
+  if(isMobile()){
+    const p=Object.keys(MPAGE_TAB).find(k=>MPAGE_TAB[k]===tab)||"inbox";
+    mobileNav(p);
+  }else if(tab)missionTab(tab);
 }
 function wireMission(){
   document.querySelectorAll(".mtab").forEach(t=>t.addEventListener("click",()=>missionTab(t.getAttribute("data-mtab"))));
@@ -960,7 +1042,7 @@ function updateBadges(){
   const n=inboxCount();
   const b=$("#badgeInbox");if(b){b.textContent=n;b.classList.toggle("on",n>0)}
   const hq=$("#hudQueue");if(hq)hq.textContent=state.feed==="live"?String(n):"—";
-  const dd=$("#dockInboxDot");if(dd)dd.style.display=n>0?"":"none";
+  const db=$("#dockInboxBadge");if(db){db.textContent=n;db.classList.toggle("on",n>0)}
 }
 function renderInbox(){
   const el=$("#mInbox");if(!el)return;
@@ -993,10 +1075,11 @@ function renderInbox(){
         <div class="isub">${esc(x.brief)}</div></div>`);
     });
   }
-  el.innerHTML=rows.length?rows.join("")
+  const head=`<div class="mphead"><span class="mpi">📥</span><span class="mpt">INBOX</span><span class="mpc">${inboxCount()?inboxCount()+" waiting":"all clear"}</span></div>`;
+  el.innerHTML=head+(rows.length?rows.join("")
     :`<div class="inbox-zero">📭 <b>Inbox zero.</b><br>Nothing is waiting on you.<br><br>
       Vulcan stages products here after his 12:00 shift.<br>Rollie stages outreach weekday mornings.<br>
-      Or don't wait — hit <b>LAUNCH</b> and give someone a gig.</div>`;
+      Or don't wait — hit <b>LAUNCH</b> and give someone a gig.</div>`);
   el.querySelectorAll("[data-inbox-approve]").forEach(b=>{
     b.addEventListener("click",()=>{
       b.disabled=true;b.textContent="…";
@@ -1018,6 +1101,7 @@ function renderLaunch(prefill){
   const keep=prefill!=null?prefill:(el.querySelector("#dspBrief")?el.querySelector("#dspBrief").value:"");
   const mdls=chatModels();
   el.innerHTML=`
+    <div class="mphead"><span class="mpi">🚀</span><span class="mpt">LAUNCH</span><span class="mpc">dispatch a gig</span></div>
     <div class="msec">DEPLOY A GIG — PICK A BOT</div>
     <div class="dsp">
       <div class="agpick">
@@ -1060,10 +1144,11 @@ function trendAge(iso){try{const m=Math.floor((Date.now()-new Date(iso).getTime(
 function renderTrendsTab(){
   const el=$("#mTrends");if(!el)return;
   const t=state.trends;
+  const thead=`<div class="mphead"><span class="mpi">📡</span><span class="mpt">TRENDS</span><span class="mpc">${t&&t.trends?t.trends.length+" live":"—"}</span></div>`;
   if(!t||!Array.isArray(t.trends)||!t.trends.length){
-    el.innerHTML=`<div class="inbox-zero">📡 no trend sweep yet.<br><br>The recon desk runs 3× daily —<br>Grok live-searches X + the web for<br>product &amp; trades opportunities.</div>`;return;
+    el.innerHTML=thead+`<div class="inbox-zero">📡 no trend sweep yet.<br><br>The recon desk runs 3× daily —<br>Grok live-searches X + the web for<br>product &amp; trades opportunities.</div>`;return;
   }
-  el.innerHTML=`<div class="msec">LIVE RECON · GROK × X SEARCH · ${trendAge(t.generated_at)}</div>`+
+  el.innerHTML=thead+`<div class="msec">LIVE RECON · GROK × X SEARCH · ${trendAge(t.generated_at)}</div>`+
     t.trends.map((tr,i)=>`<div class="trend" data-ti="${i}" role="button">
       <div class="th2"><span class="tt">${esc(tr.topic)}</span><span class="lane ${tr.lane}">${esc(tr.lane)}</span></div>
       <div class="ta">${esc(tr.angle)}</div>
@@ -1219,27 +1304,103 @@ function navAgent(k){
   if(!viewOpen && state.room===k){ openAgentCard(k); return; }
   selectRoom(k);
 }
+/* ---- mobile bottom tab bar (native app nav) ---- */
+const MPAGES=["floor","inbox","launch","trends","chat"];
+const MPAGE_TAB={inbox:"mInbox",launch:"mLaunch",trends:"mTrends",chat:"mComms"};
 function buildDock(){
   const d=$("#dock");
   d.innerHTML=
-    `<div class="dtile" data-mt="mInbox" style="--ac:var(--org)" role="button"><span class="dl" id="dockInboxDot" style="display:none;--lc:var(--red)"></span><span class="dg" style="font-size:22px;line-height:26px">📥</span><span class="dn">INBOX</span></div>
-     <div class="dtile" data-mt="mLaunch" style="--ac:var(--org)" role="button"><span class="dg" style="font-size:22px;line-height:26px">🚀</span><span class="dn">LAUNCH</span></div>
-     <div class="dtile" data-mt="mTrends" style="--ac:var(--blu)" role="button"><span class="dg" style="font-size:22px;line-height:26px">📡</span><span class="dn">TRENDS</span></div>
-     <div class="dtile" data-mt="mComms" style="--ac:var(--grn)" role="button"><span class="dg" style="font-size:22px;line-height:26px">💬</span><span class="dn">CHAT</span></div>
-     <div class="dtile" data-nav="ceo" style="--ac:var(--blu)" role="button"><img class="dg" src="img/pixel/theo_rot_south.png" alt=""><span class="dn">CEO</span></div>
-     <div class="dtile" data-nav="admin" style="--ac:var(--blu)" role="button"><img class="dg" src="img/icon-admin.png" alt=""><span class="dn">ADMIN</span></div>`;
+    `<div class="dtile" data-mpage="floor" style="--ac:var(--blu)" role="button"><span class="dg">🏭</span><span class="dn">FLOOR</span></div>
+     <div class="dtile" data-mpage="inbox" style="--ac:var(--org)" role="button"><span class="dl" id="dockInboxBadge">0</span><span class="dg">📥</span><span class="dn">INBOX</span></div>
+     <div class="dtile fab" data-mpage="launch" role="button"><span class="fabc">🚀</span><span class="dn">LAUNCH</span></div>
+     <div class="dtile" data-mpage="trends" style="--ac:var(--blu)" role="button"><span class="dg">📡</span><span class="dn">TRENDS</span></div>
+     <div class="dtile" data-mpage="chat" style="--ac:var(--grn)" role="button"><span class="dg">💬</span><span class="dn">CHAT</span></div>`;
   d.addEventListener("click",e=>{
     const t=e.target.closest(".dtile");if(!t)return;
-    if(t.getAttribute("data-mt")){
-      const tab=t.getAttribute("data-mt"),m=$("#mission");
-      const already=m.classList.contains("open")&&$("#"+tab).classList.contains("sel");
-      if(already){m.classList.remove("open")}else{missionTab(tab);openMission(tab)}
-      return;
-    }
-    $("#mission").classList.remove("open");
-    if(t.getAttribute("data-nav")==="admin"){showAdmin();return}
-    if(t.getAttribute("data-nav")==="ceo"){showCeo();return}
+    mobileNav(t.getAttribute("data-mpage"));
   });
+}
+// switch the active mobile page (floor = the game world; others = full-screen mission tabs)
+function mobileNav(page){
+  if(!MPAGES.includes(page))page="floor";
+  document.body.dataset.mpage=page;
+  document.querySelectorAll("#dock .dtile").forEach(t=>t.classList.toggle("sel",t.getAttribute("data-mpage")===page));
+  hideAdmin();                                                    // leave any CEO/Admin overlay
+  document.querySelectorAll(".win").forEach(x=>x.classList.remove("open"));   // close the OPS sheet
+  if(page!=="floor")missionTab(MPAGE_TAB[page]);
+  if(page==="chat"){const cb=$("#commsBody");if(cb)cb.scrollTop=0;}
+}
+// ⋯ menu sheet (oversight + settings that aren't in the tab bar)
+function wireMenu(){
+  const sheet=$("#menuSheet");if(!sheet)return;
+  const open=()=>{
+    const e=$("#menuEmail");if(e)e.textContent=user?String(user.email).split("@")[0]:"";
+    const l=$("#menuLum");if(l)l.textContent=LUMS[lumIdx%LUMS.length][1];
+    const s=$("#menuSkin");if(s)s.textContent=SKINS[skinIdx%SKINS.length][1];
+    sheet.classList.add("on");
+  };
+  const close=()=>sheet.classList.remove("on");
+  const mb=$("#menuBtn");
+  if(mb){mb.addEventListener("click",open);mb.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}});}
+  sheet.querySelectorAll("[data-menuclose]").forEach(x=>x.addEventListener("click",close));
+  sheet.querySelectorAll(".mrow").forEach(r=>r.addEventListener("click",()=>{
+    const a=r.getAttribute("data-menu");
+    if(a==="ceo"){close();mobileNav("floor");showCeo();}
+    else if(a==="admin"){close();mobileNav("floor");showAdmin();}
+    else if(a==="lum"){lumIdx=(lumIdx+1)%LUMS.length;applyLum(lumIdx);const l=$("#menuLum");if(l)l.textContent=LUMS[lumIdx%LUMS.length][1];}
+    else if(a==="skin"){skinIdx=(skinIdx+1)%SKINS.length;applySkin(skinIdx);const s=$("#menuSkin");if(s)s.textContent=SKINS[skinIdx%SKINS.length][1];}
+    else if(a==="signout"){firebase.auth().signOut().then(()=>location.reload());}
+  }));
+}
+// horizontal swipe between the mission pages (inbox↔launch↔trends↔chat; swipe-right on inbox → floor)
+function wireSwipe(){
+  const m=$("#mission");if(!m)return;
+  let x0=0,y0=0,t0=0,ok=false;
+  m.addEventListener("touchstart",e=>{
+    if(!isMobile()||e.touches.length!==1){ok=false;return}
+    if(e.target.closest("textarea,input,select,.agpick"))return void(ok=false);
+    x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now();ok=true;
+  },{passive:true});
+  m.addEventListener("touchend",e=>{
+    if(!ok)return;ok=false;
+    const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dx)<55||Math.abs(dx)<Math.abs(dy)*1.3||Date.now()-t0>600)return;
+    const order=["inbox","launch","trends","chat"],cur=document.body.dataset.mpage,i=order.indexOf(cur);
+    if(i<0)return;
+    if(dx<0&&i<order.length-1)mobileNav(order[i+1]);
+    else if(dx>0)mobileNav(i>0?order[i-1]:"floor");
+  },{passive:true});
+}
+// pull-to-refresh on the active mission page → refetch the live feed
+function wirePTR(){
+  const container=$("#mission"),ind=$("#ptr");if(!container)return;
+  let sy=0,dy=0,pull=false,mb=null;const T=72;
+  container.addEventListener("touchstart",e=>{
+    if(!isMobile()||e.touches.length!==1){pull=false;return}
+    mb=container.querySelector(".mbody.sel");
+    if(!mb||mb.scrollTop>2||e.target.closest("textarea,input,select,button")){pull=false;return}
+    sy=e.touches[0].clientY;dy=0;pull=true;
+  },{passive:true});
+  container.addEventListener("touchmove",e=>{
+    if(!pull||!mb)return;
+    dy=e.touches[0].clientY-sy;
+    if(dy<=0||mb.scrollTop>2){pull=false;mb.style.transform="";if(ind)ind.style.opacity=0;return}
+    e.preventDefault();
+    mb.style.transform="translateY("+Math.min(dy*0.45,84)+"px)";
+    if(ind){ind.style.opacity=Math.min(1,dy/T);ind.textContent=dy>T?"↻ release to refresh":"↓ pull to refresh";}
+  },{passive:false});
+  const end=()=>{
+    if(!pull||!mb){pull=false;return}
+    mb.style.transition="transform .26s";mb.style.transform="";
+    const el=mb;setTimeout(()=>{if(el)el.style.transition=""},280);
+    if(dy>T){if(ind){ind.textContent="↻ refreshing…";ind.style.opacity=1}
+      fetchFeed(0).then(applyLive).catch(()=>{});
+      setTimeout(()=>{if(ind)ind.style.opacity=0},1300);
+    }else if(ind)ind.style.opacity=0;
+    pull=false;
+  };
+  container.addEventListener("touchend",end,{passive:true});
+  container.addEventListener("touchcancel",end,{passive:true});
 }
 
 /* ============ AGENT DETAIL CARD ============ */
@@ -2119,7 +2280,8 @@ let started=false;
 function start(){
   if(started)return;started=true;
   $("#app").classList.add("on");
-  buildRoster();buildDock();drags();startTimers();startGrain();wireChat();wireMission();tryLive();facInit();
+  buildRoster();buildDock();drags();startTimers();startGrain();wireChat();wireMission();wireMenu();wireSwipe();wirePTR();tryLive();facInit();
+  if(isMobile())mobileNav("floor");
   applyStates();refreshBubbles();
   pushLog("SYS","facility online — operator "+(user?user.email:""),"var(--dim)");
   const rc=$("#reviewChip");
@@ -2139,8 +2301,8 @@ function start(){
   cb.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();showCeo()}});
   // deep link: ?tab=inbox|launch|trends|comms opens that mission tab (handy for phone shortcuts)
   {const tb=new URLSearchParams(location.search).get("tab");
-   const map={inbox:"mInbox",launch:"mLaunch",trends:"mTrends",comms:"mComms"};
-   if(tb&&map[tb]){missionTab(map[tb]);if(isMobile())$("#mission").classList.add("open")}}
+   const map={inbox:"mInbox",launch:"mLaunch",trends:"mTrends",comms:"mComms",chat:"mComms"};
+   if(tb&&map[tb]){if(isMobile())openMission(map[tb]);else missionTab(map[tb]);}}
   const m=location.hash.match(/#\/(\w+)/);
   if(m&&m[1]==="admin"){selectRoom("theo");showAdmin()}
   else if(m&&m[1]==="ceo"){selectRoom("theo");showCeo()}
