@@ -712,12 +712,12 @@ if(fb)firebase.auth().onAuthStateChanged(u=>{
   }
 });
 
-/* ---------- DEV local preview — ONLY with ?dev=1; inert in production ---------- */
-if(new URLSearchParams(location.search).get('dev')==='1'){
+/* ---------- DEV local preview — ONLY on localhost with ?dev=1; hard-inert in production ---------- */
+if(new URLSearchParams(location.search).get('dev')==='1' && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)){
   window.__DEV_FEED={generated_at:"dev",meta:{kill_switch:false},
-    foundry:{current_task:"building: Freelance Onboarding Kit",staged_for_review:[{name:"Freelance Onboarding Kit",price:17,approved:false}],spend_estimate_usd:0.45,learnings:"short niche-specific kits convert best"},
-    rollie:{current_task:"scouting NW-metro trades",outreach:[{company:"Eicher Plumbing",subject:"neighbor intro",approved:false},{company:"TJK Plumbing",subject:"quick idea",approved:false},{company:"Robillard Plumbing",subject:"local hello",approved:false}],spend_estimate_usd:0.4,learnings:"trust beats cold volume"},
-    reports:{vulcan:{task:"Built onboarding kit",learnings:"kept it lean"},rollie:{task:"3 dossiers drafted",learnings:"warm intros win"},theo:{task:"Standup brief sent",learnings:"queue healthy"}},
+    foundry:{current_task:"building a digital product",staged_for_review:[{name:"Sample Kit",price:17,approved:false}],spend_estimate_usd:0.45,learnings:"lean niche kits convert best"},
+    rollie:{current_task:"scouting local trades",outreach:[{company:"Sample Plumbing Co",subject:"neighbor intro",approved:false},{company:"Sample HVAC Co",subject:"quick idea",approved:false},{company:"Sample Electric Co",subject:"local hello",approved:false}],spend_estimate_usd:0.4,learnings:"trust beats cold volume"},
+    reports:{vulcan:{task:"Built a kit",learnings:"kept it lean"},rollie:{task:"3 dossiers drafted",learnings:"warm intros win"},theo:{task:"Standup brief sent",learnings:"queue healthy"}},
     spend:{today_actual:0.85,daily_projection:1.2,monthly_projection:33,by_agent:[{agent:"vulcan",model:"grok-4",last:0.45},{agent:"rollie",model:"grok-4",last:0.4}]},
     vps:{uptime_days:12,load:"0.3",mem_used_mb:900,mem_total_mb:4096,disk_used_gb:14,disk_total_gb:40,openclaw:"ok",gateway:"ok",agents:3,crons_armed:3},
     inbox:[{id:"m1",priority:"normal",subject:"Weekly plan",preview:"Three ideas for next week…",body:"Full memo.",ts:"dev"}]};
