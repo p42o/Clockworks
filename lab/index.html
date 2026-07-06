@@ -273,6 +273,16 @@ body{
   box-shadow:0 22px 60px -18px #000,0 0 24px -12px var(--wc,var(--blu)),inset 0 1px 0 rgba(255,255,255,.06);
   display:flex;flex-direction:column;overflow:hidden}
 .win.focus{border-color:var(--wc,var(--blu))}
+.win.hidden{display:none}
+/* reopen tray — bottom-left dock of any closed panels */
+#winTray{position:absolute;left:14px;bottom:14px;z-index:19;display:flex;gap:8px;pointer-events:none}
+#winTray .tpill{pointer-events:auto;display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+  font:700 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:8px 12px;border-radius:9px;
+  border:1px solid color-mix(in srgb,var(--pc,var(--blu)) 50%,transparent);color:var(--pc,var(--blu));
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0)),var(--pane);
+  backdrop-filter:blur(8px);box-shadow:0 8px 24px -10px #000,0 0 14px -8px var(--pc,var(--blu));transition:.13s}
+#winTray .tpill:hover{filter:brightness(1.35);color:#fff}
+#winTray .tpill .dotp{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 7px currentColor}
 .win .tbar{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:grab;user-select:none;
   border-bottom:1px solid var(--seam);background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
 .win .tbar:active{cursor:grabbing}
@@ -497,6 +507,7 @@ body{
     width:38px;height:4px;border-radius:2px;background:var(--seam-hi)}
   .win .tbar button{width:28px;height:28px;font-size:14px}
   .win .body{padding-bottom:8px}
+  #winTray{display:none}
   .chatrow{padding-bottom:calc(9px + env(safe-area-inset-bottom))}
   #winComms .body{height:min(280px,40dvh)}
   #winOps .body{max-height:min(430px,48dvh)}
@@ -564,7 +575,7 @@ body{
       </section>
       <div id="winWrap" style="position:absolute;inset:0;pointer-events:none">
         <div class="win" id="winComms" style="--wc:var(--grn);right:14px;bottom:14px;pointer-events:auto">
-          <div class="tbar" data-drag="winComms"><span class="ti">◤ COMMS — TALK TO THEO</span><span class="sp"></span><button data-min="winComms">–</button></div>
+          <div class="tbar" data-drag="winComms"><span class="ti">◤ COMMS — TALK TO THEO</span><span class="sp"></span><button data-min="winComms" title="minimize">–</button><button data-close="winComms" title="close">✕</button></div>
           <div class="body" id="commsBody"></div>
           <div class="chatrow">
             <input id="chatIn" type="text" maxlength="500" placeholder="message Theo… (he'll answer here)" autocomplete="off">
@@ -572,10 +583,11 @@ body{
           </div>
         </div>
         <div class="win" id="winOps" style="--wc:var(--blu);left:14px;top:78px;pointer-events:auto">
-          <div class="tbar" data-drag="winOps"><span class="ti" id="opsTitle">◤ ROOM OPERATIONS</span><span class="sp"></span><button data-min="winOps">–</button></div>
+          <div class="tbar" data-drag="winOps"><span class="ti" id="opsTitle">◤ ROOM OPERATIONS</span><span class="sp"></span><button data-min="winOps" title="minimize">–</button><button data-close="winOps" title="close">✕</button></div>
           <div class="body" id="opsBody"></div>
         </div>
       </div>
+      <div id="winTray" aria-label="hidden panels"></div>
     </div>
   </div>
 
@@ -924,6 +936,7 @@ function toggleSheet(id){
   const w=$("#"+id);
   const opening=!w.classList.contains("open");
   document.querySelectorAll(".win").forEach(x=>x.classList.remove("open"));
+  w.classList.remove("hidden");   // a closed sheet can always be reopened from the dock
   if(opening)w.classList.add("open");
 }
 ["gesturestart","gesturechange","gestureend"].forEach(ev=>
@@ -1331,6 +1344,32 @@ function drags(){
       w.classList.toggle("min");
       b.textContent=w.classList.contains("min")?"+":"–"});
   });
+  document.querySelectorAll("[data-close]").forEach(b=>{
+    b.addEventListener("click",()=>closeWin(b.getAttribute("data-close")));
+  });
+}
+const WIN_META={winComms:{label:"COMMS",color:"var(--grn)"},winOps:{label:"OPS",color:"var(--blu)"}};
+function closeWin(id){
+  const w=$("#"+id);if(!w)return;
+  w.classList.remove("open");            // mobile: drop the sheet
+  w.classList.add("hidden");             // desktop: hide entirely
+  if(!isMobile())addTrayPill(id);
+}
+function openWin(id){
+  const w=$("#"+id);if(!w)return;
+  w.classList.remove("hidden","min");
+  const mb=w.querySelector("[data-min]");if(mb)mb.textContent="–";
+  const pill=$('#winTray [data-reopen="'+id+'"]');if(pill)pill.remove();
+  if(isMobile())toggleSheet(id);
+}
+function addTrayPill(id){
+  const tray=$("#winTray");if(!tray||$('#winTray [data-reopen="'+id+'"]'))return;
+  const meta=WIN_META[id]||{label:id,color:"var(--blu)"};
+  const p=document.createElement("button");
+  p.className="tpill";p.setAttribute("data-reopen",id);p.style.setProperty("--pc",meta.color);
+  p.innerHTML='<span class="dotp"></span>'+meta.label;
+  p.addEventListener("click",()=>openWin(id));
+  tray.appendChild(p);
 }
 
 /* ============ TIMERS ============ */
