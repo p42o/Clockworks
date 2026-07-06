@@ -685,6 +685,7 @@ body{
 #menuSheet{display:none}
 .mphead{display:none}
 #ptr{display:none}
+#floorList{display:none}
 @media(max-width:880px){
   /* ---- top app bar (slim, contextual) ---- */
   .hud{position:relative;z-index:40;gap:9px;overflow:visible;
@@ -729,6 +730,33 @@ body{
   /* pull-to-refresh hint */
   #ptr{display:block;position:absolute;left:0;right:0;top:calc(56px + env(safe-area-inset-top));text-align:center;pointer-events:none;
     font:700 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--blu);opacity:0;transition:opacity .15s;z-index:1}
+  /* ---- ROOMS as a clean list (canvas floor is desktop-only) ---- */
+  #facCanvas{display:none}
+  .world{overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #floorList{display:flex;flex-direction:column;gap:11px;padding:14px 15px calc(90px + env(safe-area-inset-bottom))}
+  #floorList .mphead{position:static;margin:2px 0 2px;border-bottom:0;padding:2px 0 4px;background:transparent}
+  .flrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+    border:1px solid var(--seam);border-left:3px solid var(--ac);border-radius:14px;
+    background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),var(--pane);
+    padding:13px 12px;transition:transform .12s,border-color .12s;-webkit-tap-highlight-color:transparent}
+  .flrow:active{transform:scale(.982);border-color:var(--ac)}
+  .flav{width:46px;height:46px;flex:none;border-radius:11px;object-fit:contain;background:var(--pane-2);
+    border:1px solid var(--seam-hi);filter:drop-shadow(0 0 7px color-mix(in srgb,var(--ac) 34%,transparent))}
+  .flav.q{display:grid;place-items:center;color:var(--faint);font:800 20px var(--mono)}
+  .flmid{flex:1;min-width:0}
+  .flname{font:800 14px var(--mono);letter-spacing:.12em;color:var(--ink)}
+  .flsub{font:600 10.5px var(--mono);letter-spacing:.03em;color:var(--dim);margin-top:3px}
+  .fltask{font-size:10px;color:var(--faint);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .flright{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:none}
+  .flpill{font:700 8px var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;
+    border:1px solid var(--seam-hi);color:var(--dim);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+  .flpill i{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .flpill.work{color:var(--grn);border-color:color-mix(in srgb,var(--grn) 45%,transparent)}
+  .flpill.work i{box-shadow:0 0 7px var(--grn);animation:pulse 1.5s infinite}
+  .flpill.empty{color:var(--faint)}
+  .flpill.empty i{display:none}
+  .fltmr{font:600 9.5px var(--mono);color:var(--faint);font-variant-numeric:tabular-nums}
+  .flchev{color:var(--faint);font-size:22px;flex:none;margin-left:1px}
   /* ---- bottom tab bar (native) ---- */
   .dock{display:grid;grid-template-columns:1fr 1fr 64px 1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:46;align-items:end;
     padding:7px 4px calc(7px + env(safe-area-inset-bottom));
@@ -844,6 +872,7 @@ body{
 
     <div class="world" id="world">
       <canvas id="facCanvas" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;touch-action:none"></canvas>
+      <div id="floorList" aria-label="rooms"></div>
       <div id="roomTint" aria-hidden="true" style="display:none"></div>
       <section class="view" id="view-admin" style="position:absolute;inset:0;z-index:12;display:none;background:rgba(7,8,12,.97)">
         <div class="admin" id="adminBody"></div>
@@ -1268,6 +1297,7 @@ function applyStates(){
     const lb=document.querySelector('.acard[data-k="'+k+'"] .loadbar');
     if(lb)lb.className="loadbar "+(w?"work":"idle");
   });
+  syncFloorList();
 }
 
 /* ============ ROSTER + DOCK ============ */
@@ -1310,7 +1340,7 @@ const MPAGE_TAB={inbox:"mInbox",launch:"mLaunch",trends:"mTrends",chat:"mComms"}
 function buildDock(){
   const d=$("#dock");
   d.innerHTML=
-    `<div class="dtile" data-mpage="floor" style="--ac:var(--blu)" role="button"><span class="dg">🏭</span><span class="dn">FLOOR</span></div>
+    `<div class="dtile" data-mpage="floor" style="--ac:var(--blu)" role="button"><span class="dg">🏭</span><span class="dn">ROOMS</span></div>
      <div class="dtile" data-mpage="inbox" style="--ac:var(--org)" role="button"><span class="dl" id="dockInboxBadge">0</span><span class="dg">📥</span><span class="dn">INBOX</span></div>
      <div class="dtile fab" data-mpage="launch" role="button"><span class="fabc">🚀</span><span class="dn">LAUNCH</span></div>
      <div class="dtile" data-mpage="trends" style="--ac:var(--blu)" role="button"><span class="dg">📡</span><span class="dn">TRENDS</span></div>
@@ -1329,6 +1359,40 @@ function mobileNav(page){
   document.querySelectorAll(".win").forEach(x=>x.classList.remove("open"));   // close the OPS sheet
   if(page!=="floor")missionTab(MPAGE_TAB[page]);
   if(page==="chat"){const cb=$("#commsBody");if(cb)cb.scrollTop=0;}
+}
+// mobile ROOMS tab = a clean list of the 4 rooms (replaces the canvas floor on phones)
+const FLNAME={theo:"COMMAND",vulcan:"FOUNDRY",rollie:"SALES",slotb:"DIVISION SLOT"};
+const FLSUB={theo:"Theo · CEO",vulcan:"Vulcan · digital products",rollie:"Rollie · outreach",slotb:"unassigned"};
+function buildFloorList(){
+  const el=$("#floorList");if(!el)return;
+  const rows=ORDER.map(k=>{
+    const r=ROOMS[k],live=r.kind==="live";
+    const av=live?`<img class="flav" src="${r.img}" alt="">`:`<div class="flav q">?</div>`;
+    return `<button class="flrow" data-k="${k}" style="--ac:${r.ac}">
+      ${av}
+      <div class="flmid"><div class="flname">${FLNAME[k]||r.name}</div>
+        <div class="flsub">${FLSUB[k]||""}</div><div class="fltask" data-fltask="${k}"></div></div>
+      <div class="flright">
+        <span class="flpill ${live?"idle":"empty"}" data-flpill="${k}"><i></i>${live?"IDLE":"EMPTY"}</span>
+        ${live?`<span class="fltmr" data-fltmr="${k}">T-–:–:–</span>`:""}
+      </div>
+      <span class="flchev">›</span></button>`;
+  }).join("");
+  el.innerHTML=`<div class="mphead"><span class="mpi">🏭</span><span class="mpt">ROOMS</span><span class="mpc">tap to open</span></div>`+rows;
+  el.querySelectorAll(".flrow").forEach(b=>b.addEventListener("click",()=>selectRoom(b.getAttribute("data-k"))));
+  syncFloorList();
+}
+function syncFloorList(){
+  ORDER.forEach(k=>{
+    if(ROOMS[k].kind!=="live")return;
+    const w=isWorking(k);
+    const p=document.querySelector('[data-flpill="'+k+'"]');
+    if(p){p.className="flpill "+(w?"work":"idle");p.innerHTML="<i></i>"+(state.paused?"PAUSED":w?"WORKING":"IDLE")}
+    const t=document.querySelector('[data-fltask="'+k+'"]');
+    if(t){const rep=state.reports&&state.reports[k];
+      const task=k==="vulcan"?state.vulcanTask:k==="rollie"?state.rollieTask:null;
+      t.textContent=w?(task||"working the shift…"):(rep&&rep.task?"last: "+rep.task:"");}
+  });
 }
 // ⋯ menu sheet (oversight + settings that aren't in the tab bar)
 function wireMenu(){
@@ -1787,7 +1851,9 @@ function selectRoom(k){
   document.querySelectorAll(".room").forEach(r=>r.classList.toggle("on",r.id==="room-"+k));
   document.querySelectorAll(".acard,.dtile[data-k]").forEach(c=>c.classList.toggle("sel",c.getAttribute("data-k")===k));
   renderOps(k);openWin("winOps");
-  if(!reduce){const w=$("#world");w.classList.remove("cut");void w.offsetWidth;w.classList.add("cut")}
+  // camcut puts a transform on .world; that reparents the fixed OPS sheet and makes it
+  // flicker on phones — desktop-only.
+  if(!reduce && !isMobile()){const w=$("#world");w.classList.remove("cut");void w.offsetWidth;w.classList.add("cut")}
   $("#roomTint").style.setProperty("--tc",ROOMS[k].ac);
   location.hash="#/"+k;
   if(typeof facFocus==="function")facFocus(k);
@@ -2005,7 +2071,13 @@ function openWin(id){
   w.classList.remove("hidden","min");
   const mb=w.querySelector("[data-min]");if(mb)mb.textContent="–";
   const pill=$('#winTray [data-reopen="'+id+'"]');if(pill)pill.remove();
-  if(isMobile())toggleSheet(id);
+  if(isMobile()){
+    // ensure-open (idempotent): adding .open when already open won't restart the slide,
+    // so tapping between rooms swaps content without a flicker.
+    document.querySelectorAll(".win").forEach(x=>{if(x!==w)x.classList.remove("open")});
+    const m=$("#mission");if(m)m.classList.remove("open");
+    w.classList.add("open");
+  }
 }
 function addTrayPill(id){
   const tray=$("#winTray");if(!tray||$('#winTray [data-reopen="'+id+'"]'))return;
@@ -2034,6 +2106,8 @@ function startTimers(){
     const ft=$("#ftStand");if(ft)ft.textContent=st;
     document.querySelectorAll("[data-tmr]").forEach(t=>{t.innerHTML="T-<b>"+pick(t.getAttribute("data-tmr"))+"</b>"});
     document.querySelectorAll("[data-tmr2]").forEach(t=>{t.textContent=pick(t.getAttribute("data-tmr2"))});
+    document.querySelectorAll("[data-fltmr]").forEach(t=>{const k=t.getAttribute("data-fltmr"),s=scheduleFor(k);
+      if(s)t.textContent=state.paused?"paused":isWorking(k)?"● running":"T-"+fmtMs(s.ms)});
     const ct=document.querySelector("[data-cardtmr]");
     if(ct){const s=scheduleFor(ct.getAttribute("data-cardtmr"));if(s)ct.textContent="T-"+fmtMs(s.ms)}
     const d=new Date(),p=n=>(n<10?"0":"")+n;
@@ -2280,8 +2354,8 @@ let started=false;
 function start(){
   if(started)return;started=true;
   $("#app").classList.add("on");
-  buildRoster();buildDock();drags();startTimers();startGrain();wireChat();wireMission();wireMenu();wireSwipe();wirePTR();tryLive();facInit();
-  if(isMobile())mobileNav("floor");
+  buildRoster();buildDock();buildFloorList();drags();startTimers();startGrain();wireChat();wireMission();wireMenu();wireSwipe();wirePTR();tryLive();
+  if(isMobile())mobileNav("floor"); else facInit();   // canvas facility is desktop-only; phones get the ROOMS list
   applyStates();refreshBubbles();
   pushLog("SYS","facility online — operator "+(user?user.email:""),"var(--dim)");
   const rc=$("#reviewChip");
