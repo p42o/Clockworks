@@ -2509,8 +2509,11 @@ async function facInit(){
   await Promise.all([...need].map(async f=>{FIMG.img[f]=await fimg('img/pixel/'+f);}));
   // room equipment (side-view furniture that shows what each division actually does)
   FIMG.equip={};
-  const EQ=["command_wall","holo_globe","server_rack","press","conveyor","crate_single","crates","barrel","radar_map","mail_desk","rolodex"];
+  const EQ=["monitors","holo_globe","server_rack","press2","conveyor","crate_single","crates","barrel","radar_map","mail_desk","rolodex"];
   await Promise.all(EQ.map(async n=>{FIMG.equip[n]=await fimg('img/equip/'+n+'.png');}));
+  // unique per-room floor backgrounds
+  FIMG.bg={};
+  await Promise.all(["command","foundry","sales","slot"].map(async k=>{FIMG.bg[k]=await fimg('img/equip/bg_'+k+'.png');}));
   for(const r of FROOMS)fbots[r.id]=new FBot(r);
   facOverview(); fcam={...fcamT}; FAC_READY=true;
   try{ if(typeof state!=="undefined" && state.room) facFocus(state.room); }catch(e){}
@@ -2565,9 +2568,21 @@ class FBot{
   hit(wx,wy){const dw=112;return Math.abs(wx-this.x)<dw*0.26&&wy>this.y-dw*0.85&&wy<this.y+8;}
 }
 
-function fFloor(r){const c=FCTX,T=52;if(!FPAL)fApplySkin("");c.save();frr(r.x,r.y,r.w,r.h,10);c.clip();c.fillStyle=FPAL.floorBase;c.fillRect(r.x,r.y,r.w,r.h);
-  for(let y=r.y;y<r.y+r.h;y+=T)for(let x=r.x;x<r.x+r.w;x+=T){const a=(((x-r.x)/T+(y-r.y)/T)|0)%2===0;c.fillStyle=a?FPAL.tileA:FPAL.tileB;c.fillRect(x+2,y+2,T-4,T-4);
-    c.strokeStyle="rgba(0,0,0,.5)";c.lineWidth=1;c.strokeRect(x+2.5,y+2.5,T-5,T-5);c.strokeStyle=FPAL.grid;c.strokeRect(x+.5,y+.5,T,T);}c.restore();}
+function fFloor(r){const c=FCTX,T=52;if(!FPAL)fApplySkin("");c.save();frr(r.x,r.y,r.w,r.h,10);c.clip();
+  const bg=FIMG.bg&&FIMG.bg[r.dec];
+  if(bg){
+    c.drawImage(bg,r.x,r.y,r.w,r.h);
+    c.fillStyle="rgba(6,8,13,.44)";c.fillRect(r.x,r.y,r.w,r.h);   // darken so bots + equipment read on top
+    c.globalAlpha=.4;c.strokeStyle="rgba(0,0,0,.5)";c.lineWidth=1;   // faint facility grid
+    for(let y=r.y+T;y<r.y+r.h;y+=T){c.beginPath();c.moveTo(r.x,y);c.lineTo(r.x+r.w,y);c.stroke();}
+    for(let x=r.x+T;x<r.x+r.w;x+=T){c.beginPath();c.moveTo(x,r.y);c.lineTo(x,r.y+r.h);c.stroke();}
+    c.globalAlpha=1;
+  }else{
+    c.fillStyle=FPAL.floorBase;c.fillRect(r.x,r.y,r.w,r.h);
+    for(let y=r.y;y<r.y+r.h;y+=T)for(let x=r.x;x<r.x+r.w;x+=T){const a=(((x-r.x)/T+(y-r.y)/T)|0)%2===0;c.fillStyle=a?FPAL.tileA:FPAL.tileB;c.fillRect(x+2,y+2,T-4,T-4);
+      c.strokeStyle="rgba(0,0,0,.5)";c.lineWidth=1;c.strokeRect(x+2.5,y+2.5,T-5,T-5);c.strokeStyle=FPAL.grid;c.strokeRect(x+.5,y+.5,T,T);}
+  }
+  c.restore();}
 function fShell(r){const c=FCTX;c.save();frr(r.x-3,r.y-3,r.w+6,r.h+6,13);c.strokeStyle="rgba(0,0,0,.6)";c.lineWidth=6;c.stroke();c.restore();
   fFloor(r);c.save();frr(r.x,r.y,r.w,r.h,10);c.lineWidth=3;c.strokeStyle="#0c0f16";c.stroke();frr(r.x+2,r.y+2,r.w-4,r.h-4,9);c.lineWidth=1.5;c.strokeStyle=fhex(r.accent,.5);c.stroke();c.restore();
   if(FPAL&&FPAL.green){c.save();c.shadowColor="rgba("+FPAL.chrome+",.9)";c.shadowBlur=9;c.strokeStyle="rgba("+FPAL.chrome+",.5)";c.lineWidth=2;frr(r.x+1,r.y+1,r.w-2,r.h-2,9);c.stroke();c.restore();}
@@ -2589,9 +2604,9 @@ function fEquip(name,cx,by,tw){
 }
 function decFoundry(r,t){const c=FCTX;
   // molten glow behind the press
-  const gx=r.x+r.w*0.34,gy=r.y+r.h*0.40,fl=.7+.3*Math.sin(t*6);
-  const cg=c.createRadialGradient(gx,gy,2,gx,gy,r.w*0.2);cg.addColorStop(0,`rgba(255,170,60,${.28*fl})`);cg.addColorStop(1,"rgba(255,90,25,0)");c.fillStyle=cg;c.fillRect(r.x,r.y,r.w,r.h);
-  fEquip("press",  r.x+r.w*0.34, r.y+r.h*0.58, r.w*0.30);
+  const gx=r.x+r.w*0.33,gy=r.y+r.h*0.46,fl=.7+.3*Math.sin(t*6);
+  const cg=c.createRadialGradient(gx,gy,2,gx,gy,r.w*0.18);cg.addColorStop(0,`rgba(255,170,60,${.26*fl})`);cg.addColorStop(1,"rgba(255,90,25,0)");c.fillStyle=cg;c.fillRect(r.x,r.y,r.w,r.h);
+  fEquip("press2", r.x+r.w*0.33, r.y+r.h*0.56, r.w*0.26);
   fEquip("crates", r.x+r.w*0.83, r.y+r.h*0.52, r.w*0.26);
   fEquip("barrel", r.x+r.w*0.13, r.y+r.h*0.83, r.w*0.085);
   fEquip("server_rack", r.x+r.w*0.13, r.y+r.h*0.40, r.w*0.10);
@@ -2602,10 +2617,10 @@ function decFoundry(r,t){const c=FCTX;
   if(box){const p=(t*0.11)%1,s=(r.w*0.055)/box.width,bx=(cvcx-cvw/2+cvw*0.08)+cvw*0.84*p;c.drawImage(box,Math.round(bx),Math.round(cvy-box.height*s),Math.round(box.width*s),Math.round(box.height*s));}
   fData([[r.x+r.w*0.34,r.y+r.h*0.60],[r.x+r.w*0.34,cvy-10]],t);}
 function decCommand(r,t){
-  fEquip("command_wall", r.x+r.w*0.42, r.y+r.h*0.42, r.w*0.56);
-  fEquip("server_rack",  r.x+r.w*0.86, r.y+r.h*0.44, r.w*0.14);
-  fEquip("holo_globe",   r.x+r.w*0.64, r.y+r.h*0.80, r.w*0.22);
-  fData([[r.x+r.w*0.42,r.y+r.h*0.44],[r.x+r.w*0.42,r.y+r.h*0.66],[r.x+r.w*0.64,r.y+r.h*0.66]],t);}
+  fEquip("monitors",    r.x+r.w*0.34, r.y+r.h*0.54, r.w*0.34);
+  fEquip("server_rack", r.x+r.w*0.85, r.y+r.h*0.44, r.w*0.14);
+  fEquip("holo_globe",  r.x+r.w*0.63, r.y+r.h*0.80, r.w*0.22);
+  fData([[r.x+r.w*0.34,r.y+r.h*0.56],[r.x+r.w*0.34,r.y+r.h*0.68],[r.x+r.w*0.63,r.y+r.h*0.68]],t);}
 function decSales(r,t){
   fEquip("radar_map", r.x+r.w*0.30, r.y+r.h*0.46, r.w*0.32);
   fEquip("mail_desk", r.x+r.w*0.68, r.y+r.h*0.54, r.w*0.30);
