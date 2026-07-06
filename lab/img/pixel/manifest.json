@@ -1,0 +1,196 @@
+{
+ "frameW": 124,
+ "frameH": 124,
+ "bots": {
+  "vulcan": {
+   "rotations": {
+    "south": "vulcan_rot_south.png",
+    "south-east": "vulcan_rot_south-east.png",
+    "east": "vulcan_rot_east.png",
+    "north-east": "vulcan_rot_north-east.png",
+    "north": "vulcan_rot_north.png",
+    "north-west": "vulcan_rot_north-west.png",
+    "west": "vulcan_rot_west.png",
+    "south-west": "vulcan_rot_south-west.png"
+   },
+   "anims": {
+    "idle": {
+     "south": {
+      "file": "vulcan_idle_south.png",
+      "frames": 6,
+      "fw": 124,
+      "fh": 124
+     }
+    },
+    "forge": {
+     "south": {
+      "file": "vulcan_forge_south.png",
+      "frames": 8,
+      "fw": 124,
+      "fh": 124
+     }
+    },
+    "walk": {
+     "north": {
+      "file": "vulcan_walk_north.png",
+      "frames": 8,
+      "fw": 124,
+      "fh": 124
+     },
+     "south": {
+      "file": "vulcan_walk_south.png",
+      "frames": 8,
+      "fw": 124,
+      "fh": 124
+     },
+     "east": {
+      "file": "vulcan_walk_east.png",
+      "frames": 8,
+      "fw": 124,
+      "fh": 124
+     },
+     "west": {
+      "file": "vulcan_walk_west.png",
+      "frames": 8,
+      "fw": 124,
+      "fh": 124
+     }
+    }
+   }
+  },
+  "theo": {
+   "rotations": {
+    "south": "theo_rot_south.png",
+    "south-east": "theo_rot_south-east.png",
+    "east": "theo_rot_east.png",
+    "north-east": "theo_rot_north-east.png",
+    "north": "theo_rot_north.png",
+    "north-west": "theo_rot_north-west.png",
+    "west": "theo_rot_west.png",
+    "south-west": "theo_rot_south-west.png"
+   },
+   "anims": {
+    "review": {
+     "south": {
+      "file": "theo_review_south.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     }
+    },
+    "idle": {
+     "south": {
+      "file": "theo_idle_south.png",
+      "frames": 6,
+      "fw": 128,
+      "fh": 128
+     }
+    },
+    "walk": {
+     "east": {
+      "file": "theo_walk_east.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     },
+     "west": {
+      "file": "theo_walk_west.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     },
+     "north": {
+      "file": "theo_walk_north.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     },
+     "south": {
+      "file": "theo_walk_south.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     }
+    }
+   }
+  },
+  "rollie": {
+   "rotations": {
+    "south": "rollie_rot_south.png",
+    "south-east": "rollie_rot_south-east.png",
+    "east": "rollie_rot_east.png",
+    "north-east": "rollie_rot_north-east.png",
+    "north": "rollie_rot_north.png",
+    "north-west": "rollie_rot_north-west.png",
+    "west": "rollie_rot_west.png",
+    "south-west": "rollie_rot_south-west.png"
+   },
+   "anims": {
+    "work": {
+     "south": {
+      "file": "rollie_work_south.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     }
+    },
+    "idle": {
+     "south": {
+      "file": "rollie_idle_south.png",
+      "frames": 6,
+      "fw": 128,
+      "fh": 128
+     }
+    },
+    "walk": {
+     "east": {
+      "file": "rollie_walk_east.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     },
+     "west": {
+      "file": "rollie_walk_west.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     },
+     "north": {
+      "file": "rollie_walk_north.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     },
+     "south": {
+      "file": "rollie_walk_south.png",
+      "frames": 8,
+      "fw": 128,
+      "fh": 128
+     }
+    }
+   }
+  },
+  "slot": {
+   "rotations": {
+    "south": "slot_rot_south.png",
+    "south-east": "slot_rot_south-east.png",
+    "east": "slot_rot_east.png",
+    "north-east": "slot_rot_north-east.png",
+    "north": "slot_rot_north.png",
+    "north-west": "slot_rot_north-west.png",
+    "west": "slot_rot_west.png",
+    "south-west": "slot_rot_south-west.png"
+   },
+   "anims": {
+    "idle": {
+     "south": {
+      "file": "slot_idle_south.png",
+      "frames": 6,
+      "fw": 124,
+      "fh": 124
+     }
+    }
+   }
+  }
+ }
+}
