@@ -854,7 +854,7 @@ function applyStates(){
 /* ============ ROSTER + DOCK ============ */
 function buildRoster(){
   const ceoCard=`<div class="acard ceocard" data-k="__ceo" tabindex="0" style="--ac:var(--blu)">
-      <img class="av" src="img/theo.png" alt="CEO Deck">
+      <img class="av" src="img/ceo.png" alt="CEO Deck">
       <div><div class="nm">CEO DECK</div><div class="rl">command center</div><div class="st">spend · inbox · tools · health</div></div>
       <span class="badge2">▣</span></div>`;
   $("#roster").innerHTML=ceoCard+ORDER.map(k=>{
@@ -888,7 +888,7 @@ function buildDock(){
     `<div class="dtile" data-k="theo" style="--ac:var(--blu)" role="button"><span class="dl"></span><img class="dg" src="img/theo.png" alt=""><span class="dn">THEO</span></div>
      <div class="dtile" data-k="vulcan" style="--ac:var(--org)" role="button"><span class="dl"></span><img class="dg" src="img/vulcan.png" alt=""><span class="dn">VULCAN</span></div>
      <div class="dtile" data-k="rollie" style="--ac:var(--vio)" role="button"><span class="dl"></span><img class="dg" src="img/rollie.png" alt=""><span class="dn">ROLLIE</span></div>
-     <div class="dtile" data-nav="ceo" style="--ac:var(--blu)" role="button"><img class="dg" src="img/theo.png" alt=""><span class="dn">CEO</span></div>
+     <div class="dtile" data-nav="ceo" style="--ac:var(--blu)" role="button"><img class="dg" src="img/ceo.png" alt=""><span class="dn">CEO</span></div>
      <div class="dtile" data-nav="admin" style="--ac:var(--blu)" role="button"><img class="dg" src="img/icon-admin.png" alt=""><span class="dn">ADMIN</span></div>
      <div class="dtile" data-sheet="winComms" style="--ac:var(--grn)" role="button"><img class="dg" src="img/icon-log.png" alt=""><span class="dn">CHAT</span></div>`;
   d.addEventListener("click",e=>{
@@ -1163,7 +1163,7 @@ function renderCeo(){
       <span class="chip ${state.feed==='live'?'live':'sim'}"><span class="led"></span>${state.feed==='live'?'live server values':'no feed'}</span>
       <span class="chip">${user?user.email:''}</span>
     </div>
-    <h1><img src="img/theo.png" alt="">CEO DECK</h1>
+    <h1><img src="img/ceo.png" alt="">CEO DECK</h1>
     <p class="lede" style="margin:0;font:11.5px/1.7 var(--mono);color:var(--dim)">Theo's command deck — the whole company in one place. Manage agents, read his memos, chat, watch spend, and see what the machine still needs.</p>
 
     <div class="cpane" style="--cp:var(--org)">
