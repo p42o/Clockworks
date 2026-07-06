@@ -52,6 +52,15 @@
   --blu:#ff9d2e; --blu-dk:#b36a12; --org:#ff4d2e; --org-dk:#b32912;
   --grn:#ffd24d; --grn-dk:#b3901c; --vio:#ff7a5c; --red:#ff2e2e; --you:#ff5c8a;
 }
+:root[data-skin="motherboard"]{  /* ULTRON — neon-green CRT agent-OS */
+  --void:#010a04; --pane:rgba(3,17,8,.86); --pane-2:rgba(5,23,11,.93);
+  --seam:#0c5228; --seam-hi:#1a9648;
+  --ink:#9dffbb; --dim:#3fc76e; --faint:#1c6e38;
+  --blu:#33ff77; --blu-dk:#149648;
+  --org:#ffc23b; --org-dk:#b3811c;
+  --grn:#33ff77; --grn-dk:#149648;
+  --vio:#79ffb4; --red:#ff5555; --you:#33ff77;
+}
 /* ---- BRIGHTNESS levels (lift text + panels for readability) ----
    Placed after skins so neutral overrides win when both are set. */
 :root[data-lum="bright"]{ --ink:#e6edff; --dim:#9dafd6; --faint:#6d7ea6; }
@@ -78,6 +87,8 @@ body{
 .scan{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.12;mix-blend-mode:multiply;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0,rgba(0,0,0,.16) 1px,transparent 1px,transparent 3px)}
 :root[data-skin="nightshift"] .scan,:root[data-skin="synthwave"] .scan,:root[data-skin="redline"] .scan{opacity:.38}
+:root[data-skin="motherboard"] .scan{opacity:.55}
+:root[data-skin="motherboard"] .hud .logo,:root[data-skin="motherboard"] .crew .nm{text-shadow:0 0 8px rgba(51,255,119,.6)}
 .vig{position:fixed;inset:0;z-index:60;pointer-events:none;box-shadow:inset 0 0 200px 30px rgba(2,6,16,.6)}
 #grain{position:fixed;inset:0;width:100%;height:100%;z-index:58;pointer-events:none;
   opacity:.035;mix-blend-mode:overlay;image-rendering:pixelated}
@@ -154,7 +165,20 @@ body{
   background:var(--pane-2);border:1px solid var(--seam-hi);filter:drop-shadow(0 0 7px color-mix(in srgb,var(--ac) 45%,transparent))}
 .acard .nm{font:700 11.5px var(--mono);letter-spacing:.14em;transition:.14s}
 .acard .rl{font-size:8.5px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase;margin-top:2px}
-.acard .st{font-size:9px;color:var(--dim);margin-top:3px;max-width:128px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acard .st{font-size:9px;color:var(--dim);margin-top:3px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ---- ULTRON-style dense roster ---- */
+.roster .dept{font:700 8px var(--mono);letter-spacing:.16em;color:var(--ac);opacity:.9;text-transform:uppercase;margin-top:2px}
+.acard .loadbar{height:3px;border-radius:2px;background:rgba(255,255,255,.07);margin-top:6px;max-width:150px;overflow:hidden}
+.acard .loadbar>i{display:block;height:100%;width:20%;background:var(--ac);border-radius:2px;transition:width .4s,opacity .4s;opacity:.6}
+.acard .loadbar.work>i{width:88%;box-shadow:0 0 6px var(--ac);opacity:1;animation:loadp 1.8s ease-in-out infinite}
+@keyframes loadp{0%,100%{width:58%;opacity:.75}50%{width:94%;opacity:1}}
+.subrow{display:flex;align-items:center;gap:6px;padding:2.5px 10px 2.5px 8px;font:600 8px var(--mono);letter-spacing:.06em;color:var(--faint);margin:0 0 0 32px;border-left:1px solid var(--seam)}
+.subrow .dotp{width:4px;height:4px;border-radius:50%;background:var(--ac);opacity:.55;flex:none}
+.subrow b{color:var(--dim);font-weight:800;margin-right:1px;letter-spacing:.1em}
+.subrow .sd{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.85}
+.acard.unhired{opacity:.42;filter:saturate(.4);cursor:default}
+.acard .avq{width:38px;height:38px;flex:none;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);color:var(--faint);font:800 16px var(--mono)}
+.rostersec{font:700 7.5px var(--mono);letter-spacing:.2em;color:var(--faint);padding:9px 10px 2px;opacity:.7}
 .acard .badge{position:absolute;top:8px;right:8px;font-size:7px;letter-spacing:.14em;border-radius:4px;padding:1px 4px;background:rgba(0,0,0,.4)}
 .acard .badge.work{color:var(--grn);border:1px solid color-mix(in srgb,var(--grn) 45%,transparent);animation:pulse 1.5s infinite}
 .acard .badge.idle{color:var(--dim);border:1px solid var(--seam-hi)}
@@ -619,6 +643,8 @@ body{
     <span class="sp"></span>
     <span class="chip paused" id="pausedChip" style="display:none"><span class="led" style="background:var(--red);box-shadow:0 0 8px var(--red)"></span>LOOPS PAUSED</span>
     <span class="chip sim" id="feedChip"><span class="led"></span><span id="feedLbl">NO FEED</span></span>
+    <span class="chip" id="opsChip"><span class="led" style="background:var(--grn);box-shadow:0 0 8px var(--grn)"></span>OPS <b id="hudOps" style="color:var(--ink)">3</b></span>
+    <span class="chip" id="todayChip">TODAY <b id="hudToday" style="color:var(--ink)">$—</b></span>
     <span class="chip" id="spendChip"><span class="led" style="background:var(--org);box-shadow:0 0 8px var(--org)"></span>LAST SHIFT <b id="hudSpend" style="color:var(--ink)">$—</b></span>
     <span class="chip you">REVIEW <b id="hudQueue">—</b></span>
     <span class="chip btn" id="ceoBtn" role="button" tabindex="0" style="color:var(--blu);border-color:color-mix(in srgb,var(--blu) 45%,transparent)">▣ CEO DECK</span>
@@ -790,7 +816,7 @@ function bootSeq(){
    data is real. See ADMIN for the full truth table.
    ================================================================ */
 const ROOMS={
-  theo:{kind:"live",img:"img/theo.png",name:"CEO COMMAND",tag:"real agent · office visuals are decor",ac:"var(--blu)",hex:true,
+  theo:{kind:"live",img:"img/pixel/theo_rot_south.png",name:"CEO COMMAND",tag:"real agent · office visuals are decor",ac:"var(--blu)",hex:true,
     machines:[
       ["screen",50,4,300,44,"MARKET WALL","var(--blu)"],
       ["holo",46,42,150,150,"HOLO TABLE","var(--blu)"],
@@ -804,7 +830,7 @@ const ROOMS={
       buttons:[["run_standup","▶ RUN STANDUP NOW",null]],
       upgs:[["📊","READS","lab-status/*.json on the VPS"],["📨","WRITES","one ≤12-line brief to Parker"],["🧭","MAY WRITE","directives for divisions"]],
       wire:"Theo also answers you directly — use the COMMS window to chat; replies land there in ~10-60s."}},
-  vulcan:{kind:"live",img:"img/vulcan.png",name:"FOUNDRY",tag:"real agent · one wake-up/day · machines are decor",ac:"var(--org)",
+  vulcan:{kind:"live",img:"img/pixel/vulcan_rot_south.png",name:"FOUNDRY",tag:"real agent · one wake-up/day · machines are decor",ac:"var(--org)",
     machines:[
       ["screen",18,4,170,40,"TREND RECON","var(--org)"],
       ["forge",14,36,110,84,"BUILD PRESS","var(--org)"],
@@ -819,7 +845,7 @@ const ROOMS={
       buttons:[["run_shift","▶ RUN SHIFT NOW","fires the real cron — Vulcan wakes, researches, builds (~$0.50)"]],
       upgs:[["🔍","PHASE 1 · RESEARCH","web search: what's selling"],["⚒️","PHASE 2 · BUILD","files in his VPS workspace"],["✅","PHASE 3 · QC + STAGE","adds to your review queue"],["📝","PHASE 4 · REPORT","learnings + status file"]],
       wire:"Approving here records your decision on the VPS. Actual Gumroad publishing still runs with Claude on your Mac — by design."}},
-  rollie:{kind:"live",img:"img/rollie.png",name:"SALES & MARKETING",tag:"real agent · clockworks growth · visuals are decor",ac:"var(--vio)",
+  rollie:{kind:"live",img:"img/pixel/rollie_rot_south.png",name:"SALES & MARKETING",tag:"real agent · clockworks growth · visuals are decor",ac:"var(--vio)",
     machines:[
       ["screen",18,4,170,40,"LEAD WALL","var(--vio)"],
       ["holo",16,40,140,140,"PROSPECT RADAR","var(--vio)"],
@@ -834,7 +860,7 @@ const ROOMS={
       buttons:[["run_prospecting","▶ RUN PROSPECTING NOW","fires the real cron — Rollie scouts, digs, drafts (~$0.50)"]],
       upgs:[["🔭","PHASE 1 · SCOUT","3 new ICP companies near Maple Grove"],["🗂️","PHASE 2 · DIG","dossier with evidence URLs"],["✍️","PHASE 3 · DRAFT","local-neighbor outreach, ≤120 words"],["📥","PHASE 4 · STAGE","your approval queue — he never sends"]],
       wire:"Per your own playbook: personal trust beats cold volume. Rollie's drafts are ammo for YOU (and dossiers feed your event/warm channels) — approving records it; sending stays human."}},
-  slotb:{kind:"slot",img:"img/slot.png",name:"DIVISION SLOT B",tag:"empty template — nothing runs here",ac:"var(--grn)",
+  slotb:{kind:"slot",img:"img/pixel/slot_rot_south.png",name:"DIVISION SLOT B",tag:"empty template — nothing runs here",ac:"var(--grn)",
     ops:{pill:"EMPTY",timer:null,
       kpis:[["Status","<small>no agent</small>"],["Cost","$0"],["Runs","never"],["Owner","—"]],
       buttons:[],upgs:[],wire:"Ideas floated: content/social division; Clockworks lead-watch desk. Neither exists yet — deliberate."}}
@@ -864,13 +890,15 @@ function isWorking(k){
   return false;
 }
 function applyStates(){
+  // world visuals live on the canvas now (reads isWorking directly); here we just
+  // sync the roster badges + load bars. (No longer depends on the removed room-<k> DOM.)
   ORDER.forEach(k=>{
-    const el=document.getElementById("room-"+k);if(!el||ROOMS[k].kind!=="live")return;
+    if(ROOMS[k].kind!=="live")return;
     const w=isWorking(k);
-    el.classList.toggle("working",w);el.classList.toggle("idle",!w);
-    const st=el.querySelector(".wall .state");if(st)st.textContent=w?"● WORKING":"○ IDLE";
     const badge=document.querySelector('.acard[data-k="'+k+'"] .badge');
     if(badge){badge.textContent=w?"WORKING":"IDLE";badge.className="badge "+(w?"work":"idle")}
+    const lb=document.querySelector('.acard[data-k="'+k+'"] .loadbar');
+    if(lb)lb.className="loadbar "+(w?"work":"idle");
   });
 }
 
@@ -878,25 +906,28 @@ function applyStates(){
 function buildRoster(){
   const ceoCard=`<div class="acard ceocard" data-k="__ceo" tabindex="0" style="--ac:var(--blu)">
       <img class="av" src="img/ceo.png" alt="CEO Deck">
-      <div><div class="nm">CEO DECK</div><div class="rl">command center</div><div class="st">spend · inbox · tools · health</div></div>
+      <div style="flex:1;min-width:0"><div class="nm">CEO DECK</div><div class="dept">command center</div><div class="st">spend · inbox · tools · health</div></div>
       <span class="badge2">▣</span></div>`;
-  $("#roster").innerHTML=ceoCard+ORDER.map(k=>{
+  const DEPT={theo:"EXECUTIVE · COMMAND",vulcan:"FOUNDRY · R&amp;D",rollie:"SALES &amp; MKTG"};
+  const agentHTML=k=>{
     const c=CREW[k],r=ROOMS[k];
-    if(c.slot)return `<div class="acard slotcard" data-k="${k}" tabindex="0" style="--ac:${r.ac}">
-      <img class="av" src="${r.img}" alt="">
-      <div><div class="nm">${c.nm}</div><div class="rl">${c.rl}</div><div class="st">${c.st}</div></div></div>`;
+    const phases=((r.ops&&r.ops.upgs)||[]).slice(0,4).map(u=>`<div class="subrow"><span class="dotp"></span><b>${u[1]}</b><span class="sd">${u[2]}</span></div>`).join("");
     return `<div class="acard" data-k="${k}" tabindex="0" style="--ac:${r.ac}">
       <img class="av" src="${r.img}" alt="${c.nm}">
-      <div><div class="nm">${c.nm}</div><div class="rl">${c.rl}</div><div class="st" data-st="${k}">${c.st}</div></div>
-      <span class="badge idle">IDLE</span></div>`;
-  }).join("");
-  $("#roster").addEventListener("click",e=>{
-    const c=e.target.closest(".acard");if(c)navAgent(c.getAttribute("data-k"));
-  });
-  $("#roster").addEventListener("keydown",e=>{
-    const c=e.target.closest(".acard");
-    if(c&&(e.key==="Enter"||e.key===" ")){e.preventDefault();navAgent(c.getAttribute("data-k"))}
-  });
+      <div style="flex:1;min-width:0"><div class="nm">${c.nm}</div><div class="dept">${DEPT[k]||c.rl}</div>
+        <div class="st" data-st="${k}">${c.st}</div><div class="loadbar idle"><i></i></div></div>
+      <span class="badge idle">IDLE</span></div>`+phases;
+  };
+  const cs=CREW.slotb,rs=ROOMS.slotb;
+  const slot=`<div class="acard slotcard" data-k="slotb" tabindex="0" style="--ac:${rs.ac}">
+      <img class="av" src="${rs.img}" alt=""><div style="flex:1;min-width:0"><div class="nm">${cs.nm}</div><div class="dept">unassigned</div><div class="st">${cs.st}</div></div></div>`;
+  const unhired=[["ECHO","SIGNAL · content / social"],["ATLAS","CLOCKWORKS OPS DESK"]]
+    .map(u=>`<div class="acard unhired"><div class="av avq">?</div>
+      <div style="flex:1;min-width:0"><div class="nm">${u[0]}</div><div class="dept">${u[1]}</div><div class="st">roadmap — not hired yet</div></div><span class="badge">UNHIRED</span></div>`).join("");
+  $("#roster").innerHTML=ceoCard+["theo","vulcan","rollie"].map(agentHTML).join("")+slot
+    +`<div class="rostersec">ROADMAP · UNHIRED</div>`+unhired;
+  $("#roster").addEventListener("click",e=>{const c=e.target.closest(".acard[data-k]");if(c)navAgent(c.getAttribute("data-k"));});
+  $("#roster").addEventListener("keydown",e=>{const c=e.target.closest(".acard[data-k]");if(c&&(e.key==="Enter"||e.key===" ")){e.preventDefault();navAgent(c.getAttribute("data-k"))}});
 }
 // click once → nav; click again on the same agent → open its detail card
 function navAgent(k){
@@ -908,9 +939,9 @@ function navAgent(k){
 function buildDock(){
   const d=$("#dock");
   d.innerHTML=
-    `<div class="dtile" data-k="theo" style="--ac:var(--blu)" role="button"><span class="dl"></span><img class="dg" src="img/theo.png" alt=""><span class="dn">THEO</span></div>
-     <div class="dtile" data-k="vulcan" style="--ac:var(--org)" role="button"><span class="dl"></span><img class="dg" src="img/vulcan.png" alt=""><span class="dn">VULCAN</span></div>
-     <div class="dtile" data-k="rollie" style="--ac:var(--vio)" role="button"><span class="dl"></span><img class="dg" src="img/rollie.png" alt=""><span class="dn">ROLLIE</span></div>
+    `<div class="dtile" data-k="theo" style="--ac:var(--blu)" role="button"><span class="dl"></span><img class="dg" src="img/pixel/theo_rot_south.png" alt=""><span class="dn">THEO</span></div>
+     <div class="dtile" data-k="vulcan" style="--ac:var(--org)" role="button"><span class="dl"></span><img class="dg" src="img/pixel/vulcan_rot_south.png" alt=""><span class="dn">VULCAN</span></div>
+     <div class="dtile" data-k="rollie" style="--ac:var(--vio)" role="button"><span class="dl"></span><img class="dg" src="img/pixel/rollie_rot_south.png" alt=""><span class="dn">ROLLIE</span></div>
      <div class="dtile" data-nav="ceo" style="--ac:var(--blu)" role="button"><img class="dg" src="img/ceo.png" alt=""><span class="dn">CEO</span></div>
      <div class="dtile" data-nav="admin" style="--ac:var(--blu)" role="button"><img class="dg" src="img/icon-admin.png" alt=""><span class="dn">ADMIN</span></div>
      <div class="dtile" data-sheet="winComms" style="--ac:var(--grn)" role="button"><img class="dg" src="img/icon-log.png" alt=""><span class="dn">CHAT</span></div>`;
@@ -1098,17 +1129,24 @@ function toggleSheet(id){
   document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
 
 /* ============ SKINS + GRAIN ============ */
-const SKINS=[["","COMMAND"],["nightshift","NIGHTSHIFT"],["synthwave","SYNTHWAVE"],["redline","REDLINE"]];
+const SKINS=[["","COMMAND"],["motherboard","MOTHERBOARD"],["nightshift","NIGHTSHIFT"],["synthwave","SYNTHWAVE"],["redline","REDLINE"]];
 function applySkin(i){
   const [key,label]=SKINS[i%SKINS.length];
   if(key)document.documentElement.setAttribute("data-skin",key);
   else document.documentElement.removeAttribute("data-skin");
   const l=$("#skinLbl");if(l)l.textContent=label;
+  if(typeof fApplySkin==="function")fApplySkin(key);   // recolor the canvas world to match
   try{localStorage.setItem("lab-skin",String(i%SKINS.length))}catch(e){}
 }
-let skinIdx=0;
-try{skinIdx=parseInt(localStorage.getItem("lab-skin")||"0",10)||0}catch(e){}
+let skinIdx=1;   // default → MOTHERBOARD (green ULTRON look)
+try{
+  if(localStorage.getItem("lab-skin-v")!=="2"){ skinIdx=1; localStorage.setItem("lab-skin","1"); localStorage.setItem("lab-skin-v","2"); }  // one-time: switch everyone to green on this update
+  else { const s=localStorage.getItem("lab-skin"); skinIdx=(s===null)?1:(parseInt(s,10)||0); }
+}catch(e){}
 applySkin(skinIdx);
+// optional deep-link: ?skin=motherboard|nightshift|synthwave|redline|command
+{const _sp=new URLSearchParams(location.search).get('skin');
+ if(_sp){const _i=SKINS.findIndex(s=>s[0]===_sp.toLowerCase()||s[1].toLowerCase()===_sp.toLowerCase());if(_i>=0){skinIdx=_i;applySkin(skinIdx);}}}
 // brightness — default BRIGHT for legibility (esp. mobile)
 const LUMS=[["","DIM"],["bright","BRIGHT"],["max","MAX"]];
 function applyLum(i){
@@ -1149,7 +1187,7 @@ function showCeo(){
   $("#view-ceo").style.display="block";
   location.hash="#/ceo";
 }
-const AGENT_IMG={theo:"img/theo.png",vulcan:"img/vulcan.png",rollie:"img/rollie.png"};
+const AGENT_IMG={theo:"img/pixel/theo_rot_south.png",vulcan:"img/pixel/vulcan_rot_south.png",rollie:"img/pixel/rollie_rot_south.png"};
 function renderCeo(){
   const m=state.meta||{},sp=state.spend||{},vps=state.vps||{},inbox=state.inbox||[];
   const agents=(m.agents||[]).filter(a=>a.id!=="main"||true);
@@ -1167,7 +1205,7 @@ function renderCeo(){
     const canRun=k==="vulcan"||k==="rollie"||k==="theo";
     const cmd=k==="vulcan"?"run_shift":k==="rollie"?"run_prospecting":"run_standup";
     return `<div class="amrow">
-      <img src="${AGENT_IMG[k]||'img/slot.png'}" alt="">
+      <img src="${AGENT_IMG[k]||'img/pixel/slot_rot_south.png'}" alt="">
       <div class="amid"><div class="an">${a.name}</div><div class="ar">${esc(a.role).slice(0,60)}</div><div class="ammodel">model: ${esc(a.model||'—')}</div></div>
       <span class="stpill ${w?'work':''}">${w?'● WORKING':'○ idle'}</span>
       ${canRun?`<button class="runb" data-runagent="${cmd}" data-agentkey="${k}">▶ RUN</button>`:''}
@@ -1615,6 +1653,8 @@ function applyLive(j){
   }
   // v5: CEO-deck data
   state.spend=j.spend||state.spend;
+  if(state.spend&&typeof state.spend.today_actual==="number"){const e=$("#hudToday");if(e)e.textContent="$"+state.spend.today_actual.toFixed(2)}
+  if(state.meta&&Array.isArray(state.meta.agents)){const e=$("#hudOps");if(e)e.textContent=String(state.meta.agents.length)}
   state.vps=j.vps||state.vps;
   state.inbox=j.inbox||state.inbox;
   state.reports=j.reports||state.reports;
@@ -1647,6 +1687,19 @@ const FRById=Object.fromEntries(FROOMS.map(r=>[r.id,r]));
 let FCV,FCTX,FDPR=1,FAC_READY=false,fbots={},fparts=[],flast=0;
 let fcam={x:-16,y:-14,w:FAC.w+36,h:FAC.h+28}, fcamT={x:-16,y:-14,w:FAC.w+36,h:FAC.h+28};
 const FIMG={man:null,img:{}};
+/* canvas palette — switches with the skin (var so it's assignable from applySkin before this line runs) */
+var FPAL;
+function fApplySkin(key){
+  if(key==="motherboard") FPAL={conduit:"51,255,119",chrome:"51,255,119",star:"70,255,140",drone:"170,255,150",green:true};
+  else                    FPAL={conduit:"70,220,235",chrome:"63,224,240",star:"120,180,230",drone:"150,232,255",green:false};
+}
+var fstars=null;
+function fStars(t){const c=FCTX; if(!FPAL)fApplySkin("");
+  if(!fstars){fstars=[];for(let i=0;i<150;i++)fstars.push({x:Math.random()*(FAC.w+320)-160,y:Math.random()*(FAC.h+240)-120,s:Math.random()<.86?1:2,ph:Math.random()*6.28});}
+  for(const st of fstars){const tw=.35+.65*Math.abs(Math.sin(t*1.3+st.ph));c.globalAlpha=tw*(FPAL.green?.55:.6);c.fillStyle="rgba("+FPAL.star+",1)";c.fillRect(st.x,st.y,st.s,st.s);}
+  c.globalAlpha=1;}
+function fPolyPt(pts,p){let total=0,segs=[];for(let i=1;i<pts.length;i++){const dx=pts[i][0]-pts[i-1][0],dy=pts[i][1]-pts[i-1][1],L=Math.hypot(dx,dy);segs.push(L);total+=L;}
+  let d=p*total;for(let i=0;i<segs.length;i++){if(d<=segs[i]){const f=segs[i]?d/segs[i]:0;return[pts[i][0]+(pts[i+1][0]-pts[i][0])*f,pts[i][1]+(pts[i+1][1]-pts[i][1])*f];}d-=segs[i];}return pts[pts.length-1];}
 function fimg(s){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=s;});}
 function frr(x,y,w,h,r){const c=FCTX;c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 function fhex(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
@@ -1717,11 +1770,14 @@ function fFloor(r){const c=FCTX,T=52;c.save();frr(r.x,r.y,r.w,r.h,10);c.clip();c
     c.strokeStyle="rgba(0,0,0,.5)";c.lineWidth=1;c.strokeRect(x+2.5,y+2.5,T-5,T-5);c.strokeStyle="rgba(63,224,240,.04)";c.strokeRect(x+.5,y+.5,T,T);}c.restore();}
 function fShell(r){const c=FCTX;c.save();frr(r.x-3,r.y-3,r.w+6,r.h+6,13);c.strokeStyle="rgba(0,0,0,.6)";c.lineWidth=6;c.stroke();c.restore();
   fFloor(r);c.save();frr(r.x,r.y,r.w,r.h,10);c.lineWidth=3;c.strokeStyle="#0c0f16";c.stroke();frr(r.x+2,r.y+2,r.w-4,r.h-4,9);c.lineWidth=1.5;c.strokeStyle=fhex(r.accent,.5);c.stroke();c.restore();
+  if(FPAL&&FPAL.green){c.save();c.shadowColor="rgba("+FPAL.chrome+",.9)";c.shadowBlur=9;c.strokeStyle="rgba("+FPAL.chrome+",.5)";c.lineWidth=2;frr(r.x+1,r.y+1,r.w-2,r.h-2,9);c.stroke();c.restore();}
   if(!ffocused){c.save();c.font="800 13px ui-rounded,system-ui";c.textAlign="left";c.fillStyle=fhex(r.accent,.9);c.fillText("▍"+r.name,r.x+12,r.y+20);
     c.fillStyle="rgba(150,170,180,.7)";c.font="700 10px ui-rounded,system-ui";c.fillText(fsub(r.id),r.x+22,r.y+34);c.restore();}}
 function fsub(id){return{theo:'Theo · CEO',vulcan:'Vulcan · digital products',rollie:'Rollie · outreach',slotb:'unassigned'}[id]||'';}
 function fData(pts,t){const c=FCTX;c.save();c.lineCap="round";c.strokeStyle="rgba(16,34,42,.9)";c.lineWidth=4;c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();
-  c.strokeStyle="rgba(70,220,235,.6)";c.lineWidth=1.6;c.setLineDash([5,12]);c.lineDashOffset=-t*32;c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();c.restore();}
+  c.strokeStyle="rgba("+FPAL.conduit+",.55)";c.lineWidth=1.6;c.setLineDash([5,12]);c.lineDashOffset=-t*32;c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();c.setLineDash([]);
+  for(let k=0;k<2;k++){const pt=fPolyPt(pts,((t*0.17)+k*0.5)%1);c.globalAlpha=.5;c.fillStyle="rgba("+FPAL.drone+",1)";c.beginPath();c.arc(pt[0],pt[1],4,0,7);c.fill();c.globalAlpha=1;c.beginPath();c.arc(pt[0],pt[1],1.8,0,7);c.fill();}
+  c.restore();}
 function decFoundry(r,t){const c=FCTX,cx=r.x+r.w*0.5,H={x:cx,y:r.y+r.h*0.24};
   c.fillStyle="#14171e";frr(H.x-40,H.y-24,80,58,7);c.fill();c.fillStyle="#0e1119";c.beginPath();c.moveTo(H.x-28,H.y-24);c.lineTo(H.x-14,H.y-46);c.lineTo(H.x+14,H.y-46);c.lineTo(H.x+28,H.y-24);c.fill();
   const fl=.82+.18*Math.sin(t*7),cg=c.createRadialGradient(H.x,H.y+4,1,H.x,H.y+4,38);cg.addColorStop(0,`rgba(255,250,220,${.98*fl})`);cg.addColorStop(.35,`rgba(255,170,60,${.95*fl})`);cg.addColorStop(.65,`rgba(255,90,25,${.75*fl})`);cg.addColorStop(1,"rgba(255,60,10,0)");c.fillStyle=cg;c.beginPath();c.ellipse(H.x,H.y+8,30,16,0,0,7);c.fill();
@@ -1749,7 +1805,7 @@ function decSlot(r,t){const c=FCTX,cx=r.x+r.w*0.5,cy=r.y+r.h*0.44;
   const hg=c.createRadialGradient(cx,cy+20,1,cx,cy+20,40);hg.addColorStop(0,`rgba(63,224,240,${.2*pul})`);hg.addColorStop(1,"rgba(63,224,240,0)");c.fillStyle=hg;c.beginPath();c.ellipse(cx,cy+20,30,10,0,0,7);c.fill();
   c.fillStyle="rgba(140,160,170,.35)";c.font="800 11px ui-rounded,system-ui";c.textAlign="center";c.fillText("UNASSIGNED",cx,r.y+r.h*0.8);}
 const FDEC={command:decCommand,foundry:decFoundry,sales:decSales,slot:decSlot};
-function fCorridors(t){const c=FCTX;c.fillStyle="#0b0e15";c.fillRect(552,10,76,740);c.fillRect(10,352,1160,66);c.strokeStyle="rgba(63,224,240,.1)";c.lineWidth=1;for(let y=20;y<740;y+=40){c.beginPath();c.moveTo(560,y);c.lineTo(620,y);c.stroke();}}
+function fCorridors(t){const c=FCTX;c.fillStyle="#0b0e15";c.fillRect(552,10,76,740);c.fillRect(10,352,1160,66);c.strokeStyle="rgba("+FPAL.chrome+",.1)";c.lineWidth=1;for(let y=20;y<740;y+=40){c.beginPath();c.moveTo(560,y);c.lineTo(620,y);c.stroke();}}
 
 function fFrame(ts){ if(!FAC_READY)return; const dt=Math.min(.05,(ts-flast)/1000||0);flast=ts;const t=ts/1000;const c=FCTX;
   for(const k in fbots)fbots[k].update(dt);
@@ -1757,6 +1813,7 @@ function fFrame(ts){ if(!FAC_READY)return; const dt=Math.min(.05,(ts-flast)/1000
   for(const p of ['x','y','w','h'])fcam[p]+=(fcamT[p]-fcam[p])*Math.min(1,dt*6);
   c.setTransform(1,0,0,1,0,0);c.fillStyle="#07090d";c.fillRect(0,0,FCV.width,FCV.height);
   const pr=fProject();c.setTransform(pr.s,0,0,pr.s,pr.ox,pr.oy);
+  fStars(t);
   fCorridors(t); for(const r of FROOMS){fShell(r);FDEC[r.dec](r,t);}
   const list=FROOMS.map(r=>fbots[r.id]).sort((a,b)=>a.y-b.y);for(const b of list)b.draw();
   for(const p of fparts){c.globalAlpha=Math.max(0,p.life);c.fillStyle=p.life>.5?'#fff4c8':'#ff7a2b';c.beginPath();c.arc(p.x,p.y,1.4,0,7);c.fill();}c.globalAlpha=1;
