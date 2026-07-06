@@ -43,6 +43,18 @@
   --blu:#ff9d2e; --blu-dk:#b36a12; --org:#ff4d2e; --org-dk:#b32912;
   --grn:#ffd24d; --grn-dk:#b3901c; --vio:#ff7a5c; --red:#ff2e2e; --you:#ff5c8a;
 }
+/* ---- BRIGHTNESS levels (lift text + panels for readability) ----
+   Placed after skins so neutral overrides win when both are set. */
+:root[data-lum="bright"]{ --ink:#e6edff; --dim:#9dafd6; --faint:#6d7ea6; }
+:root[data-lum="max"]{
+  --ink:#f4f8ff; --dim:#c6d3ec; --faint:#8a9bc0;
+  --pane:rgba(28,37,56,.9); --pane-2:rgba(36,47,70,.94);
+  --seam:#2a3652; --seam-hi:#41527a;
+}
+:root[data-lum="max"] .vig{ opacity:.45; }
+:root[data-lum="max"] .scan{ opacity:.22; }
+:root[data-lum="max"] #grain{ opacity:.035; }
+:root[data-lum="bright"] .vig{ opacity:.72; }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overscroll-behavior:none;touch-action:manipulation;-webkit-text-size-adjust:100%}
 body{
@@ -283,6 +295,57 @@ body{
   backdrop-filter:blur(8px);box-shadow:0 8px 24px -10px #000,0 0 14px -8px var(--pc,var(--blu));transition:.13s}
 #winTray .tpill:hover{filter:brightness(1.35);color:#fff}
 #winTray .tpill .dotp{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 7px currentColor}
+
+/* ================= AGENT DETAIL CARD ================= */
+.amodal-back{position:fixed;inset:0;z-index:80;background:rgba(4,6,12,.66);backdrop-filter:blur(5px);
+  display:none;place-items:center;padding:20px}
+.amodal-back.on{display:grid}
+.amodal{width:min(460px,94vw);max-height:88vh;overflow-y:auto;position:relative;
+  border:1px solid color-mix(in srgb,var(--mc,var(--blu)) 40%,var(--seam-hi));border-radius:16px;
+  background:linear-gradient(168deg,rgba(255,255,255,.06),rgba(255,255,255,0) 30%),var(--pane-2);
+  box-shadow:0 30px 90px -24px #000,0 0 40px -14px var(--mc,var(--blu));animation:amin .28s cubic-bezier(.3,.9,.3,1)}
+@keyframes amin{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.amodal .axc{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--seam-hi);background:rgba(0,0,0,.35);color:var(--dim);font-size:14px;line-height:1}
+.amodal .axc:hover{color:#fff;border-color:var(--mc,var(--blu))}
+.ahd{display:flex;gap:14px;align-items:center;padding:20px 18px 15px}
+.ahd img{width:62px;height:62px;flex:none;border-radius:13px;object-fit:contain;border:1px solid var(--seam-hi);
+  background:var(--pane);filter:drop-shadow(0 0 12px color-mix(in srgb,var(--mc,var(--blu)) 55%,transparent))}
+.ahd .anm{font:700 17px var(--mono);letter-spacing:.16em;display:flex;align-items:center;gap:9px}
+.ahd .anm .lv{font-size:8px;letter-spacing:.14em;padding:2px 7px;border-radius:5px;border:1px solid;color:var(--grn);border-color:color-mix(in srgb,var(--grn) 45%,transparent)}
+.ahd .anm .lv.slot{color:#ffd24d;border-color:rgba(255,210,77,.4)}
+.ahd .arl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:4px}
+.ahd .amd{font-size:9.5px;color:var(--dim);margin-top:6px;font-family:var(--mono)}
+.ahd .amd b{color:var(--mc,var(--blu))}
+.asec{padding:0 18px;margin-bottom:15px}
+.asec h4{margin:0 0 8px;font:700 9.5px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mc,var(--blu));display:flex;align-items:center;gap:7px}
+.asec h4 .tm{margin-left:auto;color:var(--dim);font-weight:500;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.acap{border:1px solid var(--seam);border-radius:9px;padding:10px 12px;background:rgba(255,255,255,.015);font-size:11px;line-height:1.6;color:var(--dim)}
+.acap b{color:var(--ink)}
+.acap.empty{color:var(--faint);border-style:dashed}
+.aflow{display:flex;flex-direction:column;gap:0}
+.aflow .fstep{display:flex;gap:11px;align-items:flex-start;position:relative;padding-bottom:12px}
+.aflow .fstep:not(:last-child)::before{content:"";position:absolute;left:13px;top:26px;bottom:0;width:2px;
+  background:repeating-linear-gradient(180deg,color-mix(in srgb,var(--mc,var(--blu)) 55%,transparent) 0 4px,transparent 4px 8px)}
+.aflow .fn{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:14px;
+  border:1px solid color-mix(in srgb,var(--mc,var(--blu)) 45%,transparent);background:var(--pane)}
+.aflow .ft{padding-top:3px}
+.aflow .ft .fname{font:700 10px var(--mono);letter-spacing:.1em;color:var(--ink)}
+.aflow .ft .fdesc{font-size:9.5px;color:var(--faint);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+.acando{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.acando .cc{border:1px solid var(--seam);border-radius:9px;padding:9px 11px;font-size:10px;line-height:1.5}
+.acando .cc .cl2{font:700 8px var(--mono);letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px}
+.acando .cc.can .cl2{color:var(--grn)}.acando .cc.cant .cl2{color:var(--red)}
+.acando .cc{color:var(--dim)}
+.aact{display:flex;gap:9px;padding:4px 18px 20px}
+.aact button{flex:1;padding:11px;border-radius:9px;cursor:pointer;font:700 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;transition:.13s}
+.aact .primary{border:1px solid color-mix(in srgb,var(--mc,var(--blu)) 55%,transparent);background:color-mix(in srgb,var(--mc,var(--blu)) 12%,transparent);color:var(--mc,var(--blu))}
+.aact .primary:hover{filter:brightness(1.35)}.aact .primary:disabled{opacity:.4;cursor:default}
+.aact .ghost{border:1px solid var(--seam-hi);background:transparent;color:var(--dim)}
+.aact .ghost:hover{color:#fff;border-color:var(--mc,var(--blu))}
+/* CEO card in the roster */
+.acard.ceocard{border-color:color-mix(in srgb,var(--blu) 40%,transparent);background:linear-gradient(90deg,color-mix(in srgb,var(--blu) 9%,transparent),transparent 65%)}
+.acard.ceocard .badge2{position:absolute;top:8px;right:8px;font-size:11px;color:var(--blu)}
 .win .tbar{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:grab;user-select:none;
   border-bottom:1px solid var(--seam);background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
 .win .tbar:active{cursor:grabbing}
@@ -550,6 +613,7 @@ body{
     <span class="chip you">REVIEW <b id="hudQueue">—</b></span>
     <span class="chip btn" id="ceoBtn" role="button" tabindex="0" style="color:var(--blu);border-color:color-mix(in srgb,var(--blu) 45%,transparent)">▣ CEO DECK</span>
     <span class="chip btn" id="adminBtn" role="button" tabindex="0">⚙ ADMIN</span>
+    <span class="chip btn" id="lumBtn" role="button" tabindex="0" title="brightness">☀ <b id="lumLbl">BRIGHT</b></span>
     <span class="chip btn" id="skinBtn" role="button" tabindex="0" title="cycle facility skin">◐ <b id="skinLbl">NIGHTSHIFT</b></span>
     <span class="clock" id="clock">00:00:00</span>
   </header>
@@ -592,6 +656,8 @@ body{
   </div>
 
   <nav class="dock" id="dock" aria-label="crew dock"></nav>
+
+  <div class="amodal-back" id="agentModal"><div class="amodal" id="agentModalBody"></div></div>
 </div>
 
 <script>
@@ -787,7 +853,11 @@ function applyStates(){
 
 /* ============ ROSTER + DOCK ============ */
 function buildRoster(){
-  $("#roster").innerHTML=ORDER.map(k=>{
+  const ceoCard=`<div class="acard ceocard" data-k="__ceo" tabindex="0" style="--ac:var(--blu)">
+      <img class="av" src="img/theo.png" alt="CEO Deck">
+      <div><div class="nm">CEO DECK</div><div class="rl">command center</div><div class="st">spend · inbox · tools · health</div></div>
+      <span class="badge2">▣</span></div>`;
+  $("#roster").innerHTML=ceoCard+ORDER.map(k=>{
     const c=CREW[k],r=ROOMS[k];
     if(c.slot)return `<div class="acard slotcard" data-k="${k}" tabindex="0" style="--ac:${r.ac}">
       <img class="av" src="${r.img}" alt="">
@@ -798,12 +868,19 @@ function buildRoster(){
       <span class="badge idle">IDLE</span></div>`;
   }).join("");
   $("#roster").addEventListener("click",e=>{
-    const c=e.target.closest(".acard");if(c)selectRoom(c.getAttribute("data-k"));
+    const c=e.target.closest(".acard");if(c)navAgent(c.getAttribute("data-k"));
   });
   $("#roster").addEventListener("keydown",e=>{
     const c=e.target.closest(".acard");
-    if(c&&(e.key==="Enter"||e.key===" ")){e.preventDefault();selectRoom(c.getAttribute("data-k"))}
+    if(c&&(e.key==="Enter"||e.key===" ")){e.preventDefault();navAgent(c.getAttribute("data-k"))}
   });
+}
+// click once → nav; click again on the same agent → open its detail card
+function navAgent(k){
+  if(k==="__ceo"){showCeo();return;}
+  const viewOpen=$("#view-ceo").style.display==="block"||$("#view-admin").style.display==="block";
+  if(!viewOpen && state.room===k){ openAgentCard(k); return; }
+  selectRoom(k);
 }
 function buildDock(){
   const d=$("#dock");
@@ -819,9 +896,64 @@ function buildDock(){
     if(t.getAttribute("data-sheet")){toggleSheet(t.getAttribute("data-sheet"));return}
     if(t.getAttribute("data-nav")==="admin"){showAdmin();return}
     if(t.getAttribute("data-nav")==="ceo"){showCeo();return}
-    selectRoom(t.getAttribute("data-k"));
+    navAgent(t.getAttribute("data-k"));
   });
 }
+
+/* ============ AGENT DETAIL CARD ============ */
+function scheduleFor(k){
+  if(k==="vulcan")return{label:"Daily shift · 12:00 CT",ms:nextCT(12,0)};
+  if(k==="theo")return{label:"Standup · 13:30 CT",ms:nextCT(13,30)};
+  if(k==="rollie")return{label:"Weekday shift · 09:00 CT",ms:nextCT(9,0,true)};
+  return null;
+}
+function openAgentCard(k){
+  const r=ROOMS[k];if(!r)return;
+  const live=r.kind==="live";
+  const meta=(state.meta&&state.meta.agents||[]).find(a=>(a.id==="main"?"theo":a.id)===k);
+  const rep=state.reports&&state.reports[k];
+  const sched=scheduleFor(k);
+  const model=meta?meta.model:(k==="theo"?"xai/grok-4.20":"—");
+  const runCmd=k==="vulcan"?"run_shift":k==="rollie"?"run_prospecting":k==="theo"?"run_standup":null;
+  const flow=(r.ops.upgs||[]);
+  let html=`<button class="axc" id="acClose">✕</button>
+    <div class="ahd" style="--mc:${r.ac}">
+      <img src="${r.img}" alt="">
+      <div><div class="anm">${live?(k==="theo"?"THEO":k==="vulcan"?"VULCAN":"ROLLIE"):r.name}
+        <span class="lv ${live?"":"slot"}">${live?"LIVE":"EMPTY"}</span></div>
+        <div class="arl">${esc((meta&&meta.role)||r.tag)}</div>
+        ${live?`<div class="amd">model: <b>${esc(model)}</b></div>`:""}</div>
+    </div>`;
+  if(live){
+    html+=`<div class="asec" style="--mc:${r.ac}"><h4>Recent job</h4>
+      ${rep&&(rep.task||rep.learnings)
+        ?`<div class="acap">${rep.task?`<div style="color:var(--ink);margin-bottom:6px">${esc(rep.task)}</div>`:""}${rep.learnings?`<div style="color:var(--faint);font-size:10px">learned: ${esc(rep.learnings)}</div>`:""}</div>`
+        :`<div class="acap empty">no run recorded yet — ${isWorking(k)?"working now":"waiting for the next scheduled run"}</div>`}</div>`;
+    if(sched)html+=`<div class="asec" style="--mc:${r.ac}"><h4>Next job<span class="tm" data-cardtmr="${k}">T-${fmtMs(sched.ms)}</span></h4>
+      <div class="acap">${esc(sched.label)}${state.paused?' <span style="color:var(--red)">· PAUSED</span>':isWorking(k)?' <span style="color:var(--grn)">· running now</span>':''}</div></div>`;
+    if(flow.length)html+=`<div class="asec" style="--mc:${r.ac}"><h4>Its flow</h4><div class="aflow">${
+      flow.map(f=>`<div class="fstep"><div class="fn">${f[0]}</div><div class="ft"><div class="fname">${esc(f[1])}</div><div class="fdesc">${esc(f[2])}</div></div></div>`).join("")}</div></div>`;
+    if(meta)html+=`<div class="asec" style="--mc:${r.ac}"><h4>Authority</h4><div class="acando">
+      <div class="cc can"><div class="cl2">✓ can</div>${esc(meta.can)}</div>
+      <div class="cc cant"><div class="cl2">✕ cannot</div>${esc(meta.cannot)}</div></div></div>`;
+    html+=`<div class="aact" style="--mc:${r.ac}">
+      ${runCmd?`<button class="primary" id="acRun">▶ Run now</button>`:""}
+      <button class="ghost" id="acGo">Go to room</button></div>`;
+  }else{
+    html+=`<div class="asec" style="--mc:${r.ac}"><h4>Empty division</h4>
+      <div class="acap">${esc(r.ops.wire||"No agent here yet.")}</div></div>
+      <div class="aact" style="--mc:${r.ac}"><button class="ghost" id="acGo">Go to room</button></div>`;
+  }
+  const body=$("#agentModalBody");body.innerHTML=html;body.style.setProperty("--mc",r.ac);
+  $("#agentModal").classList.add("on");
+  $("#acClose").addEventListener("click",closeAgentCard);
+  const go=$("#acGo");if(go)go.addEventListener("click",()=>{closeAgentCard();selectRoom(k)});
+  const run=$("#acRun");if(run)run.addEventListener("click",()=>{
+    run.disabled=true;markWorking(k,12*60000);sendCommand(runCmd,null);
+    setTimeout(closeAgentCard,600);
+  });
+}
+function closeAgentCard(){$("#agentModal").classList.remove("on")}
 
 /* ============ ROOMS ============ */
 function machineHTML(m,idx){
@@ -954,6 +1086,18 @@ function applySkin(i){
 let skinIdx=0;
 try{skinIdx=parseInt(localStorage.getItem("lab-skin")||"0",10)||0}catch(e){}
 applySkin(skinIdx);
+// brightness — default BRIGHT for legibility (esp. mobile)
+const LUMS=[["","DIM"],["bright","BRIGHT"],["max","MAX"]];
+function applyLum(i){
+  const [key,label]=LUMS[i%LUMS.length];
+  if(key)document.documentElement.setAttribute("data-lum",key);
+  else document.documentElement.removeAttribute("data-lum");
+  const l=$("#lumLbl");if(l)l.textContent=label;
+  try{localStorage.setItem("lab-lum",String(i%LUMS.length))}catch(e){}
+}
+let lumIdx=1;
+try{const v=localStorage.getItem("lab-lum");lumIdx=v==null?1:(parseInt(v,10)||0)}catch(e){}
+applyLum(lumIdx);
 function startGrain(){
   if(reduce)return;
   const cv=$("#grain"),cx=cv.getContext("2d");
@@ -1389,6 +1533,8 @@ function startTimers(){
     const ft=$("#ftStand");if(ft)ft.textContent=st;
     document.querySelectorAll("[data-tmr]").forEach(t=>{t.innerHTML="T-<b>"+pick(t.getAttribute("data-tmr"))+"</b>"});
     document.querySelectorAll("[data-tmr2]").forEach(t=>{t.textContent=pick(t.getAttribute("data-tmr2"))});
+    const ct=document.querySelector("[data-cardtmr]");
+    if(ct){const s=scheduleFor(ct.getAttribute("data-cardtmr"));if(s)ct.textContent="T-"+fmtMs(s.ms)}
     const d=new Date(),p=n=>(n<10?"0":"")+n;
     $("#clock").textContent=p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());
   };
@@ -1471,6 +1617,11 @@ function start(){
   applyStates();refreshBubbles();
   pushLog("SYS","facility online — operator "+(user?user.email:""),"var(--dim)");
   $("#skinBtn").addEventListener("click",()=>{skinIdx=(skinIdx+1)%SKINS.length;applySkin(skinIdx)});
+  const lb=$("#lumBtn");
+  lb.addEventListener("click",()=>{lumIdx=(lumIdx+1)%LUMS.length;applyLum(lumIdx)});
+  lb.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();lumIdx=(lumIdx+1)%LUMS.length;applyLum(lumIdx)}});
+  $("#agentModal").addEventListener("click",e=>{if(e.target.id==="agentModal")closeAgentCard()});
+  addEventListener("keydown",e=>{if(e.key==="Escape")closeAgentCard()});
   const ab=$("#adminBtn");
   ab.addEventListener("click",showAdmin);
   ab.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();showAdmin()}});
