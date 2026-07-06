@@ -57,7 +57,7 @@ const manifestPath = join(siteDir, ".deploy-manifest.json");
 const PROTECTED = new Set([
   ".git", ".github", ".gitignore", ".htaccess",
   "blog", "sitesniper", "sniper", "sprocket", "learn", "cowork", "contact",
-  "docs", "images", "social", "lab", "preview",
+  "docs", "images", "social", "lab", "preview", "demo-lab",
   "admin.html", "privacy.html", "terms.html", "resources.html",
   "contact-modal.js", "SETUP.md", "Archive.zip", "stonearch-ai-site.jsx",
   "site", "v3", "test.csv.rtf",
