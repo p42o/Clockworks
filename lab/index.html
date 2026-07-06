@@ -378,6 +378,89 @@ body{
 .pausewrap{display:flex;gap:10px}
 .pausewrap .cmdbtn{width:auto;flex:1}
 
+/* ================= CEO DECK ================= */
+#view-ceo{overflow-y:auto}
+.ceo{max-width:1140px;margin:0 auto;padding:20px 18px 60px;display:flex;flex-direction:column;gap:16px}
+.ceo-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ceo h1{margin:2px 0;font:700 19px var(--mono);letter-spacing:.26em;color:var(--blu);text-shadow:0 0 14px color-mix(in srgb,var(--blu) 55%,transparent);display:flex;align-items:center;gap:12px}
+.ceo h1 img{width:34px;height:34px;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--blu) 55%,transparent))}
+.ceo-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+@media(max-width:900px){.ceo-grid{grid-template-columns:1fr}}
+.cpane{border:1px solid var(--seam-hi);border-radius:13px;padding:15px 16px;
+  background:linear-gradient(165deg,rgba(255,255,255,.045),rgba(255,255,255,0) 32%),var(--pane)}
+.cpane h2{margin:0 0 12px;font:700 11px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--cp,var(--blu));display:flex;align-items:center;gap:8px}
+.cpane h2 .r{margin-left:auto;font-size:9px;color:var(--faint);letter-spacing:.14em}
+/* spend tiles */
+.spendrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stile{border:1px solid var(--seam);border-radius:10px;padding:12px;background:rgba(255,255,255,.015);position:relative;overflow:hidden}
+.stile .sk{font-size:8.5px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+.stile .sv{font:700 24px var(--mono);margin-top:5px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.stile .sv small{font-size:11px;color:var(--dim)}
+.stile.proj .sv{color:var(--org)}
+.stile.month .sv{color:var(--blu)}
+.stile .spark{position:absolute;right:8px;bottom:6px;font-size:9px;color:var(--faint)}
+.byagent{margin-top:11px;display:flex;flex-direction:column;gap:6px}
+.byr{display:flex;align-items:center;gap:9px;font:10px var(--mono)}
+.byr .bn{color:var(--ink);width:60px}.byr .bm{color:var(--faint);flex:1}.byr .bs{color:var(--org);font-variant-numeric:tabular-nums}
+/* agent management grid */
+.amrow{display:flex;align-items:center;gap:11px;border:1px solid var(--seam);border-radius:10px;padding:9px 11px;background:rgba(255,255,255,.012);margin-bottom:8px}
+.amrow img{width:34px;height:34px;border-radius:8px;object-fit:contain;border:1px solid var(--seam-hi);background:var(--pane-2)}
+.amrow .an{font:700 11px var(--mono);letter-spacing:.1em}
+.amrow .ar{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.amrow .amid{flex:1;min-width:0}
+.amrow .stpill{font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--seam-hi);color:var(--dim);white-space:nowrap}
+.amrow .stpill.work{color:var(--grn);border-color:color-mix(in srgb,var(--grn) 45%,transparent)}
+.amrow .runb{border:1px solid color-mix(in srgb,var(--wc,var(--blu)) 50%,transparent);background:rgba(37,214,255,.07);color:var(--blu);
+  border-radius:7px;padding:6px 10px;font:700 9px var(--mono);letter-spacing:.08em;cursor:pointer;white-space:nowrap}
+.amrow .runb:hover{filter:brightness(1.35)}.amrow .runb:disabled{opacity:.4;cursor:default}
+.amrow .ammodel{font-size:8.5px;color:var(--faint);margin-top:2px}
+/* inbox */
+.inbox{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto}
+.memo{border:1px solid var(--seam);border-radius:10px;padding:11px 13px;background:rgba(255,255,255,.015);cursor:pointer;transition:.13s}
+.memo:hover{border-color:var(--blu)}
+.memo .mh{display:flex;align-items:center;gap:8px}
+.memo .mfrom{width:28px;height:28px;border-radius:7px;flex:none;background:var(--pane-2);border:1px solid var(--seam-hi);display:grid;place-items:center;overflow:hidden}
+.memo .mfrom img{width:100%;height:100%;object-fit:contain}
+.memo .msub{font:700 11px var(--mono);color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.memo .mts{font-size:8.5px;color:var(--faint);white-space:nowrap}
+.memo .mpv{font-size:10px;color:var(--dim);margin-top:6px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.memo.open .mpv{-webkit-line-clamp:unset;white-space:pre-wrap}
+.memo .prio{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 6px var(--grn)}
+.memo .prio.low{background:var(--faint);box-shadow:none}
+.inbox-empty{font:10px var(--mono);color:var(--faint);border:1px dashed var(--seam-hi);border-radius:9px;padding:14px;text-align:center}
+.emailchat{margin-top:11px;display:flex;gap:7px;border-top:1px solid var(--seam);padding-top:11px}
+.emailchat input{flex:1;min-width:0;background:rgba(0,0,0,.4);border:1px solid var(--seam-hi);border-radius:8px;color:var(--ink);font:11px var(--mono);padding:9px 11px;outline:none}
+.emailchat input:focus{border-color:var(--blu)}
+.emailchat button{border:1px solid color-mix(in srgb,var(--blu) 50%,transparent);background:rgba(37,214,255,.08);color:var(--blu);border-radius:8px;padding:0 14px;font:700 10px var(--mono);letter-spacing:.08em;cursor:pointer}
+.emailchat button:disabled{opacity:.4;cursor:default}
+/* vps health */
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vtile{border:1px solid var(--seam);border-radius:9px;padding:9px 11px;background:rgba(255,255,255,.012)}
+.vtile .vk{font-size:8px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+.vtile .vv{font:700 14px var(--mono);margin-top:3px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.vtile .vv small{font-size:9px;color:var(--dim)}
+.vbar{height:5px;border-radius:3px;background:rgba(255,255,255,.06);margin-top:6px;overflow:hidden}
+.vbar i{display:block;height:100%;background:linear-gradient(90deg,var(--grn-dk),var(--grn));transform-origin:left}
+.vbar i.warn{background:linear-gradient(90deg,var(--org-dk),var(--org))}
+/* toolbox */
+.tbox{display:flex;flex-direction:column;gap:7px}
+.trow{display:flex;align-items:center;gap:9px;border:1px solid var(--seam);border-radius:8px;padding:8px 10px;background:rgba(255,255,255,.012)}
+.trow .tn{font:700 10px var(--mono);color:var(--ink);flex:1;min-width:0}
+.trow .tvia{font-size:8.5px;color:var(--faint);letter-spacing:.06em}
+.trow .tst{font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid;white-space:nowrap}
+.tst.live{color:var(--grn);border-color:color-mix(in srgb,var(--grn) 45%,transparent)}
+.tst.avail{color:var(--blu);border-color:color-mix(in srgb,var(--blu) 40%,transparent)}
+.acq{border:1px solid var(--seam-hi);border-radius:10px;padding:11px 13px;background:rgba(255,255,255,.012);margin-bottom:8px}
+.acq .ah{display:flex;align-items:center;gap:8px}
+.acq .an2{font:700 11px var(--mono);color:var(--ink);flex:1}
+.acq .ariskb{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:4px;border:1px solid}
+.ariskb.low{color:var(--grn);border-color:color-mix(in srgb,var(--grn) 40%,transparent)}
+.ariskb.medium{color:var(--org);border-color:color-mix(in srgb,var(--org) 45%,transparent)}
+.ariskb.high{color:var(--red);border-color:color-mix(in srgb,var(--red) 50%,transparent)}
+.acq .awhy{font-size:10px;color:var(--dim);margin-top:5px;line-height:1.55}
+.acq .aneeds{font-size:9px;color:var(--faint);margin-top:5px;border-top:1px dashed var(--seam);padding-top:5px;line-height:1.5}
+.acq .aneeds b{color:var(--blu)}
+
 /* ================= MOBILE ================= */
 .dock{display:none}
 @media(max-width:880px){
@@ -419,8 +502,9 @@ body{
   #winOps .body{max-height:min(430px,48dvh)}
   #winOps .body{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
   .win.min .body{display:block}
-  .admin{padding:16px 12px calc(40px + env(safe-area-inset-bottom))}
+  .admin,.ceo{padding:16px 12px calc(40px + env(safe-area-inset-bottom))}
   .tbl{font-size:9.5px}
+  .spendrow{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -453,6 +537,7 @@ body{
     <span class="chip sim" id="feedChip"><span class="led"></span><span id="feedLbl">NO FEED</span></span>
     <span class="chip" id="spendChip"><span class="led" style="background:var(--org);box-shadow:0 0 8px var(--org)"></span>LAST SHIFT <b id="hudSpend" style="color:var(--ink)">$—</b></span>
     <span class="chip you">REVIEW <b id="hudQueue">—</b></span>
+    <span class="chip btn" id="ceoBtn" role="button" tabindex="0" style="color:var(--blu);border-color:color-mix(in srgb,var(--blu) 45%,transparent)">▣ CEO DECK</span>
     <span class="chip btn" id="adminBtn" role="button" tabindex="0">⚙ ADMIN</span>
     <span class="chip btn" id="skinBtn" role="button" tabindex="0" title="cycle facility skin">◐ <b id="skinLbl">NIGHTSHIFT</b></span>
     <span class="clock" id="clock">00:00:00</span>
@@ -473,6 +558,9 @@ body{
       <div id="roomTint" aria-hidden="true"></div>
       <section class="view" id="view-admin" style="position:absolute;inset:0;z-index:12;display:none;background:rgba(7,8,12,.97)">
         <div class="admin" id="adminBody"></div>
+      </section>
+      <section class="view" id="view-ceo" style="position:absolute;inset:0;z-index:12;display:none;background:rgba(7,8,12,.97)">
+        <div class="ceo" id="ceoBody"></div>
       </section>
       <div id="winWrap" style="position:absolute;inset:0;pointer-events:none">
         <div class="win" id="winComms" style="--wc:var(--grn);right:14px;bottom:14px;pointer-events:auto">
@@ -711,13 +799,14 @@ function buildDock(){
     `<div class="dtile" data-k="theo" style="--ac:var(--blu)" role="button"><span class="dl"></span><img class="dg" src="img/theo.png" alt=""><span class="dn">THEO</span></div>
      <div class="dtile" data-k="vulcan" style="--ac:var(--org)" role="button"><span class="dl"></span><img class="dg" src="img/vulcan.png" alt=""><span class="dn">VULCAN</span></div>
      <div class="dtile" data-k="rollie" style="--ac:var(--vio)" role="button"><span class="dl"></span><img class="dg" src="img/rollie.png" alt=""><span class="dn">ROLLIE</span></div>
+     <div class="dtile" data-nav="ceo" style="--ac:var(--blu)" role="button"><img class="dg" src="img/theo.png" alt=""><span class="dn">CEO</span></div>
      <div class="dtile" data-nav="admin" style="--ac:var(--blu)" role="button"><img class="dg" src="img/icon-admin.png" alt=""><span class="dn">ADMIN</span></div>
-     <div class="dtile" data-sheet="winOps" style="--ac:var(--org)" role="button"><img class="dg" src="img/icon-ops.png" alt=""><span class="dn">OPS</span></div>
-     <div class="dtile" data-sheet="winComms" style="--ac:var(--grn)" role="button"><img class="dg" src="img/icon-log.png" alt=""><span class="dn">COMMS</span></div>`;
+     <div class="dtile" data-sheet="winComms" style="--ac:var(--grn)" role="button"><img class="dg" src="img/icon-log.png" alt=""><span class="dn">CHAT</span></div>`;
   d.addEventListener("click",e=>{
     const t=e.target.closest(".dtile");if(!t)return;
     if(t.getAttribute("data-sheet")){toggleSheet(t.getAttribute("data-sheet"));return}
     if(t.getAttribute("data-nav")==="admin"){showAdmin();return}
+    if(t.getAttribute("data-nav")==="ceo"){showCeo();return}
     selectRoom(t.getAttribute("data-k"));
   });
 }
@@ -865,13 +954,130 @@ function startGrain(){
 }
 
 /* ============ SELECT / OPS ============ */
-function hideAdmin(){$("#view-admin").style.display="none"}
+function hideAdmin(){$("#view-admin").style.display="none";$("#view-ceo").style.display="none"}
 function showAdmin(){
   document.querySelectorAll(".acard,.dtile[data-k]").forEach(c=>c.classList.remove("sel"));
+  $("#view-ceo").style.display="none";
   renderAdmin();
   $("#view-admin").style.display="block";
   location.hash="#/admin";
 }
+function showCeo(){
+  document.querySelectorAll(".acard,.dtile[data-k]").forEach(c=>c.classList.remove("sel"));
+  $("#view-admin").style.display="none";
+  renderCeo();
+  $("#view-ceo").style.display="block";
+  location.hash="#/ceo";
+}
+const AGENT_IMG={theo:"img/theo.png",vulcan:"img/vulcan.png",rollie:"img/rollie.png"};
+function renderCeo(){
+  const m=state.meta||{},sp=state.spend||{},vps=state.vps||{},inbox=state.inbox||[];
+  const agents=(m.agents||[]).filter(a=>a.id!=="main"||true);
+  const memRows=inbox.length?inbox.map(mo=>`
+    <div class="memo" data-memo="${mo.id}">
+      <div class="mh"><span class="prio ${mo.priority==='low'?'low':''}"></span>
+        <div class="mfrom"><img src="${AGENT_IMG.theo}" alt=""></div>
+        <div class="msub">${esc(mo.subject)}</div><div class="mts">${memoAge(mo.ts)}</div></div>
+      <div class="mpv">${esc(mo.body||mo.preview)}</div>
+    </div>`).join("")
+    :`<div class="inbox-empty">Inbox is empty. Theo drops non-urgent deliverables here — ask him for one in the chat below, or he'll file them after his standup.</div>`;
+  const amRows=agents.map(a=>{
+    const k=a.id==="main"?"theo":a.id;
+    const w=isWorking(k);
+    const canRun=k==="vulcan"||k==="rollie"||k==="theo";
+    const cmd=k==="vulcan"?"run_shift":k==="rollie"?"run_prospecting":"run_standup";
+    return `<div class="amrow">
+      <img src="${AGENT_IMG[k]||'img/slot.png'}" alt="">
+      <div class="amid"><div class="an">${a.name}</div><div class="ar">${esc(a.role).slice(0,60)}</div><div class="ammodel">model: ${esc(a.model||'—')}</div></div>
+      <span class="stpill ${w?'work':''}">${w?'● WORKING':'○ idle'}</span>
+      ${canRun?`<button class="runb" data-runagent="${cmd}" data-agentkey="${k}">▶ RUN</button>`:''}
+    </div>`;}).join("");
+  const memPct=vps.mem_total_mb?Math.min(1,(vps.mem_used_mb/vps.mem_total_mb)):0;
+  const diskPct=vps.disk_total_gb?Math.min(1,(vps.disk_used_gb/vps.disk_total_gb)):0;
+  const models=(m.models||[]).map(md=>`<div class="trow"><div><div class="tn">${esc(md.id)}</div><div class="tvia">${esc(md.use)}</div></div><span class="tst ${md.tier==='router'?'avail':'live'}">${esc(md.tier)} · ${esc(md.cost)}</span></div>`).join("");
+  const connected=((m.tools&&m.tools.connected)||[]).map(t=>`<div class="trow"><div class="tn">${esc(t.name)}</div><div class="tvia">${esc(t.via)}</div><span class="tst ${t.status.startsWith('live')?'live':'avail'}">${esc(t.status)}</span></div>`).join("");
+  const acq=((m.tools&&m.tools.acquisitions)||[]).map(a=>`<div class="acq">
+    <div class="ah"><span>${a.risk==='HIGH'?'🔒':a.risk==='medium'?'⚠️':'➕'}</span><span class="an2">${esc(a.name)}</span><span class="ariskb ${(a.risk||'low').toLowerCase().includes('high')?'high':(a.risk||'').includes('medium')?'medium':'low'}">${esc(a.risk)} risk</span></div>
+    <div class="awhy">${esc(a.why)}</div>
+    <div class="aneeds"><b>needs:</b> ${esc(a.needs)}</div></div>`).join("");
+  $("#ceoBody").innerHTML=`
+    <div class="ceo-top">
+      <button class="chip btn" id="ceoBack" style="font-size:10px">◂ BACK TO FLOOR</button>
+      <span class="chip ${state.feed==='live'?'live':'sim'}"><span class="led"></span>${state.feed==='live'?'live server values':'no feed'}</span>
+      <span class="chip">${user?user.email:''}</span>
+    </div>
+    <h1><img src="img/theo.png" alt="">CEO DECK</h1>
+    <p class="lede" style="margin:0;font:11.5px/1.7 var(--mono);color:var(--dim)">Theo's command deck — the whole company in one place. Manage agents, read his memos, chat, watch spend, and see what the machine still needs.</p>
+
+    <div class="cpane" style="--cp:var(--org)">
+      <h2>💸 Spend<span class="r">est. · model cost on your xAI key</span></h2>
+      <div class="spendrow">
+        <div class="stile"><div class="sk">Today (actual)</div><div class="sv">$${(sp.today_actual??0).toFixed(2)}</div></div>
+        <div class="stile proj"><div class="sk">Daily projection</div><div class="sv">$${(sp.daily_projection??0).toFixed(2)}</div></div>
+        <div class="stile month"><div class="sk">Monthly projection</div><div class="sv">$${(sp.monthly_projection??0).toFixed(0)}<small>/mo</small></div></div>
+      </div>
+      <div class="byagent">${(sp.by_agent||[]).map(b=>`<div class="byr"><span class="bn">${esc(b.agent)}</span><span class="bm">${esc(b.model)}</span><span class="bs">$${(b.last??0).toFixed(2)}<span style="color:var(--faint)"> last</span></span></div>`).join("")}</div>
+    </div>
+
+    <div class="ceo-grid">
+      <div class="cpane" style="--cp:var(--blu)">
+        <h2>📥 Inbox — Theo's memos<span class="r">non-urgent deliverables</span></h2>
+        <div class="inbox">${memRows}</div>
+        <div class="emailchat">
+          <input id="ceoChatIn" type="text" maxlength="500" placeholder="email/chat Theo… he can reply here or file a memo" autocomplete="off">
+          <button id="ceoChatSend">SEND</button>
+        </div>
+      </div>
+      <div class="cpane" style="--cp:var(--grn)">
+        <h2>🖥️ VPS health<span class="r">live · 5-min refresh</span></h2>
+        <div class="vgrid">
+          <div class="vtile"><div class="vk">Uptime</div><div class="vv">${vps.uptime_days??'—'}<small>d ${vps.uptime_h??''}h</small></div></div>
+          <div class="vtile"><div class="vk">Load</div><div class="vv">${vps.load??'—'}</div></div>
+          <div class="vtile"><div class="vk">Memory</div><div class="vv">${vps.mem_used_mb??'—'}<small>/${vps.mem_total_mb??'—'} MB</small></div><div class="vbar"><i class="${memPct>.85?'warn':''}" style="transform:scaleX(${memPct.toFixed(2)})"></i></div></div>
+          <div class="vtile"><div class="vk">Disk</div><div class="vv">${vps.disk_used_gb??'—'}<small>/${vps.disk_total_gb??'—'} GB</small></div><div class="vbar"><i class="${diskPct>.85?'warn':''}" style="transform:scaleX(${diskPct.toFixed(2)})"></i></div></div>
+          <div class="vtile"><div class="vk">OpenClaw</div><div class="vv" style="font-size:12px">${esc(vps.openclaw||'—')}</div></div>
+          <div class="vtile"><div class="vk">Gateway</div><div class="vv" style="font-size:12px;color:${vps.gateway==='active'?'var(--grn)':'var(--org)'}">${esc(vps.gateway||'—')}</div></div>
+          <div class="vtile"><div class="vk">Agents</div><div class="vv">${vps.agents??'—'}</div></div>
+          <div class="vtile"><div class="vk">Crons armed</div><div class="vv">${vps.crons_armed??'—'}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cpane" style="--cp:var(--vio)">
+      <h2>🤖 Agent management<span class="r">${agents.length} live · trigger any run</span></h2>
+      ${amRows||'<div class="inbox-empty">agent roster loads from the live feed…</div>'}
+    </div>
+
+    <div class="ceo-grid">
+      <div class="cpane" style="--cp:var(--blu)">
+        <h2>🧰 Toolbox — connected<span class="r">models &amp; capabilities</span></h2>
+        <div class="tbox">${connected}</div>
+        <h2 style="margin-top:14px">🧠 Models</h2>
+        <div class="tbox">${models}</div>
+      </div>
+      <div class="cpane" style="--cp:var(--org)">
+        <h2>🎯 Toolbox — to acquire<span class="r">what unlocks more</span></h2>
+        ${acq}
+        <div class="aneeds" style="border:1px dashed var(--seam-hi);border-radius:9px;padding:10px;color:var(--faint);margin-top:2px">When you're ready to add any of these, hand me the key/account and I'll wire it. The <b style="color:var(--red)">agentic wallet</b> stays disarmed until we set explicit per-category caps together — autonomous spend is the one thing I won't turn on quietly.</div>
+      </div>
+    </div>`;
+  // wiring
+  $("#ceoBack").addEventListener("click",()=>{hideAdmin();location.hash="#/"+(state.room||"theo")});
+  document.querySelectorAll(".memo").forEach(el=>el.addEventListener("click",()=>el.classList.toggle("open")));
+  document.querySelectorAll("[data-runagent]").forEach(b=>b.addEventListener("click",()=>{
+    b.disabled=true;setTimeout(()=>{b.disabled=false},8000);
+    const k=b.getAttribute("data-agentkey");markWorking(k,12*60000);
+    sendCommand(b.getAttribute("data-runagent"),null);
+    const p=b.closest(".amrow").querySelector(".stpill");if(p){p.textContent="● WORKING";p.classList.add("work")}
+  }));
+  const ci=$("#ceoChatIn"),cb=$("#ceoChatSend");
+  function csend(){const t=ci.value.trim();if(!t)return;ci.value="";cb.disabled=true;
+    markWorking("theo",180000);pushLog("YOU","→ (CEO deck) "+t,"var(--you)");
+    sendCommand("message_theo",t,()=>{cb.disabled=false});setTimeout(()=>{cb.disabled=false},240000);}
+  cb.addEventListener("click",csend);ci.addEventListener("keydown",e=>{if(e.key==="Enter")csend()});
+}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function memoAge(ts){const s=Math.floor(Date.now()/1000)-Number(ts);if(s<3600)return Math.floor(s/60)+"m ago";if(s<86400)return Math.floor(s/3600)+"h ago";return Math.floor(s/86400)+"d ago"}
 function selectRoom(k){
   hideAdmin();
   if(state.room===k){location.hash="#/"+k;return}
@@ -899,6 +1105,17 @@ function renderOps(k){
   }
   if(k==="rollie"){
     html+=`<div class="sec-t">OUTREACH QUEUE — AWAITING PARKER</div><div id="opsOutreach">`+outreachHTML()+`</div>`;
+  }
+  // LATEST REPORT — real data from the agent's most recent run (baked into the room)
+  const rep=state.reports&&state.reports[k];
+  if(r.kind==="live"){
+    html+=`<div class="sec-t">LATEST REPORT</div>`;
+    if(rep&&(rep.task||rep.learnings)){
+      html+=`<div class="wire" style="border-style:solid;color:var(--dim)">`;
+      if(rep.task)html+=`<div style="color:var(--ink);margin-bottom:5px">▸ ${rep.task}</div>`;
+      if(rep.learnings)html+=`<div style="color:var(--faint)">learned: ${rep.learnings}</div>`;
+      html+=`</div>`;
+    }else html+=`<div class="wire">▸ no report yet — ${isWorking(k)?"running now…":"runs on schedule (see timer)"}</div>`;
   }
   if(o.upgs.length)html+=`<div class="sec-t">${r.kind==="live"?"WHAT THE LOOP DOES":"STATIONS"}</div>`+
     o.upgs.map(u=>`<div class="upg"><span class="ui2">${u[0]}</span>
@@ -1163,9 +1380,9 @@ function applyLive(j){
     if(f.current_task){const st=document.querySelector('[data-st="vulcan"]');if(st)st.textContent=f.current_task}
     state.queueItems=(f.staged_for_review||[]).map(p=>({name:p.name,price:p.price,approved:!!p.approved}));
     state.queue=state.queueItems.length;
-    if(typeof f.spend_estimate_usd==="number")state.spend=f.spend_estimate_usd;
+    if(typeof f.spend_estimate_usd==="number")state.vulcanSpend=f.spend_estimate_usd;
     $("#hudQueue").textContent=state.queue;
-    $("#hudSpend").textContent=state.spend==null?"$—":"$"+state.spend.toFixed(2);
+    $("#hudSpend").textContent=state.vulcanSpend==null?"$—":"$"+state.vulcanSpend.toFixed(2);
     if(first){
       pushLog("FEED","live telemetry connected ✓","var(--grn)");
       state.queueItems.forEach(q=>pushLog("VULCAN","staged: "+q.name+" ($"+q.price+")"+(q.approved?" — approved":""),"var(--org)"));
@@ -1187,8 +1404,17 @@ function applyLive(j){
     }
     if(state.room==="rollie")renderOps("rollie");
   }
+  // v5: CEO-deck data
+  state.spend=j.spend||state.spend;
+  state.vps=j.vps||state.vps;
+  state.inbox=j.inbox||state.inbox;
+  state.reports=j.reports||state.reports;
+  if(first&&state.inbox&&state.inbox.length)pushLog("THEO","📥 "+state.inbox.length+" memo(s) in your CEO inbox","var(--blu)");
   fillLiveSpans();refreshBubbles();
+  if(state.room&&ROOMS[state.room]&&ROOMS[state.room].kind==="live")renderOps(state.room);
   if($("#view-admin").style.display==="block")renderAdmin();
+  // don't clobber the CEO deck while the operator is typing in it
+  if($("#view-ceo").style.display==="block"&&document.activeElement!==$("#ceoChatIn"))renderCeo();
 }
 function tryLive(){
   fetchFeed(0).then(applyLive).catch(()=>{
@@ -1209,8 +1435,12 @@ function start(){
   const ab=$("#adminBtn");
   ab.addEventListener("click",showAdmin);
   ab.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();showAdmin()}});
+  const cb=$("#ceoBtn");
+  cb.addEventListener("click",showCeo);
+  cb.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();showCeo()}});
   const m=location.hash.match(/#\/(\w+)/);
-  if(m&&m[1]==="admin"){selectRoom("vulcan");showAdmin()}
+  if(m&&m[1]==="admin"){selectRoom("theo");showAdmin()}
+  else if(m&&m[1]==="ceo"){selectRoom("theo");showCeo()}
   else selectRoom(m&&ROOMS[m[1]]?m[1]:"vulcan");
   fitStages();
   addEventListener("resize",fitStages);
