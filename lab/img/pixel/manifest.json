@@ -1,63 +1,7 @@
 {
- "frameW": 124,
- "frameH": 124,
+ "frameW": 244,
+ "frameH": 244,
  "bots": {
-  "vulcan": {
-   "rotations": {
-    "south": "vulcan_rot_south.png",
-    "south-east": "vulcan_rot_south-east.png",
-    "east": "vulcan_rot_east.png",
-    "north-east": "vulcan_rot_north-east.png",
-    "north": "vulcan_rot_north.png",
-    "north-west": "vulcan_rot_north-west.png",
-    "west": "vulcan_rot_west.png",
-    "south-west": "vulcan_rot_south-west.png"
-   },
-   "anims": {
-    "idle": {
-     "south": {
-      "file": "vulcan_idle_south.png",
-      "frames": 6,
-      "fw": 124,
-      "fh": 124
-     }
-    },
-    "forge": {
-     "south": {
-      "file": "vulcan_forge_south.png",
-      "frames": 8,
-      "fw": 124,
-      "fh": 124
-     }
-    },
-    "walk": {
-     "north": {
-      "file": "vulcan_walk_north.png",
-      "frames": 8,
-      "fw": 124,
-      "fh": 124
-     },
-     "south": {
-      "file": "vulcan_walk_south.png",
-      "frames": 8,
-      "fw": 124,
-      "fh": 124
-     },
-     "east": {
-      "file": "vulcan_walk_east.png",
-      "frames": 8,
-      "fw": 124,
-      "fh": 124
-     },
-     "west": {
-      "file": "vulcan_walk_west.png",
-      "frames": 8,
-      "fw": 124,
-      "fh": 124
-     }
-    }
-   }
-  },
   "theo": {
    "rotations": {
     "south": "theo_rot_south.png",
@@ -70,46 +14,46 @@
     "south-west": "theo_rot_south-west.png"
    },
    "anims": {
+    "idle": {
+     "south": {
+      "file": "theo_idle_south.png",
+      "frames": 8,
+      "fw": 240,
+      "fh": 240
+     }
+    },
     "review": {
      "south": {
       "file": "theo_review_south.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
-     }
-    },
-    "idle": {
-     "south": {
-      "file": "theo_idle_south.png",
-      "frames": 6,
-      "fw": 128,
-      "fh": 128
+      "fw": 240,
+      "fh": 240
      }
     },
     "walk": {
      "east": {
       "file": "theo_walk_east.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
+      "fw": 240,
+      "fh": 240
      },
      "west": {
       "file": "theo_walk_west.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
+      "fw": 240,
+      "fh": 240
      },
      "north": {
       "file": "theo_walk_north.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
+      "fw": 240,
+      "fh": 240
      },
      "south": {
       "file": "theo_walk_south.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
+      "fw": 240,
+      "fh": 240
      }
     }
    }
@@ -126,46 +70,46 @@
     "south-west": "rollie_rot_south-west.png"
    },
    "anims": {
+    "idle": {
+     "south": {
+      "file": "rollie_idle_south.png",
+      "frames": 8,
+      "fw": 236,
+      "fh": 236
+     }
+    },
     "work": {
      "south": {
       "file": "rollie_work_south.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
-     }
-    },
-    "idle": {
-     "south": {
-      "file": "rollie_idle_south.png",
-      "frames": 6,
-      "fw": 128,
-      "fh": 128
+      "fw": 236,
+      "fh": 236
      }
     },
     "walk": {
      "east": {
       "file": "rollie_walk_east.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
+      "fw": 236,
+      "fh": 236
      },
      "west": {
       "file": "rollie_walk_west.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
+      "fw": 236,
+      "fh": 236
      },
      "north": {
       "file": "rollie_walk_north.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
+      "fw": 236,
+      "fh": 236
      },
      "south": {
       "file": "rollie_walk_south.png",
       "frames": 8,
-      "fw": 128,
-      "fh": 128
+      "fw": 236,
+      "fh": 236
      }
     }
    }
@@ -185,9 +129,65 @@
     "idle": {
      "south": {
       "file": "slot_idle_south.png",
-      "frames": 6,
-      "fw": 124,
-      "fh": 124
+      "frames": 8,
+      "fw": 232,
+      "fh": 232
+     }
+    }
+   }
+  },
+  "vulcan": {
+   "rotations": {
+    "south": "vulcan_rot_south.png",
+    "south-east": "vulcan_rot_south-east.png",
+    "east": "vulcan_rot_east.png",
+    "north-east": "vulcan_rot_north-east.png",
+    "north": "vulcan_rot_north.png",
+    "north-west": "vulcan_rot_north-west.png",
+    "west": "vulcan_rot_west.png",
+    "south-west": "vulcan_rot_south-west.png"
+   },
+   "anims": {
+    "idle": {
+     "south": {
+      "file": "vulcan_idle_south.png",
+      "frames": 8,
+      "fw": 244,
+      "fh": 244
+     }
+    },
+    "forge": {
+     "south": {
+      "file": "vulcan_forge_south.png",
+      "frames": 8,
+      "fw": 244,
+      "fh": 244
+     }
+    },
+    "walk": {
+     "north": {
+      "file": "vulcan_walk_north.png",
+      "frames": 8,
+      "fw": 244,
+      "fh": 244
+     },
+     "south": {
+      "file": "vulcan_walk_south.png",
+      "frames": 8,
+      "fw": 244,
+      "fh": 244
+     },
+     "east": {
+      "file": "vulcan_walk_east.png",
+      "frames": 8,
+      "fw": 244,
+      "fh": 244
+     },
+     "west": {
+      "file": "vulcan_walk_west.png",
+      "frames": 8,
+      "fw": 244,
+      "fh": 244
      }
     }
    }

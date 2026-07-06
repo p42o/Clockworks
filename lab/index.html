@@ -20,6 +20,18 @@
    generated sprite art · shipped-product storefront.
    ========================================================================== */
 :root{
+  /* WORKSHOP — warm default. A cozy robot workshop at dusk: umber steel,
+     cream text, amber light. Built to match the WALL-E crew. */
+  --void:#16110d; --pane:rgba(38,30,23,.86); --pane-2:rgba(47,37,28,.93);
+  --seam:#3c3023; --seam-hi:#5c4a32;
+  --ink:#f6ecdc; --dim:#c9b294; --faint:#8d775a;
+  --blu:#6fc9e6; --blu-dk:#3a8aa6;
+  --org:#ffa14f; --org-dk:#b06420;
+  --grn:#7ade9a; --grn-dk:#3d9c60;
+  --vio:#c9a2f2; --red:#f4737d; --you:#f08bb8;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+}
+:root[data-skin="command"]{
   --void:#060b16; --pane:rgba(13,22,40,.84); --pane-2:rgba(17,29,52,.92);
   --seam:#1d2c49; --seam-hi:#31456c;
   --ink:#e7effc; --dim:#93a7c9; --faint:#57698c;
@@ -27,7 +39,6 @@
   --org:#f6a83b; --org-dk:#a9701a;
   --grn:#3bd9a0; --grn-dk:#1d9367;
   --vio:#a78bfa; --red:#f4637d; --you:#ef7fb6;
-  --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
 }
 :root[data-skin="nightshift"]{
   --void:#0b0c10; --pane:rgba(16,20,28,.82); --pane-2:rgba(22,28,40,.9);
@@ -63,8 +74,14 @@
 }
 /* ---- BRIGHTNESS levels (lift text + panels for readability) ----
    Placed after skins so neutral overrides win when both are set. */
-:root[data-lum="bright"]{ --ink:#e6edff; --dim:#9dafd6; --faint:#6d7ea6; }
+:root[data-lum="bright"]{ --ink:#f4f1ea; --dim:#c9c2b4; --faint:#948c7c; }
 :root[data-lum="max"]{
+  --ink:#fbf9f5; --dim:#ddd6c9; --faint:#a89f8e;
+  --pane:rgba(58,50,42,.92); --pane-2:rgba(70,60,50,.95);
+  --seam:#5a4d3d; --seam-hi:#7c6a52;
+}
+:root[data-skin="command"][data-lum="bright"]{ --ink:#e6edff; --dim:#9dafd6; --faint:#6d7ea6; }
+:root[data-skin="command"][data-lum="max"]{
   --ink:#f4f8ff; --dim:#c6d3ec; --faint:#8a9bc0;
   --pane:rgba(26,40,68,.92); --pane-2:rgba(33,50,82,.95);
   --seam:#2e4368; --seam-hi:#47608f;
@@ -84,12 +101,14 @@ body{
     var(--void);
   color:var(--ink);font-family:var(--mono);-webkit-font-smoothing:antialiased;overflow:hidden;
 }
-.scan{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.12;mix-blend-mode:multiply;
+.scan{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.04;mix-blend-mode:multiply;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0,rgba(0,0,0,.16) 1px,transparent 1px,transparent 3px)}
+:root[data-skin="command"] .scan{opacity:.12}
 :root[data-skin="nightshift"] .scan,:root[data-skin="synthwave"] .scan,:root[data-skin="redline"] .scan{opacity:.38}
 :root[data-skin="motherboard"] .scan{opacity:.55}
 :root[data-skin="motherboard"] .hud .logo,:root[data-skin="motherboard"] .crew .nm{text-shadow:0 0 8px rgba(51,255,119,.6)}
-.vig{position:fixed;inset:0;z-index:60;pointer-events:none;box-shadow:inset 0 0 200px 30px rgba(2,6,16,.6)}
+.vig{position:fixed;inset:0;z-index:60;pointer-events:none;box-shadow:inset 0 0 200px 30px rgba(10,7,3,.5)}
+:root[data-skin="command"] .vig{box-shadow:inset 0 0 200px 30px rgba(2,6,16,.6)}
 #grain{position:fixed;inset:0;width:100%;height:100%;z-index:58;pointer-events:none;
   opacity:.035;mix-blend-mode:overlay;image-rendering:pixelated}
 .world.cut{animation:camcut .32s ease}
@@ -390,21 +409,12 @@ body{
   width:20px;height:20px;font-size:11px;line-height:1;cursor:pointer;transition:.12s}
 .win .tbar button:hover{color:#fff;border-color:var(--wc,var(--blu))}
 .win .body{padding:10px 12px;overflow-y:auto}
-.win.min .body,.win.min .chatrow{display:none}
-#winComms .body{height:210px;display:flex;flex-direction:column-reverse;gap:2px;font-size:10px;line-height:1.75}
+.win.min .body{display:none}
 .cl{display:flex;gap:7px;animation:cin .3s ease}
 .cl .ts{color:var(--faint);flex:none;font-variant-numeric:tabular-nums}
 .cl .who{flex:none;font-weight:700}
 .cl .tx{color:var(--dim);min-width:0;white-space:normal}
 @keyframes cin{from{opacity:0;transform:translateY(3px)}to{opacity:1}}
-.chatrow{display:flex;gap:7px;padding:9px 10px;border-top:1px solid var(--seam)}
-.chatrow input{flex:1;min-width:0;background:rgba(0,0,0,.4);border:1px solid var(--seam-hi);border-radius:7px;
-  color:var(--ink);font:11px var(--mono);padding:8px 10px;outline:none}
-.chatrow input:focus{border-color:var(--grn)}
-.chatrow button{border:1px solid color-mix(in srgb,var(--grn) 50%,transparent);background:rgba(57,255,106,.08);color:var(--grn);
-  border-radius:7px;padding:0 13px;font:700 10px var(--mono);letter-spacing:.1em;cursor:pointer;transition:.13s}
-.chatrow button:hover{filter:brightness(1.3)}
-.chatrow button:disabled{opacity:.4;cursor:default}
 #winOps .body{display:flex;flex-direction:column;gap:11px;max-height:min(460px,60vh)}
 .ops-status{display:flex;align-items:center;gap:8px}
 .ops-status .pill{font-size:9px;letter-spacing:.16em;text-transform:uppercase;padding:4px 10px;border-radius:999px;
@@ -568,15 +578,112 @@ body{
 .acq .aneeds{font-size:9px;color:var(--faint);margin-top:5px;border-top:1px dashed var(--seam);padding-top:5px;line-height:1.5}
 .acq .aneeds b{color:var(--blu)}
 
+/* ================= MISSION CONTROL — the one panel that runs the company ================= */
+.mission{flex:none;width:334px;border-left:1px solid var(--seam);background:var(--pane);
+  display:flex;flex-direction:column;min-height:0;z-index:31}
+.mtabs{display:flex;flex:none;border-bottom:1px solid var(--seam);background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+.mtab{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 2px 8px;cursor:pointer;
+  border:0;background:transparent;color:var(--faint);font:700 8.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;transition:.15s}
+.mtab .mi{font-size:15px;line-height:1;filter:grayscale(.6) opacity(.75);transition:.15s}
+.mtab:hover{color:var(--dim)}
+.mtab.sel{color:var(--ink)}
+.mtab.sel .mi{filter:none;transform:translateY(-1px)}
+.mtab.sel::after{content:"";position:absolute;left:22%;right:22%;bottom:-1px;height:2px;border-radius:2px;
+  background:var(--mtc,var(--org));box-shadow:0 0 10px var(--mtc,var(--org))}
+.mtab .mbadge{position:absolute;top:5px;right:calc(50% - 22px);min-width:15px;height:15px;padding:0 4px;border-radius:8px;
+  display:none;align-items:center;justify-content:center;font:800 9px var(--mono);
+  background:var(--red);color:#fff;box-shadow:0 0 10px -2px var(--red)}
+.mtab .mbadge.on{display:inline-flex}
+.mbody{flex:1;min-height:0;overflow-y:auto;padding:12px;display:none;flex-direction:column;gap:10px}
+.mbody.sel{display:flex}
+.msec{font-size:8.5px;letter-spacing:.22em;color:var(--faint);text-transform:uppercase;margin:4px 0 -3px}
+/* inbox cards */
+.ibx{border:1px solid var(--seam);border-radius:11px;padding:10px 12px;background:rgba(255,255,255,.02);
+  display:flex;flex-direction:column;gap:7px;animation:cin .3s ease}
+.ibx .ih{display:flex;align-items:center;gap:8px}
+.ibx .iico{width:30px;height:30px;flex:none;border-radius:8px;background:var(--pane-2);border:1px solid var(--seam-hi);
+  display:grid;place-items:center;overflow:hidden}
+.ibx .iico img{width:100%;height:100%;object-fit:contain}
+.ibx .iname{flex:1;min-width:0;font:700 11px var(--mono);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ibx .iprice{font:700 11px var(--mono);color:var(--org)}
+.ibx .isub{font-size:9.5px;color:var(--dim);line-height:1.5}
+.ibx .irow{display:flex;gap:7px;align-items:center}
+.ibx .iapv{flex:1;border:1px solid color-mix(in srgb,var(--grn) 50%,transparent);background:color-mix(in srgb,var(--grn) 9%,transparent);
+  color:var(--grn);border-radius:8px;padding:8px;font:700 10px var(--mono);letter-spacing:.1em;cursor:pointer;transition:.13s}
+.ibx .iapv:hover{filter:brightness(1.3)}
+.ibx .iapv:disabled{opacity:.45;cursor:default}
+.ibx .iok{flex:1;text-align:center;font:700 10px var(--mono);color:var(--grn);letter-spacing:.1em;padding:8px;
+  border:1px dashed color-mix(in srgb,var(--grn) 40%,transparent);border-radius:8px}
+.ibx.prod{border-left:3px solid var(--org)}
+.ibx.mail{border-left:3px solid var(--vio)}
+.inbox-zero{border:1px dashed var(--seam-hi);border-radius:11px;padding:18px 14px;text-align:center;
+  font:10.5px/1.7 var(--mono);color:var(--faint)}
+.inbox-zero b{color:var(--dim)}
+/* dispatch composer */
+.dsp{display:flex;flex-direction:column;gap:9px}
+.dsp .lbl{font-size:8.5px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase}
+.dsp .agpick{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.dsp .agopt{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 4px 7px;border-radius:10px;cursor:pointer;
+  border:1px solid var(--seam);background:rgba(255,255,255,.015);transition:.14s}
+.dsp .agopt img{width:34px;height:34px;object-fit:contain;image-rendering:pixelated}
+.dsp .agopt span{font:700 9px var(--mono);letter-spacing:.12em;color:var(--dim)}
+.dsp .agopt:hover{border-color:var(--ac)}
+.dsp .agopt.sel{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 9%,transparent);box-shadow:0 0 14px -6px var(--ac)}
+.dsp .agopt.sel span{color:var(--ink)}
+.dsp textarea{min-height:88px;resize:vertical;background:rgba(0,0,0,.35);border:1px solid var(--seam-hi);border-radius:10px;
+  color:var(--ink);font:11px/1.6 var(--mono);padding:10px 11px;outline:none}
+.dsp textarea:focus{border-color:var(--org)}
+.modelsel{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--seam-hi);border-radius:9px;color:var(--ink);
+  font:600 10.5px var(--mono);padding:9px 10px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+.modelsel:focus{border-color:var(--blu)}
+.dsp .launch{border:1px solid color-mix(in srgb,var(--org) 60%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--org) 18%,transparent),color-mix(in srgb,var(--org) 7%,transparent));
+  color:var(--org);border-radius:10px;padding:12px;font:800 11.5px var(--mono);letter-spacing:.18em;cursor:pointer;transition:.14s;
+  text-shadow:0 0 10px color-mix(in srgb,var(--org) 35%,transparent)}
+.dsp .launch:hover{filter:brightness(1.25);box-shadow:0 0 22px -7px var(--org)}
+.dsp .launch:disabled{opacity:.4;cursor:default;filter:none;box-shadow:none}
+.dsp .note{font-size:9px;line-height:1.6;color:var(--faint);border-top:1px dashed var(--seam);padding-top:8px}
+.dsp .note b{color:var(--you)}
+/* trends */
+.trend{border:1px solid var(--seam);border-radius:11px;padding:10px 12px;background:rgba(255,255,255,.02);cursor:pointer;transition:.14s}
+.trend:hover{border-color:var(--blu);box-shadow:0 0 14px -7px var(--blu)}
+.trend .th2{display:flex;align-items:center;gap:8px}
+.trend .tt{flex:1;min-width:0;font:700 10.5px var(--mono);color:var(--ink)}
+.trend .lane{font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid}
+.trend .lane.product{color:var(--org);border-color:color-mix(in srgb,var(--org) 45%,transparent)}
+.trend .lane.trades{color:var(--blu);border-color:color-mix(in srgb,var(--blu) 45%,transparent)}
+.trend .ta{font-size:9.5px;color:var(--dim);margin-top:6px;line-height:1.55}
+.trend .heat{display:flex;gap:3px;margin-top:7px}
+.trend .heat i{height:4px;flex:1;border-radius:2px;background:rgba(255,255,255,.07)}
+.trend .heat i.on{background:linear-gradient(90deg,var(--org-dk),var(--org));box-shadow:0 0 6px -1px var(--org)}
+.trend .tuse{font-size:8.5px;color:var(--faint);margin-top:7px;letter-spacing:.08em;text-transform:uppercase}
+.trend:hover .tuse{color:var(--blu)}
+/* comms tab reuses .cl rows */
+#mComms{gap:2px}
+#commsBody{flex:1;min-height:120px;overflow-y:auto;display:flex;flex-direction:column-reverse;gap:2px;font-size:10px;line-height:1.75}
+.mchat{flex:none;display:flex;gap:7px;padding-top:9px;border-top:1px solid var(--seam)}
+.mchat input{flex:1;min-width:0;background:rgba(0,0,0,.35);border:1px solid var(--seam-hi);border-radius:8px;
+  color:var(--ink);font:11px var(--mono);padding:9px 10px;outline:none}
+.mchat input:focus{border-color:var(--grn)}
+.mchat button{border:1px solid color-mix(in srgb,var(--grn) 50%,transparent);background:color-mix(in srgb,var(--grn) 8%,transparent);
+  color:var(--grn);border-radius:8px;padding:0 13px;font:700 10px var(--mono);letter-spacing:.1em;cursor:pointer}
+.mchat button:disabled{opacity:.4;cursor:default}
+/* model row inside agent card / ceo deck */
+.mdlrow{display:flex;gap:7px;align-items:center}
+.mdlrow .modelsel{flex:1}
+.mdlrow .mdlgo{border:1px solid color-mix(in srgb,var(--blu) 50%,transparent);background:color-mix(in srgb,var(--blu) 9%,transparent);
+  color:var(--blu);border-radius:8px;padding:8px 12px;font:700 9.5px var(--mono);letter-spacing:.08em;cursor:pointer;white-space:nowrap}
+.mdlrow .mdlgo:disabled{opacity:.45;cursor:default}
+
 /* ================= MOBILE ================= */
 .dock{display:none}
 @media(max-width:880px){
-  .hud{padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));gap:8px}
+  .hud{padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));gap:7px;overflow-x:auto;scrollbar-width:none}
+  .hud::-webkit-scrollbar{display:none}
   .hud .sub{display:none}
   .hud .logo{font-size:12px}
-  .chip{padding:4px 8px;font-size:8.5px}
-  #spendChip{display:none}
-  #skinBtn{display:none}
+  .chip{padding:4px 8px;font-size:8.5px;flex:none}
+  #spendChip,#skinBtn,#ceoBtn,#adminBtn{display:none}
   .crew{display:none}
   .world{flex:1}
   .dock{display:flex;flex:none;align-items:stretch;gap:6px;z-index:45;
@@ -593,6 +700,15 @@ body{
   .dtile.sel{border-color:var(--ac);box-shadow:0 0 14px -5px var(--ac);
     background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 12%,transparent),transparent)}
   .dtile.sel .dn{color:#fff}
+  .mission{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;border-left:0;border-top:1px solid var(--seam);
+    border-radius:16px 16px 0 0;transform:translateY(105%);transition:transform .32s cubic-bezier(.3,.9,.3,1);
+    z-index:72;max-height:74dvh;box-shadow:0 -20px 60px -12px #000;background:var(--pane-2)}
+  .mission.open{transform:none}
+  .mtabs::before{content:"";position:absolute;left:50%;top:5px;transform:translateX(-50%);
+    width:38px;height:4px;border-radius:2px;background:var(--seam-hi)}
+  .mtabs{position:relative;padding-top:8px}
+  .mbody{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+  .mchat{padding-bottom:calc(9px + env(safe-area-inset-bottom))}
   #winWrap{position:fixed!important;inset:0;z-index:70;pointer-events:none}
   .win{position:fixed;left:0!important;right:0!important;bottom:0!important;top:auto!important;
     width:auto!important;max-width:none;
@@ -605,8 +721,6 @@ body{
   .win .tbar button{width:28px;height:28px;font-size:14px}
   .win .body{padding-bottom:8px}
   #winTray{display:none}
-  .chatrow{padding-bottom:calc(9px + env(safe-area-inset-bottom))}
-  #winComms .body{height:min(280px,40dvh)}
   #winOps .body{max-height:min(430px,48dvh)}
   #winOps .body{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
   .win.min .body{display:block}
@@ -643,10 +757,8 @@ body{
     <span class="sp"></span>
     <span class="chip paused" id="pausedChip" style="display:none"><span class="led" style="background:var(--red);box-shadow:0 0 8px var(--red)"></span>LOOPS PAUSED</span>
     <span class="chip sim" id="feedChip"><span class="led"></span><span id="feedLbl">NO FEED</span></span>
-    <span class="chip" id="opsChip"><span class="led" style="background:var(--grn);box-shadow:0 0 8px var(--grn)"></span>OPS <b id="hudOps" style="color:var(--ink)">3</b></span>
     <span class="chip" id="todayChip">TODAY <b id="hudToday" style="color:var(--ink)">$—</b></span>
-    <span class="chip" id="spendChip"><span class="led" style="background:var(--org);box-shadow:0 0 8px var(--org)"></span>LAST SHIFT <b id="hudSpend" style="color:var(--ink)">$—</b></span>
-    <span class="chip you">REVIEW <b id="hudQueue">—</b></span>
+    <span class="chip you btn" id="reviewChip" role="button" tabindex="0" title="open the approvals inbox">REVIEW <b id="hudQueue">—</b></span>
     <span class="chip btn" id="ceoBtn" role="button" tabindex="0" style="color:var(--blu);border-color:color-mix(in srgb,var(--blu) 45%,transparent)">▣ CEO DECK</span>
     <span class="chip btn" id="adminBtn" role="button" tabindex="0">⚙ ADMIN</span>
     <span class="chip btn" id="lumBtn" role="button" tabindex="0" title="brightness">☀ <b id="lumLbl">BRIGHT</b></span>
@@ -675,14 +787,6 @@ body{
         <div class="ceo" id="ceoBody"></div>
       </section>
       <div id="winWrap" style="position:absolute;inset:0;pointer-events:none">
-        <div class="win" id="winComms" style="--wc:var(--grn);right:14px;bottom:14px;pointer-events:auto">
-          <div class="tbar" data-drag="winComms"><span class="ti">◤ COMMS — TALK TO THEO</span><span class="sp"></span><button data-min="winComms" title="minimize">–</button><button data-close="winComms" title="close">✕</button></div>
-          <div class="body" id="commsBody"></div>
-          <div class="chatrow">
-            <input id="chatIn" type="text" maxlength="500" placeholder="message Theo… (he'll answer here)" autocomplete="off">
-            <button id="chatSend">SEND</button>
-          </div>
-        </div>
         <div class="win" id="winOps" style="--wc:var(--blu);left:14px;top:78px;pointer-events:auto">
           <div class="tbar" data-drag="winOps"><span class="ti" id="opsTitle">◤ ROOM OPERATIONS</span><span class="sp"></span><button data-min="winOps" title="minimize">–</button><button data-close="winOps" title="close">✕</button></div>
           <div class="body" id="opsBody"></div>
@@ -690,6 +794,25 @@ body{
       </div>
       <div id="winTray" aria-label="hidden panels"></div>
     </div>
+
+    <aside class="mission" id="mission" aria-label="mission control">
+      <div class="mtabs">
+        <button class="mtab sel" data-mtab="mInbox" style="--mtc:var(--org)"><span class="mi">📥</span>INBOX<span class="mbadge" id="badgeInbox">0</span></button>
+        <button class="mtab" data-mtab="mLaunch" style="--mtc:var(--org)"><span class="mi">🚀</span>LAUNCH</button>
+        <button class="mtab" data-mtab="mTrends" style="--mtc:var(--blu)"><span class="mi">📡</span>TRENDS<span class="mbadge" id="badgeTrends">0</span></button>
+        <button class="mtab" data-mtab="mComms" style="--mtc:var(--grn)"><span class="mi">💬</span>COMMS</button>
+      </div>
+      <div class="mbody sel" id="mInbox"></div>
+      <div class="mbody" id="mLaunch"></div>
+      <div class="mbody" id="mTrends"></div>
+      <div class="mbody" id="mComms">
+        <div id="commsBody"></div>
+        <div class="mchat">
+          <input id="chatIn" type="text" maxlength="500" placeholder="message Theo… (he'll answer here)" autocomplete="off">
+          <button id="chatSend">SEND</button>
+        </div>
+      </div>
+    </aside>
   </div>
 
   <nav class="dock" id="dock" aria-label="crew dock"></nav>
@@ -746,7 +869,19 @@ if(new URLSearchParams(location.search).get('dev')==='1' && /^(localhost|127\.0\
     reports:{vulcan:{task:"Built a kit",learnings:"kept it lean"},rollie:{task:"3 dossiers drafted",learnings:"warm intros win"},theo:{task:"Standup brief sent",learnings:"queue healthy"}},
     spend:{today_actual:0.85,daily_projection:1.2,monthly_projection:33,by_agent:[{agent:"vulcan",model:"grok-4",last:0.45},{agent:"rollie",model:"grok-4",last:0.4}]},
     vps:{uptime_days:12,load:"0.3",mem_used_mb:900,mem_total_mb:4096,disk_used_gb:14,disk_total_gb:40,openclaw:"ok",gateway:"ok",agents:3,crons_armed:3},
-    inbox:[{id:"m1",priority:"normal",subject:"Weekly plan",preview:"Three ideas for next week…",body:"Full memo.",ts:"dev"}]};
+    inbox:[{id:"m1",priority:"normal",subject:"Weekly plan",preview:"Three ideas for next week…",body:"Full memo.",ts:"dev"}],
+    trends:{generated_at:new Date().toISOString(),trends:[
+      {topic:"AI prompt packs",heat:5,angle:"Niche kits for creators sell on Gumroad.",lane:"product"},
+      {topic:"Missed-call textback",heat:4,angle:"Trades owners losing calls — easy demo.",lane:"trades"},
+      {topic:"Notion templates",heat:3,angle:"Freelancer dashboards bundle well.",lane:"product"}]},
+    dispatches:[{ts:new Date().toISOString(),agent:"foundry",brief:"Sample dispatched gig brief",model:"openrouter/openai/gpt-5-nano"}],
+    meta:{kill_switch:false,
+      agents:[{id:"main",name:"Theo",role:"CEO",model:"xai/grok-4.20-0309-reasoning",can:"read, brief, direct",cannot:"build, publish, spend"},
+              {id:"foundry",name:"Vulcan",role:"President, FOUNDRY",model:"xai/grok-4.20-0309-reasoning",can:"research, build, stage",cannot:"publish, buy"},
+              {id:"rollie",name:"Rollie",role:"President, SALES",model:"xai/grok-4.20-0309-reasoning",can:"research, draft",cannot:"contact anyone"}],
+      models:[{id:"xai/grok-4.20-0309-reasoning",tier:"heavy",use:"deep work",cost:"$3/$15"},
+              {id:"openrouter/openai/gpt-5-nano",tier:"cheap",use:"cheap tasks",cost:"$0.05/$0.40"},
+              {id:"openrouter/openai/gpt-oss-120b:free",tier:"free",use:"free experiments",cost:"$0"}]}};
   setTimeout(()=>{user={email:"dev@local"};const g=$("#gate");if(g&&g.remove)g.remove();bootSeq();},0);
 }
 
@@ -779,6 +914,8 @@ function labelFor(a,p){
     :a==="resume"?"▶ resume all loops"
     :a==="approve_item"?"✓ approve: "+p
     :a==="approve_outreach"?"✓ approve outreach: "+p
+    :a==="set_model"?"🧠 switch "+(p&&p.agent)+" → "+(p&&p.model)
+    :a==="dispatch"?"🚀 dispatch gig → "+(p&&p.agent)+((p&&p.model)?" on "+p.model:"")
     :a==="message_theo"?"→ "+p:a;
 }
 
@@ -796,12 +933,158 @@ function wireChat(){
   inp.addEventListener("keydown",e=>{if(e.key==="Enter")send()});
 }
 
+/* ================================================================
+   MISSION CONTROL — the one panel that runs the company.
+   INBOX  = everything waiting on Parker (products + outreach), one place.
+   LAUNCH = dispatch a real one-off gig to any agent, on any model.
+   TRENDS = live Grok recon (X + web) — tap a trend to draft a gig.
+   COMMS  = the log + chat with Theo.
+   ================================================================ */
+const OC_ID={theo:"main",vulcan:"foundry",rollie:"rollie"};
+function missionTab(id){
+  document.querySelectorAll(".mtab").forEach(t=>t.classList.toggle("sel",t.getAttribute("data-mtab")===id));
+  document.querySelectorAll(".mbody").forEach(b=>b.classList.toggle("sel",b.id===id));
+}
+function openMission(tab){
+  if(tab)missionTab(tab);
+  if(isMobile()){document.querySelectorAll(".win").forEach(x=>x.classList.remove("open"));$("#mission").classList.add("open");}
+}
+function wireMission(){
+  document.querySelectorAll(".mtab").forEach(t=>t.addEventListener("click",()=>missionTab(t.getAttribute("data-mtab"))));
+  renderInbox();renderLaunch();renderTrendsTab();
+}
+function inboxCount(){
+  return ((state.queueItems||[]).filter(q=>!q.approved).length)+((state.outreach||[]).filter(o=>!o.approved).length);
+}
+function updateBadges(){
+  const n=inboxCount();
+  const b=$("#badgeInbox");if(b){b.textContent=n;b.classList.toggle("on",n>0)}
+  const hq=$("#hudQueue");if(hq)hq.textContent=state.feed==="live"?String(n):"—";
+  const dd=$("#dockInboxDot");if(dd)dd.style.display=n>0?"":"none";
+}
+function renderInbox(){
+  const el=$("#mInbox");if(!el)return;
+  const rows=[];
+  (state.queueItems||[]).forEach(q=>{
+    rows.push(`<div class="ibx prod">
+      <div class="ih"><span class="iico"><img src="img/pixel/vulcan_rot_south.png" alt=""></span>
+        <span class="iname">${esc(q.name)}</span><span class="iprice">$${q.price}</span></div>
+      <div class="isub">Vulcan built this and staged it for you. Approving records your ✓ on the VPS — publishing still happens with Claude on your Mac.</div>
+      <div class="irow">${q.approved
+        ?'<span class="iok">✓ APPROVED — say “ship it” to Claude to publish</span>'
+        :`<button class="iapv" data-inbox-approve="item" data-val="${esc(q.name)}">✓ APPROVE PRODUCT</button>`}</div>
+    </div>`);
+  });
+  (state.outreach||[]).forEach(o=>{
+    rows.push(`<div class="ibx mail">
+      <div class="ih"><span class="iico"><img src="img/pixel/rollie_rot_south.png" alt=""></span>
+        <span class="iname">${esc(o.company)}</span></div>
+      <div class="isub">“${esc(o.subject)}” — outreach draft. Approving records it; <b style="color:var(--you)">sending stays human</b>.</div>
+      <div class="irow">${o.approved
+        ?'<span class="iok">✓ APPROVED — grab the draft &amp; send when ready</span>'
+        :`<button class="iapv" data-inbox-approve="outreach" data-val="${esc(o.company)}">✓ APPROVE OUTREACH</button>`}</div>
+    </div>`);
+  });
+  if((state.dispatches||[]).length){
+    rows.push(`<div class="msec">RECENT GIGS DISPATCHED</div>`);
+    state.dispatches.slice(0,4).forEach(x=>{
+      rows.push(`<div class="ibx" style="border-left:3px solid var(--blu)">
+        <div class="ih"><span class="iico">🚀</span><span class="iname">${esc(x.agent)} · ${esc(x.model)}</span></div>
+        <div class="isub">${esc(x.brief)}</div></div>`);
+    });
+  }
+  el.innerHTML=rows.length?rows.join("")
+    :`<div class="inbox-zero">📭 <b>Inbox zero.</b><br>Nothing is waiting on you.<br><br>
+      Vulcan stages products here after his 12:00 shift.<br>Rollie stages outreach weekday mornings.<br>
+      Or don't wait — hit <b>LAUNCH</b> and give someone a gig.</div>`;
+  el.querySelectorAll("[data-inbox-approve]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      b.disabled=true;b.textContent="…";
+      const kind=b.getAttribute("data-inbox-approve"),val=b.getAttribute("data-val");
+      sendCommand(kind==="item"?"approve_item":"approve_outreach",val,d=>{
+        if(d.status==="done"){
+          if(kind==="item"){const q=(state.queueItems||[]).find(x=>x.name===val);if(q)q.approved=true}
+          else{const o=(state.outreach||[]).find(x=>x.company===val);if(o)o.approved=true}
+          renderInbox();updateBadges();
+        }else{b.disabled=false;b.textContent="✓ APPROVE"}
+      });
+    });
+  });
+  updateBadges();
+}
+function chatModels(){return ((state.meta&&state.meta.models)||[]).filter(m=>!["media","memory"].includes(m.tier))}
+function renderLaunch(prefill){
+  const el=$("#mLaunch");if(!el)return;
+  const keep=prefill!=null?prefill:(el.querySelector("#dspBrief")?el.querySelector("#dspBrief").value:"");
+  const mdls=chatModels();
+  el.innerHTML=`
+    <div class="msec">DEPLOY A GIG — PICK A BOT</div>
+    <div class="dsp">
+      <div class="agpick">
+        ${[["foundry","VULCAN","img/pixel/vulcan_rot_south.png","var(--org)","builds it"],
+           ["rollie","ROLLIE","img/pixel/rollie_rot_south.png","var(--vio)","markets it"],
+           ["main","THEO","img/pixel/theo_rot_south.png","var(--blu)","plans it"]].map(a=>
+          `<div class="agopt${state.dsp.agent===a[0]?" sel":""}" data-ag="${a[0]}" style="--ac:${a[3]}" role="button">
+            <img src="${a[2]}" alt=""><span>${a[1]}</span><span style="font-weight:500;color:var(--faint);font-size:7.5px;letter-spacing:.06em">${a[4]}</span></div>`).join("")}
+      </div>
+      <div class="lbl">the brief — what's the gig?</div>
+      <textarea id="dspBrief" maxlength="1200" placeholder="e.g. Research whether a $19 “lawn-care client intake kit” would sell right now. If yes, build the smallest sellable version and stage it for my review.">${esc(keep)}</textarea>
+      <div class="lbl">brain — which model runs it</div>
+      <select class="modelsel" id="dspModel">
+        <option value="">agent default — grok-4.20 (heavy)</option>
+        ${mdls.map(m=>`<option value="${esc(m.id)}"${state.dsp.model===m.id?" selected":""}>${esc(m.id.replace(/^openrouter\//,""))} · ${esc(m.tier)} · ${esc(m.cost)}</option>`).join("")}
+      </select>
+      <button class="launch" id="dspGo">🚀 DISPATCH GIG</button>
+      <div class="note">This wakes the real agent on the VPS right now (~$0.01–0.50 depending on brain). <b>THE WALL holds</b> — it can research, build, and stage for your review. It can never publish, send, or spend.</div>
+    </div>`;
+  el.querySelectorAll(".agopt").forEach(a=>a.addEventListener("click",()=>{
+    state.dsp.agent=a.getAttribute("data-ag");
+    el.querySelectorAll(".agopt").forEach(x=>x.classList.toggle("sel",x===a));
+  }));
+  const go=$("#dspGo");
+  go.addEventListener("click",()=>{
+    const brief=$("#dspBrief").value.trim();
+    state.dsp.model=$("#dspModel").value;
+    if(brief.length<10){$("#dspBrief").style.borderColor="var(--red)";setTimeout(()=>$("#dspBrief").style.borderColor="",1200);return}
+    go.disabled=true;go.textContent="🚀 DISPATCHING…";
+    const uiKey=state.dsp.agent==="main"?"theo":state.dsp.agent==="foundry"?"vulcan":"rollie";
+    markWorking(uiKey,10*60000);
+    sendCommand("dispatch",{agent:state.dsp.agent,brief,model:state.dsp.model||null},d=>{
+      go.disabled=false;go.textContent="🚀 DISPATCH GIG";
+      if(d.status==="done"){$("#dspBrief").value="";missionTab("mComms")}
+    });
+    setTimeout(()=>{go.disabled=false;go.textContent="🚀 DISPATCH GIG"},20000);
+  });
+}
+function trendAge(iso){try{const m=Math.floor((Date.now()-new Date(iso).getTime())/60000);return m<60?m+"m ago":Math.floor(m/60)+"h ago"}catch(e){return""}}
+function renderTrendsTab(){
+  const el=$("#mTrends");if(!el)return;
+  const t=state.trends;
+  if(!t||!Array.isArray(t.trends)||!t.trends.length){
+    el.innerHTML=`<div class="inbox-zero">📡 no trend sweep yet.<br><br>The recon desk runs 3× daily —<br>Grok live-searches X + the web for<br>product &amp; trades opportunities.</div>`;return;
+  }
+  el.innerHTML=`<div class="msec">LIVE RECON · GROK × X SEARCH · ${trendAge(t.generated_at)}</div>`+
+    t.trends.map((tr,i)=>`<div class="trend" data-ti="${i}" role="button">
+      <div class="th2"><span class="tt">${esc(tr.topic)}</span><span class="lane ${tr.lane}">${esc(tr.lane)}</span></div>
+      <div class="ta">${esc(tr.angle)}</div>
+      <div class="heat">${[1,2,3,4,5].map(n=>`<i class="${n<=(tr.heat||3)?"on":""}"></i>`).join("")}</div>
+      <div class="tuse">tap → draft a gig from this trend</div>
+    </div>`).join("");
+  el.querySelectorAll(".trend").forEach(d=>d.addEventListener("click",()=>{
+    const tr=t.trends[Number(d.getAttribute("data-ti"))];if(!tr)return;
+    state.dsp.agent=tr.lane==="trades"?"rollie":"foundry";
+    renderLaunch(`Trend: ${tr.topic}. ${tr.angle} — Validate this quickly, then ${tr.lane==="trades"?"build a dossier + outreach angle and stage it":"build the smallest sellable version and stage it"} for my review.`);
+    openMission("mLaunch");missionTab("mLaunch");
+  }));
+}
+
 /* ============ BOOT ============ */
 function bootSeq(){
   if(reduce){start();return}
   const b=$("#boot");b.classList.add("on");
-  const lines=["> LAB-OS v4 — live control","> operator verified: "+(user?user.email:"?"),
-    "> command bridge .............. linked","> telemetry ................... checking",
+  const lines=["> LAB-OS v9 — mission control","> operator verified: "+(user?user.email:"?"),
+    "> command bridge .............. linked","> model router ................ openrouter × xai",
+    "> trend recon ................. grok live search",
     "> WELCOME BACK, OPERATOR"];
   let i=0;
   (function next(){
@@ -872,7 +1155,7 @@ const CREW={
   rollie:{nm:"ROLLIE",rl:"sales & mktg · openclaw `rollie`",st:"wakes 09:00 CT wkdays — prospects"},
   slotb:{nm:"OPEN SLOT",rl:"division b — unassigned",st:"tap to see how to activate",slot:true}
 };
-const state={spend:null,queue:null,queueItems:null,room:null,feed:"none",meta:null,vulcanTask:null,paused:false,trig:{}};
+const state={spend:null,queue:null,queueItems:null,room:null,feed:"none",meta:null,vulcanTask:null,paused:false,trig:{},dsp:{agent:"foundry",model:""}};
 
 /* ============ IDLE / WORKING STATE MACHINE ============
    WORKING when: inside the real cron window (CT), or a triggered
@@ -939,18 +1222,23 @@ function navAgent(k){
 function buildDock(){
   const d=$("#dock");
   d.innerHTML=
-    `<div class="dtile" data-k="theo" style="--ac:var(--blu)" role="button"><span class="dl"></span><img class="dg" src="img/pixel/theo_rot_south.png" alt=""><span class="dn">THEO</span></div>
-     <div class="dtile" data-k="vulcan" style="--ac:var(--org)" role="button"><span class="dl"></span><img class="dg" src="img/pixel/vulcan_rot_south.png" alt=""><span class="dn">VULCAN</span></div>
-     <div class="dtile" data-k="rollie" style="--ac:var(--vio)" role="button"><span class="dl"></span><img class="dg" src="img/pixel/rollie_rot_south.png" alt=""><span class="dn">ROLLIE</span></div>
-     <div class="dtile" data-nav="ceo" style="--ac:var(--blu)" role="button"><img class="dg" src="img/ceo.png" alt=""><span class="dn">CEO</span></div>
-     <div class="dtile" data-nav="admin" style="--ac:var(--blu)" role="button"><img class="dg" src="img/icon-admin.png" alt=""><span class="dn">ADMIN</span></div>
-     <div class="dtile" data-sheet="winComms" style="--ac:var(--grn)" role="button"><img class="dg" src="img/icon-log.png" alt=""><span class="dn">CHAT</span></div>`;
+    `<div class="dtile" data-mt="mInbox" style="--ac:var(--org)" role="button"><span class="dl" id="dockInboxDot" style="display:none;--lc:var(--red)"></span><span class="dg" style="font-size:22px;line-height:26px">📥</span><span class="dn">INBOX</span></div>
+     <div class="dtile" data-mt="mLaunch" style="--ac:var(--org)" role="button"><span class="dg" style="font-size:22px;line-height:26px">🚀</span><span class="dn">LAUNCH</span></div>
+     <div class="dtile" data-mt="mTrends" style="--ac:var(--blu)" role="button"><span class="dg" style="font-size:22px;line-height:26px">📡</span><span class="dn">TRENDS</span></div>
+     <div class="dtile" data-mt="mComms" style="--ac:var(--grn)" role="button"><span class="dg" style="font-size:22px;line-height:26px">💬</span><span class="dn">CHAT</span></div>
+     <div class="dtile" data-nav="ceo" style="--ac:var(--blu)" role="button"><img class="dg" src="img/pixel/theo_rot_south.png" alt=""><span class="dn">CEO</span></div>
+     <div class="dtile" data-nav="admin" style="--ac:var(--blu)" role="button"><img class="dg" src="img/icon-admin.png" alt=""><span class="dn">ADMIN</span></div>`;
   d.addEventListener("click",e=>{
     const t=e.target.closest(".dtile");if(!t)return;
-    if(t.getAttribute("data-sheet")){toggleSheet(t.getAttribute("data-sheet"));return}
+    if(t.getAttribute("data-mt")){
+      const tab=t.getAttribute("data-mt"),m=$("#mission");
+      const already=m.classList.contains("open")&&$("#"+tab).classList.contains("sel");
+      if(already){m.classList.remove("open")}else{missionTab(tab);openMission(tab)}
+      return;
+    }
+    $("#mission").classList.remove("open");
     if(t.getAttribute("data-nav")==="admin"){showAdmin();return}
     if(t.getAttribute("data-nav")==="ceo"){showCeo();return}
-    navAgent(t.getAttribute("data-k"));
   });
 }
 
@@ -990,6 +1278,12 @@ function openAgentCard(k){
     if(meta)html+=`<div class="asec" style="--mc:${r.ac}"><h4>Authority</h4><div class="acando">
       <div class="cc can"><div class="cl2">✓ can</div>${esc(meta.can)}</div>
       <div class="cc cant"><div class="cl2">✕ cannot</div>${esc(meta.cannot)}</div></div></div>`;
+    {const mdls=chatModels();
+    if(mdls.length)html+=`<div class="asec" style="--mc:${r.ac}"><h4>Brain — switch model</h4>
+      <div class="mdlrow"><select class="modelsel" id="acModel">
+        ${mdls.map(m=>`<option value="${esc(m.id)}"${m.id===model?" selected":""}>${esc(m.id.replace(/^openrouter\//,""))} · ${esc(m.tier)} · ${esc(m.cost)}</option>`).join("")}
+      </select><button class="mdlgo" id="acModelGo">APPLY</button></div>
+      <div style="font-size:8.5px;color:var(--faint);margin-top:6px;line-height:1.6">Swaps the model this agent thinks with (restarts the gateway, ~10s). Cheap brains are great for routine shifts; heavy for hard builds.</div></div>`;}
     html+=`<div class="aact" style="--mc:${r.ac}">
       ${runCmd?`<button class="primary" id="acRun">▶ Run now</button>`:""}
       <button class="ghost" id="acGo">Go to room</button></div>`;
@@ -1005,6 +1299,18 @@ function openAgentCard(k){
   const run=$("#acRun");if(run)run.addEventListener("click",()=>{
     run.disabled=true;markWorking(k,12*60000);sendCommand(runCmd,null);
     setTimeout(closeAgentCard,600);
+  });
+  const mg=$("#acModelGo");if(mg)mg.addEventListener("click",()=>{
+    const sel=$("#acModel");if(!sel||!sel.value)return;
+    mg.disabled=true;mg.textContent="…";
+    sendCommand("set_model",{agent:OC_ID[k],model:sel.value},d=>{
+      mg.disabled=false;mg.textContent="APPLY";
+      if(d.status==="done"){
+        const a=(state.meta&&state.meta.agents||[]).find(x=>(x.id==="main"?"theo":x.id)===k);
+        if(a)a.model=sel.value;
+        const md=document.querySelector(".ahd .amd");if(md)md.innerHTML="model: <b>"+esc(sel.value)+"</b>";
+      }
+    });
   });
 }
 function closeAgentCard(){$("#agentModal").classList.remove("on")}
@@ -1122,6 +1428,7 @@ function toggleSheet(id){
   const w=$("#"+id);
   const opening=!w.classList.contains("open");
   document.querySelectorAll(".win").forEach(x=>x.classList.remove("open"));
+  const m=$("#mission");if(m)m.classList.remove("open");   // one bottom sheet at a time on mobile
   w.classList.remove("hidden");   // a closed sheet can always be reopened from the dock
   if(opening)w.classList.add("open");
 }
@@ -1129,7 +1436,7 @@ function toggleSheet(id){
   document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
 
 /* ============ SKINS + GRAIN ============ */
-const SKINS=[["","COMMAND"],["motherboard","MOTHERBOARD"],["nightshift","NIGHTSHIFT"],["synthwave","SYNTHWAVE"],["redline","REDLINE"]];
+const SKINS=[["","WORKSHOP"],["command","COMMAND"],["motherboard","MOTHERBOARD"],["nightshift","NIGHTSHIFT"],["synthwave","SYNTHWAVE"],["redline","REDLINE"]];
 function applySkin(i){
   const [key,label]=SKINS[i%SKINS.length];
   if(key)document.documentElement.setAttribute("data-skin",key);
@@ -1138,10 +1445,10 @@ function applySkin(i){
   if(typeof fApplySkin==="function")fApplySkin(key);   // recolor the canvas world to match
   try{localStorage.setItem("lab-skin",String(i%SKINS.length))}catch(e){}
 }
-let skinIdx=1;   // default → MOTHERBOARD (green ULTRON look)
+let skinIdx=0;   // default → WORKSHOP (warm, matches the WALL-E crew)
 try{
-  if(localStorage.getItem("lab-skin-v")!=="2"){ skinIdx=1; localStorage.setItem("lab-skin","1"); localStorage.setItem("lab-skin-v","2"); }  // one-time: switch everyone to green on this update
-  else { const s=localStorage.getItem("lab-skin"); skinIdx=(s===null)?1:(parseInt(s,10)||0); }
+  if(localStorage.getItem("lab-skin-v")!=="3"){ skinIdx=0; localStorage.setItem("lab-skin","0"); localStorage.setItem("lab-skin-v","3"); }  // one-time: everyone lands on WORKSHOP with this update
+  else { const s=localStorage.getItem("lab-skin"); skinIdx=(s===null)?0:(parseInt(s,10)||0); }
 }catch(e){}
 applySkin(skinIdx);
 // optional deep-link: ?skin=motherboard|nightshift|synthwave|redline|command
@@ -1176,6 +1483,7 @@ function hideAdmin(){$("#view-admin").style.display="none";$("#view-ceo").style.
 function showAdmin(){
   document.querySelectorAll(".acard,.dtile[data-k]").forEach(c=>c.classList.remove("sel"));
   $("#view-ceo").style.display="none";
+  closeWin("winOps");
   renderAdmin();
   $("#view-admin").style.display="block";
   location.hash="#/admin";
@@ -1183,6 +1491,7 @@ function showAdmin(){
 function showCeo(){
   document.querySelectorAll(".acard,.dtile[data-k]").forEach(c=>c.classList.remove("sel"));
   $("#view-admin").style.display="none";
+  closeWin("winOps");
   renderCeo();
   $("#view-ceo").style.display="block";
   location.hash="#/ceo";
@@ -1204,9 +1513,13 @@ function renderCeo(){
     const w=isWorking(k);
     const canRun=k==="vulcan"||k==="rollie"||k==="theo";
     const cmd=k==="vulcan"?"run_shift":k==="rollie"?"run_prospecting":"run_standup";
+    const mdls=chatModels();
     return `<div class="amrow">
       <img src="${AGENT_IMG[k]||'img/pixel/slot_rot_south.png'}" alt="">
-      <div class="amid"><div class="an">${a.name}</div><div class="ar">${esc(a.role).slice(0,60)}</div><div class="ammodel">model: ${esc(a.model||'—')}</div></div>
+      <div class="amid"><div class="an">${a.name}</div><div class="ar">${esc(a.role).slice(0,60)}</div>
+        <div class="mdlrow" style="margin-top:7px"><select class="modelsel" data-mdlsel="${a.id}" style="padding:6px 8px;font-size:9px">
+          ${mdls.map(m=>`<option value="${esc(m.id)}"${m.id===a.model?" selected":""}>${esc(m.id.replace(/^openrouter\//,""))} · ${esc(m.cost)}</option>`).join("")}
+        </select><button class="mdlgo" data-mdlgo="${a.id}">SET</button></div></div>
       <span class="stpill ${w?'work':''}">${w?'● WORKING':'○ idle'}</span>
       ${canRun?`<button class="runb" data-runagent="${cmd}" data-agentkey="${k}">▶ RUN</button>`:''}
     </div>`;}).join("");
@@ -1288,6 +1601,16 @@ function renderCeo(){
     sendCommand(b.getAttribute("data-runagent"),null);
     const p=b.closest(".amrow").querySelector(".stpill");if(p){p.textContent="● WORKING";p.classList.add("work")}
   }));
+  document.querySelectorAll("[data-mdlgo]").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.getAttribute("data-mdlgo");
+    const sel=document.querySelector('[data-mdlsel="'+id+'"]');if(!sel||!sel.value)return;
+    b.disabled=true;b.textContent="…";
+    sendCommand("set_model",{agent:id,model:sel.value},d=>{
+      b.disabled=false;b.textContent=d.status==="done"?"✓":"SET";
+      if(d.status==="done"){const a=(state.meta&&state.meta.agents||[]).find(x=>x.id===id);if(a)a.model=sel.value;}
+      setTimeout(()=>{b.textContent="SET"},3000);
+    });
+  }));
   const ci=$("#ceoChatIn"),cb=$("#ceoChatSend");
   function csend(){const t=ci.value.trim();if(!t)return;ci.value="";cb.disabled=true;
     markWorking("theo",180000);pushLog("YOU","→ (CEO deck) "+t,"var(--you)");
@@ -1295,7 +1618,7 @@ function renderCeo(){
   cb.addEventListener("click",csend);ci.addEventListener("keydown",e=>{if(e.key==="Enter")csend()});
 }
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function memoAge(ts){const s=Math.floor(Date.now()/1000)-Number(ts);if(s<3600)return Math.floor(s/60)+"m ago";if(s<86400)return Math.floor(s/3600)+"h ago";return Math.floor(s/86400)+"d ago"}
+function memoAge(ts){const n=Number(ts);if(!isFinite(n)||n<=0)return"";const s=Math.floor(Date.now()/1000)-n;if(s<60)return"just now";if(s<3600)return Math.floor(s/60)+"m ago";if(s<86400)return Math.floor(s/3600)+"h ago";return Math.floor(s/86400)+"d ago"}
 function selectRoom(k){
   hideAdmin();
   if(state.room===k){location.hash="#/"+k;openWin("winOps");if(typeof facFocus==="function")facFocus(k);return}
@@ -1319,12 +1642,10 @@ function renderOps(k){
     html+=`<button class="cmdbtn" data-cmd="${b[0]}" ${b[2]?`title="${b[2]}"`:""}>${b[1]}</button>`;
   });
   html+=`<div class="kgrid">${o.kpis.map(kp=>`<div class="kp"><div class="k">${kp[0]}</div><div class="v">${kp[1]}</div></div>`).join("")}</div>`;
-  if(k==="vulcan"){
-    html+=`<div class="sec-t">REVIEW QUEUE — AWAITING PARKER</div><div id="opsQueue">`+queueHTML()+`</div>`;
-  }
-  if(k==="rollie"){
-    html+=`<div class="sec-t">OUTREACH QUEUE — AWAITING PARKER</div><div id="opsOutreach">`+outreachHTML()+`</div>`;
-  }
+  if(k==="vulcan"&&(state.queueItems||[]).length)
+    html+=`<button class="cmdbtn" data-goinbox="1" style="--wc:var(--org)">📥 ${state.queueItems.filter(q=>!q.approved).length||"✓"} IN THE APPROVALS INBOX</button>`;
+  if(k==="rollie"&&(state.outreach||[]).length)
+    html+=`<button class="cmdbtn" data-goinbox="1" style="--wc:var(--vio)">📥 ${state.outreach.filter(q=>!q.approved).length||"✓"} IN THE APPROVALS INBOX</button>`;
   // LATEST REPORT — real data from the agent's most recent run (baked into the room)
   const rep=state.reports&&state.reports[k];
   if(r.kind==="live"){
@@ -1341,7 +1662,7 @@ function renderOps(k){
     <div><div class="un">${u[1]}</div><div class="ud">${u[2]}</div></div></div>`).join("");
   if(o.wire)html+=`<div class="wire">▸ ${o.wire}</div>`;
   $("#opsBody").innerHTML=html;
-  wireOutreach();
+  $("#opsBody").querySelectorAll("[data-goinbox]").forEach(b=>b.addEventListener("click",()=>{openMission("mInbox");missionTab("mInbox")}));
   $("#opsBody").querySelectorAll("[data-cmd]").forEach(btn=>{
     btn.addEventListener("click",()=>{
       btn.disabled=true;setTimeout(()=>{btn.disabled=false},8000);
@@ -1352,50 +1673,7 @@ function renderOps(k){
       sendCommand(cmd,null);
     });
   });
-  wireApprove();
   fillLiveSpans();
-}
-function queueHTML(){
-  if(state.queueItems&&state.queueItems.length)
-    return state.queueItems.map(q=>`<div class="qrow"><span>🗂️</span><span class="qn">${q.name}</span><span class="qp">$${q.price}</span>${
-      q.approved?'<span class="ok">✓ APPROVED</span>':'<button class="apv" data-approve="'+q.name.replace(/"/g,"&quot;")+'">✓ APPROVE</button>'
-    }</div>`).join("")
-      +`<div class="wire">▸ approval is recorded on the VPS · publishing runs with Claude on your Mac</div>`;
-  if(state.feed==="live")return `<div class="wire">▸ queue is empty — Vulcan's next shift is at 12:00 CT</div>`;
-  return `<div class="wire">▸ no telemetry reachable — queue unknown (nothing fake shown)</div>`;
-}
-function outreachHTML(){
-  if(state.outreach&&state.outreach.length)
-    return state.outreach.map(o=>`<div class="qrow"><span>✉️</span><span class="qn" title="${o.subject}">${o.company} — ${o.subject}</span>${
-      o.approved?'<span class="ok">✓ APPROVED</span>':'<button class="apv" data-outreach="'+o.company.replace(/"/g,"&quot;")+'">✓ APPROVE</button>'
-    }</div>`).join("")
-      +`<div class="wire">▸ approving records it on the VPS · SENDING stays human — grab drafts from Rollie's workspace or ask Claude</div>`;
-  if(state.feed==="live")return `<div class="wire">▸ queue is empty — Rollie's next shift is 09:00 CT (weekdays)</div>`;
-  return `<div class="wire">▸ no telemetry reachable — queue unknown (nothing fake shown)</div>`;
-}
-function wireOutreach(){
-  document.querySelectorAll("[data-outreach]").forEach(b=>{
-    b.addEventListener("click",()=>{
-      b.disabled=true;b.textContent="…";
-      sendCommand("approve_outreach",b.getAttribute("data-outreach"),d=>{
-        if(d.status==="done"){const q=(state.outreach||[]).find(x=>x.company===b.getAttribute("data-outreach"));if(q)q.approved=true;
-          const oq=$("#opsOutreach");if(oq)oq.innerHTML=outreachHTML();wireOutreach();}
-        else{b.disabled=false;b.textContent="✓ APPROVE"}
-      });
-    });
-  });
-}
-function wireApprove(){
-  document.querySelectorAll("[data-approve]").forEach(b=>{
-    b.addEventListener("click",()=>{
-      b.disabled=true;b.textContent="…";
-      sendCommand("approve_item",b.getAttribute("data-approve"),d=>{
-        if(d.status==="done"){const q=(state.queueItems||[]).find(x=>x.name===b.getAttribute("data-approve"));if(q)q.approved=true;
-          const oq=$("#opsQueue");if(oq)oq.innerHTML=queueHTML();wireApprove();}
-        else{b.disabled=false;b.textContent="✓ APPROVE"}
-      });
-    });
-  });
 }
 function fillLiveSpans(){
   document.querySelectorAll('[data-live="staged"]').forEach(e=>e.textContent=state.queue==null?"—":String(state.queue));
@@ -1496,7 +1774,7 @@ function renderAdmin(){
    ├─ watches: sanitized telemetry (10-min publisher → <b>pool.gs-v.net/lab-status</b>)
    └─ commands: lab_commands (Firestore) → <b>lab-bridge daemon on the VPS</b>
         └─ allowlisted actions only: run shift · run standup · pause · resume
-           · approve item · message Theo (his reply comes back to COMMS)
+           · approve item/outreach · message Theo · dispatch gig · switch model
 Agents write privately on the VPS; drafts/paths/credentials never leave it.</div>
     </div>`;
   $("#adminBack").addEventListener("click",()=>{hideAdmin();location.hash="#/"+(state.room||"vulcan")});
@@ -1554,7 +1832,7 @@ function drags(){
     b.addEventListener("click",()=>closeWin(b.getAttribute("data-close")));
   });
 }
-const WIN_META={winComms:{label:"COMMS",color:"var(--grn)"},winOps:{label:"OPS",color:"var(--blu)"}};
+const WIN_META={winOps:{label:"OPS",color:"var(--blu)"}};
 function closeWin(id){
   const w=$("#"+id);if(!w)return;
   w.classList.remove("open");            // mobile: drop the sheet
@@ -1628,8 +1906,6 @@ function applyLive(j){
     state.queueItems=(f.staged_for_review||[]).map(p=>({name:p.name,price:p.price,approved:!!p.approved}));
     state.queue=state.queueItems.length;
     if(typeof f.spend_estimate_usd==="number")state.vulcanSpend=f.spend_estimate_usd;
-    $("#hudQueue").textContent=state.queue;
-    $("#hudSpend").textContent=state.vulcanSpend==null?"$—":"$"+state.vulcanSpend.toFixed(2);
     if(first){
       pushLog("FEED","live telemetry connected ✓","var(--grn)");
       state.queueItems.forEach(q=>pushLog("VULCAN","staged: "+q.name+" ($"+q.price+")"+(q.approved?" — approved":""),"var(--org)"));
@@ -1658,7 +1934,13 @@ function applyLive(j){
   state.vps=j.vps||state.vps;
   state.inbox=j.inbox||state.inbox;
   state.reports=j.reports||state.reports;
+  state.trends=j.trends||state.trends;
+  state.dispatches=j.dispatches||state.dispatches;
   if(first&&state.inbox&&state.inbox.length)pushLog("THEO","📥 "+state.inbox.length+" memo(s) in your CEO inbox","var(--blu)");
+  if(first&&state.trends&&state.trends.trends)pushLog("RECON","📡 "+state.trends.trends.length+" live trends from the Grok sweep","var(--blu)");
+  // mission panel refresh (don't clobber a brief mid-type)
+  renderInbox();renderTrendsTab();
+  if(first)renderLaunch();
   fillLiveSpans();refreshBubbles();
   if(state.room&&ROOMS[state.room]&&ROOMS[state.room].kind==="live")renderOps(state.room);
   if($("#view-admin").style.display==="block")renderAdmin();
@@ -1690,8 +1972,12 @@ const FIMG={man:null,img:{}};
 /* canvas palette — switches with the skin (var so it's assignable from applySkin before this line runs) */
 var FPAL;
 function fApplySkin(key){
-  if(key==="motherboard") FPAL={conduit:"51,255,119",chrome:"51,255,119",star:"70,255,140",drone:"170,255,150",green:true};
-  else                    FPAL={conduit:"70,220,235",chrome:"63,224,240",star:"120,180,230",drone:"150,232,255",green:false};
+  if(key==="motherboard") FPAL={conduit:"51,255,119",chrome:"51,255,119",star:"70,255,140",drone:"170,255,150",green:true,
+    bg:"#04070a",floorBase:"#0f121a",tileA:"#1a1f2b",tileB:"#161a24",grid:"rgba(63,224,240,.04)",corridor:"#0b0e15"};
+  else if(key)            FPAL={conduit:"70,220,235",chrome:"63,224,240",star:"120,180,230",drone:"150,232,255",green:false,
+    bg:"#07090d",floorBase:"#0f121a",tileA:"#1a1f2b",tileB:"#161a24",grid:"rgba(63,224,240,.04)",corridor:"#0b0e15"};
+  else /* WORKSHOP */     FPAL={conduit:"255,176,92",chrome:"255,196,120",star:"255,212,150",drone:"255,224,170",green:false,warm:true,
+    bg:"#0f0b07",floorBase:"#201810",tileA:"#2f251a",tileB:"#281e13",grid:"rgba(255,190,110,.06)",corridor:"#1a130b"};
 }
 var fstars=null;
 function fStars(t){const c=FCTX; if(!FPAL)fApplySkin("");
@@ -1721,7 +2007,7 @@ async function facInit(){
 }
 function facResize(){ if(!FCV)return; const r=FCV.getBoundingClientRect(); FCV.width=Math.max(1,Math.floor(r.width*FDPR)); FCV.height=Math.max(1,Math.floor(r.height*FDPR)); if(FCTX)FCTX.imageSmoothingEnabled=false; }
 function fProject(){ const s=Math.min(FCV.width/fcam.w,FCV.height/fcam.h); return{s,ox:(FCV.width-fcam.w*s)/2-fcam.x*s,oy:(FCV.height-fcam.h*s)/2-fcam.y*s}; }
-function facOverview(){ const lp=(innerWidth>820)?250:16; fcamT={x:-lp,y:-14,w:FAC.w+lp+20,h:FAC.h+28}; ffocused=null; }
+function facOverview(){ const lp=20; fcamT={x:-lp,y:-14,w:FAC.w+lp+20,h:FAC.h+28}; ffocused=null; }
 function facFocus(k){ if(!FAC_READY)return; const r=FRById[k]; if(!r)return; const pad=24; fcamT={x:r.x-pad,y:r.y-pad,w:r.w+pad*2,h:r.h+pad*2}; ffocused=r; }
 function fspark(x,y){ fparts.push({x:x+(Math.random()*14-7),y,vx:Math.random()*22-11,vy:-(18+Math.random()*30),life:.5+Math.random()*.5}); }
 
@@ -1746,31 +2032,36 @@ class FBot{
       if(d<=sp){this.x=t.x;this.y=t.y;this.path.shift();if(!this.path.length){const cb=this.after;this.after=null;if(cb)cb();else this.stt="idle";}}else{this.x+=dx/d*sp;this.y+=dy/d*sp;}}
     if(this.stt==="work"&&this.id==="vulcan"){const b=Math.sin(this.clock*9);if(Math.random()<(b>.6?dt*60:dt*8))fspark(this.ws.x,this.ws.y+18);}
     if(this.stt==="idle"&&!wk){this.idleT-=dt;if(this.idleT<=0){this.idleT=6+Math.random()*6;const rn=Math.random();
-      if(rn<.4){const p=this.wpts[Math.floor(Math.random()*this.wpts.length)];this.goTo(p.x,p.y,()=>this.facing=FDIR8[Math.floor(Math.random()*8)]);}
+      // front-biased facing so the little guys mostly show their faces
+      const face=()=>{this.facing=Math.random()<.62?["south","south-east","south-west"][Math.floor(Math.random()*3)]:FDIR8[Math.floor(Math.random()*8)];};
+      if(rn<.4){const p=this.wpts[Math.floor(Math.random()*this.wpts.length)];this.goTo(p.x,p.y,face);}
       else if(rn<.7){this.emote=["…","🎵","🤔"][Math.floor(Math.random()*3)];this.emoteT=1.5;this.hop=.5;}
-      else this.facing=FDIR8[Math.floor(Math.random()*8)];}} }
+      else face();}} }
   cur(){ const v=FIMG.man.bots[this.spr]; if(!v)return null;
     let st=this.stt==="work"?(this.workKey||'idle'):(this.stt==="walk"?"walk":"idle");
     let set=v.anims[st]&&(v.anims[st][this.facing]||v.anims[st].south);
     if(!set)return{img:FIMG.img[v.rotations[this.facing]||v.rotations.south],sx:0};
     const fps=st==="walk"?11:6;const fr=Math.floor(this.clock*fps)%set.frames;return{img:FIMG.img[set.file],sx:fr*set.fw,fw:set.fw,fh:set.fh}; }
-  draw(){ const c=FCTX,FS=0.9,fw=FIMG.man.frameW,fh=FIMG.man.frameH,dw=fw*FS,dh=fh*FS;
+  draw(){ const c=FCTX,dw=112,dh=112;
     const hop=Math.sin((1-this.hop)*Math.PI)*-13*this.hop,dx=this.x-dw/2,dy=this.y-dh+10+hop;
     c.save();c.globalAlpha=.34;c.fillStyle="#04070c";c.beginPath();c.ellipse(this.x,this.y+2,dw*0.22,dw*0.08,0,0,7);c.fill();c.restore();
-    const cf=this.cur();if(cf&&cf.img)c.drawImage(cf.img,cf.sx||0,0,fw,fh,dx,dy,dw,dh);
+    const cf=this.cur();
+    if(cf&&cf.img){const sw=cf.fw||cf.img.width,sh=cf.fh||cf.img.height;c.drawImage(cf.img,cf.sx||0,0,sw,sh,dx,dy,dw,dh);}
     const on=this.working,col=on?"#46ff9e":(this.workKey?"#ffab3d":"#5a6b77"),glo=on?"#b6ffd8":(this.workKey?"#ffd48a":"#8fa2ad");
     const lx=this.x,ly=dy+dh*0.5,pul=on?(.6+.4*Math.sin(this.clock*6)):(.5+.2*Math.sin(this.clock*2.2));
     c.save();c.globalAlpha=pul;const g=c.createRadialGradient(lx,ly,0,lx,ly,13);g.addColorStop(0,glo);g.addColorStop(.4,col);g.addColorStop(1,"rgba(0,0,0,0)");c.fillStyle=g;c.beginPath();c.arc(lx,ly,13,0,7);c.fill();c.restore();
     if(this.emote){const by=dy-4;c.save();c.font="900 18px system-ui";c.textAlign="center";c.fillStyle="#141a24";c.strokeStyle="rgba(70,220,235,.7)";c.lineWidth=2;frr(this.x-15,by-24,30,24,7);c.fill();c.stroke();c.beginPath();c.moveTo(this.x-4,by-2);c.lineTo(this.x+4,by-2);c.lineTo(this.x,by+4);c.fill();c.fillStyle="#eaf6f9";c.fillText(this.emote,this.x,by-6);c.restore();} }
-  hit(wx,wy){const dw=124*0.9;return Math.abs(wx-this.x)<dw*0.26&&wy>this.y-dw*0.85&&wy<this.y+8;}
+  hit(wx,wy){const dw=112;return Math.abs(wx-this.x)<dw*0.26&&wy>this.y-dw*0.85&&wy<this.y+8;}
 }
 
-function fFloor(r){const c=FCTX,T=52;c.save();frr(r.x,r.y,r.w,r.h,10);c.clip();c.fillStyle="#0f121a";c.fillRect(r.x,r.y,r.w,r.h);
-  for(let y=r.y;y<r.y+r.h;y+=T)for(let x=r.x;x<r.x+r.w;x+=T){const a=(((x-r.x)/T+(y-r.y)/T)|0)%2===0;c.fillStyle=a?"#1a1f2b":"#161a24";c.fillRect(x+2,y+2,T-4,T-4);
-    c.strokeStyle="rgba(0,0,0,.5)";c.lineWidth=1;c.strokeRect(x+2.5,y+2.5,T-5,T-5);c.strokeStyle="rgba(63,224,240,.04)";c.strokeRect(x+.5,y+.5,T,T);}c.restore();}
+function fFloor(r){const c=FCTX,T=52;if(!FPAL)fApplySkin("");c.save();frr(r.x,r.y,r.w,r.h,10);c.clip();c.fillStyle=FPAL.floorBase;c.fillRect(r.x,r.y,r.w,r.h);
+  for(let y=r.y;y<r.y+r.h;y+=T)for(let x=r.x;x<r.x+r.w;x+=T){const a=(((x-r.x)/T+(y-r.y)/T)|0)%2===0;c.fillStyle=a?FPAL.tileA:FPAL.tileB;c.fillRect(x+2,y+2,T-4,T-4);
+    c.strokeStyle="rgba(0,0,0,.5)";c.lineWidth=1;c.strokeRect(x+2.5,y+2.5,T-5,T-5);c.strokeStyle=FPAL.grid;c.strokeRect(x+.5,y+.5,T,T);}c.restore();}
 function fShell(r){const c=FCTX;c.save();frr(r.x-3,r.y-3,r.w+6,r.h+6,13);c.strokeStyle="rgba(0,0,0,.6)";c.lineWidth=6;c.stroke();c.restore();
   fFloor(r);c.save();frr(r.x,r.y,r.w,r.h,10);c.lineWidth=3;c.strokeStyle="#0c0f16";c.stroke();frr(r.x+2,r.y+2,r.w-4,r.h-4,9);c.lineWidth=1.5;c.strokeStyle=fhex(r.accent,.5);c.stroke();c.restore();
   if(FPAL&&FPAL.green){c.save();c.shadowColor="rgba("+FPAL.chrome+",.9)";c.shadowBlur=9;c.strokeStyle="rgba("+FPAL.chrome+",.5)";c.lineWidth=2;frr(r.x+1,r.y+1,r.w-2,r.h-2,9);c.stroke();c.restore();}
+  if(FPAL&&FPAL.warm){c.save();c.shadowColor="rgba(255,180,100,.55)";c.shadowBlur=14;c.strokeStyle="rgba(255,180,100,.22)";c.lineWidth=2;frr(r.x+1,r.y+1,r.w-2,r.h-2,9);c.stroke();
+    const g=c.createRadialGradient(r.x+r.w*.5,r.y+r.h*.3,10,r.x+r.w*.5,r.y+r.h*.3,r.w*.55);g.addColorStop(0,"rgba(255,190,110,.05)");g.addColorStop(1,"rgba(255,190,110,0)");c.fillStyle=g;c.fillRect(r.x,r.y,r.w,r.h);c.restore();}
   if(!ffocused){c.save();c.font="800 13px ui-rounded,system-ui";c.textAlign="left";c.fillStyle=fhex(r.accent,.9);c.fillText("▍"+r.name,r.x+12,r.y+20);
     c.fillStyle="rgba(150,170,180,.7)";c.font="700 10px ui-rounded,system-ui";c.fillText(fsub(r.id),r.x+22,r.y+34);c.restore();}}
 function fsub(id){return{theo:'Theo · CEO',vulcan:'Vulcan · digital products',rollie:'Rollie · outreach',slotb:'unassigned'}[id]||'';}
@@ -1805,13 +2096,13 @@ function decSlot(r,t){const c=FCTX,cx=r.x+r.w*0.5,cy=r.y+r.h*0.44;
   const hg=c.createRadialGradient(cx,cy+20,1,cx,cy+20,40);hg.addColorStop(0,`rgba(63,224,240,${.2*pul})`);hg.addColorStop(1,"rgba(63,224,240,0)");c.fillStyle=hg;c.beginPath();c.ellipse(cx,cy+20,30,10,0,0,7);c.fill();
   c.fillStyle="rgba(140,160,170,.35)";c.font="800 11px ui-rounded,system-ui";c.textAlign="center";c.fillText("UNASSIGNED",cx,r.y+r.h*0.8);}
 const FDEC={command:decCommand,foundry:decFoundry,sales:decSales,slot:decSlot};
-function fCorridors(t){const c=FCTX;c.fillStyle="#0b0e15";c.fillRect(552,10,76,740);c.fillRect(10,352,1160,66);c.strokeStyle="rgba("+FPAL.chrome+",.1)";c.lineWidth=1;for(let y=20;y<740;y+=40){c.beginPath();c.moveTo(560,y);c.lineTo(620,y);c.stroke();}}
+function fCorridors(t){const c=FCTX;c.fillStyle=FPAL.corridor;c.fillRect(552,10,76,740);c.fillRect(10,352,1160,66);c.strokeStyle="rgba("+FPAL.chrome+",.1)";c.lineWidth=1;for(let y=20;y<740;y+=40){c.beginPath();c.moveTo(560,y);c.lineTo(620,y);c.stroke();}}
 
 function fFrame(ts){ if(!FAC_READY)return; const dt=Math.min(.05,(ts-flast)/1000||0);flast=ts;const t=ts/1000;const c=FCTX;
   for(const k in fbots)fbots[k].update(dt);
   for(let i=fparts.length-1;i>=0;i--){const p=fparts[i];p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=60*dt;if(p.life<=0)fparts.splice(i,1);}
   for(const p of ['x','y','w','h'])fcam[p]+=(fcamT[p]-fcam[p])*Math.min(1,dt*6);
-  c.setTransform(1,0,0,1,0,0);c.fillStyle="#07090d";c.fillRect(0,0,FCV.width,FCV.height);
+  c.setTransform(1,0,0,1,0,0);c.fillStyle=FPAL?FPAL.bg:"#07090d";c.fillRect(0,0,FCV.width,FCV.height);
   const pr=fProject();c.setTransform(pr.s,0,0,pr.s,pr.ox,pr.oy);
   fStars(t);
   fCorridors(t); for(const r of FROOMS){fShell(r);FDEC[r.dec](r,t);}
@@ -1828,9 +2119,12 @@ let started=false;
 function start(){
   if(started)return;started=true;
   $("#app").classList.add("on");
-  buildRoster();buildDock();drags();startTimers();startGrain();wireChat();tryLive();facInit();
+  buildRoster();buildDock();drags();startTimers();startGrain();wireChat();wireMission();tryLive();facInit();
   applyStates();refreshBubbles();
   pushLog("SYS","facility online — operator "+(user?user.email:""),"var(--dim)");
+  const rc=$("#reviewChip");
+  rc.addEventListener("click",()=>{hideAdmin();openMission("mInbox");missionTab("mInbox")});
+  rc.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();hideAdmin();openMission("mInbox");missionTab("mInbox")}});
   $("#skinBtn").addEventListener("click",()=>{skinIdx=(skinIdx+1)%SKINS.length;applySkin(skinIdx)});
   const lb=$("#lumBtn");
   lb.addEventListener("click",()=>{lumIdx=(lumIdx+1)%LUMS.length;applyLum(lumIdx)});
@@ -1843,6 +2137,10 @@ function start(){
   const cb=$("#ceoBtn");
   cb.addEventListener("click",showCeo);
   cb.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();showCeo()}});
+  // deep link: ?tab=inbox|launch|trends|comms opens that mission tab (handy for phone shortcuts)
+  {const tb=new URLSearchParams(location.search).get("tab");
+   const map={inbox:"mInbox",launch:"mLaunch",trends:"mTrends",comms:"mComms"};
+   if(tb&&map[tb]){missionTab(map[tb]);if(isMobile())$("#mission").classList.add("open")}}
   const m=location.hash.match(/#\/(\w+)/);
   if(m&&m[1]==="admin"){selectRoom("theo");showAdmin()}
   else if(m&&m[1]==="ceo"){selectRoom("theo");showCeo()}
