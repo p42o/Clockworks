@@ -651,6 +651,19 @@ body{
 .dsp .launch:disabled{opacity:.4;cursor:default;filter:none;box-shadow:none}
 .dsp .note{font-size:9px;line-height:1.6;color:var(--faint);border-top:1px dashed var(--seam);padding-top:8px}
 .dsp .note b{color:var(--you)}
+/* hand-it-to-Theo header */
+.thero{display:flex;gap:12px;align-items:center;border:1px solid color-mix(in srgb,var(--blu) 35%,transparent);
+  background:color-mix(in srgb,var(--blu) 7%,transparent);border-radius:12px;padding:11px 12px}
+.thero img{width:44px;height:44px;flex:none;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--blu) 45%,transparent))}
+.thero .theron{font:700 12px var(--mono);letter-spacing:.06em;color:var(--ink)}
+.thero .therod{font-size:10px;line-height:1.5;color:var(--dim);margin-top:3px}
+.thero .therod b{color:var(--blu)}
+.dsp .advtoggle{background:transparent;border:0;color:var(--faint);font:600 10px var(--mono);letter-spacing:.06em;cursor:pointer;padding:4px;text-align:left}
+.dsp .advtoggle:hover{color:var(--dim)}
+.advbox{display:flex;flex-direction:column;gap:9px;border:1px solid var(--seam);border-radius:11px;padding:11px;background:rgba(255,255,255,.012);animation:cin .2s ease}
+.dsp .launch2{border:1px solid color-mix(in srgb,var(--blu) 50%,transparent);background:color-mix(in srgb,var(--blu) 10%,transparent);
+  color:var(--blu);border-radius:9px;padding:11px;font:700 10.5px var(--mono);letter-spacing:.12em;cursor:pointer}
+.dsp .launch2:disabled{opacity:.4;cursor:default}
 /* trends */
 .trend{border:1px solid var(--seam);border-radius:11px;padding:10px 12px;background:rgba(255,255,255,.02);cursor:pointer;transition:.14s}
 .trend:hover{border-color:var(--blu);box-shadow:0 0 14px -7px var(--blu)}
@@ -665,6 +678,30 @@ body{
 .trend .heat i.on{background:linear-gradient(90deg,var(--org-dk),var(--org));box-shadow:0 0 6px -1px var(--org)}
 .trend .tuse{font-size:8.5px;color:var(--faint);margin-top:7px;letter-spacing:.08em;text-transform:uppercase}
 .trend:hover .tuse{color:var(--blu)}
+/* ===== TEAM CHAT — the Teams-style ongoing chat with Theo (the center tab) ===== */
+#mLaunch{display:flex;flex-direction:column;gap:0;padding-bottom:0}
+.teamroster{flex:none;display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:2px 0 10px;border-bottom:1px solid var(--seam);margin-bottom:8px}
+.teamroster .tr{display:inline-flex;align-items:center;gap:5px;padding:3px 8px 3px 3px;border:1px solid var(--seam);border-radius:999px;background:rgba(255,255,255,.02);cursor:pointer;transition:.13s}
+.teamroster .tr:hover{border-color:var(--blu)}
+.teamroster .tr img{width:22px;height:22px;border-radius:50%;object-fit:contain;background:var(--pane-2)}
+.teamroster .tr b{font:700 9px var(--mono);letter-spacing:.06em;color:var(--dim)}
+.teamroster .trnote{font-size:9px;color:var(--faint);margin-left:auto}
+.teamroster .trnote b{color:var(--blu)}
+.teamscroll{flex:1;min-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding:4px 1px 10px}
+.tmsg{display:flex;gap:8px;max-width:88%;animation:cin .24s ease}
+.tmsg.me{align-self:flex-end;flex-direction:row-reverse}
+.tmsg.them{align-self:flex-start}
+.tmsg .tmav{width:26px;height:26px;flex:none;border-radius:50%;object-fit:contain;background:var(--pane-2);border:1px solid var(--seam-hi)}
+.tmsg .tmbub{padding:9px 12px;border-radius:13px;font-size:11.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.tmsg.me .tmbub{background:color-mix(in srgb,var(--you) 15%,transparent);border:1px solid color-mix(in srgb,var(--you) 35%,transparent);color:var(--ink);border-bottom-right-radius:4px}
+.tmsg.them .tmbub{background:var(--pane-2);border:1px solid var(--seam-hi);color:var(--dim);border-bottom-left-radius:4px}
+.tmsg .tmfrom{font:700 8px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--blu);margin-bottom:4px}
+.teamcompose{flex:none;display:flex;gap:7px;padding-top:9px;border-top:1px solid var(--seam)}
+.teamcompose input{flex:1;min-width:0;background:rgba(0,0,0,.35);border:1px solid var(--seam-hi);border-radius:10px;color:var(--ink);font:11.5px var(--mono);padding:11px 12px;outline:none}
+.teamcompose input:focus{border-color:var(--blu)}
+.teamcompose button{border:1px solid color-mix(in srgb,var(--blu) 50%,transparent);background:color-mix(in srgb,var(--blu) 12%,transparent);color:var(--blu);border-radius:10px;padding:0 16px;font:700 13px var(--mono);cursor:pointer}
+.teamcompose button:disabled{opacity:.4;cursor:default}
+
 /* ===== MESSAGES — email threads + running activity (persistent from lab_commands) ===== */
 #mComms{gap:9px}
 .msgsec{font-size:8.5px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase;margin:8px 0 -2px;display:flex;align-items:center;gap:7px}
@@ -971,7 +1008,7 @@ body{
       <div id="ptr">↓ pull to refresh</div>
       <div class="mtabs">
         <button class="mtab sel" data-mtab="mInbox" style="--mtc:var(--org)"><span class="mi">📥</span>INBOX<span class="mbadge" id="badgeInbox">0</span></button>
-        <button class="mtab" data-mtab="mLaunch" style="--mtc:var(--org)"><span class="mi">🚀</span>LAUNCH</button>
+        <button class="mtab" data-mtab="mLaunch" style="--mtc:var(--org)"><span class="mi">💬</span>TEAM</button>
         <button class="mtab" data-mtab="mTrends" style="--mtc:var(--blu)"><span class="mi">📡</span>TRENDS<span class="mbadge" id="badgeTrends">0</span></button>
         <button class="mtab" data-mtab="mComms" style="--mtc:var(--grn)"><span class="mi">📨</span>MAIL</button>
       </div>
@@ -1066,6 +1103,7 @@ if(new URLSearchParams(location.search).get('dev')==='1' && /^(localhost|127\.0\
     spend:{today_actual:0.85,daily_projection:1.2,monthly_projection:33,by_agent:[{agent:"vulcan",model:"grok-4",last:0.45},{agent:"rollie",model:"grok-4",last:0.4}]},
     vps:{uptime_days:12,load:"0.3",mem_used_mb:900,mem_total_mb:4096,disk_used_gb:14,disk_total_gb:40,openclaw:"ok",gateway:"ok",agents:3,crons_armed:3},
     inbox:[{id:"m1",priority:"normal",subject:"Weekly plan",preview:"Three ideas for next week…",body:"Full memo.",ts:"dev"}],
+    briefs:[{ts:new Date(Date.now()-3600000).toISOString(),from:"Theo",text:"Morning, boss. Vulcan's got a realtor prompt-pack idea staged for you, and Rollie proposed a 3-post series on saving trades businesses time. Nothing's built yet — approve a direction and I'll have them spin up a specialist. Spend so far today: $0.12."}],
     trends:{generated_at:new Date().toISOString(),trends:[
       {topic:"AI prompt packs",heat:5,angle:"Niche kits for creators sell on Gumroad.",lane:"product"},
       {topic:"Missed-call textback",heat:4,angle:"Trades owners losing calls — easy demo.",lane:"trades"},
@@ -1111,6 +1149,7 @@ function labelFor(a,p){
     :a==="approve_item"?"✓ approve: "+p
     :a==="approve_outreach"?"✓ approve outreach: "+p
     :a==="set_model"?"🧠 switch "+(p&&p.agent)+" → "+(p&&p.model)
+    :a==="delegate"?"🧭 "+p
     :a==="dispatch"?"🚀 dispatch gig → "+(p&&p.agent)+((p&&p.model)?" on "+p.model:"")
     :a==="message_theo"?"→ "+p:a;
 }
@@ -1169,7 +1208,8 @@ function DEV_COMMANDS(){const now=Date.now();const D=n=>new Date(now-n);return [
   {id:"c1",action:"email",status:"done",payload:{agent:"main",subject:"What should we prioritize?",body:"Hey Theo — what's the one thing we should focus on this week?",threadId:"t_a"},result:"Ship Vulcan's onboarding kit — it's the closest to revenue. I'd hold outreach until it's live so we have something to point to.",created_at:D(3600000),finished_at:D(3595000)},
   {id:"c2",action:"approve_item",status:"done",payload:"Freelance Client Onboarding Kit",result:"approval recorded on the VPS.",created_at:D(1800000)},
   {id:"c3",action:"dispatch",status:"done",payload:{agent:"foundry",brief:"Research whether a $19 lawn-care intake kit would sell.",model:"openrouter/openai/gpt-5-nano"},result:"gig dispatched.",created_at:D(900000),finished_at:D(890000)},
-  {id:"c4",action:"email",status:"pending",payload:{agent:"foundry",subject:"Progress?",body:"How's the lawn-care kit research going?",threadId:"t_b"},created_at:D(30000)}
+  {id:"c4",action:"email",status:"pending",payload:{agent:"foundry",subject:"Progress?",body:"How's the lawn-care kit research going?",threadId:"t_b"},created_at:D(30000)},
+  {id:"c5",action:"delegate",status:"done",payload:"Make a new Gumroad product about AI prompts for realtors.",result:"On it. That's a Products job — I handed it to Vulcan with a brief to scope a realtor prompt-pack, and he'll come back with a proposal + price. You'll see it in your inbox.",created_at:D(600000),finished_at:D(595000)}
 ];}
 function wireCommandLog(){
   state.commands=state.commands||[];
@@ -1180,10 +1220,12 @@ function wireCommandLog(){
       .onSnapshot(snap=>{
         state.commands=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
         renderMessages();
+        if(!$("#teamIn")||document.activeElement!==$("#teamIn"))renderLaunch();
       },err=>{ /* if the ordered query is unhappy, fall back to unordered */
         db.collection("lab_commands").limit(150).onSnapshot(s2=>{
           state.commands=s2.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>tms(b.created_at)-tms(a.created_at));
           renderMessages();
+          if(!$("#teamIn")||document.activeElement!==$("#teamIn"))renderLaunch();
         });
       });
   }catch(e){}
@@ -1222,6 +1264,7 @@ function activityLine(cmd){
     pause:["⏸","Paused all loops",""],
     resume:["▶","Resumed all loops",""],
     email:["✉️","Emailed "+agentName(p&&p.agent),(p&&p.subject)||""],
+    delegate:["🧭","Asked Theo to handle",typeof p==="string"?p:""],
     message_theo:["💬","Messaged Theo",typeof p==="string"?p:""]
   };
   const m=M[a]||["•",a,""];
@@ -1383,49 +1426,54 @@ function renderInbox(){
   updateBadges();
 }
 function chatModels(){return ((state.meta&&state.meta.models)||[]).filter(m=>!["media","memory"].includes(m.tier))}
-function renderLaunch(prefill){
-  const el=$("#mLaunch");if(!el)return;
-  const keep=prefill!=null?prefill:(el.querySelector("#dspBrief")?el.querySelector("#dspBrief").value:"");
-  const mdls=chatModels();
-  el.innerHTML=`
-    <div class="mphead"><span class="mpi">🚀</span><span class="mpt">LAUNCH</span><span class="mpc">dispatch a gig</span></div>
-    <div class="msec">DEPLOY A GIG — PICK A BOT</div>
-    <div class="dsp">
-      <div class="agpick">
-        ${[["foundry","VULCAN","img/pixel/vulcan_rot_south.png","var(--org)","builds it"],
-           ["rollie","ROLLIE","img/pixel/rollie_rot_south.png","var(--vio)","markets it"],
-           ["main","THEO","img/pixel/theo_rot_south.png","var(--blu)","plans it"]].map(a=>
-          `<div class="agopt${state.dsp.agent===a[0]?" sel":""}" data-ag="${a[0]}" style="--ac:${a[3]}" role="button">
-            <img src="${a[2]}" alt=""><span>${a[1]}</span><span style="font-weight:500;color:var(--faint);font-size:7.5px;letter-spacing:.06em">${a[4]}</span></div>`).join("")}
-      </div>
-      <div class="lbl">the brief — what's the gig?</div>
-      <textarea id="dspBrief" maxlength="1200" placeholder="e.g. Research whether a $19 “lawn-care client intake kit” would sell right now. If yes, build the smallest sellable version and stage it for my review.">${esc(keep)}</textarea>
-      <div class="lbl">brain — which model runs it</div>
-      <select class="modelsel" id="dspModel">
-        <option value="">agent default — grok-4.20 (heavy)</option>
-        ${mdls.map(m=>`<option value="${esc(m.id)}"${state.dsp.model===m.id?" selected":""}>${esc(m.id.replace(/^openrouter\//,""))} · ${esc(m.tier)} · ${esc(m.cost)}</option>`).join("")}
-      </select>
-      <button class="launch" id="dspGo">🚀 DISPATCH GIG</button>
-      <div class="note">This wakes the real agent on the VPS right now (~$0.01–0.50 depending on brain). <b>THE WALL holds</b> — it can research, build, and stage for your review. It can never publish, send, or spend.</div>
-    </div>`;
-  el.querySelectorAll(".agopt").forEach(a=>a.addEventListener("click",()=>{
-    state.dsp.agent=a.getAttribute("data-ag");
-    el.querySelectorAll(".agopt").forEach(x=>x.classList.toggle("sel",x===a));
-  }));
-  const go=$("#dspGo");
-  go.addEventListener("click",()=>{
-    const brief=$("#dspBrief").value.trim();
-    state.dsp.model=$("#dspModel").value;
-    if(brief.length<10){$("#dspBrief").style.borderColor="var(--red)";setTimeout(()=>$("#dspBrief").style.borderColor="",1200);return}
-    go.disabled=true;go.textContent="🚀 DISPATCHING…";
-    const uiKey=state.dsp.agent==="main"?"theo":state.dsp.agent==="foundry"?"vulcan":"rollie";
-    markWorking(uiKey,10*60000);
-    sendCommand("dispatch",{agent:state.dsp.agent,brief,model:state.dsp.model||null},d=>{
-      go.disabled=false;go.textContent="🚀 DISPATCH GIG";
-      if(d.status==="done"){$("#dspBrief").value="";missionTab("mComms")}
-    });
-    setTimeout(()=>{go.disabled=false;go.textContent="🚀 DISPATCH GIG"},20000);
+// the ongoing team chat = your conversation with Theo (delegate/message) + his daily briefs
+function teamMessages(){
+  const msgs=[];
+  (state.commands||[]).forEach(cmd=>{
+    if(cmd.action==="delegate"||cmd.action==="message_theo"){
+      const t=typeof cmd.payload==="string"?cmd.payload:(cmd.payload&&cmd.payload.body)||"";
+      if(t)msgs.push({from:"me",text:t,ts:tms(cmd.created_at),pending:cmd.status==="pending"||cmd.status==="running"});
+      if(cmd.result&&cmd.status==="done")msgs.push({from:"theo",text:cmd.result,ts:tms(cmd.finished_at)||tms(cmd.created_at)});
+    }
   });
+  (state.briefs||[]).forEach(b=>{if(b&&b.text)msgs.push({from:"theo",text:b.text,ts:tms(b.ts),brief:true})});
+  msgs.sort((a,b)=>a.ts-b.ts);
+  return msgs;
+}
+// renderLaunch keeps its name (all callers unchanged) but IS the TEAM chat now
+function renderLaunch(){
+  const el=$("#mLaunch");if(!el)return;
+  const keepVal=(el.querySelector("#teamIn")&&el.querySelector("#teamIn").value)||"";
+  const msgs=teamMessages();
+  const last=msgs[msgs.length-1];
+  const waiting=last&&last.from==="me"&&last.pending;
+  const bubbles=msgs.map(m=>m.from==="me"
+    ?`<div class="tmsg me"><div class="tmbub">${esc(m.text)}${m.pending?'<div class="bpend">sending…</div>':''}</div></div>`
+    :`<div class="tmsg them"><img class="tmav" src="img/pixel/theo_rot_south.png" alt=""><div class="tmbub"><div class="tmfrom">Theo${m.brief?' · morning brief':''}</div>${esc(m.text)}</div></div>`).join("");
+  el.innerHTML=`
+    <div class="mphead"><span class="mpi">💬</span><span class="mpt">TEAM</span><span class="mpc">your desk with Theo</span></div>
+    <div class="teamroster">
+      ${["main","foundry","rollie"].map(k=>`<span class="tr" data-hi="${k}" title="say hi to ${AGENTNAME[k]}"><img src="${AGENTIMG2[k]}" alt=""><b>${AGENTNAME[k]}</b></span>`).join("")}
+      <span class="trnote">you talk to <b>Theo</b> — he runs the team</span></div>
+    <div class="teamscroll" id="teamScroll">
+      ${msgs.length?bubbles:'<div class="msg-empty">👋 Say hi to Theo, or just tell him what you want done.<br>He\'ll route it to <b>Products</b> or <b>Marketing</b> and pull in a specialist for the deep work.</div>'}
+      ${waiting?'<div class="tmsg them"><img class="tmav" src="img/pixel/theo_rot_south.png" alt=""><div class="tmbub"><div class="tmfrom">Theo</div><span class="bpend">thinking… (10–60s)</span></div></div>':''}
+    </div>
+    <div class="teamcompose"><input id="teamIn" type="text" maxlength="1400" placeholder="Message Theo…" autocomplete="off" value="${esc(keepVal)}"><button id="teamSend" title="send">▶</button></div>`;
+  const sc=$("#teamScroll");if(sc)sc.scrollTop=sc.scrollHeight;
+  const inp=$("#teamIn"),btn=$("#teamSend");
+  function send(){const t=inp.value.trim();if(!t)return;inp.value="";btn.disabled=true;
+    markWorking("theo",4*60000);
+    sendCommand("delegate",t,()=>{btn.disabled=false});
+    setTimeout(()=>{btn.disabled=false},1500);renderLaunch();}
+  btn.addEventListener("click",send);
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")send()});
+  // "say hi" to a teammate → opens a quick email thread to them (mainly you talk to Theo though)
+  el.querySelectorAll("[data-hi]").forEach(t=>t.addEventListener("click",()=>{
+    const k=t.getAttribute("data-hi");
+    if(k==="main"){inp.focus();return;}
+    state.composeAgent=k;state.composing=true;state.openThread=null;openMission("mComms");
+  }));
 }
 function trendAge(iso){try{const m=Math.floor((Date.now()-new Date(iso).getTime())/60000);return m<60?m+"m ago":Math.floor(m/60)+"h ago"}catch(e){return""}}
 function renderTrendsTab(){
@@ -1471,7 +1519,7 @@ function bootSeq(){
    data is real. See ADMIN for the full truth table.
    ================================================================ */
 const ROOMS={
-  theo:{kind:"live",img:"img/pixel/theo_rot_south.png",name:"CEO COMMAND",tag:"real agent · office visuals are decor",ac:"var(--blu)",hex:true,
+  theo:{kind:"live",img:"img/pixel/theo_rot_south.png",name:"THEO — CHIEF OF STAFF",tag:"the one you talk to · he routes your work",ac:"var(--blu)",hex:true,
     machines:[
       ["screen",50,4,300,44,"MARKET WALL","var(--blu)"],
       ["holo",46,42,150,150,"HOLO TABLE","var(--blu)"],
@@ -1485,7 +1533,7 @@ const ROOMS={
       buttons:[["run_standup","▶ RUN STANDUP NOW",null]],
       upgs:[["📊","READS","lab-status/*.json on the VPS"],["📨","WRITES","one ≤12-line brief to Parker"],["🧭","MAY WRITE","directives for divisions"]],
       wire:"Theo also answers you directly — use the COMMS window to chat; replies land there in ~10-60s."}},
-  vulcan:{kind:"live",img:"img/pixel/vulcan_rot_south.png",name:"FOUNDRY",tag:"real agent · one wake-up/day · machines are decor",ac:"var(--org)",
+  vulcan:{kind:"live",img:"img/pixel/vulcan_rot_south.png",name:"PRODUCTS",tag:"Vulcan · Head of Products · Gumroad line",ac:"var(--org)",
     machines:[
       ["screen",18,4,170,40,"TREND RECON","var(--org)"],
       ["forge",14,36,110,84,"BUILD PRESS","var(--org)"],
@@ -1500,7 +1548,7 @@ const ROOMS={
       buttons:[["run_shift","▶ RUN SHIFT NOW","fires the real cron — Vulcan wakes, researches, builds (~$0.50)"]],
       upgs:[["🔍","PHASE 1 · RESEARCH","web search: what's selling"],["⚒️","PHASE 2 · BUILD","files in his VPS workspace"],["✅","PHASE 3 · QC + STAGE","adds to your review queue"],["📝","PHASE 4 · REPORT","learnings + status file"]],
       wire:"Approving here records your decision on the VPS. Actual Gumroad publishing still runs with Claude on your Mac — by design."}},
-  rollie:{kind:"live",img:"img/pixel/rollie_rot_south.png",name:"SALES & MARKETING",tag:"real agent · clockworks growth · visuals are decor",ac:"var(--vio)",
+  rollie:{kind:"live",img:"img/pixel/rollie_rot_south.png",name:"MARKETING",tag:"Rollie · Head of Marketing · MN Clockworks",ac:"var(--vio)",
     machines:[
       ["screen",18,4,170,40,"LEAD WALL","var(--vio)"],
       ["holo",16,40,140,140,"PROSPECT RADAR","var(--vio)"],
@@ -1522,9 +1570,9 @@ const ROOMS={
 };
 const ORDER=["theo","vulcan","rollie","slotb"];
 const CREW={
-  theo:{nm:"THEO",rl:"CEO · openclaw `main`",st:"wakes 13:30 CT — telegram brief"},
-  vulcan:{nm:"VULCAN",rl:"foundry · openclaw `foundry`",st:"wakes 12:00 CT — builds 1 product"},
-  rollie:{nm:"ROLLIE",rl:"sales & mktg · openclaw `rollie`",st:"wakes 09:00 CT wkdays — prospects"},
+  theo:{nm:"THEO",rl:"Chief of Staff · you talk to him",st:"routes your work · briefs you 13:30 CT"},
+  vulcan:{nm:"VULCAN",rl:"Head of Products · Gumroad",st:"trends → builds a product · 12:00 CT"},
+  rollie:{nm:"ROLLIE",rl:"Head of Marketing · Clockworks",st:"social & campaigns · 09:00 CT wkdays"},
   slotb:{nm:"OPEN SLOT",rl:"division b — unassigned",st:"tap to see how to activate",slot:true}
 };
 const state={spend:null,queue:null,queueItems:null,room:null,feed:"none",meta:null,vulcanTask:null,paused:false,trig:{},dsp:{agent:"foundry",model:""}};
@@ -1564,7 +1612,7 @@ function buildRoster(){
       <img class="av" src="img/ceo.png" alt="CEO Deck">
       <div style="flex:1;min-width:0"><div class="nm">CEO DECK</div><div class="dept">command center</div><div class="st">spend · inbox · tools · health</div></div>
       <span class="badge2">▣</span></div>`;
-  const DEPT={theo:"EXECUTIVE · COMMAND",vulcan:"FOUNDRY · R&amp;D",rollie:"SALES &amp; MKTG"};
+  const DEPT={theo:"CHIEF OF STAFF",vulcan:"PRODUCTS · GUMROAD",rollie:"MARKETING · CLOCKWORKS"};
   const agentHTML=k=>{
     const c=CREW[k],r=ROOMS[k];
     const phases=((r.ops&&r.ops.upgs)||[]).slice(0,4).map(u=>`<div class="subrow"><span class="dotp"></span><b>${u[1]}</b><span class="sd">${u[2]}</span></div>`).join("");
@@ -1600,7 +1648,7 @@ function buildDock(){
   d.innerHTML=
     `<div class="dtile" data-mpage="floor" style="--ac:var(--blu)" role="button"><span class="dg">🏭</span><span class="dn">ROOMS</span></div>
      <div class="dtile" data-mpage="inbox" style="--ac:var(--org)" role="button"><span class="dl" id="dockInboxBadge">0</span><span class="dg">📥</span><span class="dn">INBOX</span></div>
-     <div class="dtile fab" data-mpage="launch" role="button"><span class="fabc">🚀</span><span class="dn">LAUNCH</span></div>
+     <div class="dtile fab" data-mpage="launch" role="button"><span class="fabc">💬</span><span class="dn">TEAM</span></div>
      <div class="dtile" data-mpage="trends" style="--ac:var(--blu)" role="button"><span class="dg">📡</span><span class="dn">TRENDS</span></div>
      <div class="dtile" data-mpage="chat" style="--ac:var(--grn)" role="button"><span class="dg">📨</span><span class="dn">MAIL</span></div>`;
   d.addEventListener("click",e=>{
@@ -1619,8 +1667,8 @@ function mobileNav(page){
   if(page==="chat"){const cb=$("#commsBody");if(cb)cb.scrollTop=0;}
 }
 // mobile ROOMS tab = a clean list of the 4 rooms (replaces the canvas floor on phones)
-const FLNAME={theo:"COMMAND",vulcan:"FOUNDRY",rollie:"SALES",slotb:"DIVISION SLOT"};
-const FLSUB={theo:"Theo · CEO",vulcan:"Vulcan · digital products",rollie:"Rollie · outreach",slotb:"unassigned"};
+const FLNAME={theo:"THEO'S DESK",vulcan:"PRODUCTS",rollie:"MARKETING",slotb:"DIVISION SLOT"};
+const FLSUB={theo:"Theo · Chief of Staff",vulcan:"Vulcan · Gumroad products",rollie:"Rollie · Clockworks social",slotb:"unassigned"};
 function buildFloorList(){
   const el=$("#floorList");if(!el)return;
   const rows=ORDER.map(k=>{
@@ -2443,11 +2491,10 @@ function applyLive(j){
   state.reports=j.reports||state.reports;
   state.trends=j.trends||state.trends;
   state.dispatches=j.dispatches||state.dispatches;
-  if(first&&state.inbox&&state.inbox.length)pushLog("THEO","📥 "+state.inbox.length+" memo(s) in your CEO inbox","var(--blu)");
-  if(first&&state.trends&&state.trends.trends)pushLog("RECON","📡 "+state.trends.trends.length+" live trends from the Grok sweep","var(--blu)");
+  state.briefs=j.briefs||state.briefs;
   // mission panel refresh (don't clobber a brief mid-type)
   renderInbox();renderTrendsTab();
-  if(first)renderLaunch();
+  if(!$("#teamIn")||document.activeElement!==$("#teamIn"))renderLaunch();
   fillLiveSpans();refreshBubbles();
   if(state.room&&ROOMS[state.room]&&ROOMS[state.room].kind==="live")renderOps(state.room);
   if($("#view-admin").style.display==="block")renderAdmin();
@@ -2466,9 +2513,9 @@ function tryLive(){
 const FAC={w:1180,h:760};
 let ffocused=null;
 const FROOMS=[
-  {id:'theo',  name:'COMMAND',       accent:'#45c4e8', rect:{x:28, y:28, w:512,h:322}, dec:'command', spr:'theo',   workKey:'review'},
-  {id:'vulcan',name:'FOUNDRY',       accent:'#ff8a3d', rect:{x:640,y:28, w:512,h:322}, dec:'foundry', spr:'vulcan', workKey:'forge'},
-  {id:'rollie',name:'SALES',         accent:'#a06cff', rect:{x:28, y:410,w:512,h:322}, dec:'sales',   spr:'rollie', workKey:'work'},
+  {id:'theo',  name:"THEO'S DESK",   accent:'#45c4e8', rect:{x:28, y:28, w:512,h:322}, dec:'command', spr:'theo',   workKey:'review'},
+  {id:'vulcan',name:'PRODUCTS',      accent:'#ff8a3d', rect:{x:640,y:28, w:512,h:322}, dec:'foundry', spr:'vulcan', workKey:'forge'},
+  {id:'rollie',name:'MARKETING',     accent:'#a06cff', rect:{x:28, y:410,w:512,h:322}, dec:'sales',   spr:'rollie', workKey:'work'},
   {id:'slotb', name:'DIVISION SLOT', accent:'#6b7c88', rect:{x:640,y:410,w:512,h:322}, dec:'slot',    spr:'slot',   workKey:null},
 ];
 FROOMS.forEach(r=>Object.assign(r,r.rect));
@@ -2590,7 +2637,7 @@ function fShell(r){const c=FCTX;c.save();frr(r.x-3,r.y-3,r.w+6,r.h+6,13);c.strok
     const g=c.createRadialGradient(r.x+r.w*.5,r.y+r.h*.3,10,r.x+r.w*.5,r.y+r.h*.3,r.w*.55);g.addColorStop(0,"rgba(255,190,110,.05)");g.addColorStop(1,"rgba(255,190,110,0)");c.fillStyle=g;c.fillRect(r.x,r.y,r.w,r.h);c.restore();}
   if(!ffocused){c.save();c.font="800 13px ui-rounded,system-ui";c.textAlign="left";c.fillStyle=fhex(r.accent,.9);c.fillText("▍"+r.name,r.x+12,r.y+20);
     c.fillStyle="rgba(150,170,180,.7)";c.font="700 10px ui-rounded,system-ui";c.fillText(fsub(r.id),r.x+22,r.y+34);c.restore();}}
-function fsub(id){return{theo:'Theo · CEO',vulcan:'Vulcan · digital products',rollie:'Rollie · outreach',slotb:'unassigned'}[id]||'';}
+function fsub(id){return{theo:'Theo · Chief of Staff',vulcan:'Vulcan · Gumroad products',rollie:'Rollie · Clockworks social',slotb:'unassigned'}[id]||'';}
 function fData(pts,t){const c=FCTX;c.save();c.lineCap="round";c.strokeStyle="rgba(16,34,42,.9)";c.lineWidth=4;c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();
   c.strokeStyle="rgba("+FPAL.conduit+",.55)";c.lineWidth=1.6;c.setLineDash([5,12]);c.lineDashOffset=-t*32;c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();c.setLineDash([]);
   for(let k=0;k<2;k++){const pt=fPolyPt(pts,((t*0.17)+k*0.5)%1);c.globalAlpha=.5;c.fillStyle="rgba("+FPAL.drone+",1)";c.beginPath();c.arc(pt[0],pt[1],4,0,7);c.fill();c.globalAlpha=1;c.beginPath();c.arc(pt[0],pt[1],1.8,0,7);c.fill();}
