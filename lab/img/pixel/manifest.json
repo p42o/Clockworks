@@ -191,6 +191,19 @@
      }
     }
    }
+  },
+  "etsy": {
+   "rotations": {
+    "south": "etsy_rot_south.png",
+    "south-east": "etsy_rot_south-east.png",
+    "east": "etsy_rot_east.png",
+    "north-east": "etsy_rot_north-east.png",
+    "north": "etsy_rot_north.png",
+    "north-west": "etsy_rot_north-west.png",
+    "west": "etsy_rot_west.png",
+    "south-west": "etsy_rot_south-west.png"
+   },
+   "anims": {}
   }
  }
 }

@@ -619,6 +619,18 @@ body{
 .ibx .idis{flex:none;border:1px solid var(--seam-hi);background:transparent;color:var(--faint);
   border-radius:8px;padding:8px 12px;font:700 10px var(--mono);letter-spacing:.05em;cursor:pointer;transition:.13s}
 .ibx .idis:hover{color:var(--red);border-color:color-mix(in srgb,var(--red) 45%,transparent)}
+/* approve → pick build model/spend */
+.buildpick{width:100%;animation:cin .2s ease}
+.buildpick .bl{font-size:9.5px;letter-spacing:.06em;color:var(--dim);margin-bottom:7px}
+.buildpick .brow{display:flex;gap:7px;flex-wrap:wrap}
+.buildpick .bmodel{display:flex;flex-direction:column;align-items:center;gap:1px;border:1px solid color-mix(in srgb,var(--grn) 45%,transparent);
+  background:color-mix(in srgb,var(--grn) 8%,transparent);color:var(--grn);border-radius:9px;padding:8px 12px;font:700 11px var(--mono);letter-spacing:.06em;cursor:pointer;transition:.13s}
+.buildpick .bmodel small{font-size:8px;color:var(--faint);font-weight:600}
+.buildpick .bmodel.smart{border-color:color-mix(in srgb,var(--vio) 50%,transparent);background:color-mix(in srgb,var(--vio) 9%,transparent);color:var(--vio)}
+.buildpick .bmodel.smart small{color:color-mix(in srgb,var(--vio) 70%,var(--faint))}
+.buildpick .bmodel:hover{filter:brightness(1.3)}
+.buildpick .bskip{border:1px solid var(--seam-hi);background:transparent;color:var(--faint);border-radius:9px;padding:8px 12px;font:600 10px var(--mono);cursor:pointer;margin-left:auto}
+.buildpick .bskip:hover{color:var(--dim)}
 .ibx .iok{flex:1;text-align:center;font:700 10px var(--mono);color:var(--grn);letter-spacing:.1em;padding:8px;
   border:1px dashed color-mix(in srgb,var(--grn) 40%,transparent);border-radius:8px}
 .ibx.prod{border-left:3px solid var(--org)}
@@ -1101,7 +1113,9 @@ if(new URLSearchParams(location.search).get('dev')==='1' && /^(localhost|127\.0\
     rollie:{current_task:"scouting local trades",outreach:[{company:"Sample Plumbing Co",subject:"neighbor intro",approved:false},{company:"Sample HVAC Co",subject:"quick idea",approved:false},{company:"Sample Electric Co",subject:"local hello",approved:false}],spend_estimate_usd:0.4,learnings:"trust beats cold volume"},
     reports:{vulcan:{task:"Built a kit",learnings:"kept it lean"},rollie:{task:"3 dossiers drafted",learnings:"warm intros win"},theo:{task:"Standup brief sent",learnings:"queue healthy"}},
     spend:{today_actual:0.85,daily_projection:1.2,monthly_projection:33,by_agent:[{agent:"vulcan",model:"grok-4",last:0.45},{agent:"rollie",model:"grok-4",last:0.4}]},
-    vps:{uptime_days:12,load:"0.3",mem_used_mb:900,mem_total_mb:4096,disk_used_gb:14,disk_total_gb:40,openclaw:"ok",gateway:"ok",agents:3,crons_armed:3},
+    etsy:{current_task:"scouting original Etsy angles",staged_for_review:[{name:"Sample Planner",price:9,approved:false}],spend_estimate_usd:0.2,learnings:"printables convert on Pinterest"},
+    revenue:{total:34,count:2,recent:[{ts:"dev",product:"Sample Kit",amount:17,channel:"gumroad"},{ts:"dev",product:"Sample Planner",amount:17,channel:"etsy"}]},
+    vps:{uptime_days:12,load:"0.3",mem_used_mb:900,mem_total_mb:4096,disk_used_gb:14,disk_total_gb:40,openclaw:"ok",gateway:"ok",agents:4,crons_armed:4},
     inbox:[{id:"m1",priority:"normal",subject:"Weekly plan",preview:"Three ideas for next week…",body:"Full memo.",ts:"dev"}],
     briefs:[{ts:new Date(Date.now()-3600000).toISOString(),from:"Theo",text:"Morning, boss. Vulcan's got a realtor prompt-pack idea staged for you, and Rollie proposed a 3-post series on saving trades businesses time. Nothing's built yet — approve a direction and I'll have them spin up a specialist. Spend so far today: $0.12."}],
     trends:{generated_at:new Date().toISOString(),trends:[
@@ -1110,9 +1124,10 @@ if(new URLSearchParams(location.search).get('dev')==='1' && /^(localhost|127\.0\
       {topic:"Notion templates",heat:3,angle:"Freelancer dashboards bundle well.",lane:"product"}]},
     dispatches:[{ts:new Date().toISOString(),agent:"foundry",brief:"Sample dispatched gig brief",model:"openrouter/openai/gpt-5-nano"}],
     meta:{kill_switch:false,
-      agents:[{id:"main",name:"Theo",role:"CEO",model:"xai/grok-4.20-0309-reasoning",can:"read, brief, direct",cannot:"build, publish, spend"},
-              {id:"foundry",name:"Vulcan",role:"President, FOUNDRY",model:"xai/grok-4.20-0309-reasoning",can:"research, build, stage",cannot:"publish, buy"},
-              {id:"rollie",name:"Rollie",role:"President, SALES",model:"xai/grok-4.20-0309-reasoning",can:"research, draft",cannot:"contact anyone"}],
+      agents:[{id:"main",name:"Theo",role:"Chief of Staff",model:"xai/grok-4-fast",can:"route, manage, brief",cannot:"build, publish, spend"},
+              {id:"foundry",name:"Vulcan",role:"Head of Products",model:"xai/grok-4-fast",can:"research, build, stage",cannot:"publish, buy"},
+              {id:"rollie",name:"Rollie",role:"Head of Growth",model:"xai/grok-4-fast",can:"listing SEO, promo, social",cannot:"post, contact"},
+              {id:"etsy",name:"Etsy",role:"Head of Etsy",model:"xai/grok-4-fast",can:"research, propose original, build",cannot:"list, sell, spend"}],
       models:[{id:"xai/grok-4.20-0309-reasoning",tier:"heavy",use:"deep work",cost:"$3/$15"},
               {id:"openrouter/openai/gpt-5-nano",tier:"cheap",use:"cheap tasks",cost:"$0.05/$0.40"},
               {id:"openrouter/openai/gpt-oss-120b:free",tier:"free",use:"free experiments",cost:"$0"}]}};
@@ -1198,8 +1213,8 @@ function wireMission(){
    devices. Emails route through the bridge → the agent replies → the
    reply lands back on the same command doc (= one exchange in a chain).
    ================================================================ */
-const AGENTNAME={main:"Theo",foundry:"Vulcan",rollie:"Rollie"};
-const AGENTIMG2={main:"img/pixel/theo_rot_south.png",foundry:"img/pixel/vulcan_rot_south.png",rollie:"img/pixel/rollie_rot_south.png"};
+const AGENTNAME={main:"Theo",foundry:"Vulcan",rollie:"Rollie",etsy:"Etsy"};
+const AGENTIMG2={main:"img/pixel/theo_rot_south.png",foundry:"img/pixel/vulcan_rot_south.png",rollie:"img/pixel/rollie_rot_south.png",etsy:"img/pixel/etsy_rot_south.png"};
 function agentName(id){return AGENTNAME[id==="theo"?"main":id]||"Theo"}
 function shortModel(m){return String(m||"").replace(/^(openrouter|xai)\//,"")}
 function tms(ts){ if(!ts)return 0; if(typeof ts.toMillis==="function")return ts.toMillis(); if(typeof ts.seconds==="number")return ts.seconds*1000; if(ts instanceof Date)return ts.getTime(); const n=Date.parse(ts); return isFinite(n)?n:0; }
@@ -1265,6 +1280,7 @@ function activityLine(cmd){
     resume:["▶","Resumed all loops",""],
     email:["✉️","Emailed "+agentName(p&&p.agent),(p&&p.subject)||""],
     delegate:["🧭","Asked Theo to handle",typeof p==="string"?p:""],
+    log_sale:["💰","Logged a sale",(p&&p.product?p.product+" · $"+(p.amount||0):"")],
     message_theo:["💬","Messaged Theo",typeof p==="string"?p:""]
   };
   const m=M[a]||["•",a,""];
@@ -1304,7 +1320,7 @@ function composeForm(){
   wrap.innerHTML=`
     <div class="cfhd">✉️ New email<button class="cfx" id="cfClose">✕</button></div>
     <div class="agpick">
-      ${["main","foundry","rollie"].map(k=>`<div class="agopt${state.composeAgent===k?' sel':''}" data-cag="${k}" style="--ac:${k==='main'?'var(--blu)':k==='foundry'?'var(--org)':'var(--vio)'}">
+      ${["main","foundry","rollie","etsy"].map(k=>`<div class="agopt${state.composeAgent===k?' sel':''}" data-cag="${k}" style="--ac:${k==='main'?'var(--blu)':k==='foundry'?'var(--org)':k==='rollie'?'var(--vio)':'var(--grn)'}">
         <img src="${AGENTIMG2[k]}" alt=""><span>${AGENTNAME[k].toUpperCase()}</span></div>`).join("")}
     </div>
     <input id="cfSubj" type="text" maxlength="120" placeholder="Subject (e.g. What are you working on?)" autocomplete="off">
@@ -1354,7 +1370,7 @@ function renderThreadDetail(el,tid){
   inp.addEventListener("keydown",e=>{if(e.key==="Enter")reply()});
 }
 function inboxCount(){
-  return ((state.queueItems||[]).filter(q=>!q.approved).length)+((state.outreach||[]).filter(o=>!o.approved).length);
+  return ((state.queueItems||[]).filter(q=>!q.approved).length)+((state.etsyItems||[]).filter(q=>!q.approved).length)+((state.outreach||[]).filter(o=>!o.approved).length);
 }
 function updateBadges(){
   const n=inboxCount();
@@ -1365,17 +1381,17 @@ function updateBadges(){
 function renderInbox(){
   const el=$("#mInbox");if(!el)return;
   const rows=[];
-  (state.queueItems||[]).forEach(q=>{
-    rows.push(`<div class="ibx prod">
-      <div class="ih"><span class="iico"><img src="img/pixel/vulcan_rot_south.png" alt=""></span>
+  const productCard=(q,who,img,sub)=>`<div class="ibx prod">
+      <div class="ih"><span class="iico"><img src="${img}" alt=""></span>
         <span class="iname">${esc(q.name)}</span><span class="iprice">$${q.price}</span></div>
-      <div class="isub">Vulcan built this and staged it for you. Approving records your ✓ on the VPS — publishing still happens with Claude on your Mac.</div>
+      <div class="isub">${sub}</div>
       <div class="irow">${q.approved
         ?'<span class="iok">✓ APPROVED — say “ship it” to Claude to publish</span>'
         :`<button class="iapv" data-inbox-approve="item" data-val="${esc(q.name)}">✓ APPROVE</button>
           <button class="idis" data-inbox-dismiss="item" data-val="${esc(q.name)}" title="clear from your inbox">✕ Dismiss</button>`}</div>
-    </div>`);
-  });
+    </div>`;
+  (state.queueItems||[]).forEach(q=>rows.push(productCard(q,q,"img/pixel/vulcan_rot_south.png","Vulcan (Products) staged this for you. Approve to build the finished version + record it; publishing stays with you.")));
+  (state.etsyItems||[]).forEach(q=>rows.push(productCard(q,q,"img/pixel/etsy_rot_south.png","Etsy staged this original digital product. Approve to build it out + record it; listing stays with you.")));
   (state.outreach||[]).forEach(o=>{
     rows.push(`<div class="ibx mail">
       <div class="ih"><span class="iico"><img src="img/pixel/rollie_rot_south.png" alt=""></span>
@@ -1402,14 +1418,34 @@ function renderInbox(){
       Or don't wait — hit <b>LAUNCH</b> and give someone a gig.</div>`);
   el.querySelectorAll("[data-inbox-approve]").forEach(b=>{
     b.addEventListener("click",()=>{
-      b.disabled=true;b.textContent="…";
       const kind=b.getAttribute("data-inbox-approve"),val=b.getAttribute("data-val");
-      sendCommand(kind==="item"?"approve_item":"approve_outreach",val,d=>{
-        if(d.status==="done"){
-          if(kind==="item"){const q=(state.queueItems||[]).find(x=>x.name===val);if(q)q.approved=true}
-          else{const o=(state.outreach||[]).find(x=>x.company===val);if(o)o.approved=true}
-          renderInbox();updateBadges();
-        }else{b.disabled=false;b.textContent="✓ APPROVE"}
+      // products: approving lets you pick how deep to build it (model + est spend)
+      if(kind==="item"){
+        const row=b.closest(".irow");if(!row)return;
+        row.innerHTML=`<div class="buildpick">
+          <div class="bl">Approve &amp; build it out with:</div>
+          <div class="brow">
+            <button class="bmodel" data-build="${esc(val)}" data-model="xai/grok-4-fast">⚡ Fast<small>~$0.15</small></button>
+            <button class="bmodel smart" data-build="${esc(val)}" data-model="xai/grok-4.20-0309-reasoning">✨ Smart<small>~$0.60</small></button>
+            <button class="bskip" data-ship="${esc(val)}">ship as-is</button>
+          </div></div>`;
+        const findItem=name=>(state.queueItems||[]).find(x=>x.name===name)||(state.etsyItems||[]).find(x=>x.name===name);
+        const finish=name=>{const q=findItem(name);if(q)q.approved=true;renderInbox();updateBadges();};
+        row.querySelectorAll("[data-build]").forEach(x=>x.addEventListener("click",()=>{
+          const name=x.getAttribute("data-build"),model=x.getAttribute("data-model");
+          const it=findItem(name),agent=(it&&it.channel==="etsy")?"etsy":"foundry";
+          x.disabled=true;x.textContent="…";
+          sendCommand("approve_item",name);
+          sendCommand("dispatch",{agent,brief:"Parker approved this direction — now build out the FINISHED, full version of the product “"+name+"” and stage it for his review. Use a specialist maker on the smart model for the deep work.",model});
+          markWorking(agent==="etsy"?"etsy":"vulcan",10*60000);finish(name);openMission("mComms");
+        }));
+        const ship=row.querySelector("[data-ship]");if(ship)ship.addEventListener("click",()=>{sendCommand("approve_item",ship.getAttribute("data-ship"));finish(ship.getAttribute("data-ship"));});
+        return;
+      }
+      b.disabled=true;b.textContent="…";
+      sendCommand("approve_outreach",val,d=>{
+        if(d.status==="done"){const o=(state.outreach||[]).find(x=>x.company===val);if(o)o.approved=true;renderInbox();updateBadges();}
+        else{b.disabled=false;b.textContent="✓ APPROVE"}
       });
     });
   });
@@ -1453,7 +1489,7 @@ function renderLaunch(){
   el.innerHTML=`
     <div class="mphead"><span class="mpi">💬</span><span class="mpt">TEAM</span><span class="mpc">your desk with Theo</span></div>
     <div class="teamroster">
-      ${["main","foundry","rollie"].map(k=>`<span class="tr" data-hi="${k}" title="say hi to ${AGENTNAME[k]}"><img src="${AGENTIMG2[k]}" alt=""><b>${AGENTNAME[k]}</b></span>`).join("")}
+      ${["main","foundry","rollie","etsy"].map(k=>`<span class="tr" data-hi="${k}" title="say hi to ${AGENTNAME[k]}"><img src="${AGENTIMG2[k]}" alt=""><b>${AGENTNAME[k]}</b></span>`).join("")}
       <span class="trnote">you talk to <b>Theo</b> — he runs the team</span></div>
     <div class="teamscroll" id="teamScroll">
       ${msgs.length?bubbles:'<div class="msg-empty">👋 Say hi to Theo, or just tell him what you want done.<br>He\'ll route it to <b>Products</b> or <b>Marketing</b> and pull in a specialist for the deep work.</div>'}
@@ -1492,9 +1528,8 @@ function renderTrendsTab(){
     </div>`).join("");
   el.querySelectorAll(".trend").forEach(d=>d.addEventListener("click",()=>{
     const tr=t.trends[Number(d.getAttribute("data-ti"))];if(!tr)return;
-    state.dsp.agent=tr.lane==="trades"?"rollie":"foundry";
-    renderLaunch(`Trend: ${tr.topic}. ${tr.angle} — Validate this quickly, then ${tr.lane==="trades"?"build a dossier + outreach angle and stage it":"build the smallest sellable version and stage it"} for my review.`);
-    openMission("mLaunch");missionTab("mLaunch");
+    openMission("mLaunch");                       // the TEAM chat
+    const inp=$("#teamIn");if(inp){inp.value=`Let's act on this trend: ${tr.topic}. ${tr.angle}`;inp.focus();}
   }));
 }
 
@@ -1563,17 +1598,19 @@ const ROOMS={
       buttons:[["run_prospecting","▶ RUN PROSPECTING NOW","fires the real cron — Rollie scouts, digs, drafts (~$0.50)"]],
       upgs:[["🔭","PHASE 1 · SCOUT","3 new ICP companies near Maple Grove"],["🗂️","PHASE 2 · DIG","dossier with evidence URLs"],["✍️","PHASE 3 · DRAFT","local-neighbor outreach, ≤120 words"],["📥","PHASE 4 · STAGE","your approval queue — he never sends"]],
       wire:"Per your own playbook: personal trust beats cold volume. Rollie's drafts are ammo for YOU (and dossiers feed your event/warm channels) — approving records it; sending stays human."}},
-  slotb:{kind:"slot",img:"img/pixel/slot_rot_south.png",name:"DIVISION SLOT B",tag:"empty template — nothing runs here",ac:"var(--grn)",
-    ops:{pill:"EMPTY",timer:null,
-      kpis:[["Status","<small>no agent</small>"],["Cost","$0"],["Runs","never"],["Owner","—"]],
-      buttons:[],upgs:[],wire:"Ideas floated: content/social division; Clockworks lead-watch desk. Neither exists yet — deliberate."}}
+  etsy:{kind:"live",img:"img/pixel/etsy_rot_south.png",name:"ETSY",tag:"Etsy · original digital goods · compliance-first",ac:"var(--grn)",
+    ops:{pill:"SHIFT ARMED",timer:"etsy",
+      kpis:[["Staged for you","<span data-live=\"estaged\">—</span>"],["Last shift spend","<span data-live=\"espend\">—</span>"],["Cap per shift","$1"],["Wakes","10:00<small> CT daily</small>"]],
+      buttons:[["run_etsy","▶ RUN ETSY SHIFT NOW","fires the real cron — scouts + proposes an original angle (~$0.20)"]],
+      upgs:[["🔎","PHASE 1 · SCOUT","trending Etsy categories + real prices"],["💡","PHASE 2 · ORIGINAL ANGLE","original product — never a clone of a listing"],["🎨","PHASE 3 · BUILD (on approval)","right tool: gpt-image-1 / Replicate / LLM"],["📥","PHASE 4 · STAGE","your review queue"]],
+      wire:"Compliance-first: original work only, follows Etsy's rules. Coordinates with Rollie (Growth) on listing SEO + promo."}}
 };
-const ORDER=["theo","vulcan","rollie","slotb"];
+const ORDER=["theo","vulcan","rollie","etsy"];
 const CREW={
   theo:{nm:"THEO",rl:"Chief of Staff · you talk to him",st:"routes your work · briefs you 13:30 CT"},
   vulcan:{nm:"VULCAN",rl:"Head of Products · Gumroad",st:"trends → builds a product · 12:00 CT"},
-  rollie:{nm:"ROLLIE",rl:"Head of Marketing · Clockworks",st:"social & campaigns · 09:00 CT wkdays"},
-  slotb:{nm:"OPEN SLOT",rl:"division b — unassigned",st:"tap to see how to activate",slot:true}
+  rollie:{nm:"ROLLIE",rl:"Head of Growth · demand + Clockworks",st:"listing SEO, promo, social · 09:00 CT"},
+  etsy:{nm:"ETSY",rl:"Head of Etsy · original digital goods",st:"scouts + proposes · 10:00 CT daily"}
 };
 const state={spend:null,queue:null,queueItems:null,room:null,feed:"none",meta:null,vulcanTask:null,paused:false,trig:{},dsp:{agent:"foundry",model:""}};
 
@@ -1590,6 +1627,7 @@ function isWorking(k){
   if(k==="vulcan")return inWindow(12,0,15);
   if(k==="theo")return inWindow(13,30,10);
   if(k==="rollie")return isWeekday()&&inWindow(9,0,15);
+  if(k==="etsy")return inWindow(10,0,15);
   return false;
 }
 function applyStates(){
@@ -1612,7 +1650,7 @@ function buildRoster(){
       <img class="av" src="img/ceo.png" alt="CEO Deck">
       <div style="flex:1;min-width:0"><div class="nm">CEO DECK</div><div class="dept">command center</div><div class="st">spend · inbox · tools · health</div></div>
       <span class="badge2">▣</span></div>`;
-  const DEPT={theo:"CHIEF OF STAFF",vulcan:"PRODUCTS · GUMROAD",rollie:"MARKETING · CLOCKWORKS"};
+  const DEPT={theo:"CHIEF OF STAFF",vulcan:"PRODUCTS · GUMROAD",rollie:"GROWTH · DEMAND",etsy:"ETSY · DIGITAL GOODS"};
   const agentHTML=k=>{
     const c=CREW[k],r=ROOMS[k];
     const phases=((r.ops&&r.ops.upgs)||[]).slice(0,4).map(u=>`<div class="subrow"><span class="dotp"></span><b>${u[1]}</b><span class="sd">${u[2]}</span></div>`).join("");
@@ -1622,13 +1660,10 @@ function buildRoster(){
         <div class="st" data-st="${k}">${c.st}</div><div class="loadbar idle"><i></i></div></div>
       <span class="badge idle">IDLE</span></div>`+phases;
   };
-  const cs=CREW.slotb,rs=ROOMS.slotb;
-  const slot=`<div class="acard slotcard" data-k="slotb" tabindex="0" style="--ac:${rs.ac}">
-      <img class="av" src="${rs.img}" alt=""><div style="flex:1;min-width:0"><div class="nm">${cs.nm}</div><div class="dept">unassigned</div><div class="st">${cs.st}</div></div></div>`;
   const unhired=[["ECHO","SIGNAL · content / social"],["ATLAS","CLOCKWORKS OPS DESK"]]
     .map(u=>`<div class="acard unhired"><div class="av avq">?</div>
       <div style="flex:1;min-width:0"><div class="nm">${u[0]}</div><div class="dept">${u[1]}</div><div class="st">roadmap — not hired yet</div></div><span class="badge">UNHIRED</span></div>`).join("");
-  $("#roster").innerHTML=ceoCard+["theo","vulcan","rollie"].map(agentHTML).join("")+slot
+  $("#roster").innerHTML=ceoCard+["theo","vulcan","rollie","etsy"].map(agentHTML).join("")
     +`<div class="rostersec">ROADMAP · UNHIRED</div>`+unhired;
   $("#roster").addEventListener("click",e=>{const c=e.target.closest(".acard[data-k]");if(c)navAgent(c.getAttribute("data-k"));});
   $("#roster").addEventListener("keydown",e=>{const c=e.target.closest(".acard[data-k]");if(c&&(e.key==="Enter"||e.key===" ")){e.preventDefault();navAgent(c.getAttribute("data-k"))}});
@@ -1667,8 +1702,8 @@ function mobileNav(page){
   if(page==="chat"){const cb=$("#commsBody");if(cb)cb.scrollTop=0;}
 }
 // mobile ROOMS tab = a clean list of the 4 rooms (replaces the canvas floor on phones)
-const FLNAME={theo:"THEO'S DESK",vulcan:"PRODUCTS",rollie:"MARKETING",slotb:"DIVISION SLOT"};
-const FLSUB={theo:"Theo · Chief of Staff",vulcan:"Vulcan · Gumroad products",rollie:"Rollie · Clockworks social",slotb:"unassigned"};
+const FLNAME={theo:"THEO'S DESK",vulcan:"PRODUCTS",rollie:"GROWTH",etsy:"ETSY"};
+const FLSUB={theo:"Theo · Chief of Staff",vulcan:"Vulcan · Gumroad products",rollie:"Rollie · demand & marketing",etsy:"Etsy · original digital goods"};
 function buildFloorList(){
   const el=$("#floorList");if(!el)return;
   const rows=ORDER.map(k=>{
@@ -1791,6 +1826,7 @@ function scheduleFor(k){
   if(k==="vulcan")return{label:"Daily shift · 12:00 CT",ms:nextCT(12,0)};
   if(k==="theo")return{label:"Standup · 13:30 CT",ms:nextCT(13,30)};
   if(k==="rollie")return{label:"Weekday shift · 09:00 CT",ms:nextCT(9,0,true)};
+  if(k==="etsy")return{label:"Daily shift · 10:00 CT",ms:nextCT(10,0)};
   return null;
 }
 function openAgentCard(k){
@@ -1800,7 +1836,7 @@ function openAgentCard(k){
   const rep=state.reports&&state.reports[k];
   const sched=scheduleFor(k);
   const model=meta?meta.model:(k==="theo"?"xai/grok-4.20":"—");
-  const runCmd=k==="vulcan"?"run_shift":k==="rollie"?"run_prospecting":k==="theo"?"run_standup":null;
+  const runCmd=k==="vulcan"?"run_shift":k==="rollie"?"run_prospecting":k==="theo"?"run_standup":k==="etsy"?"run_etsy":null;
   const flow=(r.ops.upgs||[]);
   let html=`<button class="axc" id="acClose">✕</button>
     <div class="ahd" style="--mc:${r.ac}">
@@ -2040,9 +2076,9 @@ function showCeo(){
   $("#view-ceo").style.display="block";
   location.hash="#/ceo";
 }
-const AGENT_IMG={theo:"img/pixel/theo_rot_south.png",vulcan:"img/pixel/vulcan_rot_south.png",rollie:"img/pixel/rollie_rot_south.png"};
+const AGENT_IMG={theo:"img/pixel/theo_rot_south.png",vulcan:"img/pixel/vulcan_rot_south.png",rollie:"img/pixel/rollie_rot_south.png",etsy:"img/pixel/etsy_rot_south.png"};
 function renderCeo(){
-  const m=state.meta||{},sp=state.spend||{},vps=state.vps||{},inbox=state.inbox||[];
+  const m=state.meta||{},sp=state.spend||{},vps=state.vps||{},inbox=state.inbox||[],rev=state.revenue||{};
   const agents=(m.agents||[]).filter(a=>a.id!=="main"||true);
   const memRows=inbox.length?inbox.map(mo=>`
     <div class="memo" data-memo="${mo.id}">
@@ -2055,8 +2091,8 @@ function renderCeo(){
   const amRows=agents.map(a=>{
     const k=a.id==="main"?"theo":a.id;
     const w=isWorking(k);
-    const canRun=k==="vulcan"||k==="rollie"||k==="theo";
-    const cmd=k==="vulcan"?"run_shift":k==="rollie"?"run_prospecting":"run_standup";
+    const canRun=k==="vulcan"||k==="rollie"||k==="theo"||k==="etsy";
+    const cmd=k==="vulcan"?"run_shift":k==="rollie"?"run_prospecting":k==="etsy"?"run_etsy":"run_standup";
     const mdls=chatModels();
     return `<div class="amrow">
       <img src="${AGENT_IMG[k]||'img/pixel/slot_rot_south.png'}" alt="">
@@ -2084,8 +2120,23 @@ function renderCeo(){
     <h1><img src="img/ceo.png" alt="">CEO DECK</h1>
     <p class="lede" style="margin:0;font:11.5px/1.7 var(--mono);color:var(--dim)">Theo's command deck — the whole company in one place. Manage agents, read his memos, chat, watch spend, and see what the machine still needs.</p>
 
+    <div class="cpane" style="--cp:var(--grn)">
+      <h2>💰 Revenue<span class="r">the point — real sales you've logged</span></h2>
+      <div class="spendrow">
+        <div class="stile"><div class="sk">Recorded revenue</div><div class="sv" style="color:var(--grn)">$${((rev.total)||0).toFixed(2)}</div></div>
+        <div class="stile"><div class="sk">Sales logged</div><div class="sv">${(rev.count)||0}</div></div>
+        <div class="stile"><div class="sk">Net (rev − spend)</div><div class="sv" style="color:${(((rev.total)||0)-((sp.today_actual)||0))>=0?'var(--grn)':'var(--red)'}">$${(((rev.total)||0)).toFixed(2)}</div></div>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:11px">
+        <input id="saleProd" type="text" placeholder="product name" style="flex:2;min-width:0;background:rgba(0,0,0,.35);border:1px solid var(--seam-hi);border-radius:8px;color:var(--ink);font:11px var(--mono);padding:9px 10px;outline:none">
+        <input id="saleAmt" type="number" step="0.01" placeholder="$" style="flex:1;min-width:0;background:rgba(0,0,0,.35);border:1px solid var(--seam-hi);border-radius:8px;color:var(--ink);font:11px var(--mono);padding:9px 10px;outline:none">
+        <button id="saleLog" style="border:1px solid color-mix(in srgb,var(--grn) 50%,transparent);background:color-mix(in srgb,var(--grn) 12%,transparent);color:var(--grn);border-radius:8px;padding:0 13px;font:700 10px var(--mono);letter-spacing:.08em;cursor:pointer">＋ LOG SALE</button>
+      </div>
+      <div style="font-size:9px;color:var(--faint);margin-top:6px;line-height:1.5">Log every real sale here — the team reads it and doubles down on what actually sells. ${(rev.recent&&rev.recent.length)?"Recent: "+rev.recent.slice(0,3).map(r=>esc(r.product)+" $"+(r.amount||0)).join(" · "):""}</div>
+    </div>
+
     <div class="cpane" style="--cp:var(--org)">
-      <h2>💸 Spend<span class="r">est. · model cost on your xAI key</span></h2>
+      <h2>💸 Spend<span class="r">est. · model cost on your keys</span></h2>
       <div class="spendrow">
         <div class="stile"><div class="sk">Today (actual)</div><div class="sv">$${(sp.today_actual??0).toFixed(2)}</div></div>
         <div class="stile proj"><div class="sk">Daily projection</div><div class="sv">$${(sp.daily_projection??0).toFixed(2)}</div></div>
@@ -2138,6 +2189,12 @@ function renderCeo(){
     </div>`;
   // wiring
   $("#ceoBack").addEventListener("click",()=>{hideAdmin();location.hash="#/"+(state.room||"theo")});
+  {const lb=$("#saleLog");if(lb)lb.addEventListener("click",()=>{
+    const prod=($("#saleProd").value||"").trim(),amt=parseFloat($("#saleAmt").value||"0");
+    if(!prod||!(amt>0)){$("#saleProd").style.borderColor="var(--red)";setTimeout(()=>$("#saleProd").style.borderColor="",1200);return}
+    lb.disabled=true;lb.textContent="…";
+    sendCommand("log_sale",{product:prod,amount:amt},()=>{lb.disabled=false;lb.textContent="＋ LOG SALE";$("#saleProd").value="";$("#saleAmt").value="";});
+  });}
   document.querySelectorAll(".memo").forEach(el=>el.addEventListener("click",()=>el.classList.toggle("open")));
   document.querySelectorAll("[data-runagent]").forEach(b=>b.addEventListener("click",()=>{
     b.disabled=true;setTimeout(()=>{b.disabled=false},8000);
@@ -2216,6 +2273,7 @@ function renderOps(k){
       if(cmd==="run_shift")markWorking("vulcan",12*60000);
       if(cmd==="run_standup")markWorking("theo",6*60000);
       if(cmd==="run_prospecting")markWorking("rollie",12*60000);
+      if(cmd==="run_etsy")markWorking("etsy",12*60000);
       sendCommand(cmd,null);
     });
   });
@@ -2224,6 +2282,8 @@ function renderOps(k){
 function fillLiveSpans(){
   document.querySelectorAll('[data-live="staged"]').forEach(e=>e.textContent=state.queue==null?"—":String(state.queue));
   document.querySelectorAll('[data-live="spend"]').forEach(e=>e.textContent=state.vulcanSpend==null?"—":"$"+Number(state.vulcanSpend).toFixed(2));
+  document.querySelectorAll('[data-live="estaged"]').forEach(e=>e.textContent=state.etsyItems==null?"—":String(state.etsyItems.length));
+  document.querySelectorAll('[data-live="espend"]').forEach(e=>e.textContent=state.etsySpend==null?"—":"$"+Number(state.etsySpend).toFixed(2));
 }
 
 /* ============ ADMIN ============ */
@@ -2303,6 +2363,16 @@ function renderAdmin(){
         <div class="cn">Cadence: daily · est. <b>~$${caps.est_monthly_usd}/mo</b></div>
         <div class="cv">Slow it: "make Vulcan weekly". Stop it: the PAUSE button above (real).</div>
         <div class="how">manual: <code>${m.kill_switch||"openclaw cron disable foundry-shift ceo-standup"}</code></div></div></div>
+    </div>
+
+    <div class="apane" style="--ap:var(--grn)">
+      <h2>Data sources — what the team can pull from</h2>
+      <p class="note">Where the agents look for trends, demand, and pricing. Want to add one (an API, a niche site, your own analytics)? Tell me and I'll wire it in.</p>
+      <div style="overflow-x:auto"><table class="tbl">
+        <tr><th>source</th><th>what it's for</th><th></th></tr>
+        ${((m.data_sources)||[]).map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.use)}</td><td><span class="tb ${s.status==='live'?'live':'slot'}">${esc(s.status).toUpperCase()}</span></td></tr>`).join("")||"<tr><td colspan=3>loads from the live feed…</td></tr>"}
+        <tr><td style="color:var(--faint)">＋ add your own</td><td colspan=2 style="color:var(--faint)">just ask — e.g. a specific API, competitor list, or your store analytics</td></tr>
+      </table></div>
     </div>
 
     <div class="apane" style="--ap:var(--org)">
@@ -2421,7 +2491,8 @@ function fmtMs(ms){const s=Math.floor(ms/1000),p=n=>(n<10?"0":"")+n;
 function startTimers(){
   const tick=()=>{
     const sh=fmtMs(nextCT(12,0)),st=fmtMs(nextCT(13,30)),pr=fmtMs(nextCT(9,0,true));
-    const pick=k=>k==="shift"?sh:k==="prospect"?pr:st;
+    const et=fmtMs(nextCT(10,0));
+    const pick=k=>k==="shift"?sh:k==="prospect"?pr:k==="etsy"?et:st;
     const fs=$("#ftShift");if(fs)fs.textContent=sh;
     const ft=$("#ftStand");if(ft)ft.textContent=st;
     document.querySelectorAll("[data-tmr]").forEach(t=>{t.innerHTML="T-<b>"+pick(t.getAttribute("data-tmr"))+"</b>"});
@@ -2482,6 +2553,15 @@ function applyLive(j){
     }
     if(state.room==="rollie")renderOps("rollie");
   }
+  if(j.etsy){
+    const e=j.etsy;
+    state.etsyTask=e.current_task||null;
+    if(e.current_task){const st=document.querySelector('[data-st="etsy"]');if(st)st.textContent=e.current_task}
+    state.etsyItems=(e.staged_for_review||[]).map(p=>({name:p.name,price:p.price,approved:!!p.approved,channel:"etsy"}));
+    state.etsySpend=typeof e.spend_estimate_usd==="number"?e.spend_estimate_usd:null;
+    if(state.room==="etsy")renderOps("etsy");
+  }
+  state.revenue=j.revenue||state.revenue;
   // v5: CEO-deck data
   state.spend=j.spend||state.spend;
   if(state.spend&&typeof state.spend.today_actual==="number"){const e=$("#hudToday");if(e)e.textContent="$"+state.spend.today_actual.toFixed(2)}
@@ -2515,8 +2595,8 @@ let ffocused=null;
 const FROOMS=[
   {id:'theo',  name:"THEO'S DESK",   accent:'#45c4e8', rect:{x:28, y:28, w:512,h:322}, dec:'command', spr:'theo',   workKey:'review'},
   {id:'vulcan',name:'PRODUCTS',      accent:'#ff8a3d', rect:{x:640,y:28, w:512,h:322}, dec:'foundry', spr:'vulcan', workKey:'forge'},
-  {id:'rollie',name:'MARKETING',     accent:'#a06cff', rect:{x:28, y:410,w:512,h:322}, dec:'sales',   spr:'rollie', workKey:'work'},
-  {id:'slotb', name:'DIVISION SLOT', accent:'#6b7c88', rect:{x:640,y:410,w:512,h:322}, dec:'slot',    spr:'slot',   workKey:null},
+  {id:'rollie',name:'GROWTH',        accent:'#a06cff', rect:{x:28, y:410,w:512,h:322}, dec:'sales',   spr:'rollie', workKey:'work'},
+  {id:'etsy',  name:'ETSY',          accent:'#7ade9a', rect:{x:640,y:410,w:512,h:322}, dec:'etsy',    spr:'etsy',   workKey:null},
 ];
 FROOMS.forEach(r=>Object.assign(r,r.rect));
 const FRById=Object.fromEntries(FROOMS.map(r=>[r.id,r]));
@@ -2560,7 +2640,7 @@ async function facInit(){
   await Promise.all(EQ.map(async n=>{FIMG.equip[n]=await fimg('img/equip/'+n+'.png');}));
   // unique per-room floor backgrounds
   FIMG.bg={};
-  await Promise.all(["command","foundry","sales","slot"].map(async k=>{FIMG.bg[k]=await fimg('img/equip/bg_'+k+'.png');}));
+  await Promise.all(["command","foundry","sales","etsy"].map(async k=>{FIMG.bg[k]=await fimg('img/equip/bg_'+k+'.png');}));
   for(const r of FROOMS)fbots[r.id]=new FBot(r);
   facOverview(); fcam={...fcamT}; FAC_READY=true;
   try{ if(typeof state!=="undefined" && state.room) facFocus(state.room); }catch(e){}
@@ -2637,7 +2717,7 @@ function fShell(r){const c=FCTX;c.save();frr(r.x-3,r.y-3,r.w+6,r.h+6,13);c.strok
     const g=c.createRadialGradient(r.x+r.w*.5,r.y+r.h*.3,10,r.x+r.w*.5,r.y+r.h*.3,r.w*.55);g.addColorStop(0,"rgba(255,190,110,.05)");g.addColorStop(1,"rgba(255,190,110,0)");c.fillStyle=g;c.fillRect(r.x,r.y,r.w,r.h);c.restore();}
   if(!ffocused){c.save();c.font="800 13px ui-rounded,system-ui";c.textAlign="left";c.fillStyle=fhex(r.accent,.9);c.fillText("▍"+r.name,r.x+12,r.y+20);
     c.fillStyle="rgba(150,170,180,.7)";c.font="700 10px ui-rounded,system-ui";c.fillText(fsub(r.id),r.x+22,r.y+34);c.restore();}}
-function fsub(id){return{theo:'Theo · Chief of Staff',vulcan:'Vulcan · Gumroad products',rollie:'Rollie · Clockworks social',slotb:'unassigned'}[id]||'';}
+function fsub(id){return{theo:'Theo · Chief of Staff',vulcan:'Vulcan · Gumroad products',rollie:'Rollie · demand & marketing',etsy:'Etsy · original digital goods'}[id]||'';}
 function fData(pts,t){const c=FCTX;c.save();c.lineCap="round";c.strokeStyle="rgba(16,34,42,.9)";c.lineWidth=4;c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();
   c.strokeStyle="rgba("+FPAL.conduit+",.55)";c.lineWidth=1.6;c.setLineDash([5,12]);c.lineDashOffset=-t*32;c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();c.setLineDash([]);
   for(let k=0;k<2;k++){const pt=fPolyPt(pts,((t*0.17)+k*0.5)%1);c.globalAlpha=.5;c.fillStyle="rgba("+FPAL.drone+",1)";c.beginPath();c.arc(pt[0],pt[1],4,0,7);c.fill();c.globalAlpha=1;c.beginPath();c.arc(pt[0],pt[1],1.8,0,7);c.fill();}
@@ -2677,7 +2757,12 @@ function decSlot(r,t){const c=FCTX,cx=r.x+r.w*0.5,cy=r.y+r.h*0.44;
   c.fillStyle="#10141d";frr(cx-26,cy+14,52,16,5);c.fill();const pul=.4+.3*Math.sin(t*2);c.save();c.globalAlpha=pul;c.fillStyle="#3fe0f0";c.font="900 34px ui-rounded,system-ui";c.textAlign="center";c.fillText("?",cx,cy);c.restore();
   const hg=c.createRadialGradient(cx,cy+20,1,cx,cy+20,40);hg.addColorStop(0,`rgba(63,224,240,${.2*pul})`);hg.addColorStop(1,"rgba(63,224,240,0)");c.fillStyle=hg;c.beginPath();c.ellipse(cx,cy+20,30,10,0,0,7);c.fill();
   c.fillStyle="rgba(140,160,170,.35)";c.font="800 11px ui-rounded,system-ui";c.textAlign="center";c.fillText("UNASSIGNED",cx,r.y+r.h*0.8);}
-const FDEC={command:decCommand,foundry:decFoundry,sales:decSales,slot:decSlot};
+function decEtsy(r,t){
+  fEquip("crates",   r.x+r.w*0.30, r.y+r.h*0.54, r.w*0.30);
+  fEquip("monitors", r.x+r.w*0.70, r.y+r.h*0.52, r.w*0.28);
+  fEquip("rolodex",  r.x+r.w*0.87, r.y+r.h*0.85, r.w*0.13);
+  fData([[r.x+r.w*0.30,r.y+r.h*0.56],[r.x+r.w*0.30,r.y+r.h*0.72],[r.x+r.w*0.70,r.y+r.h*0.72]],t);}
+const FDEC={command:decCommand,foundry:decFoundry,sales:decSales,slot:decSlot,etsy:decEtsy};
 function fCorridors(t){const c=FCTX;c.fillStyle=FPAL.corridor;c.fillRect(552,10,76,740);c.fillRect(10,352,1160,66);c.strokeStyle="rgba("+FPAL.chrome+",.1)";c.lineWidth=1;for(let y=20;y<740;y+=40){c.beginPath();c.moveTo(560,y);c.lineTo(620,y);c.stroke();}}
 
 function fFrame(ts){ if(!FAC_READY)return; const dt=Math.min(.05,(ts-flast)/1000||0);flast=ts;const t=ts/1000;const c=FCTX;
