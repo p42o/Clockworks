@@ -96,7 +96,8 @@ input,textarea,select{font-family:inherit}
 .needs{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:12px;font-size:12.5px;font-weight:600;
   border:1px solid var(--line);background:var(--glass);color:var(--muted);transition:.16s}
 .needs.on{border-color:rgba(255,180,84,.55);background:linear-gradient(180deg,rgba(255,180,84,.16),rgba(255,180,84,.05));color:var(--amber);
-  box-shadow:0 0 0 3px rgba(255,180,84,.1)}
+  animation:needpulse 2.8s ease-in-out infinite}
+@keyframes needpulse{0%,100%{box-shadow:0 0 0 3px rgba(255,180,84,.09)}50%{box-shadow:0 0 0 4px rgba(255,180,84,.04),0 0 16px -3px rgba(255,180,84,.45)}}
 .needs:hover{transform:translateY(-1px)}
 .needs .n{font-family:var(--mono);font-weight:700}
 .iconbtn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--glass);color:var(--muted);font-size:16px;
@@ -132,8 +133,15 @@ input,textarea,select{font-family:inherit}
 .hero .aur{position:absolute;inset:0;opacity:.5;background:var(--aurora);background-size:260% 260%;animation:drift 20s ease-in-out infinite alternate;
   -webkit-mask:radial-gradient(120% 130% at 88% -20%,#000,transparent 62%);mask:radial-gradient(120% 130% at 88% -20%,#000,transparent 62%);filter:blur(6px)}
 .hero .in{position:relative}
-.hero .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
-.hero .eyebrow .lc{font-variant-numeric:tabular-nums;color:var(--ink)}
+.hero .eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:2px}
+.hero .eyl{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.hero .eyl .eydot{width:6px;height:6px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px rgba(70,217,154,.15);flex:none;animation:pulse 2.4s infinite}
+.hero .clock{display:inline-flex;align-items:baseline;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap;flex:none}
+.hero .clock b{font-size:15px;font-weight:700;letter-spacing:.02em}
+.hero .clock .cln{font-style:normal;font-size:15px;font-weight:700;margin:0 1px;animation:blink 1.1s steps(1) infinite}
+.hero .clock em{font-style:normal;font-size:9px;letter-spacing:.16em;color:var(--faint);margin-left:6px;position:relative;top:-1px}
+@keyframes blink{50%{opacity:.22}}
 .hero h1{font-family:var(--display);font-size:34px;line-height:1.05;font-weight:800;letter-spacing:-.02em;margin:12px 0 6px;max-width:16ch}
 .hero .sub{color:var(--muted);font-size:15px;max-width:52ch}
 .hero .live-chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;margin-top:14px;
@@ -144,12 +152,13 @@ input,textarea,select{font-family:inherit}
 .crew{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .station{position:relative;border-radius:20px;padding:18px 16px 15px;overflow:hidden;cursor:pointer;text-align:left;
   background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 10%,var(--panel)),var(--panel));
-  border:1px solid color-mix(in srgb,var(--ac) 26%,var(--line));transition:.18s;animation:rise .5s both}
+  border:1px solid color-mix(in srgb,var(--ac) 26%,var(--line));transition:.18s}
 .station:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--ac) 55%,transparent);
   box-shadow:0 18px 40px -20px color-mix(in srgb,var(--ac) 60%,#000)}
 .station .halo{position:absolute;inset:-40% -20% auto -20%;height:150px;opacity:0;transition:opacity .6s;pointer-events:none;
   background:radial-gradient(60% 100% at 50% 0,color-mix(in srgb,var(--ac) 45%,transparent),transparent 70%)}
-.station.work .halo{opacity:1}
+.station.work .halo{opacity:1;animation:halobreath 3.2s ease-in-out infinite}
+@keyframes halobreath{0%,100%{opacity:.6}50%{opacity:1}}
 .station .toprow{display:flex;align-items:center;justify-content:space-between}
 .station .spr{width:60px;height:60px;object-fit:contain;image-rendering:pixelated;
   filter:drop-shadow(0 0 12px color-mix(in srgb,var(--ac) 55%,transparent)) drop-shadow(0 6px 8px rgba(0,0,0,.5))}
@@ -508,20 +517,28 @@ input,textarea,select{font-family:inherit}
 .mobtabs{display:none}
 @media(max-width:920px){
   .nav{display:none}
-  .content{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .content{padding-bottom:0}
   .wrap{padding:20px 14px 40px}
   .crew{grid-template-columns:1fr 1fr}
   .needbar,.loops,.dgrid,.kpis,.floorgrid,.authgrid{grid-template-columns:1fr}
   .statgrid{grid-template-columns:1fr 1fr}
-  .hero h1{font-size:27px}
+  .hero{padding:20px 18px 20px;border-radius:20px;margin-bottom:16px}
+  .hero h1{font-size:26px;margin:10px 0 6px}
+  .hero .sub{font-size:14px}
+  .crew{gap:12px}
+  .sec-t{margin:24px 0 11px}
+  .needbar,.loops{gap:12px;margin:16px 0}
+  .wrap{padding:18px 14px 26px}
+  .phd h2{font-size:22px}
   .teams{grid-template-columns:1fr}
   .teams .dmlist{display:none}
   .teams.showlist .dmlist{display:block;border-right:0}
   .teams.showlist .dmpane{display:none}
   .composer .cinner,.chatscroll .inner,.hint{max-width:100%}
   .topbar .stat.sep{display:none}
-  .mobtabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;height:calc(64px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
-    background:rgba(20,16,32,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line)}
+  /* in-flow (not fixed) so it always sits flush at the bottom of the app column — no floating gap */
+  .mobtabs{display:flex;flex:none;z-index:60;height:calc(58px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+    background:rgba(23,18,38,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line)}
   .mobtabs button{flex:1;border:0;background:transparent;color:var(--faint);font-size:10px;font-weight:600;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative}
   .mobtabs button .mti{font-size:20px;line-height:1}
@@ -897,7 +914,7 @@ function renderDashboard(){
   const stream=activityStream();const dailyCap=1.5;const spentPct=sp?Math.min(1,(sp.today_actual||0)/dailyCap):0;
   c.innerHTML=`<div class="wrap">
     <div class="hero"><div class="aur"></div><div class="in">
-      <div class="eyebrow"><span>MN Clockworks · autonomous division</span><span>·</span><span class="lc" id="heroClock">--:--</span></div>
+      <div class="eyebrow"><span class="eyl"><span class="eydot"></span>Autonomous division</span><span class="clock"><b id="clkH">--</b><i class="cln">:</i><b id="clkM">--</b><em>CT</em></span></div>
       <h1>${greet}, Parker.</h1>
       <div class="sub">${esc(aliveLine)}</div>
       <div class="live-chip"><span class="d"></span>${working.length?working.length+' working now':'all systems armed'}</div>
@@ -946,7 +963,7 @@ function station(a,i){
   </button>`;
 }
 function nextUpLine(){let best=null;AGENTS.forEach(a=>{const t=nextRun(a).getTime();if(!best||t<best.t)best={a,t}});return best?best.a.name+" in "+countdownTo(best.a):"soon"}
-function tickClock(){const e=$("#heroClock");if(e)e.textContent=ctNow().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",hour12:false})+" CT"}
+function tickClock(){const n=ctNow();const H=$("#clkH"),M=$("#clkM");if(H)H.textContent=String(n.getHours()).padStart(2,"0");if(M)M.textContent=String(n.getMinutes()).padStart(2,"0");}
 
 /* ================= APPROVALS ================= */
 function renderApprovals(){
