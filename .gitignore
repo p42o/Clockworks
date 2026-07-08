@@ -22,3 +22,6 @@ __pycache__/
 # Misc
 Archive.zip
 test.csv.rtf
+
+# Lab backups (local revert only, never deploy)
+lab/*.bak
