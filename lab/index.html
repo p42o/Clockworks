@@ -1166,6 +1166,9 @@ function labelFor(a,p){
     :a==="set_model"?"🧠 switch "+(p&&p.agent)+" → "+(p&&p.model)
     :a==="delegate"?"🧭 "+p
     :a==="dispatch"?"🚀 dispatch gig → "+(p&&p.agent)+((p&&p.model)?" on "+p.model:"")
+    :a==="send_inbound_reply"?"✉ send reply to customer"
+    :a==="archive_inbound"?"🗄 archive customer email"
+    :a==="unarchive_inbound"?"↩️ un-archive customer email"
     :a==="message_theo"?"→ "+p:a;
 }
 
@@ -1243,6 +1246,22 @@ function wireCommandLog(){
           if(!$("#teamIn")||document.activeElement!==$("#teamIn"))renderLaunch();
         });
       });
+  }catch(e){}
+}
+// Inbound customer email (sales@mnclockworks.com). The Vercel receiver + lab-bridge
+// write here (service account); we only READ. Split into active vs archived.
+function wireInbound(){
+  state.inboundEmails=state.inboundEmails||[];
+  state.inboundArchived=state.inboundArchived||[];
+  if(!db||!user)return;
+  try{
+    db.collection("inbound_emails").where("status","in",["new","drafting","drafted","error","archived"]).limit(60)
+      .onSnapshot(snap=>{
+        const all=snap.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>tms(b.received_at)-tms(a.received_at));
+        state.inboundEmails=all.filter(e=>e.status!=="archived");
+        state.inboundArchived=all.filter(e=>e.status==="archived");
+        renderInbox();updateBadges();
+      },err=>{ /* rules not deployed / index issue — inbound just won't show */ });
   }catch(e){}
 }
 // group email/message commands into threads
@@ -1370,7 +1389,7 @@ function renderThreadDetail(el,tid){
   inp.addEventListener("keydown",e=>{if(e.key==="Enter")reply()});
 }
 function inboxCount(){
-  return ((state.queueItems||[]).filter(q=>!q.approved).length)+((state.etsyItems||[]).filter(q=>!q.approved).length)+((state.outreach||[]).filter(o=>!o.approved).length);
+  return ((state.queueItems||[]).filter(q=>!q.approved).length)+((state.etsyItems||[]).filter(q=>!q.approved).length)+((state.outreach||[]).filter(o=>!o.approved).length)+((state.inboundEmails||[]).filter(e=>e.status==="drafted").length);
 }
 function updateBadges(){
   const n=inboxCount();
@@ -1403,6 +1422,29 @@ function renderInbox(){
           <button class="idis" data-inbox-dismiss="outreach" data-val="${esc(o.company)}" title="clear from your inbox">✕ Dismiss</button>`}</div>
     </div>`);
   });
+  // inbound customer emails — Rollie drafted a reply; approve to send, or archive.
+  const inboundCard=(e,archived)=>{
+    const drafting=e.status==="drafting"||e.status==="new";
+    const err=e.status==="error";
+    const ta=drafting?'<div class="isub" style="opacity:.6">⏳ drafting…</div>'
+      :`<textarea class="idraft" data-inbound-draft="${e.id}" style="width:100%;box-sizing:border-box;min-height:104px;resize:vertical;background:rgba(0,0,0,.35);border:1px solid var(--seam-hi);border-radius:8px;color:var(--ink);font:11px var(--mono);padding:10px;line-height:1.5;margin:8px 0 2px"${archived?" readonly":""}>${esc(e.draft||"")}</textarea>`;
+    const sub=drafting?" Rollie is drafting a reply…":err?" Draft failed — reply manually.":archived?" Archived — revisit or approve.":' Edit the draft if you like, then <b style="color:var(--you)">Approve → Send</b>. Nothing sends until you do.';
+    const btns=drafting?'<span class="iok" style="opacity:.6">⏳ waiting on Rollie…</span>'
+      :archived
+        ?`<button class="iapv" data-inbound-approve="${e.id}">✓ APPROVE → SEND</button><button class="idis" data-inbound-unarchive="${e.id}" title="move back to inbox">↩️ Un-archive</button>`
+        :`<button class="iapv" data-inbound-approve="${e.id}">✓ APPROVE → SEND</button><button class="idis" data-inbound-archive="${e.id}" title="archive — revisit later">🗄 Archive</button>`;
+    return `<div class="ibx mail">
+      <div class="ih"><span class="iico"><img src="img/pixel/rollie_rot_south.png" alt=""></span>
+        <span class="iname">${esc(e.from||"unknown")}</span></div>
+      <div class="isub">“${esc(e.subject||"(no subject)")}” — inbound customer email.${sub}</div>
+      ${ta}
+      <div class="irow">${btns}</div>
+    </div>`;
+  };
+  if((state.inboundEmails||[]).length){
+    rows.push(`<div class="msec">CUSTOMER EMAILS → sales@mnclockworks.com</div>`);
+    (state.inboundEmails||[]).forEach(e=>rows.push(inboundCard(e,false)));
+  }
   if((state.dispatches||[]).length){
     rows.push(`<div class="msec">RECENT GIGS DISPATCHED</div>`);
     state.dispatches.slice(0,4).forEach(x=>{
@@ -1410,6 +1452,10 @@ function renderInbox(){
         <div class="ih"><span class="iico">🚀</span><span class="iname">${esc(x.agent)} · ${esc(x.model)}</span></div>
         <div class="isub">${esc(x.brief)}</div></div>`);
     });
+  }
+  if((state.inboundArchived||[]).length){
+    rows.push(`<div class="msec">🗄 ARCHIVED CUSTOMER EMAILS (${state.inboundArchived.length}) — revisit or approve anytime</div>`);
+    (state.inboundArchived||[]).forEach(e=>rows.push(inboundCard(e,true)));
   }
   const head=`<div class="mphead"><span class="mpi">📥</span><span class="mpt">INBOX</span><span class="mpc">${inboxCount()?inboxCount()+" waiting":"all clear"}</span></div>`;
   el.innerHTML=head+(rows.length?rows.join("")
@@ -1456,6 +1502,42 @@ function renderInbox(){
       if(kind==="item")state.queueItems=(state.queueItems||[]).filter(x=>x.name!==val);
       else state.outreach=(state.outreach||[]).filter(x=>x.company!==val);
       sendCommand(kind==="item"?"dismiss_item":"dismiss_outreach",val);
+      renderInbox();updateBadges();
+    });
+  });
+  // inbound: approve → send the (possibly edited) draft; archive/un-archive are reversible
+  el.querySelectorAll("[data-inbound-approve]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id=b.getAttribute("data-inbound-approve");
+      const ta=el.querySelector('textarea[data-inbound-draft="'+id+'"]');
+      const edited=ta?ta.value:"";
+      b.disabled=true;b.textContent="…sending";
+      sendCommand("send_inbound_reply",{docId:id,edited},d=>{
+        if(d.status==="done"){
+          state.inboundEmails=(state.inboundEmails||[]).filter(x=>x.id!==id);
+          state.inboundArchived=(state.inboundArchived||[]).filter(x=>x.id!==id);
+          renderInbox();updateBadges();
+        }else{b.disabled=false;b.textContent="✓ APPROVE → SEND";}
+      });
+    });
+  });
+  el.querySelectorAll("[data-inbound-archive]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id=b.getAttribute("data-inbound-archive");
+      const e=(state.inboundEmails||[]).find(x=>x.id===id);
+      state.inboundEmails=(state.inboundEmails||[]).filter(x=>x.id!==id);
+      if(e){e.status="archived";state.inboundArchived=[e].concat(state.inboundArchived||[]);}
+      sendCommand("archive_inbound",{docId:id});
+      renderInbox();updateBadges();
+    });
+  });
+  el.querySelectorAll("[data-inbound-unarchive]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id=b.getAttribute("data-inbound-unarchive");
+      const e=(state.inboundArchived||[]).find(x=>x.id===id);
+      state.inboundArchived=(state.inboundArchived||[]).filter(x=>x.id!==id);
+      if(e){e.status="drafted";state.inboundEmails=[e].concat(state.inboundEmails||[]);}
+      sendCommand("unarchive_inbound",{docId:id});
       renderInbox();updateBadges();
     });
   });
@@ -2786,7 +2868,7 @@ let started=false;
 function start(){
   if(started)return;started=true;
   $("#app").classList.add("on");
-  buildRoster();buildDock();buildFloorList();drags();startTimers();startGrain();wireMission();wireMenu();wireHelp();wireSwipe();wirePTR();wireCommandLog();tryLive();
+  buildRoster();buildDock();buildFloorList();drags();startTimers();startGrain();wireMission();wireMenu();wireHelp();wireSwipe();wirePTR();wireCommandLog();wireInbound();tryLive();
   if(isMobile())mobileNav("floor"); else facInit();   // canvas facility is desktop-only; phones get the ROOMS list
   applyStates();refreshBubbles();
   pushLog("SYS","facility online — operator "+(user?user.email:""),"var(--dim)");
