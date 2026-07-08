@@ -79,7 +79,8 @@ input,textarea,select{font-family:inherit}
 /* ---------------- app shell ---------------- */
 #app{display:none;height:100vh;height:100dvh;flex-direction:column}
 #app.on{display:flex}
-.topbar{flex:none;display:flex;align-items:center;gap:14px;height:58px;padding:0 18px;position:relative;z-index:30;
+.topbar{flex:none;display:flex;align-items:center;gap:14px;min-height:58px;height:calc(58px + env(safe-area-inset-top,0px));
+  padding:env(safe-area-inset-top,0px) 18px 0 18px;position:relative;z-index:30;
   border-bottom:1px solid var(--hair);background:rgba(20,16,32,.72);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3)}
 .topbar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--aurora);background-size:200% 100%;opacity:.5;animation:drift 14s linear infinite alternate}
 .brand{display:flex;align-items:center;gap:11px}
@@ -167,6 +168,12 @@ input,textarea,select{font-family:inherit}
   display:flex;justify-content:space-between;align-items:center}
 .station .ft b{color:var(--ink)}
 .station.work .ft b{color:var(--go)}
+/* live bots — 8-frame south idle sprite-sheets (real animation, not a bounce) */
+.bot{width:var(--sz);height:var(--sz);background-repeat:no-repeat;image-rendering:pixelated;background-size:calc(var(--sz) * 8) var(--sz);
+  animation:idle8 .95s steps(8) infinite;filter:drop-shadow(0 0 12px color-mix(in srgb,var(--ac) 55%,transparent)) drop-shadow(0 5px 7px rgba(0,0,0,.5))}
+@keyframes idle8{from{background-position:0 0}to{background-position:calc(var(--sz) * -8) 0}}
+.bot.still{animation:breathe 3.8s ease-in-out infinite;background-size:var(--sz) var(--sz)}
+.station.work .bot{animation-duration:.62s}
 
 /* needs-you callouts */
 .needbar{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
@@ -474,7 +481,7 @@ input,textarea,select{font-family:inherit}
 /* ---------------- menu + help ---------------- */
 .sheet-back{position:fixed;inset:0;z-index:80;background:rgba(8,6,16,.5);display:none;backdrop-filter:blur(3px)}
 .sheet-back.on{display:block}
-.sheet{position:absolute;top:62px;right:16px;width:290px;border:1px solid var(--line2);border-radius:18px;overflow:hidden;
+.sheet{position:absolute;top:calc(62px + env(safe-area-inset-top,0px));right:16px;width:290px;border:1px solid var(--line2);border-radius:18px;overflow:hidden;
   background:linear-gradient(180deg,var(--panel2),var(--panel));box-shadow:var(--sh);animation:rise .2s both}
 .sheet .mrow{display:flex;align-items:center;gap:13px;padding:14px 17px;cursor:pointer;border-bottom:1px solid var(--hair)}
 .sheet .mrow:last-child{border-bottom:0}
@@ -501,7 +508,7 @@ input,textarea,select{font-family:inherit}
 .mobtabs{display:none}
 @media(max-width:920px){
   .nav{display:none}
-  .content{padding-bottom:74px}
+  .content{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .wrap{padding:20px 14px 40px}
   .crew{grid-template-columns:1fr 1fr}
   .needbar,.loops,.dgrid,.kpis,.floorgrid,.authgrid{grid-template-columns:1fr}
@@ -513,8 +520,8 @@ input,textarea,select{font-family:inherit}
   .teams.showlist .dmpane{display:none}
   .composer .cinner,.chatscroll .inner,.hint{max-width:100%}
   .topbar .stat.sep{display:none}
-  .mobtabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;height:64px;padding-bottom:env(safe-area-inset-bottom);
-    background:rgba(20,16,32,.9);backdrop-filter:blur(16px);border-top:1px solid var(--line)}
+  .mobtabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;height:calc(64px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+    background:rgba(20,16,32,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line)}
   .mobtabs button{flex:1;border:0;background:transparent;color:var(--faint);font-size:10px;font-weight:600;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative}
   .mobtabs button .mti{font-size:20px;line-height:1}
@@ -556,6 +563,7 @@ input,textarea,select{font-family:inherit}
     <button data-sec="inbox">Inbox</button>
     <button data-sec="teams">Teams</button>
     <button data-sec="customers">Customers <span class="cbadge" id="navCustBadge">0</span></button>
+    <button data-sec="social">Social</button>
     <button data-sec="trends">Trends</button>
     <button data-sec="floor">Floor</button>
   </nav>
@@ -573,6 +581,7 @@ input,textarea,select{font-family:inherit}
   <div class="sheet-back" id="sheetBack">
     <div class="sheet" id="sheet">
       <div class="mrow" data-menu="customers" style="display:none"><span class="mi">📨</span><span class="mt">Customers</span></div>
+      <div class="mrow" data-menu="social" style="display:none"><span class="mi">📣</span><span class="mt">Social</span></div>
       <div class="mrow" data-menu="trends" style="display:none"><span class="mi">📡</span><span class="mt">Trends</span></div>
       <div class="mrow" data-menu="floor" style="display:none"><span class="mi">🏭</span><span class="mt">Floor</span></div>
       <div class="mrow" data-menu="ceo"><span class="mi">▣</span><span class="mt">CEO Deck</span><span class="mv">spend · revenue</span></div>
@@ -769,8 +778,11 @@ const AById=Object.fromEntries(AGENTS.map(a=>[a.k,a]));
 const OC2K={main:"theo",foundry:"vulcan",rollie:"rollie",etsy:"etsy"};
 function agentByOc(oc){return AById[OC2K[oc]||oc]||AById.theo}
 function avatarFor(oc){return agentByOc(oc).avatar}
+// live sprite: theo/vulcan/rollie have 8-frame idle sheets; etsy falls back to a gentle breathe
+function botSprite(k,size,extra){const a=AById[k];const anim=k!=="etsy";const src=anim?("img/pixel/"+k+"_idle_south.png"):a.avatar;
+  return `<div class="bot ${anim?'':'still'} ${extra||''}" style="--sz:${size}px;--ac:var(--${a.cv});background-image:url(${src})"></div>`;}
 
-const state={sec:"dashboard",selAgent:null,openThread:null,dmAgent:"theo",dmOpen:false,feed:"none",meta:null,paused:false,
+const state={sec:"dashboard",selAgent:null,openThread:null,dmAgent:"theo",dmOpen:false,social:[],socialLoaded:false,socialPlat:"both",feed:"none",meta:null,paused:false,
   activity:[],commands:[],trig:{},liveTask:{},
   queueItems:[],etsyItems:[],outreach:[],dispatches:[],inboundEmails:[],inboundArchived:[],
   spend:null,revenue:null,vps:null,reports:null,trends:null,briefs:[]};
@@ -846,7 +858,7 @@ function updateCounts(){const ap=approvalsCount(),cu=customersCount(),tot=ap+cu;
 }
 
 /* ================= NAV / router ================= */
-const SECTIONS={dashboard:renderDashboard,approvals:renderApprovals,inbox:renderInbox,teams:renderTeams,customers:renderCustomers,trends:renderTrends,floor:renderFloor,agent:renderAgent,ceo:renderCeo,admin:renderAdmin};
+const SECTIONS={dashboard:renderDashboard,approvals:renderApprovals,inbox:renderInbox,teams:renderTeams,customers:renderCustomers,social:renderSocial,trends:renderTrends,floor:renderFloor,agent:renderAgent,ceo:renderCeo,admin:renderAdmin};
 function go(sec){state.sec=sec;if(sec!=="agent")state.selAgent=null;
   $$("#nav button").forEach(b=>b.classList.toggle("sel",b.getAttribute("data-sec")===sec));
   $$("#mobtabs button").forEach(b=>b.classList.toggle("sel",b.getAttribute("data-sec")===sec));
@@ -927,7 +939,7 @@ function station(a,i){
   const work=isWorking(a.k);const now=state.liveTask[a.k]||(state.reports&&state.reports[a.k]&&state.reports[a.k].task)||a.tagline;
   return `<button class="station ${work?'work':''}" data-agent="${a.k}" style="--ac:var(--${a.cv});animation-delay:${i*60}ms">
     <div class="halo"></div>
-    <div class="toprow"><img class="spr" src="${a.avatar}" alt=""><span class="pres"><span class="d"></span>${work?'working':'idle'}</span></div>
+    <div class="toprow">${botSprite(a.k,60)}<span class="pres"><span class="d"></span>${work?'working':'idle'}</span></div>
     <div class="nm">${a.name}</div><div class="rl">${esc(a.role)}</div>
     <div class="tk">${esc(now)}</div>
     <div class="ft"><span>${work?'on the line':'next shift'}</span><b data-cd="${a.k}">${work?'now':countdownTo(a)}</b></div>
@@ -1121,6 +1133,68 @@ function renderCustomers(){
   $$("[data-unarch]",c).forEach(b=>b.addEventListener("click",()=>{const id=b.getAttribute("data-unarch");const e=state.inboundArchived.find(x=>x.id===id);state.inboundArchived=state.inboundArchived.filter(x=>x.id!==id);if(e){e.status="drafted";state.inboundEmails=[e].concat(state.inboundEmails)}sendCommand("unarchive_inbound",{docId:id});renderCustomers();updateCounts();}));
 }
 
+/* ================= SOCIAL (Rollie manages Clockworks Social → FB + X) ================= */
+function DEV_SOCIAL(){return [
+  {platform:"facebook",text:"Missed calls = missed jobs. We set up an AI that texts every missed call back in seconds — books the job before your competitor picks up.",status:"sent",post_url:"#",scheduled_at:new Date(Date.now()-3600000).toISOString()},
+  {platform:"x",text:"Your phone rings while you're under a sink. The AI texts them back before you're done. That's a booked job you'd have lost.",status:"pending",scheduled_at:new Date().toISOString()},
+  {platform:"facebook",text:"New: Realtor Prompt Pack — 30 prompts that write your listings, follow-ups, and open-house posts in your voice.",status:"failed",error:"Facebook token expired",scheduled_at:new Date(Date.now()-7200000).toISOString()}];}
+function fetchSocial(force){
+  if(force)state.socialLoaded=false;
+  if(state.socialLoaded)return;state.socialLoaded=true;
+  if(window.__DEV_FEED){state.social=DEV_SOCIAL();if(state.sec==="social")renderSocial();return;}
+  if(!user||!db)return;
+  db.collection("lab_commands").add({action:"list_social",payload:null,email:user.email,status:"pending",created_at:firebase.firestore.FieldValue.serverTimestamp()})
+   .then(ref=>{const un=ref.onSnapshot(doc=>{const d=doc.data();if(!d)return;
+     if(d.status==="done"||d.status==="error"||d.status==="rejected"){un();try{const r=JSON.parse(d.result);state.social=r.posts||[];}catch(e){}if(state.sec==="social")renderSocial();}});
+     setTimeout(un,60000);}).catch(()=>{});
+}
+function socialRow(p){
+  const ic=p.platform==="x"?"𝕏":"f";const col=p.platform==="x"?"var(--ink)":"#4a86e8";
+  const st=p.status==="sent"?`<span class="statuschip replied">posted</span>`:p.status==="failed"?`<span class="statuschip" style="background:rgba(255,111,128,.14);color:var(--alert)">failed</span>`:`<span class="statuschip wait">queued</span>`;
+  const when=p.sent_at||p.scheduled_at;
+  return `<div class="mrow2" style="--ac:${col};cursor:default">
+    <div style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--night2);border:1px solid var(--line);font:700 16px var(--mono);color:${col};flex:none">${ic}</div>
+    <div style="min-width:0;flex:1"><div class="msnip" style="color:var(--ink);white-space:normal;max-width:none;font-size:13px">${esc(p.text)}</div>
+      ${p.error?`<div style="font-size:11px;color:var(--alert);margin-top:4px">⚠ ${esc(p.error)}</div>`:""}</div>
+    <div class="mright">${st}<span class="mts">${when?ago(tms(when)):""}</span>${p.post_url&&p.post_url!=="#"?`<a href="${esc(p.post_url)}" target="_blank" style="font-size:11px;color:var(--accent)">view ›</a>`:""}</div>
+  </div>`;
+}
+function renderSocial(){
+  const c=$("#content");if(!c)return;fetchSocial();
+  const posts=state.social||[];const failing=posts.filter(p=>p.status==="failed").length;
+  c.innerHTML=`<div class="wrap">
+    <div class="phd"><h2>Social</h2><span class="pc">Rollie · @ClockworksMN</span></div>
+    <div class="plede">Rollie runs your Facebook + X. Tell him what to post and he writes it in your voice — you review and publish. Or write your own. Everything you send lands on the real accounts within a minute.</div>
+    ${failing?`<div class="wall-note" style="color:var(--alert);border-color:rgba(255,111,128,.4);background:rgba(255,111,128,.08);margin-bottom:16px">⚠ ${failing} recent post${failing>1?'s':''} failed — looks like the Facebook page token expired. Reconnect it in Clockworks Social's credentials to resume FB posting.</div>`:""}
+    <div class="tform" style="margin-bottom:22px">
+      <label>What should the post be about?</label>
+      <textarea id="soTopic" class="fin" style="min-height:70px" placeholder="e.g. a quick tip on texting back missed calls — or announce the Realtor Prompt Pack"></textarea>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center">
+        <div class="toggle" id="soPlat"><button data-p="both" class="${state.socialPlat==='both'?'sel':''}">FB + X</button><button data-p="facebook" class="${state.socialPlat==='facebook'?'sel':''}">Facebook</button><button data-p="x" class="${state.socialPlat==='x'?'sel':''}">X</button></div>
+        <button class="btn sm" id="soWrite">✨ Have Rollie write it</button>
+      </div>
+      <label style="margin-top:16px">Post text — edit before publishing</label>
+      <textarea id="soText" class="fin" placeholder="Write it yourself, or let Rollie draft it above…"></textarea>
+      <label>Link (optional)</label><input id="soLink" class="fin" placeholder="https://mnclockworks.gumroad.com/l/…" autocomplete="off">
+      <div class="actions"><button class="btn go" id="soPublish">Publish to ${state.socialPlat==='both'?'FB + X':state.socialPlat==='x'?'X':'Facebook'}</button><span style="font-size:11.5px;color:var(--faint);align-self:center">🛡️ posts only when you hit publish</span></div>
+    </div>
+    <div class="sec-t">Recent posts <button class="btn ghost sm" id="soRefresh" style="margin-left:auto;padding:4px 10px">↻</button></div>
+    ${posts.length?posts.map(socialRow).join(""):`<div class="det-load"><span class="typing"><i></i><i></i><i></i></span> loading recent posts…</div>`}
+  </div>`;
+  $$("#soPlat button",c).forEach(b=>b.addEventListener("click",()=>{state.socialPlat=b.getAttribute("data-p");$$("#soPlat button",c).forEach(x=>x.classList.toggle("sel",x===b));const pb=$("#soPublish");if(pb)pb.textContent="Publish to "+(state.socialPlat==='both'?'FB + X':state.socialPlat==='x'?'X':'Facebook');}));
+  const wr=$("#soWrite");if(wr)wr.addEventListener("click",()=>{const topic=($("#soTopic").value||"").trim();if(!topic){$("#soTopic").focus();return;}
+    wr.disabled=true;wr.textContent="Rollie's writing…";markWorking("rollie",180000);
+    sendCommand("draft_social",{topic,platform:state.socialPlat},d=>{wr.disabled=false;wr.textContent="✨ Have Rollie write it";
+      if(d.status==="done"&&d.result){const t=$("#soText");if(t){t.value=d.result;t.focus();}toast("Rollie drafted it — review & publish","go");}else toast(d.result||"Draft failed","err");});});
+  const pub=$("#soPublish");if(pub)pub.addEventListener("click",()=>{const text=($("#soText").value||"").trim(),link=($("#soLink").value||"").trim();
+    if(!text){toast("Write the post first (or have Rollie draft it)","err");$("#soText").focus();return;}
+    pub.disabled=true;pub.textContent="publishing…";
+    sendCommand("post_social",{platform:state.socialPlat,text,link:link||null},d=>{
+      if(d.status==="done"&&/queued/i.test(d.result||"")){toast("Published ✓ "+d.result,"go");$("#soText").value="";$("#soTopic").value="";$("#soLink").value="";fetchSocial(true);}
+      else{pub.disabled=false;pub.textContent="Publish";toast(d.result||"Publish failed","err");}});});
+  const rf=$("#soRefresh");if(rf)rf.addEventListener("click",()=>fetchSocial(true));
+}
+
 /* ================= TRENDS ================= */
 function trendAge(iso){try{const m=Math.floor((Date.now()-new Date(iso).getTime())/60000);return m<60?m+"m ago":Math.floor(m/60)+"h ago"}catch(e){return""}}
 function renderTrends(){const c=$("#content");if(!c)return;const t=state.trends;const list=t&&Array.isArray(t.trends)?t.trends:[];
@@ -1136,7 +1210,7 @@ function renderFloor(){const c=$("#content");if(!c)return;
     <div class="plede">A look at what each teammate is doing right now. Rooms light up while an agent is on the clock.</div>
     <div class="floorgrid">${AGENTS.map(a=>{const work=isWorking(a.k);const now=state.liveTask[a.k]||(state.reports&&state.reports[a.k]&&state.reports[a.k].task)||a.tagline;
       return `<div class="froom ${work?'work':''}" data-agent="${a.k}" style="--ac:var(--${a.cv})"><div class="glow"></div>
-        <div class="fh"><img src="${a.avatar}" alt=""><div><div class="frn">${esc(a.role)}</div><div class="frs"><span class="d"></span>${work?'working now':'idle'}</div></div></div>
+        <div class="fh">${botSprite(a.k,48)}<div><div class="frn">${esc(a.role)}</div><div class="frs"><span class="d"></span>${work?'working now':'idle'}</div></div></div>
         <div class="fnow">${esc(now)}</div><div class="fnx">${work?'on the clock':'next run'} <b data-cd="${a.k}">${work?'':countdownTo(a)}</b></div></div>`}).join("")}</div>
     <div class="novelty">The real work lives in your Dashboard, Approvals, and Inbox.</div></div>`;
   $$("[data-agent]",c).forEach(x=>x.addEventListener("click",()=>selectAgent(x.getAttribute("data-agent"))));
@@ -1213,7 +1287,7 @@ function wireMenu(){
   $("#sheetBack").addEventListener("click",e=>{if(e.target===$("#sheetBack"))openSheet(false)});
   $$("#sheet .mrow").forEach(r=>r.addEventListener("click",()=>{const m=r.getAttribute("data-menu");openSheet(false);
     if(m==="ceo")go("ceo");else if(m==="admin")go("admin");else if(m==="help")showHelp(true);
-    else if(m==="customers"||m==="trends"||m==="floor")go(m);
+    else if(m==="customers"||m==="social"||m==="trends"||m==="floor")go(m);
     else if(m==="signout"){if(fb)firebase.auth().signOut();location.reload()}}));
   const me=$("#menuEmail");if(me&&user)me.textContent=(user.email||"").split("@")[0];
 }
@@ -1224,7 +1298,7 @@ function wireNav(){
   $$("#nav button").forEach(b=>b.addEventListener("click",()=>go(b.getAttribute("data-sec"))));
   $$("#mobtabs button").forEach(b=>b.addEventListener("click",()=>{const s=b.getAttribute("data-sec");if(s==="_more"){openSheet(true);return}if(s==="teams")state.dmOpen=false;go(s);}));
   $("#needsBtn").addEventListener("click",()=>go(approvalsCount()>=customersCount()?"approvals":"customers"));
-  if(isMobile())$$('#sheet .mrow[data-menu="customers"],#sheet .mrow[data-menu="trends"],#sheet .mrow[data-menu="floor"]').forEach(r=>r.style.display="flex");
+  if(isMobile())$$('#sheet .mrow[data-menu="customers"],#sheet .mrow[data-menu="social"],#sheet .mrow[data-menu="trends"],#sheet .mrow[data-menu="floor"]').forEach(r=>r.style.display="flex");
 }
 
 /* ================= state sync ================= */
