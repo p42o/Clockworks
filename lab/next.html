@@ -258,6 +258,11 @@ input,textarea,select{font-family:inherit}
 .dossier[open] summary::before{content:"▾ "}
 .dossier .dd{padding:2px 16px 16px;font-size:12.5px;line-height:1.75;color:var(--muted);max-height:320px;overflow-y:auto}
 .dossier .dd b{color:var(--ink)}
+.det label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:13px 0 6px}
+.det .fin{width:100%;border:1px solid var(--line2);border-radius:11px;background:var(--night2);color:var(--ink);font:14px var(--sans);padding:11px 13px;outline:none}
+.det .fin:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,123,255,.16)}
+.det textarea.fin{min-height:170px;resize:vertical;line-height:1.6}
+.det .sentpill{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--go);font-weight:600;background:rgba(70,217,154,.1);border:1px solid rgba(70,217,154,.3);border-radius:11px;padding:10px 14px}
 #toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);z-index:120;opacity:0;pointer-events:none;
   background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);border-radius:13px;padding:12px 18px;
   font-size:13.5px;font-weight:600;color:var(--ink);box-shadow:var(--sh);transition:.25s;max-width:90vw;text-align:center}
@@ -691,20 +696,51 @@ function fetchDetail(kind,id,cb){
 function DEV_DETAIL(id){return {kind:"outreach",company:id,contact:"Joshua Fritze",subject:"Neighborly note on missed calls for Maple Grove plumbers",channel:"direct note or PHCC golf (today)",approved:false,
   draft:"**Subject:** Neighborly note on missed calls for Maple Grove plumbers\n\nHi — saw your site mentions 35 years serving Maple Grove families with honest work and free estimates. As a local neighbor building AI systems for trades businesses, I help shops text back missed calls, chase quotes automatically, and keep reviews flowing — using the tools you already have.\n\nI'd like to offer a free AI Time & Lead Audit: a simple one-page plan showing your biggest weekly time leak and one system to fix it. Yours to keep, zero pressure.\n\nWould a 30-minute call this week work?\n\nBest,\nParker\nMN Clockworks (mnclockworks.com)",
   dossier:"**What they do**: Family plumbing — service, repair, water heaters, 35 years in Maple Grove.\n**Size signals**: Small owner-operated team.\n**Tools they appear to run**: No online booking; 'call for a free estimate' across the site.\n**The ONE pain your systems fix best**: Missed after-hours calls → lost residential jobs.\n**Playbook channel that fits**: Warm neighbor sweep, or the PHCC golf event today.\n**Sources**: Public website + directories only."};}
-function outDetailHTML(company){
+function splitDraft(r){
+  let subject=r.subject||"",body=r.draft||"";
+  const m=body.match(/\*\*\s*subject\s*:?\s*\*\*\s*(.+)/i);
+  if(m){if(!subject)subject=m[1].trim();body=body.replace(/^[\s\S]*?\*\*\s*subject[\s\S]*?\n+/i,"");}
+  return {subject,body:body.replace(/^\s+/,"")};
+}
+function outDetailHTML(company,sent){
   const r=detailCache["outreach:"+company];
   if(!r)return `<div class="det"><div class="det-load"><span class="typing"><i></i><i></i><i></i></span> pulling Rollie's draft &amp; research…</div></div>`;
-  if(r.error)return `<div class="det"><div class="det-load">Couldn't load the draft (${esc(r.error)}). The full version is in Rollie's workspace.</div></div>`;
-  return `<div class="det">
-    <div class="detgrid">${r.contact?`<span class="detchip">Contact <b>${esc(r.contact)}</b></span>`:''}${r.channel?`<span class="detchip">Best channel <b>${esc(r.channel)}</b></span>`:''}</div>
-    <div class="draftbox"><div class="dbh">📧 Ready-to-send draft<button class="cp" data-copy="${esc(company)}">Copy</button></div><div class="db">${mdLite(r.draft||"(no draft found)")}</div></div>
-    ${r.dossier?`<details class="dossier"><summary>Why this business — Rollie's research</summary><div class="dd">${mdLite(r.dossier)}</div></details>`:''}
-  </div>`;
+  if(r.error)return `<div class="det" data-company="${esc(company)}"><div class="det-load">Couldn't load the draft (${esc(r.error)}). The full version is in Rollie's workspace.</div></div>`;
+  const sd=splitDraft(r);
+  const chips=`<div class="detgrid">${r.contact?`<span class="detchip">Contact <b>${esc(r.contact)}</b></span>`:''}${r.channel?`<span class="detchip">Best channel <b>${esc(r.channel)}</b></span>`:''}${r.sent_to?`<span class="detchip">Sent to <b>${esc(r.sent_to)}</b></span>`:''}</div>`;
+  const doss=r.dossier?`<details class="dossier"><summary>Why this business — Rollie's research</summary><div class="dd">${mdLite(r.dossier)}</div></details>`:'';
+  if(sent||r.sent_to){
+    return `<div class="det" data-company="${esc(company)}">${chips}
+      <div class="draftbox"><div class="dbh">📧 What you sent<button class="cp" data-copy2>Copy</button></div><div class="db">${mdLite(r.draft||"")}</div></div>
+      <span class="sentpill">✓ Sent from sales@mnclockworks.com</span>${doss}</div>`;
+  }
+  return `<div class="det" data-company="${esc(company)}">${chips}
+    <label>Subject</label><input class="fin osubj" value="${esc(sd.subject)}">
+    <label>Message — edit freely before sending</label><textarea class="fin obody">${esc(sd.body)}</textarea>
+    <label>Send to</label><input class="fin oto" type="email" placeholder="owner@business.com" autocomplete="off">
+    <div class="actions"><button class="btn go" data-send-out>Approve &amp; Send</button><button class="btn ghost" data-copy2>Copy draft</button></div>
+    ${doss}</div>`;
 }
-function wireCopy(scope){$$("[data-copy]",scope).forEach(b=>{if(b._w)return;b._w=1;b.addEventListener("click",e=>{e.stopPropagation();
-  const co=b.getAttribute("data-copy");const r=detailCache["outreach:"+co];const txt=r&&r.draft?r.draft.replace(/\*\*/g,""):"";
-  if(txt&&navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>toast("Draft copied — paste into your email","go")).catch(()=>toast("Couldn't copy — select and copy manually","err"))}
-  else toast("No draft to copy yet","err");});});}
+function wireOutSend(scope){
+  $$("[data-send-out]",scope).forEach(b=>{if(b._s)return;b._s=1;b.addEventListener("click",e=>{e.stopPropagation();
+    const det=b.closest(".det");const company=det.getAttribute("data-company");
+    const gv=s=>{const el=$(s,det);return el?el.value.trim():""};
+    const subj=gv(".osubj"),body=gv(".obody"),to=gv(".oto");
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){toast("Add a valid recipient email","err");const f=$(".oto",det);if(f)f.focus();return;}
+    if(!body){toast("The draft is empty","err");return;}
+    b.disabled=true;b.textContent="sending…";state.openAppr.add("o:"+company);
+    sendCommand("send_outreach",{company,to,subject:subj,body},d=>{
+      if(d.status==="done"&&/^sent to/i.test(d.result||"")){
+        const o=state.outreach.find(x=>x.company===company);if(o){o.approved=true;o.sent=true;}
+        const cache=detailCache["outreach:"+company];if(cache){cache.sent_to=to;cache.draft="**Subject:** "+subj+"\n\n"+body;}
+        toast("Sent to "+to+" ✓","go");renderApprovals();
+      }else{b.disabled=false;b.textContent="Approve & Send";toast((d&&d.result)||"Send didn't go through — try again","err");}
+    });
+  });});
+  $$("[data-copy2]",scope).forEach(b=>{if(b._c)return;b._c=1;b.addEventListener("click",e=>{e.stopPropagation();
+    const det=b.closest(".det");const ta=$(".obody",det);const co=det.getAttribute("data-company");const r=detailCache["outreach:"+co];
+    const txt=ta&&ta.value?ta.value:(r&&r.draft?r.draft.replace(/\*\*/g,""):"");
+    if(txt&&navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>toast("Copied","go"))}else toast("Nothing to copy","err");});});}
 
 /* ================= AGENTS ================= */
 const AGENTS=[
@@ -915,10 +951,10 @@ function renderApprovals(){
     rows.push(`<div class="appr ${op?'open':''}" data-key="${esc(key)}" data-out="${esc(o.company)}" style="--ac:var(--rollie)">
       <div class="ahead" data-toggle><img src="${a.avatar}" alt=""><div style="min-width:0"><div class="atitle">${esc(o.company)} <span class="tag">Outreach</span></div><div class="who">Rollie researched this business &amp; wrote a draft</div></div><span class="chev">›</span></div>
       <div class="adet"><div class="adin">
-        <div class="why">Read the draft and the research below before you approve — <b>sending stays with you</b>.</div>
-        ${outDetailHTML(o.company)}
-        <div class="wall-note">🛡️ Rollie never contacts anyone. Approving keeps the draft; you send it when you're ready.</div>
-        ${o.approved?`<span class="okpill">✓ Approved — copy the draft above &amp; send</span>`:`<div class="actions"><button class="btn go" data-approve-out="${esc(o.company)}">Approve</button><button class="btn ghost" data-dismiss-out="${esc(o.company)}">Dismiss</button></div>`}
+        <div class="why">Preview and edit Rollie's draft, add the recipient, then send — or dismiss it.</div>
+        ${outDetailHTML(o.company,o.sent)}
+        <div class="wall-note">🛡️ Nothing goes out until you hit send. Delivered from sales@mnclockworks.com.</div>
+        <div class="actions"><button class="btn ghost" data-dismiss-out="${esc(o.company)}">Dismiss</button></div>
       </div></div></div>`);});
   let disp="";if(state.dispatches&&state.dispatches.length){disp=`<div class="sec-t">In progress</div>`+state.dispatches.slice(0,4).map(x=>{const a=agentByOc(x.agent);
     return `<div class="card" style="padding:14px 17px;margin-bottom:10px"><div style="font-weight:700;font-size:13.5px">🚀 ${a.name} · <span class="mono" style="color:var(--faint);font-size:12px">${esc(shortModel(x.model))}</span></div><div style="color:var(--muted);font-size:13px;margin-top:4px">${esc(x.brief)}</div></div>`}).join("");}
@@ -932,10 +968,10 @@ function renderApprovals(){
     if(nowOpen)state.openAppr.add(key);else state.openAppr.delete(key);
     if(nowOpen&&co&&!detailCache["outreach:"+co]){
       fetchDetail("outreach",co,()=>{const tgt=$$(".appr",c).find(x=>x.getAttribute("data-out")===co);
-        if(tgt){const slot=$(".det",tgt);if(slot){slot.outerHTML=outDetailHTML(co);wireCopy(tgt)}}});
+        if(tgt){const slot=$(".det",tgt);if(slot){slot.outerHTML=outDetailHTML(co,false);wireOutSend(tgt)}}});
     }
   }));
-  wireCopy(c);
+  wireOutSend(c);
   $$("[data-approve-prod]",c).forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();
     const name=b.getAttribute("data-approve-prod"),etsy=b.getAttribute("data-etsy")==="1";const host=b.closest(".apr-actions");
     host.innerHTML=`<div class="buildpick"><div class="bl">Approve &amp; build it out with:</div><div class="brow"><button class="bmodel" data-model="xai/grok-4-fast">⚡ Fast<small>~$0.15</small></button><button class="bmodel smart" data-model="xai/grok-4.20-0309-reasoning">✨ Smart<small>~$0.60</small></button><button class="btn ghost sm" data-ship>Ship as-is</button></div></div>`;
@@ -946,10 +982,6 @@ function renderApprovals(){
     const ship=$("[data-ship]",host);if(ship)ship.addEventListener("click",()=>{sendCommand("approve_item",name);toast("Approved — say “ship it” to publish","go");finish()});}));
   $$("[data-dismiss-prod]",c).forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();const name=b.getAttribute("data-dismiss-prod");
     state.queueItems=state.queueItems.filter(x=>x.name!==name);state.etsyItems=state.etsyItems.filter(x=>x.name!==name);sendCommand("dismiss_item",name);toast("Dismissed");renderApprovals();}));
-  $$("[data-approve-out]",c).forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();const co=b.getAttribute("data-approve-out");b.disabled=true;b.textContent="approving…";
-    state.openAppr.add("o:"+co);
-    sendCommand("approve_outreach",co,d=>{if(d.status==="done"){const o=state.outreach.find(x=>x.company===co);if(o)o.approved=true;toast("Approved — copy the draft above & send","go");renderApprovals();}
-      else{b.disabled=false;b.textContent="Approve";toast("That didn't go through — try again","err")}});}));
   $$("[data-dismiss-out]",c).forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();const co=b.getAttribute("data-dismiss-out");
     state.outreach=state.outreach.filter(x=>x.company!==co);sendCommand("dismiss_outreach",co);toast("Dismissed");renderApprovals();}));
 }
