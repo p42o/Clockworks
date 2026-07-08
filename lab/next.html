@@ -239,6 +239,31 @@ input,textarea,select{font-family:inherit}
 .wall-note b{color:#dcc6ff}
 .actions{display:flex;gap:10px;margin-top:15px;flex-wrap:wrap}
 
+/* detail-on-tap + toast */
+.det{margin:12px 0}
+.det-load{font-size:12.5px;color:var(--faint);padding:8px 0;display:flex;align-items:center;gap:9px}
+.det-load .typing{color:var(--rollie)}
+.detgrid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.detchip{font-size:11.5px;color:var(--muted);background:var(--night2);border:1px solid var(--line);border-radius:9px;padding:6px 11px}
+.detchip b{color:var(--ink);font-family:var(--mono)}
+.draftbox{border:1px solid var(--line2);border-radius:14px;background:var(--night2);overflow:hidden;margin-bottom:12px}
+.draftbox .dbh{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--hair);font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--rollie)}
+.draftbox .dbh .cp{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--accent);background:transparent;border:1px solid var(--line2);border-radius:9px;padding:5px 12px;text-transform:none;letter-spacing:0}
+.draftbox .dbh .cp:hover{border-color:var(--accent)}
+.draftbox .db{padding:14px;font-size:13.5px;line-height:1.65;color:var(--ink);white-space:pre-wrap;max-height:340px;overflow-y:auto}
+.dossier{border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
+.dossier summary{cursor:pointer;padding:11px 14px;font-size:12.5px;font-weight:600;color:var(--muted);list-style:none}
+.dossier summary::-webkit-details-marker{display:none}
+.dossier summary::before{content:"▸ ";color:var(--faint)}
+.dossier[open] summary::before{content:"▾ "}
+.dossier .dd{padding:2px 16px 16px;font-size:12.5px;line-height:1.75;color:var(--muted);max-height:320px;overflow-y:auto}
+.dossier .dd b{color:var(--ink)}
+#toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);z-index:120;opacity:0;pointer-events:none;
+  background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);border-radius:13px;padding:12px 18px;
+  font-size:13.5px;font-weight:600;color:var(--ink);box-shadow:var(--sh);transition:.25s;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.go{border-color:rgba(70,217,154,.5)}#toast.err{border-color:rgba(255,111,128,.5)}
+
 /* ---------------- APPROVALS ---------------- */
 .appr{border-radius:18px;background:var(--panel);border:1px solid var(--line);margin-bottom:13px;overflow:hidden;transition:.16s}
 .appr:hover{border-color:var(--line2)}
@@ -649,6 +674,38 @@ function labelFor(a,p){return a==="run_shift"?"Run Vulcan's shift now":a==="run_
   :a==="send_inbound_reply"?"Send reply to customer":a==="archive_inbound"?"Archive customer email":a==="unarchive_inbound"?"Un-archive customer email"
   :a==="dismiss_item"?"Dismiss: "+p:a==="dismiss_outreach"?"Dismiss outreach: "+p:a==="log_sale"?"Logged a sale":a==="message_theo"?"To Theo: "+p:a;}
 
+/* ---------- toast + on-tap detail (draft/dossier via authenticated get_detail) ---------- */
+function toast(msg,kind){let t=$("#toast");if(!t){t=document.createElement("div");t.id="toast";document.body.appendChild(t)}
+  t.textContent=msg;t.className=(kind||"")+" on";clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),3400);}
+function mdLite(s){return esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")}
+const detailCache={};
+function fetchDetail(kind,id,cb){
+  const key=kind+":"+id;if(detailCache[key]){cb(detailCache[key]);return}
+  if(window.__DEV_FEED){const r=DEV_DETAIL(id);detailCache[key]=r;cb(r);return}
+  if(!user||!db){cb({error:"offline"});return}
+  db.collection("lab_commands").add({action:"get_detail",payload:{kind,id},email:user.email,status:"pending",created_at:firebase.firestore.FieldValue.serverTimestamp()})
+   .then(ref=>{const un=ref.onSnapshot(doc=>{const d=doc.data();if(!d)return;
+     if(d.status==="done"||d.status==="error"||d.status==="rejected"){un();let r;try{r=JSON.parse(d.result)}catch(e){r={error:d.result||"couldn't load"}}detailCache[key]=r;cb(r);}});
+     setTimeout(un,60000);}).catch(e=>cb({error:String(e.message||e)}));
+}
+function DEV_DETAIL(id){return {kind:"outreach",company:id,contact:"Joshua Fritze",subject:"Neighborly note on missed calls for Maple Grove plumbers",channel:"direct note or PHCC golf (today)",approved:false,
+  draft:"**Subject:** Neighborly note on missed calls for Maple Grove plumbers\n\nHi — saw your site mentions 35 years serving Maple Grove families with honest work and free estimates. As a local neighbor building AI systems for trades businesses, I help shops text back missed calls, chase quotes automatically, and keep reviews flowing — using the tools you already have.\n\nI'd like to offer a free AI Time & Lead Audit: a simple one-page plan showing your biggest weekly time leak and one system to fix it. Yours to keep, zero pressure.\n\nWould a 30-minute call this week work?\n\nBest,\nParker\nMN Clockworks (mnclockworks.com)",
+  dossier:"**What they do**: Family plumbing — service, repair, water heaters, 35 years in Maple Grove.\n**Size signals**: Small owner-operated team.\n**Tools they appear to run**: No online booking; 'call for a free estimate' across the site.\n**The ONE pain your systems fix best**: Missed after-hours calls → lost residential jobs.\n**Playbook channel that fits**: Warm neighbor sweep, or the PHCC golf event today.\n**Sources**: Public website + directories only."};}
+function outDetailHTML(company){
+  const r=detailCache["outreach:"+company];
+  if(!r)return `<div class="det"><div class="det-load"><span class="typing"><i></i><i></i><i></i></span> pulling Rollie's draft &amp; research…</div></div>`;
+  if(r.error)return `<div class="det"><div class="det-load">Couldn't load the draft (${esc(r.error)}). The full version is in Rollie's workspace.</div></div>`;
+  return `<div class="det">
+    <div class="detgrid">${r.contact?`<span class="detchip">Contact <b>${esc(r.contact)}</b></span>`:''}${r.channel?`<span class="detchip">Best channel <b>${esc(r.channel)}</b></span>`:''}</div>
+    <div class="draftbox"><div class="dbh">📧 Ready-to-send draft<button class="cp" data-copy="${esc(company)}">Copy</button></div><div class="db">${mdLite(r.draft||"(no draft found)")}</div></div>
+    ${r.dossier?`<details class="dossier"><summary>Why this business — Rollie's research</summary><div class="dd">${mdLite(r.dossier)}</div></details>`:''}
+  </div>`;
+}
+function wireCopy(scope){$$("[data-copy]",scope).forEach(b=>{if(b._w)return;b._w=1;b.addEventListener("click",e=>{e.stopPropagation();
+  const co=b.getAttribute("data-copy");const r=detailCache["outreach:"+co];const txt=r&&r.draft?r.draft.replace(/\*\*/g,""):"";
+  if(txt&&navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>toast("Draft copied — paste into your email","go")).catch(()=>toast("Couldn't copy — select and copy manually","err"))}
+  else toast("No draft to copy yet","err");});});}
+
 /* ================= AGENTS ================= */
 const AGENTS=[
   {k:"theo",oc:"main",name:"Theo",role:"Chief of Staff",cv:"theo",avatar:"img/pixel/theo_rot_south.png",
@@ -845,22 +902,23 @@ function tickClock(){const e=$("#heroClock");if(e)e.textContent=ctNow().toLocale
 
 /* ================= APPROVALS ================= */
 function renderApprovals(){
-  const c=$("#content");if(!c)return;const rows=[];
-  state.queueItems.concat(state.etsyItems).forEach((q,i)=>{const a=agentByOc(q.channel==="etsy"?"etsy":"foundry");
-    rows.push(`<div class="appr" data-appr="p${i}" style="--ac:var(--${a.cv})">
+  const c=$("#content");if(!c)return;const rows=[];if(!state.openAppr)state.openAppr=new Set();
+  state.queueItems.concat(state.etsyItems).forEach((q,i)=>{const a=agentByOc(q.channel==="etsy"?"etsy":"foundry");const key="p:"+q.name;const op=state.openAppr.has(key);
+    rows.push(`<div class="appr ${op?'open':''}" data-key="${esc(key)}" style="--ac:var(--${a.cv})">
       <div class="ahead" data-toggle><img src="${a.avatar}" alt=""><div style="min-width:0"><div class="atitle">${esc(q.name)} <span class="tag">Product</span></div><div class="who">${a.name} · ${a.role} staged this</div></div><span class="price">$${esc(q.price)}</span><span class="chev">›</span></div>
       <div class="adet"><div class="adin">
-        <div class="why">${a.name} researched this and built a proposal.${q.learnings?` <b>What ${a.name} is learning:</b> ${esc(q.learnings)}`:""} Approving kicks off the finished build (you pick how deep) — <b>publishing still stays with you</b>.</div>
+        ${q.summary?`<div class="draftbox"><div class="dbh">What's in it</div><div class="db" style="white-space:normal">${mdLite(q.summary)}</div></div>`:`<div class="why">${a.name} researched this and built a proposal.${q.learnings?` <b>What ${a.name} is learning:</b> ${esc(q.learnings)}`:""}</div>`}
+        <div class="why">Approving kicks off the finished build (you pick how deep) — <b>publishing still stays with you</b>.</div>
         <div class="apr-actions" data-actions="p${i}">${q.approved?`<span class="okpill">✓ Approved — say "ship it" to publish</span>`:`<div class="actions"><button class="btn primary" data-approve-prod="${esc(q.name)}" data-etsy="${q.channel==="etsy"?1:0}">Approve &amp; build</button><button class="btn ghost" data-dismiss-prod="${esc(q.name)}">Dismiss</button></div>`}</div>
       </div></div></div>`);});
-  state.outreach.forEach((o,i)=>{const a=AById.rollie;
-    rows.push(`<div class="appr" data-appr="o${i}" style="--ac:var(--rollie)">
-      <div class="ahead" data-toggle><img src="${a.avatar}" alt=""><div style="min-width:0"><div class="atitle">${esc(o.company)} <span class="tag">Outreach</span></div><div class="who">Rollie drafted a personal intro</div></div><span class="chev">›</span></div>
+  state.outreach.forEach((o,i)=>{const a=AById.rollie;const key="o:"+o.company;const op=state.openAppr.has(key);
+    rows.push(`<div class="appr ${op?'open':''}" data-key="${esc(key)}" data-out="${esc(o.company)}" style="--ac:var(--rollie)">
+      <div class="ahead" data-toggle><img src="${a.avatar}" alt=""><div style="min-width:0"><div class="atitle">${esc(o.company)} <span class="tag">Outreach</span></div><div class="who">Rollie researched this business &amp; wrote a draft</div></div><span class="chev">›</span></div>
       <div class="adet"><div class="adin">
-        <div class="kv"><span>Subject line</span><b>${esc(o.subject)}</b></div>
-        <div class="why">${o.learnings?`<b>Rollie's approach:</b> ${esc(o.learnings)} `:""}The full researched draft lives on the VPS. Approving records your decision; the finished draft is yours to send.</div>
-        <div class="wall-note">🛡️ Sending stays with you — Rollie never contacts anyone. Approve to keep it; grab the draft and send when you're ready.</div>
-        ${o.approved?`<span class="okpill">✓ Approved — grab the draft &amp; send</span>`:`<div class="actions"><button class="btn go" data-approve-out="${esc(o.company)}">Approve</button><button class="btn ghost" data-dismiss-out="${esc(o.company)}">Dismiss</button></div>`}
+        <div class="why">Read the draft and the research below before you approve — <b>sending stays with you</b>.</div>
+        ${outDetailHTML(o.company)}
+        <div class="wall-note">🛡️ Rollie never contacts anyone. Approving keeps the draft; you send it when you're ready.</div>
+        ${o.approved?`<span class="okpill">✓ Approved — copy the draft above &amp; send</span>`:`<div class="actions"><button class="btn go" data-approve-out="${esc(o.company)}">Approve</button><button class="btn ghost" data-dismiss-out="${esc(o.company)}">Dismiss</button></div>`}
       </div></div></div>`);});
   let disp="";if(state.dispatches&&state.dispatches.length){disp=`<div class="sec-t">In progress</div>`+state.dispatches.slice(0,4).map(x=>{const a=agentByOc(x.agent);
     return `<div class="card" style="padding:14px 17px;margin-bottom:10px"><div style="font-weight:700;font-size:13.5px">🚀 ${a.name} · <span class="mono" style="color:var(--faint);font-size:12px">${esc(shortModel(x.model))}</span></div><div style="color:var(--muted);font-size:13px;margin-top:4px">${esc(x.brief)}</div></div>`}).join("");}
@@ -868,21 +926,32 @@ function renderApprovals(){
     <div class="phd"><h2>Approvals</h2><span class="pc">${approvalsCount()?approvalsCount()+" waiting":"all clear"}</span></div>
     <div class="plede">Everything the team staged for your call. Open a card to read the full reasoning before you approve.</div>
     ${rows.length?rows.join(""):`<div class="empty"><span class="big">📭</span><b>Inbox zero.</b><br>Vulcan stages products after his noon shift; Rollie stages outreach on weekday mornings.<br>Or don't wait — head to <b>Inbox</b> and hand someone a task.</div>`}${disp}</div>`;
-  $$(".appr [data-toggle]",c).forEach(h=>h.addEventListener("click",()=>h.closest(".appr").classList.toggle("open")));
+  $$(".appr [data-toggle]",c).forEach(h=>h.addEventListener("click",()=>{
+    const card=h.closest(".appr");const key=card.getAttribute("data-key"),co=card.getAttribute("data-out");
+    const nowOpen=!card.classList.contains("open");card.classList.toggle("open");
+    if(nowOpen)state.openAppr.add(key);else state.openAppr.delete(key);
+    if(nowOpen&&co&&!detailCache["outreach:"+co]){
+      fetchDetail("outreach",co,()=>{const tgt=$$(".appr",c).find(x=>x.getAttribute("data-out")===co);
+        if(tgt){const slot=$(".det",tgt);if(slot){slot.outerHTML=outDetailHTML(co);wireCopy(tgt)}}});
+    }
+  }));
+  wireCopy(c);
   $$("[data-approve-prod]",c).forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();
     const name=b.getAttribute("data-approve-prod"),etsy=b.getAttribute("data-etsy")==="1";const host=b.closest(".apr-actions");
     host.innerHTML=`<div class="buildpick"><div class="bl">Approve &amp; build it out with:</div><div class="brow"><button class="bmodel" data-model="xai/grok-4-fast">⚡ Fast<small>~$0.15</small></button><button class="bmodel smart" data-model="xai/grok-4.20-0309-reasoning">✨ Smart<small>~$0.60</small></button><button class="btn ghost sm" data-ship>Ship as-is</button></div></div>`;
     const finish=()=>{const q=state.queueItems.find(x=>x.name===name)||state.etsyItems.find(x=>x.name===name);if(q)q.approved=true;renderApprovals()};
     $$("[data-model]",host).forEach(x=>x.addEventListener("click",()=>{const model=x.getAttribute("data-model");const agent=etsy?"etsy":"foundry";
       sendCommand("approve_item",name);sendCommand("dispatch",{agent,brief:'Parker approved this direction — build the FINISHED, full version of "'+name+'" and stage it for review. Use a specialist maker on the smart model for deep work.',model});
-      markWorking(etsy?"etsy":"vulcan",600000);finish();go("dashboard");}));
-    const ship=$("[data-ship]",host);if(ship)ship.addEventListener("click",()=>{sendCommand("approve_item",name);finish()});}));
+      markWorking(etsy?"etsy":"vulcan",600000);toast("Approved — "+agentByOc(etsy?"etsy":"foundry").name+" is building the full version","go");finish();go("dashboard");}));
+    const ship=$("[data-ship]",host);if(ship)ship.addEventListener("click",()=>{sendCommand("approve_item",name);toast("Approved — say “ship it” to publish","go");finish()});}));
   $$("[data-dismiss-prod]",c).forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();const name=b.getAttribute("data-dismiss-prod");
-    state.queueItems=state.queueItems.filter(x=>x.name!==name);state.etsyItems=state.etsyItems.filter(x=>x.name!==name);sendCommand("dismiss_item",name);renderApprovals();}));
-  $$("[data-approve-out]",c).forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();const co=b.getAttribute("data-approve-out");b.disabled=true;b.textContent="…";
-    sendCommand("approve_outreach",co,d=>{if(d.status==="done"){const o=state.outreach.find(x=>x.company===co);if(o)o.approved=true}renderApprovals()});}));
+    state.queueItems=state.queueItems.filter(x=>x.name!==name);state.etsyItems=state.etsyItems.filter(x=>x.name!==name);sendCommand("dismiss_item",name);toast("Dismissed");renderApprovals();}));
+  $$("[data-approve-out]",c).forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();const co=b.getAttribute("data-approve-out");b.disabled=true;b.textContent="approving…";
+    state.openAppr.add("o:"+co);
+    sendCommand("approve_outreach",co,d=>{if(d.status==="done"){const o=state.outreach.find(x=>x.company===co);if(o)o.approved=true;toast("Approved — copy the draft above & send","go");renderApprovals();}
+      else{b.disabled=false;b.textContent="Approve";toast("That didn't go through — try again","err")}});}));
   $$("[data-dismiss-out]",c).forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();const co=b.getAttribute("data-dismiss-out");
-    state.outreach=state.outreach.filter(x=>x.company!==co);sendCommand("dismiss_outreach",co);renderApprovals();}));
+    state.outreach=state.outreach.filter(x=>x.company!==co);sendCommand("dismiss_outreach",co);toast("Dismissed");renderApprovals();}));
 }
 
 /* ================= INBOX (async task assignments) ================= */
