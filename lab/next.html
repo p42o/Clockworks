@@ -177,12 +177,16 @@ input,textarea,select{font-family:inherit}
   display:flex;justify-content:space-between;align-items:center}
 .station .ft b{color:var(--ink)}
 .station.work .ft b{color:var(--go)}
-/* live bots — 8-frame south idle sprite-sheets (real animation, not a bounce) */
-.bot{width:var(--sz);height:var(--sz);background-repeat:no-repeat;image-rendering:pixelated;background-size:calc(var(--sz) * 8) var(--sz);
-  animation:idle8 .95s steps(8) infinite;filter:drop-shadow(0 0 12px color-mix(in srgb,var(--ac) 55%,transparent)) drop-shadow(0 5px 7px rgba(0,0,0,.5))}
-@keyframes idle8{from{background-position:0 0}to{background-position:calc(var(--sz) * -8) 0}}
-.bot.still{animation:breathe 3.8s ease-in-out infinite;background-size:var(--sz) var(--sz)}
-.station.work .bot{animation-duration:.62s}
+/* bots hold still; a subtle LED-style glow flicker every few seconds (staggered per bot). No body motion. */
+.bot{width:var(--sz);height:var(--sz);background-repeat:no-repeat;image-rendering:pixelated;background-size:var(--sz) var(--sz);
+  filter:drop-shadow(0 0 9px color-mix(in srgb,var(--ac) 40%,transparent)) drop-shadow(0 5px 7px rgba(0,0,0,.5));
+  animation:botflick 5s ease-in-out infinite}
+@keyframes botflick{
+  0%,80%,100%{filter:drop-shadow(0 0 9px color-mix(in srgb,var(--ac) 40%,transparent)) drop-shadow(0 5px 7px rgba(0,0,0,.5))}
+  85%{filter:drop-shadow(0 0 16px color-mix(in srgb,var(--ac) 68%,transparent)) drop-shadow(0 5px 7px rgba(0,0,0,.5))}
+  88%{filter:drop-shadow(0 0 6px color-mix(in srgb,var(--ac) 22%,transparent)) drop-shadow(0 5px 7px rgba(0,0,0,.5))}
+  91%{filter:drop-shadow(0 0 14px color-mix(in srgb,var(--ac) 55%,transparent)) drop-shadow(0 5px 7px rgba(0,0,0,.5))}}
+.station.work .bot{animation-duration:3.2s}
 
 /* needs-you callouts */
 .needbar{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
@@ -796,8 +800,8 @@ const OC2K={main:"theo",foundry:"vulcan",rollie:"rollie",etsy:"etsy"};
 function agentByOc(oc){return AById[OC2K[oc]||oc]||AById.theo}
 function avatarFor(oc){return agentByOc(oc).avatar}
 // live sprite: theo/vulcan/rollie have 8-frame idle sheets; etsy falls back to a gentle breathe
-function botSprite(k,size,extra){const a=AById[k];const anim=k!=="etsy";const src=anim?("img/pixel/"+k+"_idle_south.png"):a.avatar;
-  return `<div class="bot ${anim?'':'still'} ${extra||''}" style="--sz:${size}px;--ac:var(--${a.cv});background-image:url(${src})"></div>`;}
+function botSprite(k,size,extra){const a=AById[k];const delay={theo:0,vulcan:1.3,rollie:2.6,etsy:3.7}[k]||0;
+  return `<div class="bot ${extra||''}" style="--sz:${size}px;--ac:var(--${a.cv});background-image:url(${a.avatar});animation-delay:${delay}s"></div>`;}
 
 const state={sec:"dashboard",selAgent:null,openThread:null,dmAgent:"theo",dmOpen:false,social:[],socialLoaded:false,socialPlat:"both",feed:"none",meta:null,paused:false,
   activity:[],commands:[],trig:{},liveTask:{},
