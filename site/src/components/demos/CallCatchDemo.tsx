@@ -70,8 +70,9 @@ export default function CallCatchDemo() {
     let i = 0;
     setTyping(true);
     const step = () => {
-      setMsgs((m) => [...m, list[i]]);
+      const item = list[i];
       i += 1;
+      setMsgs((m) => [...m, item]);
       if (i < list.length) {
         setTimeout(step, reduced ? 0 : 850);
       } else {
