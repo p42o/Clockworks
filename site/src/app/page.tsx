@@ -59,8 +59,9 @@ const SYSTEMS = [
     n: "06",
     code: "FRONT DESK",
     title: "A website that answers back",
-    body: "A trained agent on your site and your text line: answers questions your way, books jobs at 2am, and shows you what customers keep asking for. You can talk to mine right now — it's the chat bubble.",
+    body: "A trained agent on your site and your text line: answers questions your way, books jobs at 2am, and shows you what customers keep asking for.",
     runs: "Your site · SMS · your knowledge",
+    action: "Talk to mine right now →",
   },
 ] as const;
 
@@ -202,6 +203,15 @@ export default function Home() {
                 </div>
                 <h3 className="display mt-4 text-[1.7rem] leading-tight">{s.title}</h3>
                 <p className="mt-3 leading-relaxed text-ink-soft">{s.body}</p>
+                {"action" in s && (
+                  <button
+                    type="button"
+                    data-open-chat
+                    className="link-draw mt-4 text-[0.95rem] font-medium text-copper"
+                  >
+                    {s.action}
+                  </button>
+                )}
                 <p className="mt-6 border-t hairline-soft pt-4 font-mono text-[0.72rem] tracking-wide text-ink-faint">
                   RUNS ON — {s.runs}
                 </p>

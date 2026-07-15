@@ -72,13 +72,22 @@ export default function Header() {
           </Link>
         </nav>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-label={open ? "Close menu" : "Open menu"}
-          className="relative z-[70] flex h-10 w-10 items-center justify-center md:hidden"
-        >
+        <div className="flex items-center gap-1.5 md:hidden">
+          <Link
+            href="/book/"
+            className={`rounded-[3px] bg-ink px-3.5 py-2 text-[0.8rem] font-medium text-paper transition-opacity duration-200 ${
+              open ? "pointer-events-none opacity-0" : "opacity-100"
+            }`}
+          >
+            Free audit
+          </Link>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
+            className="relative z-[70] flex h-10 w-10 items-center justify-center"
+          >
           <span className="relative block h-[14px] w-6">
             <span
               className={`absolute left-0 top-0 h-[1.5px] w-full bg-ink transition-transform duration-300 ${
@@ -96,7 +105,8 @@ export default function Header() {
               }`}
             />
           </span>
-        </button>
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>

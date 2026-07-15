@@ -244,6 +244,7 @@ export default function AuditFlow() {
                   <Field label="Your name">
                     <input
                       autoFocus
+                      autoComplete="name"
                       className={inputCls}
                       placeholder="Sam Nelson"
                       value={form.name}
@@ -253,6 +254,7 @@ export default function AuditFlow() {
                   </Field>
                   <Field label="Your business">
                     <input
+                      autoComplete="organization"
                       className={inputCls}
                       placeholder="Nelson Plumbing Co."
                       value={form.business}
@@ -304,6 +306,7 @@ export default function AuditFlow() {
                       autoFocus
                       type="email"
                       inputMode="email"
+                      autoComplete="email"
                       className={inputCls}
                       placeholder="sam@nelsonplumbing.com"
                       value={form.email}
@@ -315,6 +318,7 @@ export default function AuditFlow() {
                     <input
                       type="tel"
                       inputMode="tel"
+                      autoComplete="tel"
                       className={inputCls}
                       placeholder="(763) 555-0142"
                       value={form.phone}
