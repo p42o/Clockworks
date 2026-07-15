@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pop-Up Splash Pad · Boundary Creek Park — MN Clockworks</title>
+<meta name="description" content="Private recap — Maple Grove Pop-Up Splash Pad at Boundary Creek Park, July 14, 2026. Produced by Parker Swanson / MN Clockworks.">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="media/favicon.svg">
+<style>
+  :root{
+    /* Clockworks real brand (site chrome) */
+    --charcoal:#1a1916;--charcoal-2:#242223;--cream:#f6f2ea;--cream-2:#efe8da;
+    --cream-line:#e7dfd0;--orange:#d4582a;--orange-2:#bc7742;--ink-warm:#3a3838;
+    /* City / event body */
+    --maroon:#7c1631;--ink:#16202e;--slate:#516072;--sky:#2596d1;
+    --wash:#f4f8fb;--card:#ffffff;--line:#e4ecf2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--wash);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+
+  /* ===== PIN gate (charcoal brand) ===== */
+  #gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:24px;
+    background:radial-gradient(120% 80% at 50% -10%, #26221d, #1a1916 60%, #121110)}
+  #gate.hide{display:none}
+  .gatecard{width:100%;max-width:400px;text-align:center;color:#efe8da}
+  .gatecard .logo{height:40px;margin-bottom:26px;filter:brightness(0) invert(1)}
+  .gatecard h2{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px}
+  .gatecard p{font-size:14px;color:#b6a893;margin-bottom:24px}
+  .pins{display:flex;gap:12px;justify-content:center;margin-bottom:16px}
+  .pins input{width:58px;height:70px;border-radius:14px;border:1.5px solid rgba(214,88,42,.25);
+    background:rgba(255,255,255,.03);color:#fff;font-size:30px;font-weight:700;text-align:center;
+    outline:none;transition:border-color .15s,background .15s;-moz-appearance:textfield}
+  .pins input::-webkit-outer-spin-button,.pins input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .pins input:focus{border-color:var(--orange);background:rgba(214,88,42,.10)}
+  .pins.bad input{border-color:#e0555f;animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+  .hint{font-size:12.5px;color:#8a7c68;margin-top:6px}
+  .hint b{color:#c7b8a0;font-weight:600}
+  .err{font-size:13px;color:#f0a08a;min-height:18px;margin-top:10px}
+
+  #site{display:none;position:relative;z-index:1}
+  #site.show{display:block}
+  a{color:inherit}
+
+  /* ===== Clockworks header (real brand) ===== */
+  header.cw{background:var(--cream);border-bottom:2px solid var(--orange);padding:14px 0;position:sticky;top:0;z-index:20}
+  .cw-row{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .cw-logo img{height:30px;width:auto;display:block}
+  .cw-tag{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-warm);font-weight:600;white-space:nowrap;opacity:.75}
+  @media(max-width:560px){.cw-tag{display:none}.cw-logo img{height:27px}}
+  @media(max-width:400px){.pins{gap:9px}.pins input{width:52px;height:64px;font-size:26px}}
+
+  .hero{background:radial-gradient(120% 90% at 82% -20%, rgba(37,150,209,.16), transparent 60%),
+    radial-gradient(90% 70% at -10% 0%, rgba(6,193,207,.10), transparent 55%),
+    linear-gradient(rgba(255,255,255,.85), rgba(244,248,251,.85));padding:40px 0 8px;text-align:center}
+  .forbadge{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);
+    border-radius:999px;padding:7px 15px 7px 9px;box-shadow:0 4px 14px -10px rgba(20,40,70,.5);margin-bottom:18px}
+  .forbadge img{width:22px;height:22px;object-fit:contain}
+  .forbadge span{font-size:12.5px;font-weight:600;color:var(--maroon)}
+  .forbadge span b{color:var(--slate);font-weight:600}
+  .eyebrow{display:block;font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--sky);margin-bottom:10px}
+  .hero h1{font-size:clamp(30px,7vw,54px);line-height:1.03;letter-spacing:-.02em;font-weight:800}
+  .hero h1 .sun{color:var(--maroon)}
+  .hero .meta{margin-top:12px;font-size:16px;color:var(--slate);font-weight:500}
+  .hero .meta b{color:var(--ink)}
+
+  section{padding:26px 0}
+  .sechead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+  .sechead h2{font-size:22px;font-weight:800;letter-spacing:-.01em}
+  .sechead span{font-size:14px;color:var(--slate)}
+
+  .surface{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;
+    box-shadow:0 10px 40px -22px rgba(20,40,70,.5)}
+  .player{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9}
+  .player video{width:100%;height:100%;display:block}
+
+  .vstage{display:flex;justify-content:center;padding:6px 0 2px}
+  .vplayer{position:relative;border-radius:20px;overflow:hidden;background:#05070c;
+    box-shadow:0 24px 60px -22px rgba(12,20,40,.6);max-height:78vh;aspect-ratio:9/16;width:auto}
+  .vplayer video{height:78vh;max-height:78vh;width:auto;display:block;background:#000}
+  @media(max-width:520px){.vplayer{width:100%;max-height:none}.vplayer video{width:100%;height:auto}}
+
+  .cta{margin-top:20px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-size:16px;font-weight:700;text-decoration:none;
+    padding:14px 24px;border-radius:13px;transition:transform .12s,box-shadow .12s;cursor:pointer;border:none}
+  .btn svg{width:19px;height:19px}
+  .btn-primary{background:linear-gradient(180deg,var(--sky),#1877b8);color:#fff;box-shadow:0 12px 26px -12px rgba(24,119,184,.8)}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:#c9d6e2;transform:translateY(-2px)}
+  .cta .sub{font-size:13px;color:var(--slate);width:100%;text-align:center;margin-top:2px}
+
+  .note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--orange);
+    border-radius:14px;padding:22px 24px;box-shadow:0 6px 24px -18px rgba(20,40,70,.5)}
+  .note h3{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+  .note p{color:var(--slate);font-size:16px}
+  .note p + p{margin-top:11px}
+  .note .sign{margin-top:13px;font-weight:600;color:var(--ink)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;grid-auto-flow:dense}
+  .grid a{display:block;border-radius:12px;overflow:hidden;background:#dce6ee;
+    box-shadow:0 6px 20px -15px rgba(20,40,70,.6);aspect-ratio:1/1}
+  .grid a.tall{grid-row:span 2;aspect-ratio:1/2}
+  .grid img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+  .grid a:hover img{transform:scale(1.05)}
+  @media(max-width:520px){.grid a.tall{grid-row:span 1;aspect-ratio:1/1}}
+
+  /* ===== Clockworks footer (real brand) ===== */
+  footer.cw{background:var(--cream);border-top:2px solid var(--orange);padding:34px 0 42px;margin-top:26px;text-align:center;color:var(--ink-warm)}
+  footer.cw img.logo{height:34px;margin-bottom:14px}
+  footer.cw .line{font-size:14.5px;color:#5c554b;max-width:600px;margin:0 auto 16px;line-height:1.6}
+  footer.cw a.site{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;
+    font-size:16px;color:var(--charcoal);border:1.5px solid var(--orange);padding:9px 18px;border-radius:11px;transition:background .15s,color .15s,transform .12s}
+  footer.cw a.site:hover{background:var(--orange);color:#fff;transform:translateY(-1px)}
+  footer.cw .who{margin-top:14px;font-size:12.5px;color:#8a7c68;letter-spacing:.03em}
+
+  .lb{position:fixed;inset:0;background:rgba(18,17,16,.95);display:none;align-items:center;justify-content:center;z-index:90;padding:16px;cursor:zoom-out;-webkit-tap-highlight-color:transparent}
+  .lb.open{display:flex}
+  .lb img{max-width:92vw;max-height:88vh;width:auto;height:auto;object-fit:contain;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  .lb .close{position:absolute;top:16px;right:18px;width:42px;height:42px;border-radius:50%;
+    background:rgba(255,255,255,.12);color:#fff;font-size:24px;line-height:42px;text-align:center;cursor:pointer}
+
+  /* ===== Water background (subtle) ===== */
+  #water-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:var(--wfx-opacity,.42)}
+  #water-fx canvas{position:absolute;inset:0;width:100%;height:100%}
+  #water-fx::before{content:"";position:absolute;inset:0 0 auto 0;height:130px;
+    background:
+      radial-gradient(60% 100% at 18% 0%, rgba(191,233,242,.40), transparent 70%),
+      radial-gradient(45% 90% at 55% 0%, rgba(127,211,230,.28), transparent 70%),
+      radial-gradient(55% 100% at 86% 0%, rgba(191,233,242,.34), transparent 70%)}
+  @media (prefers-reduced-motion: reduce){ #water-fx canvas{display:none} }
+</style>
+</head>
+<body>
+
+<div id="water-fx" aria-hidden="true"><canvas></canvas></div>
+
+<!-- ===== PIN gate ===== -->
+<div id="gate">
+  <div class="gatecard">
+    <img class="logo" src="media/clockworks-logo.svg" alt="MN Clockworks">
+    <h2>This recap is private</h2>
+    <p>Enter the 4-digit code to view the video &amp; photos.</p>
+    <div class="pins" id="pins">
+      <input type="tel" inputmode="numeric" maxlength="1" aria-label="digit 1">
+      <input type="tel" inputmode="numeric" maxlength="1" aria-label="digit 2">
+      <input type="tel" inputmode="numeric" maxlength="1" aria-label="digit 3">
+      <input type="tel" inputmode="numeric" maxlength="1" aria-label="digit 4">
+    </div>
+    <div class="err" id="err"></div>
+    <div class="hint">Hint: the <b>date of the event</b> — month &amp; day (MMDD)</div>
+  </div>
+</div>
+
+<!-- ===== Site ===== -->
+<div id="site">
+
+  <header class="cw">
+    <div class="wrap cw-row">
+      <a class="cw-logo" href="https://mnclockworks.com" target="_blank" rel="noopener">
+        <img src="media/clockworks-logo.svg" alt="MN Clockworks"></a>
+      <div class="cw-tag">Helping Small Businesses Do Big AI Things</div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="wrap">
+      <div class="forbadge">
+        <img src="media/mg-leaf.png" alt="City of Maple Grove">
+        <span>Prepared for the City of Maple Grove &nbsp;<b>· Parks &amp; Recreation</b></span>
+      </div>
+      <span class="eyebrow">Community Recap · Summer 2026</span>
+      <h1>Pop-Up <span class="sun">Splash Pad</span></h1>
+      <p class="meta"><b>Boundary Creek Park</b> &nbsp;·&nbsp; Tuesday, July 14, 2026</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- Featured full recap -->
+    <section>
+      <div class="surface">
+        <div class="player">
+          <video controls playsinline preload="metadata" poster="media/featured_poster.jpg">
+            <source src="media/featured.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="cta">
+        <a class="btn btn-primary" href="media/featured.mp4" download="Maple-Grove-Pop-Up-Splash-Pad-2026.mp4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+          Download the video
+        </a>
+        <div class="sub">1080p HD · yours to use however you'd like</div>
+      </div>
+    </section>
+
+    <!-- Note -->
+    <section>
+      <div class="note">
+        <h3>A quick note</h3>
+        <p>Thanks so much for putting this on — the kids had an absolute blast, and it was a
+        great excuse to bring the camera out. Here's the recap from the afternoon, a short
+        vertical clip for social just below, and a set of photos.</p>
+        <p>Please feel free to use any of it however's helpful — social, the newsletter, the
+        website, print. No need to ask. If it's easy to drop a credit line, that's always
+        appreciated, but never required.</p>
+        <p class="sign">— Parker Swanson</p>
+      </div>
+    </section>
+
+    <!-- Vertical clip -->
+    <section>
+      <div class="sechead">
+        <h2>A clip for social</h2>
+        <span>Vertical · 9:16</span>
+      </div>
+      <div class="vstage">
+        <div class="vplayer">
+          <video controls playsinline preload="none" poster="media/hero_poster.jpg">
+            <source src="media/hero_vertical.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="cta">
+        <a class="btn btn-ghost" href="media/hero_vertical.mp4" download="Maple-Grove-Splash-Pad-clip.mp4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+          Download the clip
+        </a>
+      </div>
+    </section>
+
+    <!-- Photos -->
+    <section>
+      <div class="sechead">
+        <h2>Photos from the day</h2>
+        <a class="btn btn-ghost" style="padding:10px 16px;font-size:14px" href="media/photos.zip" download="Maple-Grove-Splash-Pad-photos.zip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+          Download all photos
+        </a>
+      </div>
+      <div class="grid" id="grid">
+        <a href="media/photo_2.jpg" class="tall"><img src="media/photo_2.jpg" alt="Kids at the splash pad" loading="lazy"></a>
+        <a href="media/photo_1.jpg"><img src="media/photo_1.jpg" alt="Boundary Creek Park water day" loading="lazy"></a>
+        <a href="media/photo_5.jpg"><img src="media/photo_5.jpg" alt="Families in the water" loading="lazy"></a>
+        <a href="media/photo_3.jpg" class="tall"><img src="media/photo_3.jpg" alt="Splash pad fun" loading="lazy"></a>
+        <a href="media/photo_6.jpg"><img src="media/photo_6.jpg" alt="Maple Grove community event" loading="lazy"></a>
+        <a href="media/photo_4.jpg"><img src="media/photo_4.jpg" alt="Kids playing in the spray" loading="lazy"></a>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="cw">
+    <div class="wrap">
+      <img class="logo" src="media/clockworks-logo.svg" alt="MN Clockworks">
+      <p class="line">Filmed by Parker Swanson of MN Clockworks — who, full disclosure, is not a
+      videographer. He just brought a camera to splash pad day and got lucky with the light.
+      His actual job is helping Maple Grove small businesses put AI to work.</p>
+      <a class="site" href="https://mnclockworks.com" target="_blank" rel="noopener">Visit mnclockworks.com</a>
+      <div class="who">AI solutions for small businesses · Maple Grove, MN</div>
+    </div>
+  </footer>
+
+  <div class="lb" id="lb"><span class="close" aria-label="Close">&times;</span><img src="" alt=""></div>
+</div>
+
+<script>
+  var CODE="0714";
+  var gate=document.getElementById('gate'), site=document.getElementById('site');
+  var pins=[].slice.call(document.querySelectorAll('#pins input')), err=document.getElementById('err');
+  function unlock(){ gate.classList.add('hide'); site.classList.add('show'); try{sessionStorage.setItem('mg_ok','1')}catch(e){} }
+  if(sessionStorage.getItem('mg_ok')==='1'){ unlock(); }
+  function check(){
+    var v=pins.map(function(p){return p.value}).join('');
+    if(v.length<4) return;
+    if(v===CODE){ unlock(); }
+    else{
+      err.textContent="That code isn't right — try again.";
+      document.getElementById('pins').classList.add('bad');
+      setTimeout(function(){document.getElementById('pins').classList.remove('bad');pins.forEach(function(p){p.value=''});pins[0].focus();},450);
+    }
+  }
+  pins.forEach(function(p,i){
+    p.addEventListener('input',function(){
+      p.value=p.value.replace(/[^0-9]/g,'');
+      if(p.value && i<3) pins[i+1].focus();
+      check();
+    });
+    p.addEventListener('keydown',function(e){ if(e.key==='Backspace' && !p.value && i>0) pins[i-1].focus(); });
+  });
+  if(!sessionStorage.getItem('mg_ok')) setTimeout(function(){pins[0].focus()},200);
+
+  var lb=document.getElementById('lb'), lbimg=lb.querySelector('img');
+  document.getElementById('grid').addEventListener('click',function(e){
+    var a=e.target.closest('a'); if(!a)return; e.preventDefault();
+    lbimg.src=a.getAttribute('href'); lb.classList.add('open');
+  });
+  lb.addEventListener('click',function(){lb.classList.remove('open')});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open')});
+</script>
+
+<script>
+/* Subtle water trickle background (Fable) */
+(function(){
+  "use strict";
+  var CONFIG = { RIVULETS:14, MAX_DROPS:38, SPRAY_EVERY:[6,12], SPRAY_SIZE:[5,8], SPEED:0.75, ALPHA:1 };
+  var COLORS = ["127,211,230","191,233,242","37,150,209"];
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  var canvas = document.querySelector("#water-fx canvas");
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext("2d"), W=0, H=0, raf=0, last=0;
+  var rivulets=[], drops=[], sprayAt=0;
+  var rnd=function(a,b){ return a+Math.random()*(b-a); };
+  function size(){ var d=Math.min(devicePixelRatio||1,2); W=innerWidth; H=innerHeight; canvas.width=W*d; canvas.height=H*d; ctx.setTransform(d,0,0,d,0,0); }
+  function newRivulet(r,fresh){ r.x=rnd(0,W); r.y=fresh?rnd(-H,0):-rnd(20,120); r.vy=rnd(14,34); r.len=rnd(40,140); r.w=rnd(0.8,1.7); r.a=rnd(.10,.22); r.seed=rnd(0,7); r.c=COLORS[Math.random()*3|0]; return r; }
+  function spray(t){ sprayAt=t+rnd(CONFIG.SPRAY_EVERY[0],CONFIG.SPRAY_EVERY[1]); var cx=rnd(W*.1,W*.9),n=Math.round(rnd(CONFIG.SPRAY_SIZE[0],CONFIG.SPRAY_SIZE[1])); for(var i=0;i<n&&drops.length<CONFIG.MAX_DROPS;i++) drops.push({x:cx+rnd(-14,14),y:rnd(-12,6),vx:rnd(-14,14),vy:rnd(6,26),r:rnd(1,2.6),a:rnd(.14,.30),c:COLORS[Math.random()*3|0]}); }
+  function tick(t){ raf=requestAnimationFrame(tick); t/=1000; var dt=Math.min(t-(last||t),.05)*CONFIG.SPEED; last=t; ctx.clearRect(0,0,W,H); if(t>=sprayAt) spray(t); var i,p,g;
+    for(i=0;i<rivulets.length;i++){ p=rivulets[i]; p.y+=p.vy*dt; var x=p.x+Math.sin(p.y*.012+p.seed)*6; g=ctx.createLinearGradient(0,p.y-p.len,0,p.y); g.addColorStop(0,"rgba("+p.c+",0)"); g.addColorStop(1,"rgba("+p.c+","+(p.a*CONFIG.ALPHA)+")"); ctx.strokeStyle=g; ctx.lineWidth=p.w; ctx.lineCap="round"; ctx.beginPath(); ctx.moveTo(x,p.y-p.len); ctx.lineTo(x,p.y); ctx.stroke(); ctx.fillStyle="rgba("+p.c+","+(p.a*1.4*CONFIG.ALPHA)+")"; ctx.beginPath(); ctx.arc(x,p.y,p.w*1.15,0,7); ctx.fill(); if(p.y-p.len>H) newRivulet(p,false); }
+    for(i=drops.length-1;i>=0;i--){ p=drops[i]; p.vy+=22*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.a-=.045*dt; if(p.a<=.01||p.y>H+5){drops.splice(i,1);continue;} ctx.fillStyle="rgba("+p.c+","+(p.a*CONFIG.ALPHA)+")"; ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r*.8,p.r*1.3,0,0,7); ctx.fill(); } }
+  function start(){ if(raf||reduce.matches) return; size(); last=0; if(!rivulets.length) for(var i=0;i<CONFIG.RIVULETS;i++) rivulets.push(newRivulet({},true)); sprayAt=performance.now()/1000+rnd(1.5,4); raf=requestAnimationFrame(tick); }
+  function stop(){ cancelAnimationFrame(raf); raf=0; ctx&&ctx.clearRect(0,0,W,H); }
+  addEventListener("resize",size);
+  document.addEventListener("visibilitychange",function(){ document.hidden?stop():start(); });
+  (reduce.addEventListener||reduce.addListener).call(reduce,"change",function(){ reduce.matches?stop():start(); });
+  start();
+})();
+</script>
+
+</body>
+</html>
