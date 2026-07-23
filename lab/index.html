@@ -1092,13 +1092,25 @@ $("#gSign").addEventListener("click",()=>{
     else gateErr(String(e.message||e.code).slice(0,120));
   });
 });
+/* Session-loss banner: PWA auth can expire silently — surface it + one-tap reconnect */
+function showAuthBar(){
+  if(document.getElementById("authbar"))return;
+  const b=document.createElement("div");b.id="authbar";
+  b.style.cssText="position:fixed;top:0;left:0;right:0;z-index:9999;background:#c93b3b;color:#fff;font:600 12px/1.4 monospace;padding:9px 14px;display:flex;gap:12px;align-items:center;justify-content:center;padding-top:max(9px,env(safe-area-inset-top))";
+  b.innerHTML=`<span>⚠ SIGNED OUT — commands won't send.</span><button id="authReconnect" style="background:#fff;color:#c93b3b;border:0;border-radius:6px;padding:4px 12px;font:700 11px monospace;cursor:pointer">RECONNECT</button>`;
+  document.body.appendChild(b);
+  document.getElementById("authReconnect").addEventListener("click",()=>{
+    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>pushLog("SYS",String(e.message||e.code).slice(0,90),"var(--red)"));
+  });
+}
+function hideAuthBar(){const b=document.getElementById("authbar");if(b)b.remove()}
 if(fb)firebase.auth().onAuthStateChanged(u=>{
-  if(!u){user=null;return}
+  if(!u){const wasIn=!!user;user=null;if(wasIn||!document.body.contains(gate))showAuthBar();return}
   if(!ALLOWED.includes(u.email)){
     gateErr("“"+u.email+"” is not on the crew manifest");
     firebase.auth().signOut();return;
   }
-  user=u;
+  user=u;hideAuthBar();
   if(document.body.contains(gate)){
     gMsg.classList.remove("err");gMsg.textContent="ACCESS GRANTED — "+u.email;
     gate.style.transition="opacity .4s";gate.style.opacity="0";
@@ -1136,7 +1148,7 @@ if(new URLSearchParams(location.search).get('dev')==='1' && /^(localhost|127\.0\
 
 /* ---------- command bus ---------- */
 function sendCommand(action,payload,onDone){
-  if(!user||!db){pushLog("SYS","not signed in — command blocked","var(--red)");return}
+  if(!user||!db){pushLog("SYS","not signed in — command blocked","var(--red)");showAuthBar();return}
   pushLog("YOU",labelFor(action,payload),"var(--you)");
   db.collection("lab_commands").add({
     action,payload:payload||null,email:user.email,status:"pending",

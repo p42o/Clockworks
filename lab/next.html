@@ -657,10 +657,22 @@ $("#gSign").addEventListener("click",()=>{
     if(String(e.code).includes("unauthorized-domain"))gateErr("DOMAIN NOT AUTHORIZED — add mnclockworks.com in firebase console → pitboss → auth → authorized domains");
     else gateErr(String(e.message||e.code).slice(0,120));});
 });
+/* Session-loss banner: auth can expire silently on an installed PWA — surface it loudly */
+function showAuthBar(){
+  if($("#authbar"))return;
+  const b=document.createElement("div");b.id="authbar";
+  b.style.cssText="position:fixed;top:0;left:0;right:0;z-index:9999;background:#c93b3b;color:#fff;font:600 13px/1.4 'Space Grotesk',sans-serif;padding:10px 14px;display:flex;gap:12px;align-items:center;justify-content:center;padding-top:max(10px,env(safe-area-inset-top))";
+  b.innerHTML=`<span>⚠ Signed out — messages to the crew won't send.</span><button id="authReconnect" style="background:#fff;color:#c93b3b;border:0;border-radius:8px;padding:5px 14px;font:700 12px 'Space Grotesk',sans-serif;cursor:pointer">Reconnect</button>`;
+  document.body.appendChild(b);
+  $("#authReconnect").addEventListener("click",()=>{
+    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>toast(String(e.message||e.code).slice(0,90),"alert"));
+  });
+}
+function hideAuthBar(){const b=$("#authbar");if(b)b.remove()}
 if(fb)firebase.auth().onAuthStateChanged(u=>{
-  if(!u){user=null;return}
+  if(!u){const wasIn=!!user;user=null;if(wasIn||!document.body.contains(gate))showAuthBar();return}
   if(!ALLOWED.includes(u.email)){gateErr("“"+u.email+"” is not on the crew manifest");firebase.auth().signOut();return}
-  user=u;
+  user=u;hideAuthBar();
   if(document.body.contains(gate)){gMsg.classList.remove("err");gMsg.textContent="access granted";
     gate.style.transition="opacity .35s";gate.style.opacity="0";setTimeout(()=>{gate.remove();boot()},360);}
 });
@@ -693,15 +705,17 @@ if(new URLSearchParams(location.search).get('dev')==='1' && /^(localhost|127\.0\
 /* ---------- command bus ---------- */
 function pushLog(who,text,cls){state.activity.unshift({who,text,cls:cls||"",ts:Date.now()});state.activity=state.activity.slice(0,90);if(state.sec==="dashboard")renderDashboard();}
 function sendCommand(action,payload,onDone){
-  if(!user||!db){pushLog("System","not signed in — command blocked","alert");return}
+  if(!user||!db){pushLog("System","not signed in — command blocked","alert");toast("You're signed out — reconnect to message the crew","alert");showAuthBar();return}
   pushLog("You",labelFor(action,payload),"you");
   db.collection("lab_commands").add({action,payload:payload||null,email:user.email,status:"pending",created_at:firebase.firestore.FieldValue.serverTimestamp()})
-  .then(ref=>{const un=ref.onSnapshot(doc=>{const d=doc.data();if(!d)return;
-    if(d.status==="done"||d.status==="error"||d.status==="rejected"){un();
+  .then(ref=>{let settled=false;const un=ref.onSnapshot(doc=>{const d=doc.data();if(!d)return;
+    if(d.status==="done"||d.status==="error"||d.status==="rejected"){settled=true;un();
       const who=(action==="message_theo"||action==="delegate")&&d.status==="done"?"Theo":"Bridge";
       pushLog(who,d.result||d.status,d.status==="done"?"":"alert");if(onDone)onDone(d);}});
-    setTimeout(un,300000);})
-  .catch(e=>pushLog("System","command failed: "+String(e.message||e).slice(0,120),"alert"));
+    setTimeout(()=>{un();if(!settled)toast("No reply from the bridge in 5 min — it may be stuck (check VPS)","alert")},300000);})
+  .catch(e=>{pushLog("System","command failed: "+String(e.message||e).slice(0,120),"alert");
+    toast("Send failed: "+String(e.message||e.code||e).slice(0,80),"alert");
+    if(String(e.code||"").includes("permission"))showAuthBar();});
 }
 function labelFor(a,p){return a==="run_shift"?"Run Vulcan's shift now":a==="run_standup"?"Run Theo's standup now":a==="run_prospecting"?"Run Rollie's prospecting now":a==="run_etsy"?"Run Etsy's shift now"
   :a==="pause"?"Pause all loops":a==="resume"?"Resume all loops":a==="approve_item"?"Approve: "+p:a==="approve_outreach"?"Approve outreach: "+p
@@ -1116,7 +1130,7 @@ function renderTeams(){
       <div class="chatscroll" id="dmScroll"><div class="inner">
         ${sel==="theo"?`<div class="hint">Theo's your chief of staff — ask him anything, or tell him what to make happen and he'll route it to the team.</div>`:`<div class="hint">Quick DM with ${a.name}. For bigger jobs, use <b>Inbox</b> so it threads as a task.</div>`}
         ${msgs.length?msgs.map(m=>bubble(m,a)).join(""):`<div class="empty" style="padding:36px 12px"><span class="big">${sel==='theo'?'◍':'👋'}</span>Say hi to ${a.name}.</div>`}
-        ${isWorking(sel)?`<div class="bub them"><img src="${a.avatar}"><div><div class="from">${a.name}</div><div class="txt"><span class="typing"><i></i><i></i><i></i></span></div></div></div>`:''}
+        ${msgs.some(m=>m.me&&m.pending)?`<div class="bub them"><img src="${a.avatar}"><div><div class="from">${a.name}</div><div class="txt"><span class="typing"><i></i><i></i><i></i></span></div></div></div>`:''}
       </div></div>
       <div class="composer"><div class="cinner"><input id="dmIn" placeholder="Message ${esc(a.name)}…" autocomplete="off"><button class="send" id="dmSend">▶</button></div></div>
     </div></div>
