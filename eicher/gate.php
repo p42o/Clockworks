@@ -72,7 +72,11 @@ function add_fail(string $file): void {
 
 $path = $_GET['p'] ?? '';
 $path = ltrim(str_replace('\\', '/', $path), '/');
+if ($path === 'admin') { header('Location: /eicher/admin/', true, 301); exit; }  // keep relative asset URLs right
 if ($path === '' || substr($path, -1) === '/') $path .= 'index.html';
+// /eicher/admin/ is Parker's internal playbook; everything else is the assessment.
+$isPlaybook = strpos($path, 'admin/') === 0;
+$isPage = $path === 'index.html' || $path === 'admin/index.html';
 if (strpos($path, '..') !== false || strpos($path, "\0") !== false) {
     http_response_code(400);
     exit;
@@ -96,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pin'])) {
         $pin = preg_replace('/\D/', '', (string)$_POST['pin']);
         if (hash_equals($pinMac, sign($key, 'pin:' . $pin))) {
             set_auth($key);
-            $back = '/eicher/' . ($path === 'index.html' ? '' : $path);
+            $back = '/eicher/' . preg_replace('#(^|/)index\.html$#', '$1', $path);
             header('Location: ' . $back, true, 303);
             exit;
         }
@@ -109,13 +113,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pin'])) {
 
 if (!is_authed($key)) {
     // Only the page itself shows the PIN screen; sub-resources just 401.
-    if ($path !== 'index.html') {
+    if (!$isPage) {
         http_response_code(401);
         exit;
     }
     header('Cache-Control: no-store');
     if (!$error) http_response_code(401);
-    render_gate($error);
+    render_gate($error, $isPlaybook);
     exit;
 }
 
@@ -155,8 +159,9 @@ if (strpos($type, 'text/') === 0 || strpos($type, 'json') !== false || $ext === 
 echo $plain;
 
 // ---------------------------------------------------------------- PIN screen
-function render_gate(string $error): void {
+function render_gate(string $error, bool $playbook): void {
     $err = htmlspecialchars($error, ENT_QUOTES);
+    $action = $playbook ? '/eicher/admin/' : '/eicher/';
     ?><!doctype html>
 <html lang="en">
 <head>
@@ -165,7 +170,7 @@ function render_gate(string $error): void {
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#F5F1E8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#161412" media="(prefers-color-scheme: dark)">
-<title>Eicher Assessment · MN Clockworks</title>
+<title><?= $playbook ? 'Eicher Playbook (internal)' : 'Eicher Assessment' ?> · MN Clockworks</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
@@ -179,6 +184,7 @@ function render_gate(string $error): void {
   @keyframes rise{from{opacity:0;transform:translateY(12px)}}
   .brand{display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Instrument Serif',serif;font-size:22px}
   .dot{width:10px;height:10px;border-radius:50%;background:var(--copper)}
+  .badge{display:inline-block;margin:18px 0 0;padding:6px 12px;border-radius:999px;background:var(--ink);color:var(--paper);font:500 10.5px/1 'Geist Mono',monospace;letter-spacing:.14em;text-transform:uppercase}
   .kicker{margin:22px 0 6px;font:500 11px/1 'Geist Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--copper-ink)}
   h1{margin:0;font:400 38px/1.05 'Instrument Serif',serif;letter-spacing:-.01em}
   h1 em{color:var(--navy)}
@@ -202,17 +208,24 @@ function render_gate(string $error): void {
 <body>
 <main class="card">
   <div class="brand"><span class="dot"></span>MN Clockworks</div>
+<?php if ($playbook): ?>
+  <p class="badge">Internal · Not for the client</p>
+  <p class="kicker">Impact Playbook</p>
+  <h1>Eicher <em>Playbook</em></h1>
+  <p class="sub">Parker’s operating plan: actions, costs, expected lift and how we measure it. Enter the PIN to open it.</p>
+<?php else: ?>
   <p class="kicker">Online Presence Assessment</p>
   <h1>Eicher <em>Plumbing</em></h1>
   <p class="sub">This report is private. Enter the 5-digit PIN to view it.</p>
-  <form method="post" action="/eicher/" id="f" autocomplete="off">
+<?php endif; ?>
+  <form method="post" action="<?= $action ?>" id="f" autocomplete="off">
     <label for="pin" class="sr" style="position:absolute;left:-9999px">PIN</label>
     <div class="boxes<?= $err ? ' shake' : '' ?>" id="boxes" aria-hidden="true">
       <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
     </div>
     <input class="pin" id="pin" name="pin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="one-time-code" autofocus required>
     <div class="err" role="alert"><?= $err ?></div>
-    <button type="submit">View the assessment</button>
+    <button type="submit"><?= $playbook ? 'Open the playbook' : 'View the assessment' ?></button>
   </form>
   <p class="foot">Prepared by MN Clockworks · mnclockworks.com</p>
 </main>
