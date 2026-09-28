@@ -25,3 +25,7 @@ test.csv.rtf
 
 # Lab backups (local revert only, never deploy)
 lab/*.bak
+
+# Eicher gate: generated at deploy / by the server
+eicher/_config.php
+eicher/_state/

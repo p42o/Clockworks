@@ -1,0 +1,18 @@
+# Private Eicher assessment. Everything under /eicher/ goes through gate.php,
+# which checks the PIN cookie and decrypts files from blob/ on the fly.
+# _config.php (key + PIN HMAC) is written at deploy time from GitHub secrets.
+Options -Indexes
+DirectoryIndex gate.php
+
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow, noarchive"
+</IfModule>
+
+<FilesMatch "^(_config\.php|.*\.bin|.*\.json)$">
+  Require all denied
+</FilesMatch>
+
+RewriteEngine On
+RewriteBase /eicher/
+RewriteRule ^gate\.php$ - [L]
+RewriteRule ^(.*)$ gate.php?p=$1 [L,QSA]

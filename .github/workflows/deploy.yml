@@ -9,6 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Write Eicher gate config (from secrets, never committed)
+        env:
+          EICHER_KEY: ${{ secrets.EICHER_KEY }}
+          EICHER_PIN_HMAC: ${{ secrets.EICHER_PIN_HMAC }}
+        run: |
+          printf "<?php\nreturn ['key' => '%s', 'pin' => '%s'];\n" "$EICHER_KEY" "$EICHER_PIN_HMAC" > eicher/_config.php
+
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
