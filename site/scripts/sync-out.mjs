@@ -60,7 +60,7 @@ const PROTECTED = new Set([
   "docs", "images", "social", "lab", "preview",
   "admin.html", "privacy.html", "terms.html", "resources.html",
   "contact-modal.js", "SETUP.md", "Archive.zip", "stonearch-ai-site.jsx",
-  "site", "v3", "test.csv.rtf", "eicher",
+  "site", "v3", "test.csv.rtf", "eicher", "portal",
 ]);
 
 if (!existsSync(out)) {
