@@ -83,13 +83,14 @@ async function doSignOut() {
   stop(); await signOut(auth);
   if (!EMU) { try { await terminate(db); await clearIndexedDbPersistence(db); } catch (e) {} location.reload(); }
 }
-window.__portalDevSignIn = EMU ? (email = "parks.phone@gmail.com") => signInWithCredential(auth, GoogleAuthProvider.credential(JSON.stringify({ sub: "test-admin", email, email_verified: true }))) : undefined;
+window.__portalDevSignIn = EMU ? (email = "parks.phone@gmail.com") => signInWithCredential(auth, GoogleAuthProvider.credential(JSON.stringify({ sub: "test-" + email.replace(/\W/g, "-"), email, email_verified: true }))) : undefined;
 
 onAuthStateChanged(auth, async (u) => {
   stop(); me = u;
   if (!u) { isAdmin = false; return renderGate("in"); }
   const tok = await u.getIdTokenResult(true);
-  isAdmin = tok.claims.admin === true;
+  // The rules decide who's an admin (claim or the allowlist kept in firestore.rules), so just try a read.
+  isAdmin = tok.claims.admin === true || (await getDocs(query(collection(db, "clients"), limit(1))).then(() => true, () => false));
   if (!isAdmin) return renderGate("denied");
   $("#who").innerHTML = `<span class="small">${esc(u.email.split("@")[0])}</span><button class="btn sm ghost" id="out">Sign out</button>`;
   $("#out").onclick = doSignOut;
