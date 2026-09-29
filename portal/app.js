@@ -1,369 +1,731 @@
-// Clockworks Portal · CRM (SPEC §2). Admin-only; every read/write is enforced by firestore.rules.
+// Clockworks Portal · CRM. Admin-only; access and data shape are enforced by firebase/firestore.rules.
 // On localhost it talks to the Firebase emulators unless the URL has ?prod.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut, connectAuthEmulator, signInWithCredential } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager, connectFirestoreEmulator, terminate, clearIndexedDbPersistence,
-  collection, doc, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit, serverTimestamp, Timestamp, writeBatch, getDocs,
+  collection, collectionGroup, doc, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, getDocs, query, orderBy, limit, serverTimestamp, Timestamp, writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./config.js";
 
 const LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
 const EMU = LOCAL && !new URLSearchParams(location.search).has("prod");
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = EMU ? initializeFirestore(app, {}) : initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
+const fb = initializeApp(firebaseConfig);
+const auth = getAuth(fb);
+const db = EMU ? initializeFirestore(fb, {}) : initializeFirestore(fb, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
 if (EMU) { connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true }); connectFirestoreEmulator(db, "127.0.0.1", 8080); }
 
-export const STAGES = ["Lead", "Free scan sent", "Meeting", "Full assessment", "Proposal", "Pilot", "Active", "Paused", "Closed"];
-const REPORT_TYPES = [["presence-free", "Presence · Free"], ["presence-full", "Presence · Full"], ["agent-free", "Agent Team · Free"], ["agent-full", "Agent Team · Full"]];
-const KINDS = ["Note", "Call", "Decision", "Check-in"];
-const CHANNELS = ["Text", "Call", "Email", "In person"];
+// ------------------------------------------------------------------ constants
+const STAGES = ["Lead", "Free scan sent", "Meeting", "Full assessment", "Proposal", "Pilot", "Active", "Paused", "Closed"];
+const MAIN = STAGES.slice(0, 7);
+const STAGE_SHORT = { "Free scan sent": "Free scan", "Full assessment": "Full" };
+const REPORTS = [
+  { type: "presence-free", name: "Presence · Free", fam: "presence", cost: "~$0.50", time: "~60 s", desc: "Home-town Maps rank, a 3×3 grid, one AI question to two assistants, reviews vs the top 3 nearby, speed + schema." },
+  { type: "presence-full", name: "Presence · Full", fam: "presence", cost: "~$10", time: "30–60 min", desc: "The Eicher-level report: 16 towns, 4 AI assistants, listings, website, domain, top fixes, receipts." },
+  { type: "agent-free", name: "Agent Team · Free", fam: "agent", cost: "~$0.50", time: "~2 min", desc: "From public signals: likely systems, likely tasks and hours, a compliance heads-up, a starter team sketch." },
+  { type: "agent-full", name: "Agent Team · Full", fam: "agent", cost: "intake + call", time: "1–2 sessions", desc: "Intake + discovery: integration gap matrix, real-number ROI, full compliance review, roster proposal." },
+];
+const RTYPE = Object.fromEntries(REPORTS.map((r) => [r.type, r]));
+const PILLARS = [["maps", "Maps"], ["reviews", "Reviews"], ["ai", "AI"], ["search", "Search"], ["listings", "Listings"], ["website", "Website"]];
+const KINDS = ["Note", "Call", "Text", "Decision"];
+const TECH_ST = { confirmed: "Confirmed", assumed: "Assumed", unknown: "Unknown" };
+const INT_ST = { active: "On the path", asked: "Asked about", earlier: "Earlier idea" };
+const band = (s) => (s >= 80 ? "Strong" : s >= 60 ? "Good" : s >= 40 ? "Fair" : "Needs work");
+const bandCls = (s) => (s >= 60 ? "ok" : s >= 40 ? "warn" : "bad");
+const PALETTE = ["#2D62CF", "#1B9464", "#BF4D1C", "#7A4FD0", "#C68A1E", "#157F8A", "#B23A6B"];
 
 // ------------------------------------------------------------------ helpers
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const view = $("#view");
-let toastT;
-function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
-const todayISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
-const daysUntil = (iso) => Math.round((new Date(iso + "T12:00:00") - new Date(todayISO() + "T12:00:00")) / 86400000);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} } };
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const todayISO = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+const daysUntil = (iso) => Math.round((new Date(iso + "T12:00:00") - new Date(todayISO() + "T12:00:00")) / 86400000);
 const fmtDay = (iso) => { if (!iso) return ""; const [y, m, d] = iso.split("-").map(Number); return `${MON[m - 1]} ${d}${y !== new Date().getFullYear() ? ", " + y : ""}`; };
-const toDate = (ts) => (ts instanceof Timestamp ? ts.toDate() : ts ? new Date(ts) : null);
+const toDate = (ts) => (ts instanceof Timestamp ? ts.toDate() : ts?.seconds ? new Date(ts.seconds * 1000) : ts ? new Date(ts) : null);
+const dayOf = (ts) => { const d = toDate(ts); return d ? `${MON[d.getMonth()]} ${d.getDate()}` : ""; };
 function ago(ts) {
-  const d = toDate(ts); if (!d) return "never";
+  const d = toDate(ts); if (!d) return "just now";
   const s = (Date.now() - d) / 1000;
   if (s < 90) return "just now"; if (s < 3600) return `${Math.round(s / 60)}m ago`; if (s < 86400) return `${Math.round(s / 3600)}h ago`;
-  const days = Math.round(s / 86400); return days < 45 ? `${days}d ago` : `${Math.round(days / 30)}mo ago`;
+  const n = Math.round(s / 86400); return n === 1 ? "yesterday" : n < 45 ? `${n}d ago` : `${Math.round(n / 30)}mo ago`;
 }
-const whenShort = (ts) => { const d = toDate(ts); if (!d) return "…"; return `${MON[d.getMonth()]} ${d.getDate()}${d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : ""}<br>${d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`; };
+const money = (n) => "$" + Math.round(n || 0).toLocaleString("en-US");
+const initials = (name) => (name || "?").replace(/\(.*?\)/g, "").replace(/'s\b/g, "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
+const colorOf = (c) => (c.brand && c.brand.color1) || PALETTE[[...(c.id || c.name || "")].reduce((a, ch) => a + ch.charCodeAt(0), 0) % PALETTE.length];
+const siteUrl = (w) => (w ? (w.startsWith("http") ? w : "https://" + w) : "");
 function dueInfo(next) {
-  if (!next || !next.what) return { cls: "", label: "No next step", over: false };
-  if (!next.due) return { cls: "", label: "no date", over: false };
+  if (!next || !next.what) return { cls: "", label: "", rank: 9 };
+  if (!next.due) return { cls: "nodate", label: "No date", rank: 3 };
   const n = daysUntil(next.due);
-  if (n < 0) return { cls: "over", label: `Overdue · ${fmtDay(next.due)}`, over: true };
-  if (n === 0) return { cls: "soon", label: "Today", over: false };
-  if (n <= 3) return { cls: "soon", label: `${n === 1 ? "Tomorrow" : "in " + n + " days"} · ${fmtDay(next.due)}`, over: false };
-  return { cls: "", label: fmtDay(next.due), over: false };
+  if (n < 0) return { cls: "over", label: `${-n}d overdue`, rank: 0, sub: "due " + fmtDay(next.due) };
+  if (n === 0) return { cls: "today", label: "Today", rank: 1 };
+  return { cls: "", label: n === 1 ? "Tomorrow" : `${DAYS[new Date(next.due + "T12:00:00").getDay()]}`, rank: 2, sub: fmtDay(next.due) };
 }
-function noticeInfo(v) {
-  if (!v.end) return { cls: "warn", label: "End date unknown" };
-  const noticeBy = new Date(v.end + "T12:00:00"); noticeBy.setDate(noticeBy.getDate() - (Number(v.notice_days) || 0));
-  const iso = noticeBy.toISOString().slice(0, 10), n = daysUntil(iso), e = daysUntil(v.end);
-  if (e < 0) return { cls: "ok", label: `Ended ${fmtDay(v.end)}` };
-  if (n < 0) return { cls: "", label: `Notice window passed ${fmtDay(iso)}` };
-  if (n <= 45) return { cls: "", label: `Give notice by ${fmtDay(iso)} (${n}d)` };
-  return { cls: "ok", label: `Notice by ${fmtDay(iso)} · ends ${fmtDay(v.end)}` };
+const quoteTotal = (q) => { const sub = (q.items || []).reduce((a, it) => a + (Number(it.qty) || 0) * (Number(it.price) || 0), 0); const disc = sub * (Number(q.discountPct) || 0) / 100; return { sub, disc, total: sub - disc }; };
+
+const ICON = {
+  home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>', users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.8c1.7.7 2.8 2.4 3.2 5.2"/>',
+  gauge: '<path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-5"/>', file: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>', search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>', sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>', moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  out: '<path d="M15 4h4v16h-4M10 16l4-4-4-4M14 12H4"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', cal: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', pen: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+  play: '<path d="M8 5v14l11-7z"/>', phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>', globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.5 5.4 3.5 8.5S14.5 17.9 12 20.5C9.5 17.9 8.5 15.1 8.5 12S9.5 6.1 12 3.5z"/>',
+  pin: '<path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>', wrench: '<path d="M14.5 5.5a4 4 0 0 0 5 5L12 18l-3 3-3-3 3-3 7.5-7.5a4 4 0 0 1-2-2z"/>', spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  msg: '<path d="M4 5h16v11H9l-5 4z"/>', flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>', trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>', link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', bolt: '<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>', trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4.5a3 3 0 0 0 3.5 4M16 6h3.5a3 3 0 0 1-3.5 4M12 13v4M8 20h8"/>',
+};
+const ic = (n, cls = "i") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n] || ""}</svg>`;
+const mark = (cls = "mark") => `<svg class="${cls}" viewBox="0 0 364 361" aria-hidden="true">${$("#cw-mark").innerHTML}</svg>`;
+
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+function confetti() {
+  if (reduced) return;
+  const c = document.createElement("canvas"); c.className = "confetti"; c.width = innerWidth * devicePixelRatio; c.height = innerHeight * devicePixelRatio; document.body.appendChild(c);
+  const x = c.getContext("2d"); x.scale(devicePixelRatio, devicePixelRatio);
+  const cols = ["#BF4D1C", "#EC7440", "#2D62CF", "#1B9464", "#D69A1E", "#C9793F"];
+  const ps = Array.from({ length: 90 }, () => ({ x: innerWidth / 2 + (Math.random() - .5) * 120, y: innerHeight * .42, vx: (Math.random() - .5) * 11, vy: -Math.random() * 12 - 4, r: Math.random() * 6 + 3, c: cols[Math.floor(Math.random() * cols.length)], a: Math.random() * 6, va: (Math.random() - .5) * .3 }));
+  const t0 = performance.now();
+  (function f(t) {
+    x.clearRect(0, 0, innerWidth, innerHeight);
+    ps.forEach((p) => { p.vy += .35; p.x += p.vx; p.y += p.vy; p.a += p.va; x.save(); x.translate(p.x, p.y); x.rotate(p.a); x.fillStyle = p.c; x.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2); x.restore(); });
+    if (t - t0 < 1800) requestAnimationFrame(f); else c.remove();
+  })(t0);
 }
-const icon = { search: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>' };
+function countUp(root = document) {
+  $$("[data-count]", root).forEach((el) => {
+    const to = Number(el.dataset.count), pre = el.dataset.pre || "";
+    if (reduced || !to) { el.textContent = pre + to.toLocaleString("en-US"); return; }
+    const t0 = performance.now(), d = 900;
+    const step = (t) => { const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3); el.textContent = pre + Math.round(to * e).toLocaleString("en-US"); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}
+
+// ------------------------------------------------------------------ data (live)
+const S = { clients: [], logs: {}, reports: [], quotes: [], ready: false };
+let unsubs = [], logUnsubs = {};
+function listen() {
+  unsubs.push(onSnapshot(collection(db, "clients"), (snap) => {
+    S.clients = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    S.clients.forEach((c) => {
+      if (logUnsubs[c.id]) return;
+      logUnsubs[c.id] = onSnapshot(query(collection(db, "clients", c.id, "log"), orderBy("at", "desc"), limit(60)), (s) => { S.logs[c.id] = s.docs.map((d) => ({ id: d.id, client: c.id, ...d.data() })); refresh(); });
+    });
+    Object.keys(logUnsubs).forEach((id) => { if (!S.clients.find((c) => c.id === id)) { logUnsubs[id](); delete logUnsubs[id]; delete S.logs[id]; } });
+    S.ready = true; refresh();
+  }, (e) => toast("Couldn't load clients: " + e.code)));
+  unsubs.push(onSnapshot(collectionGroup(db, "reports"), (s) => { S.reports = s.docs.map((d) => ({ id: d.id, client: d.ref.parent.parent.id, ...d.data() })); refresh(); }));
+  unsubs.push(onSnapshot(collectionGroup(db, "quotes"), (s) => { S.quotes = s.docs.map((d) => ({ id: d.id, client: d.ref.parent.parent.id, ...d.data() })); refresh(); }));
+}
+function stopAll() { unsubs.forEach((f) => f()); unsubs = []; Object.values(logUnsubs).forEach((f) => f()); logUnsubs = {}; }
+const client = (id) => S.clients.find((c) => c.id === id);
+const allLogs = () => Object.values(S.logs).flat().sort((a, b) => (toDate(b.at) || 0) - (toDate(a.at) || 0));
+const clientReports = (id) => S.reports.filter((r) => r.client === id).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+const clientQuotes = (id) => S.quotes.filter((q) => q.client === id).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+const latestPresence = (id) => clientReports(id).find((r) => r.type.startsWith("presence") && r.status === "published" && r.score != null);
+const cref = (id) => doc(db, "clients", id);
+const save = (id, patch) => updateDoc(cref(id), { ...patch, updated: serverTimestamp() }).catch((e) => { toast("Save failed: " + e.code); throw e; });
+const logEntry = (id, text, kind = "Note") => Promise.all([addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind, text }), updateDoc(cref(id), { lastTouch: serverTimestamp() })]);
 
 // ------------------------------------------------------------------ auth
-let me = null, isAdmin = false, unsub = [];
-const stop = () => { unsub.forEach((f) => f()); unsub = []; };
+let me = null;
 function renderGate(kind) {
-  $("#who").innerHTML = "";
-  if (kind === "denied") {
-    view.innerHTML = `<div class="gate"><div class="card"><div class="kicker">Admin only</div><h1>Not <em>on the list.</em></h1>
-      <p>${esc(me.email)} is signed in, but this account doesn't have portal access.</p><button class="btn" id="out">Sign out</button></div></div>`;
-    $("#out").onclick = doSignOut; return;
-  }
-  view.innerHTML = `<div class="gate"><div class="card"><div class="kicker">MN Clockworks</div><h1>The <em>Portal.</em></h1>
-    <p>Clients, reports and next steps. Admin sign-in only.</p>
-    <button class="btn primary" id="signin" style="width:100%">Sign in with Google</button>
-    ${EMU ? `<p class="small muted" style="margin-top:14px">Emulator mode: <button class="btn link" id="devin">sign in as a test admin</button></p>` : ""}</div></div>`;
+  $("#app").innerHTML = `<div class="gate"><div class="card">${mark("mark sweep")}<h1>${kind === "denied" ? "Not on the list" : "Clockworks"}</h1>
+    <p>${kind === "denied" ? `${esc(me.email)} is signed in, but this account doesn't have portal access.` : "Your clients, assessments and quotes. Sign in to get to work."}</p>
+    ${kind === "denied" ? `<button class="btn" id="out">Sign out</button>` : `<button class="btn p" id="signin" style="width:100%">Sign in with Google</button>`}
+    ${EMU && kind !== "denied" ? `<button class="btn link" id="devin">Emulator: sign in as Parker</button>` : ""}</div></div>`;
+  if (kind === "denied") { $("#out").onclick = doSignOut; return; }
   $("#signin").onclick = async () => {
     const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" });
     try { await signInWithPopup(auth, p); } catch (e) { if (/popup/.test(e.code || "")) return signInWithRedirect(auth, p); toast("Sign-in failed: " + (e.code || e.message)); }
   };
-  if (EMU) $("#devin").onclick = () => signInWithCredential(auth, GoogleAuthProvider.credential(JSON.stringify({ sub: "test-admin", email: "parks.phone@gmail.com", email_verified: true })));
+  if (EMU) $("#devin").onclick = () => window.__portalDevSignIn();
 }
 async function doSignOut() {
-  stop(); await signOut(auth);
+  stopAll(); await signOut(auth);
   if (!EMU) { try { await terminate(db); await clearIndexedDbPersistence(db); } catch (e) {} location.reload(); }
 }
 window.__portalDevSignIn = EMU ? (email = "parks.phone@gmail.com") => signInWithCredential(auth, GoogleAuthProvider.credential(JSON.stringify({ sub: "test-" + email.replace(/\W/g, "-"), email, email_verified: true }))) : undefined;
 
 onAuthStateChanged(auth, async (u) => {
-  stop(); me = u;
-  if (!u) { isAdmin = false; return renderGate("in"); }
+  stopAll(); me = u;
+  if (!u) return renderGate("in");
   const tok = await u.getIdTokenResult(true);
   // The rules decide who's an admin (claim or the allowlist kept in firestore.rules), so just try a read.
-  isAdmin = tok.claims.admin === true || (await getDocs(query(collection(db, "clients"), limit(1))).then(() => true, () => false));
-  if (!isAdmin) return renderGate("denied");
-  $("#who").innerHTML = `<span class="small">${esc(u.email.split("@")[0])}</span><button class="btn sm ghost" id="out">Sign out</button>`;
-  $("#out").onclick = doSignOut;
-  route();
+  const ok = tok.claims.admin === true || (await getDocs(query(collection(db, "clients"), limit(1))).then(() => true, () => false));
+  if (!ok) return renderGate("denied");
+  renderShell(); listen(); route();
 });
+
+// ------------------------------------------------------------------ shell
+function renderShell() {
+  const first = (me.displayName || "Parker").split(" ")[0];
+  $("#app").innerHTML = `<div class="shell">
+    <aside class="rail">
+      <a class="brand" href="#/">${mark("mark sweep")}<span><b>CLOCKWORKS</b><small>Portal · CRM</small></span></a>
+      <div class="nav-lbl">Workspace</div>
+      <nav class="nav" id="nav">
+        <a href="#/" data-r="dash">${ic("home")}Dashboard</a>
+        <a href="#/clients" data-r="clients">${ic("users")}Clients<span class="n" id="navClients"></span></a>
+        <a href="#/assess" data-r="assess">${ic("gauge")}Assessments</a>
+        <a href="#/quotes" data-r="quotes">${ic("file")}Quotes &amp; invoices</a>
+      </nav>
+      <div class="nav-lbl">Clients</div>
+      <nav class="nav" id="navPins"></nav>
+      <div class="grow"></div>
+      <div class="clock"><b id="clk">--:--</b><small id="clkd"></small></div>
+      <div class="me"><span class="av">${me.photoURL ? `<img src="${esc(me.photoURL)}" alt="" referrerpolicy="no-referrer">` : esc(initials(me.displayName || me.email))}</span><span><b>${esc(me.displayName || first)}</b><small>MN Clockworks</small></span><button id="out" title="Sign out" aria-label="Sign out">${ic("out")}</button></div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <a class="mobile-brand" href="#/" aria-label="Clockworks home">${mark("mark sweep")}</a>
+        <div class="search">${ic("search")}<input id="q" type="search" placeholder="Search clients, contacts, tools…" autocomplete="off" aria-label="Search"><kbd class="desk">⌘K</kbd><div class="results" id="res" hidden></div></div>
+        <span class="sp"></span>
+        <button class="btn p desk" id="addTop">${ic("plus")}Add prospect</button>
+        <button class="iconbtn" id="theme" aria-label="Switch light or dark">${ic("moon")}</button>
+      </header>
+      <main class="content" id="view"></main>
+    </div>
+    <nav class="tabbar" id="tabs">
+      <a href="#/" data-r="dash">${ic("home")}Home</a><a href="#/clients" data-r="clients">${ic("users")}Clients</a>
+      <button class="plus" id="addTab"><span class="b">${ic("plus")}</span>Prospect</button>
+      <a href="#/assess" data-r="assess">${ic("gauge")}Assess</a><a href="#/quotes" data-r="quotes">${ic("file")}Quotes</a>
+    </nav></div>`;
+  $("#out").onclick = doSignOut;
+  $("#addTop").onclick = $("#addTab").onclick = () => addProspect();
+  $("#theme").onclick = toggleTheme; paintThemeIcon();
+  wireSearch(); tickClock(); setInterval(tickClock, 1000);
+  document.addEventListener("keydown", (e) => {
+    const typing = e.target.closest("input, textarea, select, [contenteditable]");
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); $("#q").focus(); $("#q").select(); }
+    else if (!typing && e.key === "/") { e.preventDefault(); $("#q").focus(); }
+    else if (!typing && e.key.toLowerCase() === "n" && !e.metaKey && !e.ctrlKey && !$("#modal").innerHTML) { e.preventDefault(); addProspect(); }
+    else if (e.key === "Escape" && $("#modal").innerHTML) closeModal();
+  });
+}
+function tickClock() {
+  const d = new Date(), h = d.getHours(), m = String(d.getMinutes()).padStart(2, "0");
+  const el = $("#clk"); if (!el) return;
+  el.innerHTML = `${h % 12 || 12}<i>:</i>${m} <span style="font-size:12px;color:var(--rail-ink-2)">${h < 12 ? "AM" : "PM"}</span>`;
+  $("#clkd").textContent = `${DAYS[d.getDay()]} · ${MON[d.getMonth()]} ${d.getDate()} · Maple Grove`;
+}
+const curTheme = () => document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+function toggleTheme() { const t = curTheme() === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = t; store.set("cw-portal-theme", t); paintThemeIcon(); }
+function paintThemeIcon() { const b = $("#theme"); if (b) b.innerHTML = ic(curTheme() === "dark" ? "sun" : "moon"); }
+
+// ------------------------------------------------------------------ search
+function wireSearch() {
+  const q = $("#q"), res = $("#res");
+  let hi = 0, hits = [];
+  const paint = () => {
+    const t = q.value.trim().toLowerCase();
+    if (!t) { res.hidden = true; return; }
+    hits = [];
+    S.clients.forEach((c) => {
+      const hay = [c.name, c.trade, c.town, c.website, c.stage].join(" ").toLowerCase();
+      if (hay.includes(t)) hits.push({ c, what: [c.trade, c.town, c.stage].filter(Boolean).join(" · ") });
+      (c.contacts || []).forEach((p) => { if ([p.name, p.role, p.email, p.phone].join(" ").toLowerCase().includes(t)) hits.push({ c, what: `Contact · ${p.name}${p.role ? " · " + p.role : ""}` }); });
+      (c.tech || []).forEach((x) => { if ([x.name, x.category].join(" ").toLowerCase().includes(t)) hits.push({ c, what: `Tech stack · ${x.name}` }); });
+      (c.interests || []).forEach((x) => { if (x.title.toLowerCase().includes(t)) hits.push({ c, what: `Interested in · ${x.title}` }); });
+    });
+    (S.logs ? allLogs() : []).forEach((l) => { if (hits.length < 12 && (l.text || "").toLowerCase().includes(t)) { const c = client(l.client); if (c) hits.push({ c, what: `Note · ${l.text.slice(0, 60)}${l.text.length > 60 ? "…" : ""}` }); } });
+    hits = hits.slice(0, 10); hi = 0;
+    res.innerHTML = hits.length ? hits.map((h, i) => `<a href="#/c/${esc(h.c.id)}" class="${i === hi ? "hi" : ""}"><span class="avatar" style="width:30px;height:30px;border-radius:9px;font-size:11px;background:${colorOf(h.c)}">${esc(initials(h.c.name))}</span><span><b>${esc(h.c.name)}</b><br><small>${esc(h.what)}</small></span><small>${esc(h.c.stage)}</small></a>`).join("")
+      : `<div class="empty">Nothing matches “${esc(q.value)}”. <button class="btn link" id="resAdd">Add it as a prospect</button></div>`;
+    res.hidden = false;
+    const ra = $("#resAdd"); if (ra) ra.onclick = () => { const n = q.value; q.value = ""; res.hidden = true; addProspect({ name: n }); };
+  };
+  q.addEventListener("input", paint);
+  q.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); hi = (hi + (e.key === "ArrowDown" ? 1 : -1) + hits.length) % Math.max(1, hits.length); $$("a", res).forEach((a, i) => a.classList.toggle("hi", i === hi)); }
+    if (e.key === "Enter" && hits[hi]) { location.hash = "#/c/" + hits[hi].c.id; q.value = ""; res.hidden = true; q.blur(); }
+    if (e.key === "Escape") { q.value = ""; res.hidden = true; q.blur(); }
+  });
+  res.addEventListener("click", (e) => { if (e.target.closest("a")) { q.value = ""; res.hidden = true; } });
+  document.addEventListener("click", (e) => { if (!e.target.closest(".search")) res.hidden = true; });
+}
 
 // ------------------------------------------------------------------ router
-window.addEventListener("hashchange", () => isAdmin && route());
+let R = { name: "dash", args: [] };
+window.addEventListener("hashchange", () => { if ($("#view")) route(); });
 function route() {
-  stop();
-  const h = location.hash.replace(/^#\/?/, "");
+  const h = location.hash.replace(/^#\/?/, "").split("?")[0], parts = h.split("/").map(decodeURIComponent);
+  R = parts[0] === "c" && parts[1] ? { name: "client", args: [parts[1]] }
+    : parts[0] === "q" && parts[2] ? { name: "quote", args: [parts[1], parts[2]] }
+    : ["clients", "assess", "quotes"].includes(parts[0]) ? { name: parts[0], args: [] } : { name: "dash", args: [] };
+  if (R.name !== "quote") qDraft = null;
   window.scrollTo(0, 0);
-  if (h.startsWith("c/")) return renderClient(decodeURIComponent(h.slice(2)));
-  if (h === "new") return renderNew();
-  return renderList();
+  refresh(true);
+}
+let refreshQueued = false, entering = false, lastPainted = "", enterT, enterAt = 0;
+function refresh(force) {
+  if (!$("#view")) return;
+  // Don't repaint under someone typing or with a dialog open; the next change or navigation will.
+  if (!force && ($("#modal").innerHTML || document.activeElement?.closest("#view input, #view textarea, #view select"))) return;
+  if (refreshQueued && !force) return;
+  refreshQueued = true;
+  requestAnimationFrame(() => { refreshQueued = false; paint(force); });
+}
+function paint(first) {
+  $$("#nav a, #tabs a").forEach((a) => a.classList.toggle("on", a.dataset.r === (R.name === "client" ? "clients" : R.name === "quote" ? "quotes" : R.name)));
+  $("#navClients").textContent = S.clients.length || "";
+  $("#navPins").innerHTML = S.clients.slice().sort((a, b) => (toDate(b.lastTouch) || 0) - (toDate(a.lastTouch) || 0)).slice(0, 5)
+    .map((c) => `<a href="#/c/${esc(c.id)}" class="${R.name === "client" && R.args[0] === c.id ? "on" : ""}"><span class="dot" style="background:${colorOf(c)}"></span>${esc(c.name.replace(/ \(.*\)/, ""))}</a>`).join("");
+  if (!S.ready) { $("#view").innerHTML = `<div class="empty-note">Loading your clients…</div>`; return; }
+  const v = $("#view");
+  const scroll = window.scrollY;
+  // Entrance motion only when the page itself changes, not on every live-data repaint.
+  const key = R.name + "/" + R.args.join("/");
+  const fresh = key !== lastPainted; lastPainted = key;
+  // the first data snapshots land within a few hundred ms of opening; let those repaints keep the entrance too
+  entering = fresh || performance.now() - enterAt < 450;
+  if (fresh) { enterAt = performance.now(); v.classList.remove("enter"); void v.offsetWidth; v.classList.add("enter"); clearTimeout(enterT); enterT = setTimeout(() => v.classList.remove("enter"), 1200); }
+  ({ dash: viewDash, clients: viewClients, client: viewClient, assess: viewAssess, quotes: viewQuotes, quote: viewQuote }[R.name])(v);
+  if (!first) window.scrollTo(0, scroll);
+  if (first) countUp(v); else $$("[data-count]", v).forEach((el) => (el.textContent = (el.dataset.pre || "") + Number(el.dataset.count).toLocaleString("en-US")));
 }
 
-// ------------------------------------------------------------------ list
-let listFilter = "All", listSearch = "";
-function renderList() {
-  view.innerHTML = `<div class="kicker">Clients</div><h1>Who's <em>next.</em></h1>
-    <div class="search">${icon.search}<input class="i" id="q" type="search" placeholder="Search by name" autocomplete="off" value="${esc(listSearch)}" aria-label="Search clients"></div>
-    <div class="chips" id="stages" role="group" aria-label="Filter by stage"></div>
-    <div class="clients" id="list"><div class="empty">Loading…</div></div>
-    <a class="btn primary fab" href="#/new">+ New client</a>`;
-  let rows = [];
-  const paint = () => {
-    const counts = Object.fromEntries(STAGES.map((s) => [s, rows.filter((c) => c.stage === s).length]));
-    $("#stages").innerHTML = ["All", ...STAGES].filter((s) => s === "All" || counts[s] || s === listFilter)
-      .map((s) => `<button class="chip" data-s="${esc(s)}" aria-pressed="${s === listFilter}">${esc(s)}<span class="n">${s === "All" ? rows.length : counts[s]}</span></button>`).join("");
-    const q = listSearch.trim().toLowerCase();
-    const shown = rows.filter((c) => (listFilter === "All" || c.stage === listFilter) && (!q || (c.name || "").toLowerCase().includes(q) || (c.trade || "").toLowerCase().includes(q)))
-      .sort((a, b) => {
-        const da = dueInfo(a.next), dbb = dueInfo(b.next);
-        if (da.over !== dbb.over) return da.over ? -1 : 1;
-        const ka = a.next?.due || "9999", kb = b.next?.due || "9999";
-        return ka.localeCompare(kb) || (toDate(b.lastTouch) || 0) - (toDate(a.lastTouch) || 0);
-      });
-    $("#list").innerHTML = shown.length ? shown.map((c) => {
-      const d = dueInfo(c.next), sc = c.scores || {};
-      return `<a class="client ${d.over ? "overdue" : ""}" href="#/c/${encodeURIComponent(c.id)}">
-        <div class="spread"><span class="nm">${esc(c.name)}</span><span class="stage s-${esc(c.stage.split(" ")[0])}">${esc(c.stage)}</span></div>
-        <div class="sub">${esc([c.trade, c.town].filter(Boolean).join(" · "))}</div>
-        <div class="next"><span aria-hidden="true">→</span><span>${esc(c.next?.what || "No next step set")}</span> <span class="due ${d.cls}">${c.next?.what ? esc(d.label) : ""}</span></div>
-        <div class="meta"><span>Touched ${esc(ago(c.lastTouch))}</span><span>Presence ${sc.presence?.score ?? "–"}</span><span>Agent ${sc.agent?.score ?? "–"}</span></div></a>`;
-    }).join("") : `<div class="empty">${rows.length ? "No clients match." : "No clients yet. Add the first one."}</div>`;
+// ------------------------------------------------------------------ dashboard
+function milestones() {
+  const pub = S.reports.filter((r) => r.status === "published").sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  const created = S.clients.map((c) => toDate(c.created)).filter(Boolean).sort((a, b) => a - b);
+  const pastMeeting = S.clients.filter((c) => STAGES.indexOf(c.stage) > 2 && STAGES.indexOf(c.stage) < 7);
+  const sent = S.quotes.filter((q) => q.kind === "quote" && ["sent", "accepted"].includes(q.status));
+  const paid = S.quotes.filter((q) => q.kind === "invoice" && q.status === "paid");
+  const meeting = S.clients.find((c) => c.stage === "Meeting");
+  return [
+    { t: "First prospect added", done: S.clients.length > 0, when: created[0] ? dayOf(created[0]) : "", hint: "Add someone you'd like to help." },
+    { t: "First assessment published", done: pub.length > 0, when: pub[0] ? fmtDay(pub[0].date) : "", hint: "Run a free scan for a prospect.", sub: pub[0] ? `${client(pub[0].client)?.name || ""} · ${pub[0].score ?? ""}` : "" },
+    { t: "First sit-down held", done: pastMeeting.length > 0, when: "", hint: meeting ? `${meeting.name} agreed to talk. Lock in the date.` : "Book a conversation with a prospect." },
+    { t: "First quote sent", done: sent.length > 0, when: sent[0] ? fmtDay(sent[0].date) : "", hint: "Draft the pilot quote after the sit-down." },
+    { t: "First paid invoice", done: paid.length > 0, when: paid[0] ? fmtDay(paid[0].paidDate || paid[0].date) : "", hint: "The pilot pays for itself. This is the big one." },
+    { t: "Five prospects in the pipeline", done: S.clients.length >= 5, when: "", hint: `${S.clients.length} of 5 so far.`, sub: "" },
+  ];
+}
+function moves(days) { const since = Date.now() - days * 86400000; return allLogs().filter((l) => (toDate(l.at) || 0) >= since); }
+function spark(daysBack = 14) {
+  const counts = Array(daysBack).fill(0), now = new Date(todayISO() + "T23:59:59");
+  allLogs().forEach((l) => { const d = toDate(l.at); if (!d) return; const i = daysBack - 1 - Math.floor((now - d) / 86400000); if (i >= 0 && i < daysBack) counts[i]++; });
+  const max = Math.max(1, ...counts), w = 88 / daysBack;
+  return `<svg class="spark" viewBox="0 0 88 30" aria-hidden="true">${counts.map((n, i) => `<rect x="${(i * w + .6).toFixed(1)}" y="${(30 - Math.max(2, (n / max) * 28)).toFixed(1)}" width="${(w - 1.4).toFixed(1)}" height="${Math.max(2, (n / max) * 28).toFixed(1)}" rx="1.2" fill="${i === daysBack - 1 ? "var(--accent)" : n ? "var(--data)" : "var(--surface-3)"}"/>`).join("")}</svg>`;
+}
+function viewDash(v) {
+  const d = new Date(), h = d.getHours();
+  const greet = h < 5 ? "Burning the midnight oil" : h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+  const first = (me.displayName || "Parker").split(" ")[0];
+  const pub = S.reports.filter((r) => r.status === "published");
+  const nextSet = S.clients.filter((c) => c.next && c.next.what);
+  const over = S.clients.filter((c) => dueInfo(c.next).cls === "over");
+  const week = moves(7);
+  const openQ = S.quotes.filter((q) => q.kind === "quote" && ["draft", "sent"].includes(q.status));
+  const unpaid = S.quotes.filter((q) => q.kind === "invoice" && q.status === "unpaid");
+  const active = S.clients.filter((c) => ["Pilot", "Active"].includes(c.stage));
+  const leads = S.clients.filter((c) => STAGES.indexOf(c.stage) < 5);
+  const lines = ["Every client starts as a conversation.", "Small, steady moves add up.", "One good sit-down can change the month.", "You're building something real here.", "The best time to follow up is today."];
+  const line = lines[(d.getDate() + d.getMonth()) % lines.length];
+  const summary = S.clients.length === 0 ? "A clean slate. Add your first prospect and let's get moving."
+    : `${S.clients.length} ${S.clients.length === 1 ? "prospect" : "prospects"} in motion${pub.length ? `, ${pub.length === 1 ? "your first assessment is live" : pub.length + " assessments published"}` : ""}${over.length ? `, and ${over.length} follow-up${over.length > 1 ? "s" : ""} waiting on you` : ""}. ${line}`;
+  const ms = milestones(), done = ms.filter((m) => m.done).length, nowI = ms.findIndex((m) => !m.done);
+  const C = 2 * Math.PI * 31, off = C * (1 - done / ms.length);
+  const meeting = S.clients.find((c) => c.stage === "Meeting");
+  const latestPub = pub.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""))[0];
+  const stepAct = [
+    `<button class="btn sm p" data-add>${ic("plus")}Add a prospect</button>`,
+    `<a class="btn sm p" href="#/assess">${ic("gauge")}Run a free scan</a>`,
+    meeting ? `<a class="btn sm p" href="#/c/${esc(meeting.id)}">${ic("cal")}Open ${esc(meeting.name.replace(/ \(.*\)/, ""))}</a>` : `<a class="btn sm p" href="#/clients">${ic("users")}Pick someone</a>`,
+    `<button class="btn sm p" data-newquote>${ic("file")}Draft the quote</button>`,
+    `<a class="btn sm p" href="#/quotes">${ic("file")}Open quotes</a>`,
+    `<button class="btn sm p" data-add>${ic("plus")}Add a prospect</button>`,
+  ];
+  const gauge = (s) => { const g = 2 * Math.PI * 15; return `<svg class="gauge" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15" fill="none" stroke="var(--surface-3)" stroke-width="5"/><circle cx="20" cy="20" r="15" fill="none" stroke="var(--${bandCls(s)}-fill)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${g.toFixed(1)}" stroke-dashoffset="${(g * (1 - s / 100)).toFixed(1)}" transform="rotate(-90 20 20)"/><text x="20" y="24.5" text-anchor="middle">${s}</text></svg>`; };
+
+  // next moves: real next steps first, then a couple of friendly suggestions
+  const q = S.clients.filter((c) => c.next && c.next.what).map((c) => ({ c, d: dueInfo(c.next) })).sort((a, b) => a.d.rank - b.d.rank || (a.c.next.due || "").localeCompare(b.c.next.due || ""));
+  const ideas = [];
+  const noScan = S.clients.find((c) => c.website && !clientReports(c.id).some((r) => r.type.startsWith("presence")));
+  if (noScan) ideas.push({ t: `Run a free Presence scan for ${noScan.name}`, sub: "60 seconds, about fifty cents. A great conversation opener.", act: `<a class="btn sm" href="#/assess?client=${esc(noScan.id)}">Open</a>` });
+  if (S.clients.length < 5) ideas.push({ t: `Add prospect #${S.clients.length + 1}`, sub: "A plumber, electrician or HVAC shop you already know. Warm intros win.", act: `<button class="btn sm" data-add>Add</button>` });
+  const noInt = S.clients.find((c) => !(c.interests || []).length);
+  if (noInt && ideas.length < 2) ideas.push({ t: `Note what ${noInt.name.replace(/ \(.*\)/, "")} cares about`, sub: "Even one line helps you walk in prepared.", act: `<a class="btn sm" href="#/c/${esc(noInt.id)}">Open</a>` });
+
+  const feed = allLogs().slice(0, 7);
+  const kindIcon = (k, t) => (/published|report/i.test(t) ? ["ok", "check"] : k === "Call" ? ["acc", "phone"] : k === "Text" ? ["acc", "msg"] : k === "Decision" ? ["data", "flag"] : /^Stage/.test(t) ? ["data", "flag"] : ["", "pen"]);
+
+  v.innerHTML = `
+  <section class="hello dash-hello">
+    <div><div class="date">${DAYS[d.getDay()]} · ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}</div><h1>${greet}, ${esc(first)}.</h1><p>${esc(summary)}</p></div>
+    <div class="acts"><a class="btn" href="#/assess">${ic("gauge")}Run assessment</a><button class="btn" data-newquote>${ic("file")}Draft quote</button></div>
+  </section>
+
+  <section class="tiles">
+    <a class="panel tile" href="#/clients" style="text-decoration:none"><span class="lbl">${ic("users")}Prospects &amp; clients</span><span class="row1"><span class="big" data-count="${S.clients.length}">${S.clients.length}</span><span class="stack">${S.clients.slice(0, 4).map((c) => `<span style="background:${colorOf(c)}">${esc(initials(c.name))}</span>`).join("")}</span></span><span class="sub">${active.length ? `<b>${active.length} active</b> · ` : ""}${leads.length} in the pipeline</span></a>
+    <a class="panel tile" href="#/assess" style="text-decoration:none"><span class="lbl">${ic("gauge")}Assessments published</span><span class="row1"><span class="big" data-count="${pub.length}">${pub.length}</span>${latestPub && latestPub.score != null ? gauge(latestPub.score) : ""}</span><span class="sub">${latestPub ? `Latest: ${esc(client(latestPub.client)?.name || "")}` : "Your first one is a click away"}</span></a>
+    <div class="panel tile"><span class="lbl">${ic("bolt")}Moves this week</span><span class="row1"><span class="big" data-count="${week.length}">${week.length}</span>${spark()}</span><span class="sub">${week.length ? (week.length >= 5 ? "<b>Nice momentum.</b> Keep it rolling." : "Every note and call counts.") : "Log a call or a note to start the streak."}</span></div>
+    ${openQ.length || unpaid.length
+      ? `<a class="panel tile" href="#/quotes" style="text-decoration:none"><span class="lbl">${ic("file")}Quotes out</span><span class="big" data-count="${Math.round(openQ.reduce((a, x) => a + quoteTotal(x).total, 0))}" data-pre="$">${money(openQ.reduce((a, x) => a + quoteTotal(x).total, 0))}</span><span class="sub">${openQ.length} open${unpaid.length ? ` · ${money(unpaid.reduce((a, x) => a + quoteTotal(x).total, 0))} to collect` : ""}</span></a>`
+      : `<button class="panel tile cta" data-newquote><span class="lbl">${ic("file")}Quotes</span><span class="big">Draft your first quote <span class="arr">→</span></span><span class="sub">When Eicher's sit-down lands, the pilot quote goes here.</span></button>`}
+  </section>
+
+  <section class="grid g-main">
+    <div class="grid col">
+      <div class="panel p-moves">
+        <div class="ph"><h2>Your next moves <small>${nextSet.length} set · overdue first</small></h2><a class="btn link" href="#/clients">All clients</a></div>
+        <div class="queue" style="margin-top:10px">
+          ${q.map(({ c, d }) => `<div class="q ${d.cls}"><div class="when">${esc(d.label)}${d.sub ? `<br><span style="font-weight:500">${esc(d.sub)}</span>` : ""}</div><div><div class="w">${esc(c.next.what)}</div><div class="who"><a href="#/c/${esc(c.id)}">${esc(c.name)}</a> · ${esc(c.stage)}</div></div><div style="display:flex;gap:6px"><button class="btn sm" data-done="${esc(c.id)}">${ic("check")}Done</button></div></div>`).join("")}
+          ${ideas.slice(0, 2).map((i) => `<div class="q idea"><div class="when">Idea</div><div><div class="w">${esc(i.t)}</div><div class="who">${esc(i.sub)}</div></div><div>${i.act}</div></div>`).join("")}
+          ${!q.length && !ideas.length ? `<div class="pb"><div class="empty-note"><b>All caught up.</b> Enjoy it, then pick someone to call.</div></div>` : ""}
+        </div>
+      </div>
+      <div class="panel p-feed">
+        <div class="ph"><h2>Recent activity <small>across clients</small></h2></div>
+        <div class="feed" style="margin-top:8px">${feed.length ? feed.map((l) => { const [cl, icn] = kindIcon(l.kind, l.text || ""); const c = client(l.client); return `<div class="fi"><span class="ic ${cl}">${ic(icn)}</span><div><b style="font-weight:600">${esc(l.text)}</b><br><small><a href="#/c/${esc(l.client)}" style="text-decoration:none">${esc(c?.name || "")}</a> · ${esc(l.kind || "Note")}</small></div><time>${esc(ago(l.at))}</time></div>`; }).join("") : `<div class="pb"><div class="empty-note">Your story starts with the first note.</div></div>`}</div>
+      </div>
+    </div>
+    <div class="grid col">
+      <div class="panel journey p-journey">
+        <div class="jhead"><span class="ringwrap"><svg class="ring" viewBox="0 0 72 72" aria-hidden="true"><circle class="bg" cx="36" cy="36" r="31" fill="none" stroke-width="6"/><circle class="fg" cx="36" cy="36" r="31" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${reduced || !entering ? off.toFixed(1) : C.toFixed(1)}" data-off="${off.toFixed(1)}" transform="rotate(-90 36 36)"/><svg class="mark${entering ? " sweep" : ""}" x="18" y="18" width="36" height="36" viewBox="0 0 364 361">${$("#cw-mark").innerHTML}</svg></svg><span class="ring-n">${done}/${ms.length}</span></span>
+          <div><b>${done === 0 ? "Let's get started." : done < 3 ? "You're off the starting line." : done < ms.length ? "The flywheel is turning." : "Clockworks is up and running."}</b><small>${done} of ${ms.length} early milestones reached. Next: ${esc(nowI >= 0 ? ms[nowI].t.toLowerCase() : "keep going")}.</small></div></div>
+        <ol class="steps">${ms.map((m, i) => `<li class="${m.done ? "done" : i === nowI ? "now" : ""}"><span class="st">${m.done ? ic("check") : i + 1}</span><div><b>${esc(m.t)}</b><small>${esc(m.done ? (m.sub || "Done") : m.hint)}</small>${i === nowI ? `<div class="go">${stepAct[i] || ""}</div>` : ""}</div><span class="when">${m.done ? esc(m.when || "✓") : i === nowI ? `<span class="chip acc">Up next</span>` : ""}</span></li>`).join("")}</ol>
+      </div>
+      <div class="panel lane p-lane">
+        <div class="ph" style="padding:0"><h2>Pipeline <small>${S.clients.length} ${S.clients.length === 1 ? "client" : "clients"}</small></h2></div>
+        <div class="lane-track">${MAIN.map((s) => { const here = S.clients.filter((c) => c.stage === s); return `<div class="lane-col ${here.length ? "has" : ""}"><span class="bar"></span><small>${esc(STAGE_SHORT[s] || s)}</small><div class="pucks">${here.map((c) => `<a class="puck" href="#/c/${esc(c.id)}" title="${esc(c.name)}" style="background:${colorOf(c)}">${esc(initials(c.name))}</a>`).join("")}</div></div>`; }).join("")}</div>
+      </div>
+      ${pub.length ? `<div class="panel p-scores"><div class="ph"><h2>Presence scores <small>latest per client</small></h2></div><div class="pb scores">${S.clients.map((c) => ({ c, r: latestPresence(c.id) })).filter((x) => x.r).map(({ c, r }) => `<div class="score-row"><a href="#/c/${esc(c.id)}" style="text-decoration:none"><b style="font:600 13.5px var(--ff)">${esc(c.name)}</b><br><small class="chip ${bandCls(r.score)}" style="height:20px;margin-top:3px">${esc(band(r.score))}</small></a><span class="track"><span class="fill ${bandCls(r.score)}" style="width:${r.score}%"></span></span><b>${r.score}</b></div>`).join("")}</div></div>` : ""}
+    </div>
+  </section>`;
+  requestAnimationFrame(() => { const fg = $(".ring .fg", v); if (fg) fg.setAttribute("stroke-dashoffset", fg.dataset.off); });
+  wireCommon(v);
+}
+
+// ------------------------------------------------------------------ shared actions
+function wireCommon(v) {
+  $$("[data-add]", v).forEach((b) => (b.onclick = () => addProspect()));
+  $$("[data-newquote]", v).forEach((b) => (b.onclick = () => newQuote(b.dataset.newquote)));
+  $$("[data-done]", v).forEach((b) => (b.onclick = () => markDone(b.dataset.done)));
+}
+async function markDone(id) {
+  const c = client(id); if (!c || !c.next?.what) return;
+  const w = c.next.what;
+  await save(id, { next: { what: "", due: "" } }); await logEntry(id, "Done: " + w, "Note");
+  confetti(); toast("Done. Nice work.");
+  setTimeout(() => editNext(id, true), 700);
+}
+
+// ------------------------------------------------------------------ modal + forms
+function openModal(html, onMount) {
+  $("#modal").innerHTML = `<div class="scrim" id="scrim"><div class="dialog" role="dialog" aria-modal="true">${html}</div></div>`;
+  $("#scrim").addEventListener("mousedown", (e) => { if (e.target.id === "scrim") closeModal(); });
+  const f = $("#modal input, #modal textarea, #modal select"); if (f) setTimeout(() => f.focus(), 30);
+  onMount && onMount($("#modal .dialog"));
+}
+function closeModal() { $("#modal").innerHTML = ""; refresh(true); }
+// fields: [{k, label, type, options, placeholder, full}]
+function formDialog({ title, intro, fields, values = {}, submit = "Save", onSave, onDelete }) {
+  const f = (x) => {
+    const val = values[x.k] ?? "";
+    const inp = x.type === "select" ? `<select class="input" name="${x.k}">${x.options.map((o) => { const [ov, ol] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(ov)}" ${ov === val ? "selected" : ""}>${esc(ol)}</option>`; }).join("")}</select>`
+      : x.type === "textarea" ? `<textarea class="input" name="${x.k}" placeholder="${esc(x.placeholder || "")}">${esc(val)}</textarea>`
+      : `<input class="input" name="${x.k}" type="${x.type || "text"}" value="${esc(val)}" placeholder="${esc(x.placeholder || "")}" ${x.required ? "required" : ""} ${x.type === "tel" ? 'inputmode="tel"' : ""} autocomplete="off">`;
+    return `<label class="field" style="${x.full ? "flex-basis:100%" : ""}">${esc(x.label)}${inp}</label>`;
   };
-  unsub.push(onSnapshot(collection(db, "clients"), (snap) => { rows = snap.docs.map((d) => ({ id: d.id, ...d.data() })); paint(); }, (e) => toast("Couldn't load: " + e.code)));
-  $("#q").addEventListener("input", (e) => { listSearch = e.target.value; paint(); });
-  $("#stages").addEventListener("click", (e) => { const b = e.target.closest("[data-s]"); if (b) { listFilter = b.dataset.s; paint(); } });
+  openModal(`<form id="fd"><div style="display:grid;gap:14px"><h2>${esc(title)}</h2>${intro ? `<p>${intro}</p>` : ""}<div class="row">${fields.map(f).join("")}</div>
+    <div class="foot">${onDelete ? `<button type="button" class="btn danger ghost" id="fdDel" style="margin-right:auto">${ic("trash")}Remove</button>` : ""}<button type="button" class="btn ghost" id="fdX">Cancel</button><button class="btn p">${esc(submit)}</button></div></div></form>`, (d) => {
+    $("#fdX", d).onclick = closeModal;
+    if (onDelete) $("#fdDel", d).onclick = async (e) => { const b = e.currentTarget; if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "Tap again to remove"; return; } await onDelete(); closeModal(); };
+    $("#fd", d).onsubmit = async (e) => { e.preventDefault(); const data = Object.fromEntries(new FormData(e.target)); Object.keys(data).forEach((k) => (data[k] = String(data[k]).trim())); try { await onSave(data); closeModal(); } catch (err) { console.error(err); } };
+  });
+}
+function slugify(s) { return s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "client"; }
+function addProspect(pre = {}) {
+  formDialog({
+    title: "Add a prospect", intro: "Just the basics. You can fill in the rest as you learn it.", submit: "Add prospect", values: { stage: "Lead", ...pre },
+    fields: [{ k: "name", label: "Business name", required: true, full: true, placeholder: "e.g. Northside HVAC" }, { k: "trade", label: "Trade", placeholder: "Plumbing, HVAC…" }, { k: "town", label: "Town", placeholder: "Rogers, MN" },
+      { k: "website", label: "Website", placeholder: "example.com" }, { k: "stage", label: "Stage", type: "select", options: STAGES }, { k: "contact", label: "Contact name", placeholder: "Who you'd talk to" }, { k: "phone", label: "Contact phone", type: "tel" },
+      { k: "interest", label: "What are they interested in? (optional)", full: true, placeholder: "e.g. more Google reviews, missed calls after hours" }],
+    onSave: async (d) => {
+      let id = slugify(d.name); while (client(id)) id += "-2";
+      await setDoc(cref(id), { name: d.name, trade: d.trade, town: d.town, website: d.website, stage: d.stage, phone: "", hq: "", towns: [], tags: [], brand: {},
+        contacts: d.contact ? [{ name: d.contact, role: "", phone: d.phone, email: "", channel: "Text" }] : [], interests: d.interest ? [{ title: d.interest, note: "", status: "active" }] : [], tech: [], vendors: [],
+        next: { what: d.website ? "Run a free Presence scan" : "Say hello and learn what they need", due: "" }, created: serverTimestamp(), updated: serverTimestamp(), lastTouch: serverTimestamp() });
+      await addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind: "Note", text: `Added as a prospect (${d.stage}).` });
+      confetti(); toast(`${d.name} added. Welcome aboard.`);
+      setTimeout(() => (location.hash = "#/c/" + id), 250);
+    },
+  });
+}
+function editNext(id, fresh) {
+  const c = client(id); if (!c) return;
+  formDialog({ title: fresh ? "What's next?" : "Next step", intro: fresh ? `Keep ${esc(c.name.replace(/ \(.*\)/, ""))} moving with one clear next step.` : "", submit: "Save", values: c.next || {},
+    fields: [{ k: "what", label: "Next step", full: true, required: true, placeholder: "e.g. Text Shanna to pick a date" }, { k: "due", label: "By when", type: "date" }],
+    onSave: async (d) => { await save(id, { next: { what: d.what, due: d.due } }); await logEntry(id, `Next step: ${d.what}${d.due ? " (by " + fmtDay(d.due) + ")" : ""}`, "Note"); toast("Next step set"); } });
 }
 
-// ------------------------------------------------------------------ new
-function slugify(s) { return s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "client"; }
-function renderNew() {
-  view.innerHTML = `<a class="back" href="#/">← Clients</a><div class="kicker">New client</div><h1>Add a <em>client.</em></h1>
-    <form class="card" id="f">
-      <div class="formrow"><label class="f">Business name<input class="i" name="name" required autocomplete="off"></label></div>
-      <div class="grid2"><label class="f">Trade<input class="i" name="trade" placeholder="Plumbing"></label><label class="f">HQ town<input class="i" name="town" placeholder="Rogers, MN"></label></div>
-      <div class="grid2" style="margin-top:10px"><label class="f">Website<input class="i" name="website" placeholder="example.com" inputmode="url" autocapitalize="off"></label>
-        <label class="f">Stage<select class="i" name="stage">${STAGES.map((s) => `<option>${s}</option>`).join("")}</select></label></div>
-      <div class="row" style="margin-top:14px"><button class="btn primary">Create</button><a class="btn ghost" href="#/">Cancel</a></div>
-    </form>`;
-  $("#f").onsubmit = async (e) => {
+// ------------------------------------------------------------------ clients
+let clientFilter = "All";
+function viewClients(v) {
+  const stages = ["All", ...STAGES.filter((s) => S.clients.some((c) => c.stage === s))];
+  const list = S.clients.filter((c) => clientFilter === "All" || c.stage === clientFilter).sort((a, b) => dueInfo(a.next).rank - dueInfo(b.next).rank || (toDate(b.lastTouch) || 0) - (toDate(a.lastTouch) || 0));
+  v.innerHTML = `<section class="hello"><div><div class="date">Clients &amp; prospects</div><h1>Your people.</h1><p>${S.clients.length ? `${S.clients.length} so far. Every one of them started as a conversation.` : "No one yet. Your first prospect is the hardest and the best."}</p></div></section>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">${stages.map((s) => `<button class="chip ${s === clientFilter ? "acc" : "dash"}" data-f="${esc(s)}" style="cursor:pointer;border:0;height:30px;padding:0 12px">${esc(s)} <span class="mono">${s === "All" ? S.clients.length : S.clients.filter((c) => c.stage === s).length}</span></button>`).join("")}</div>
+    <div class="clist">${list.map((c) => { const d = dueInfo(c.next), r = latestPresence(c.id); return `<a class="panel ccard" href="#/c/${esc(c.id)}"><div class="top"><span class="avatar" style="background:${colorOf(c)}">${esc(initials(c.name))}</span><div><div class="nm">${esc(c.name)}</div><div class="sub">${esc([c.trade, c.town].filter(Boolean).join(" · ") || "Details to come")}</div></div></div>
+      <div class="nx">${ic("flag")}<span>${esc(c.next?.what || "No next step yet")}</span></div>
+      <div class="meta"><span class="chip data">${esc(c.stage)}</span>${d.cls ? `<span class="chip ${d.cls === "over" ? "bad" : "warn"}">${esc(d.label)}</span>` : ""}${r ? `<span class="chip ${bandCls(r.score)}">Presence ${r.score}</span>` : ""}<span class="chip dash">Touched ${esc(ago(c.lastTouch))}</span></div></a>`; }).join("")}
+      <button class="panel addcard" data-add><span class="plus">${ic("plus")}</span><b>Add a prospect</b><small>A shop you already know is the best place to start. <kbd>N</kbd> works anywhere.</small></button></div>`;
+  $$("[data-f]", v).forEach((b) => (b.onclick = () => { clientFilter = b.dataset.f; refresh(true); }));
+  wireCommon(v);
+}
+
+// ------------------------------------------------------------------ client 360
+let composeKind = "Note";
+function viewClient(v) {
+  const c = client(R.args[0]);
+  if (!c) { v.innerHTML = `<div class="crumb"><a href="#/clients">Clients</a></div><div class="empty-note">That client isn't here. <a class="btn link" href="#/clients">Back to clients</a></div>`; return; }
+  const si = STAGES.indexOf(c.stage), d = dueInfo(c.next), reps = clientReports(c.id), quotes = clientQuotes(c.id), logs = S.logs[c.id] || [];
+  const tech = c.tech || [], tc = { confirmed: 0, assumed: 0, unknown: 0 }; tech.forEach((t) => tc[t.status] = (tc[t.status] || 0) + 1);
+  const pr = latestPresence(c.id);
+  const openQ = quotes.filter((q) => q.kind === "quote" && ["draft", "sent"].includes(q.status));
+  const short = c.name.replace(/ \(.*\)/, "");
+  const site = siteUrl(c.website);
+  const ints = c.interests || [];
+  v.innerHTML = `
+  <div class="crumb"><a href="#/clients">Clients</a> / ${esc(c.name)}</div>
+  <section class="panel hero">
+    <div class="hero-top">
+      <div class="ident"><span class="avatar" style="background:${colorOf(c)}${c.brand?.color2 ? `;box-shadow:inset 0 0 0 3px ${esc(c.brand.color2)}` : ""}">${esc(initials(c.name))}</span>
+        <div><h1>${esc(c.name)}</h1>
+          <div class="facts">${c.trade ? `<span>${ic("wrench")}${esc(c.trade)}</span>` : ""}${c.town ? `<span>${ic("pin")}${esc(c.town)}</span>` : ""}${c.phone ? `<span>${ic("phone")}<a href="tel:${esc(c.phone.replace(/[^\d+]/g, ""))}">${esc(c.phone)}</a></span>` : ""}${site ? `<span>${ic("globe")}<a href="${esc(site)}" target="_blank" rel="noopener">${esc(c.website.replace(/^https?:\/\//, ""))}</a></span>` : ""}</div>
+          <div class="tags"><span class="chip data"><span class="d"></span>${esc(c.stage)}</span>${(c.tags || []).map((t, i) => `<span class="chip ${i === 0 ? "acc" : ""}">${esc(t)}</span>`).join("")}<button class="chip dash" data-edit="details" style="cursor:pointer;border:0">${ic("pen")}Edit details</button></div></div></div>
+      <div class="next ${d.cls === "over" ? "over" : ""}"><div class="k"><span class="lbl">${ic("flag")} Next step</span>${d.label ? `<span class="chip ${d.cls === "over" ? "bad" : d.cls ? "warn" : ""}">${esc(d.label)}${d.sub && d.cls !== "over" ? " · " + esc(d.sub) : ""}</span>` : ""}</div>
+        <div class="w">${esc(c.next?.what || `Nothing set yet. What's the next move with ${short}?`)}</div>
+        <div class="acts">${c.next?.what ? `<button class="btn sm p" data-do="done">${ic("check")}Done</button><button class="btn sm" data-do="next">${ic("cal")}${c.next.due ? "Change" : "Set date"}</button>` : `<button class="btn sm p" data-do="next">${ic("flag")}Set next step</button>`}<button class="btn sm" data-do="log">${ic("pen")}Log</button><a class="btn sm" href="#/assess?client=${esc(c.id)}">${ic("gauge")}Assess</a><button class="btn sm" data-newquote="${esc(c.id)}">${ic("file")}Quote</button></div></div>
+    </div>
+    <div class="stages" role="group" aria-label="Stage (tap to move)">${STAGES.map((s, i) => `${i === 7 ? `<span class="gap"></span>` : ""}<button class="stg ${i < si && si < 7 ? "past" : ""} ${i === si ? "cur" : ""} ${i >= 7 && i !== si ? "off" : ""}" data-stage="${esc(s)}" title="Move to ${esc(s)}"><i></i><small>${esc(STAGE_SHORT[s] || s)}</small></button>`).join("")}</div>
+    <div class="strip">
+      <div><span class="lbl">Presence score</span><b>${pr ? `${pr.score}<small class="chip ${bandCls(pr.score)}" style="height:20px">${band(pr.score)}</small>` : `<span style="font:600 14px var(--ff);color:var(--ink-3)">Not run yet</span>`}</b></div>
+      <div><span class="lbl">Open quotes</span><b>${openQ.length ? money(openQ.reduce((a, q) => a + quoteTotal(q).total, 0)) : `<span style="font:600 14px var(--ff);color:var(--ink-3)">None yet</span>`}</b></div>
+      <div><span class="lbl">Tech confirmed</span><b>${tech.length ? `${tc.confirmed}/${tech.length}` : `<span style="font:600 14px var(--ff);color:var(--ink-3)">Discovering</span>`}</b></div>
+      <div><span class="lbl">Last touch</span><b style="font-size:16px">${esc(ago(c.lastTouch))}</b></div>
+    </div>
+  </section>
+
+  <section class="grid g3">
+    <div class="panel"><div class="ph"><h2>Details</h2><button class="btn sm ghost" data-edit="details">${ic("pen")}Edit</button></div><div class="pb">
+      <dl class="kv"><dt>Business</dt><dd>${esc(c.name)}</dd>${c.trade ? `<dt>Trade</dt><dd>${esc(c.trade)}</dd>` : ""}${c.hq ? `<dt>HQ</dt><dd>${esc(c.hq)}</dd>` : c.town ? `<dt>Town</dt><dd>${esc(c.town)}</dd>` : ""}${c.phone ? `<dt>Phone</dt><dd class="mono">${esc(c.phone)}</dd>` : ""}${site ? `<dt>Website</dt><dd><a href="${esc(site)}" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:none">${esc(c.website)}</a></dd>` : ""}${(c.towns || []).length ? `<dt>Serves</dt><dd class="towns">${c.towns.map((t) => `<span>${esc(t)}</span>`).join("")}</dd>` : ""}</dl>
+      ${!c.hq && !c.phone && !site ? `<div class="empty-note" style="margin-top:12px">Details fill in as you learn them. <button class="btn sm" data-edit="details">Add details</button></div>` : ""}</div></div>
+    <div class="panel"><div class="ph"><h2>Interested in <small>${ints.length || ""}</small></h2><button class="btn sm ghost" data-int="new">${ic("plus")}Add</button></div><div class="pb">
+      ${ints.length ? `<div class="ints">${ints.map((x, i) => `<button class="int" data-int="${i}" style="background:none;border:0;padding:0;text-align:left;cursor:pointer;color:inherit">${x.status === "active" ? `<span class="no">${ints.filter((y, j) => y.status === "active" && j <= i).length}</span>` : `<span class="no ghost ${x.status === "asked" ? "asked" : ""}"></span>`}<span><b>${esc(x.title)}${x.status !== "active" ? ` <span class="chip ${x.status === "asked" ? "data" : "dash"} mini">${x.status === "asked" ? "Asked about" : "Earlier idea"}</span>` : ""}</b>${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span></span></button>`).join("")}</div>`
+        : `<div class="empty-note">What is ${esc(short)} hoping to fix? Add it after your first chat.<button class="btn sm" data-int="new">${ic("plus")}Add an interest</button></div>`}</div></div>
+    <div class="panel"><div class="ph"><h2>Contacts <small>${(c.contacts || []).length || ""}</small></h2><button class="btn sm ghost" data-contact="new">${ic("plus")}Add</button></div><div class="pb">
+      ${(c.contacts || []).length ? `<div class="people">${c.contacts.map((p, i) => `<div class="person"><span class="pa">${esc(initials(p.name))}</span><div><b>${esc(p.name)}</b>${p.channel ? ` <span class="chip ok" style="height:20px">Prefers ${esc(p.channel.toLowerCase())}</span>` : ""}<small>${esc(p.role || "")}</small>${p.phone ? `<small class="mono"><a href="tel:${esc(p.phone.replace(/[^\d+]/g, ""))}" style="text-decoration:none">${esc(p.phone)}</a></small>` : ""}${p.email ? `<small>${esc(p.email)}</small>` : ""}</div><button class="btn sm ghost" data-contact="${i}" aria-label="Edit ${esc(p.name)}">${ic("pen")}</button></div>`).join("")}</div>`
+        : `<div class="empty-note">Who's the decision-maker?<button class="btn sm" data-contact="new">${ic("plus")}Add a contact</button></div>`}</div></div>
+  </section>
+
+  <section class="panel"><div class="ph"><h2>Tech stack <small>as discovered · ${tech.length} ${tech.length === 1 ? "system" : "systems"}</small></h2><button class="btn sm ghost" data-tech="new">${ic("plus")}Add system</button></div><div class="pb">
+    ${tech.length ? `<div class="tech-bar"><i style="flex:${tc.confirmed || 0};background:var(--ok-fill)"></i><i style="flex:${tc.assumed || 0};background:repeating-linear-gradient(135deg,var(--warn-fill) 0 4px,transparent 4px 7px)"></i><i style="flex:${tc.unknown || 0};background:var(--line-strong)"></i></div>
+      <div class="tech-legend"><span>Confirmed <b>${tc.confirmed}</b></span><span>Assumed <b>${tc.assumed}</b></span><span>Unknown <b>${tc.unknown}</b></span></div>
+      <div class="techs">${tech.map((t, i) => `<button class="tech ${esc(t.status)}" data-tech="${i}"><span class="cat">${esc(t.category || "System")}</span><b>${esc(t.name)}</b>${t.source ? `<small>${esc(t.source)}</small>` : ""}<span class="st">${esc(TECH_ST[t.status] || t.status)}</span></button>`).join("")}</div>`
+      : `<div class="empty-note">Nothing discovered yet. A free scan fills in the website, DNS and listings; add the rest (CRM, phones, payments) as you learn it.<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn sm" href="#/assess?client=${esc(c.id)}">${ic("gauge")}Run a free scan</a><button class="btn sm" data-tech="new">${ic("plus")}Add a system</button></div></div>`}</div></section>
+
+  <section class="grid g2">
+    <div class="panel"><div class="ph"><h2>Reports</h2><a class="btn sm ghost" href="#/assess?client=${esc(c.id)}">${ic("gauge")}Run one</a></div><div class="pb"><div class="reps">${REPORTS.map((t) => {
+      const r = reps.find((x) => x.type === t.type);
+      if (!r) return `<div class="rep none"><div class="rt"><span>${esc(t.name)}</span><span class="chip dash">Not run</span></div><small>${esc(t.cost)} · ${esc(t.time)}</small><a class="btn sm" href="#/assess?client=${esc(c.id)}&type=${t.type}" style="justify-self:start">${ic("play")}Run</a></div>`;
+      return `<div class="rep"><div class="rt"><span>${esc(t.name)}</span><span class="chip ${r.status === "published" ? "ok" : r.status === "draft" ? "warn" : "dash"}">${esc(r.status)}</span></div>
+        ${r.score != null ? `<div class="sc"><b>${r.score}</b><span class="chip ${bandCls(r.score)}">${band(r.score)}</span></div>` : ""}<small>${esc(fmtDay(r.date))}${r.cost ? " · $" + esc(r.cost) : ""}${r.pin ? " · PIN on file" : ""}</small>
+        ${r.pillars ? `<div class="pillars">${PILLARS.map(([k, n]) => r.pillars[k] != null ? `<div><span>${n}</span><b>${r.pillars[k]}</b><i><u style="width:${r.pillars[k]}%"></u></i></div>` : "").join("")}</div>` : ""}
+        ${r.link ? `<a class="btn sm" href="${esc(r.link)}" target="_blank" rel="noopener" style="justify-self:start">${ic("link")}Open report</a>` : ""}</div>`;
+    }).join("")}</div></div></div>
+    <div class="panel"><div class="ph"><h2>Quotes &amp; invoices</h2><button class="btn sm ghost" data-newquote="${esc(c.id)}">${ic("plus")}New quote</button></div><div class="pb">
+      ${quotes.length ? `<div class="rows">${quotes.map((q) => `<a class="rw" href="#/q/${esc(c.id)}/${esc(q.id)}" style="text-decoration:none"><span><b>${esc(q.title || "Untitled")}</b><small class="mono">${esc(q.number)} · ${esc(fmtDay(q.date))}</small></span><span class="chip ${qCls(q.status)}">${esc(q.kind === "invoice" ? "Invoice · " : "")}${esc(q.status)}</span><span class="amt">${money(quoteTotal(q).total)}</span></a>`).join("")}</div>`
+        : `<div class="empty-note">No quotes yet. When ${esc(short)} is ready, draft one here in a minute.<button class="btn sm" data-newquote="${esc(c.id)}">${ic("file")}Draft a quote</button></div>`}</div></div>
+  </section>
+
+  <section class="grid g2">
+    <div class="panel"><div class="ph"><h2>Contracts <small>vendors they're locked into</small></h2><button class="btn sm ghost" data-vendor="new">${ic("plus")}Add</button></div><div class="pb">
+      ${(c.vendors || []).length ? c.vendors.map((x, i) => contractHtml(x, i)).join("") : `<div class="empty-note">No contracts on file. If they're tied to a vendor (a Thryv, a website company), note the end date and notice window here.<button class="btn sm" data-vendor="new">${ic("plus")}Add a contract</button></div>`}</div></div>
+    <div class="panel"><div class="ph"><h2>Activity <small>${logs.length}</small></h2></div><div class="pb">
+      <div class="composer"><div class="kinds" role="group" aria-label="Kind">${KINDS.map((k) => `<button type="button" data-kind="${k}" aria-pressed="${k === composeKind}">${k}</button>`).join("")}</div>
+        <div class="row"><textarea id="compose" placeholder="What happened? e.g. Texted Shanna about Thursday" rows="1"></textarea><button class="btn p" id="addLog">Add</button></div></div>
+      <div class="log">${logs.map((l) => `<div class="le"><time>${esc(dayOf(l.at) || "…")}</time><div><span class="k">${esc(l.kind || "Note")}</span><p>${esc(l.text)}</p></div></div>`).join("") || `<div class="le"><time></time><div><p style="color:var(--ink-3)">Nothing logged yet.</p></div></div>`}</div></div></div>
+  </section>
+  <div style="display:flex;justify-content:center;padding-top:8px"><button class="btn sm ghost danger" id="delClient">${ic("trash")}Delete ${esc(short)}</button></div>`;
+
+  // wiring
+  $$("[data-stage]", v).forEach((b) => (b.onclick = async () => { const s = b.dataset.stage; if (s === c.stage) return; const from = c.stage; await save(c.id, { stage: s }); await logEntry(c.id, `Stage: ${from} → ${s}`, "Decision"); if (STAGES.indexOf(s) > STAGES.indexOf(from) && STAGES.indexOf(s) < 7) confetti(); toast(`${short} → ${s}`); }));
+  $$("[data-do]", v).forEach((b) => (b.onclick = () => { const a = b.dataset.do; if (a === "done") markDone(c.id); else if (a === "next") editNext(c.id); else { $("#compose").focus(); $("#compose").scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" }); } }));
+  $$("[data-edit='details']", v).forEach((b) => (b.onclick = () => editDetails(c)));
+  $$("[data-int]", v).forEach((b) => (b.onclick = () => editList(c, "interests", b.dataset.int)));
+  $$("[data-contact]", v).forEach((b) => (b.onclick = () => editList(c, "contacts", b.dataset.contact)));
+  $$("[data-tech]", v).forEach((b) => (b.onclick = () => editList(c, "tech", b.dataset.tech)));
+  $$("[data-vendor]", v).forEach((b) => (b.onclick = () => editList(c, "vendors", b.dataset.vendor)));
+  $$("[data-kind]", v).forEach((b) => (b.onclick = () => { composeKind = b.dataset.kind; $$("[data-kind]", v).forEach((x) => x.setAttribute("aria-pressed", x === b)); }));
+  const addLog = async () => { const t = $("#compose").value.trim(); if (!t) return $("#compose").focus(); $("#compose").value = ""; $("#compose").blur(); await logEntry(c.id, t, composeKind); toast("Logged"); };
+  $("#addLog").onclick = addLog;
+  $("#compose").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) addLog(); });
+  // On a phone the stage track scrolls sideways; bring the current stage into view.
+  const curStg = $(".stg.cur", v), track = $(".stages", v);
+  if (curStg && track && track.scrollWidth > track.clientWidth + 2) { const over = curStg.offsetLeft + curStg.offsetWidth + 48 - track.clientWidth; if (over > 0) track.scrollLeft = over; }
+  $("#delClient").onclick = async (e) => {
+    const b = e.currentTarget;
+    if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = `Tap again to delete ${short} and everything on it`; setTimeout(() => { if (b.isConnected) { b.dataset.armed = ""; b.innerHTML = `${ic("trash")}Delete ${esc(short)}`; } }, 4000); return; }
+    const batch = writeBatch(db);
+    for (const sub of ["log", "reports", "quotes"]) (await getDocs(collection(cref(c.id), sub))).forEach((d) => batch.delete(d.ref));
+    batch.delete(cref(c.id)); await batch.commit(); toast(`${short} deleted`); location.hash = "#/clients";
+  };
+  wireCommon(v);
+}
+function contractHtml(x, i) {
+  let tl = `<span class="t-now" style="left:4%" title="Today"></span>`, note = "";
+  if (x.end) {
+    const endD = new Date(x.end + "T12:00:00"), nb = new Date(endD); nb.setDate(nb.getDate() - (Number(x.notice_days) || 0));
+    const span = Math.max(30, daysUntil(x.end)) + 10, pos = (iso) => Math.min(96, Math.max(4, 4 + (daysUntil(iso) / span) * 92));
+    const nbIso = nb.toISOString().slice(0, 10);
+    tl += x.notice_days ? `<span class="t-notice" style="left:${pos(nbIso)}%" title="Give notice by ${fmtDay(nbIso)}"></span>` : "";
+    tl += `<span class="t-end" style="left:${pos(x.end)}%" title="Ends ${fmtDay(x.end)}"></span>`;
+    note = x.notice_days ? `Give notice by <b>${fmtDay(nbIso)}</b> · ends ${fmtDay(x.end)}` : `Ends <b>${fmtDay(x.end)}</b> · notice window unknown`;
+  } else { tl += `<span class="t-unk" style="left:70%" title="End date unknown"></span>`; note = `<span style="color:var(--warn);font-weight:600">End date unknown</span>${x.notice_days ? "" : " · notice window unknown"}`; }
+  return `<div class="contract"><div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><div><b>${esc(x.name)}</b> <small style="color:var(--ink-3)">${esc(x.what || "")}</small></div><button class="btn sm ghost" data-vendor="${i}" aria-label="Edit ${esc(x.name)}">${ic("pen")}</button></div>
+    <div class="tl">${tl}</div><div style="font-size:12.5px;color:var(--ink-2)">${note}</div>${x.notes ? `<div style="font-size:12.5px;color:var(--ink-3)">${esc(x.notes)}</div>` : ""}</div>`;
+}
+function editDetails(c) {
+  formDialog({ title: "Business details", values: { ...c, towns: (c.towns || []).join(", "), tags: (c.tags || []).join(", "), color1: c.brand?.color1 || "" },
+    fields: [{ k: "name", label: "Business name", required: true, full: true }, { k: "trade", label: "Trade" }, { k: "town", label: "Town" }, { k: "hq", label: "HQ address", full: true }, { k: "phone", label: "Main phone", type: "tel" }, { k: "website", label: "Website" },
+      { k: "towns", label: "Service towns (comma-separated)", full: true }, { k: "tags", label: "Tags (comma-separated)", full: true, placeholder: "Family client, Referral…" }, { k: "color1", label: "Brand color (hex)", placeholder: "#173A5E" }],
+    onSave: async (d) => { await save(c.id, { name: d.name, trade: d.trade, town: d.town, hq: d.hq, phone: d.phone, website: d.website, towns: d.towns.split(",").map((s) => s.trim()).filter(Boolean), tags: d.tags.split(",").map((s) => s.trim()).filter(Boolean), brand: { ...(c.brand || {}), color1: /^#[0-9a-f]{3,8}$/i.test(d.color1) ? d.color1 : c.brand?.color1 || "" } }); toast("Saved"); } });
+}
+const LISTS = {
+  interests: { title: "What they're interested in", fields: [{ k: "title", label: "Interest", full: true, required: true, placeholder: "e.g. More Google reviews" }, { k: "note", label: "Note", full: true }, { k: "status", label: "Where it stands", type: "select", options: Object.entries(INT_ST) }], blank: { status: "active" }, log: (x) => `Interested in: ${x.title}` },
+  contacts: { title: "Contact", fields: [{ k: "name", label: "Name", required: true }, { k: "role", label: "Role" }, { k: "phone", label: "Phone", type: "tel" }, { k: "email", label: "Email", type: "email" }, { k: "channel", label: "Prefers", type: "select", options: ["", "Text", "Call", "Email", "In person"] }], blank: { channel: "Text" } },
+  tech: { title: "System in their stack", fields: [{ k: "name", label: "System", required: true, placeholder: "e.g. Housecall Pro" }, { k: "category", label: "Category", placeholder: "Field ops, Website, Phones…" }, { k: "status", label: "Status", type: "select", options: Object.entries(TECH_ST) }, { k: "source", label: "Where we learned it", full: true, placeholder: "e.g. Shanna told us · DNS lookup" }], blank: { status: "assumed" }, log: (x) => `Tech stack: ${x.name} (${TECH_ST[x.status] || x.status})` },
+  vendors: { title: "Contract", fields: [{ k: "name", label: "Vendor", required: true, placeholder: "e.g. Thryv" }, { k: "what", label: "What it does" }, { k: "end", label: "Contract ends", type: "date" }, { k: "notice_days", label: "Notice window (days)", type: "number" }, { k: "notes", label: "Notes", full: true }], blank: {} },
+};
+function editList(c, field, idx) {
+  const L = LISTS[field], arr = (c[field] || []).slice(), isNew = idx === "new", cur = isNew ? { ...L.blank } : arr[+idx];
+  formDialog({ title: (isNew ? "Add · " : "Edit · ") + L.title, values: cur, fields: L.fields, submit: isNew ? "Add" : "Save",
+    onSave: async (d) => { if (field === "vendors") d.notice_days = Number(d.notice_days) || 0; if (isNew) arr.push(d); else arr[+idx] = d; await save(c.id, { [field]: arr }); if (isNew && L.log) await logEntry(c.id, L.log(d), "Note"); toast(isNew ? "Added" : "Saved"); },
+    onDelete: isNew ? null : async () => { arr.splice(+idx, 1); await save(c.id, { [field]: arr }); toast("Removed"); } });
+}
+
+// ------------------------------------------------------------------ assessments
+let pickType = "presence-free";
+function viewAssess(v) {
+  const params = new URLSearchParams(location.hash.split("?")[1] || "");
+  if (params.get("type")) pickType = params.get("type");
+  const pre = params.get("client") || "";
+  const all = S.reports.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  const T = RTYPE[pickType];
+  v.innerHTML = `<section class="hello"><div><div class="date">Assessments</div><h1>Show them what you see.</h1><p>Pick a report, pick a business, and queue it. Every report uses the same design, so a free scan grows into the full one.</p></div></section>
+    <section class="tools">${REPORTS.map((t) => `<button class="panel tool" data-type="${t.type}" aria-pressed="${t.type === pickType}"><span class="ico ${t.type.endsWith("full") ? "full" : ""}">${ic(t.fam === "presence" ? "globe" : "spark")}</span><b>${esc(t.name)}</b><p>${esc(t.desc)}</p><span class="cost"><span>${esc(t.cost)}</span><span>${esc(t.time)}</span></span></button>`).join("")}</section>
+    <section class="panel run"><div class="ph" style="padding:0"><h2>Run ${esc(T.name)}</h2></div>
+      <form id="runf" class="row">
+        <label class="field">For<select class="input" name="client" id="runClient">${S.clients.map((c) => `<option value="${esc(c.id)}" ${c.id === pre ? "selected" : ""}>${esc(c.name)}</option>`).join("")}<option value="__new">+ A new business…</option></select></label>
+        <label class="field newbiz" hidden>Business name<input class="input" name="nname" placeholder="e.g. Crow River Landscaping"></label>
+        <label class="field newbiz" hidden>Website<input class="input" name="nweb" placeholder="example.com"></label>
+        <label class="field newbiz" hidden>Town<input class="input" name="ntown" placeholder="Dayton, MN"></label>
+        <button class="btn p">${ic("play")}Queue ${esc(T.name)}</button>
+      </form>
+      <div class="howto">${howTo(pickType, client(pre) || S.clients[0])}</div>
+    </section>
+    <section class="panel"><div class="ph"><h2>All reports <small>${all.length}</small></h2></div><div class="tablewrap" style="margin-top:8px">
+      ${all.length ? `<table class="t"><thead><tr><th>Client</th><th>Report</th><th>Status</th><th>Date</th><th style="text-align:right">Score</th><th></th></tr></thead><tbody>${all.map((r) => { const c = client(r.client); return `<tr><td><a href="#/c/${esc(r.client)}">${esc(c?.name || r.client)}</a></td><td>${esc(RTYPE[r.type]?.name || r.type)}</td><td><span class="chip ${r.status === "published" ? "ok" : r.status === "draft" ? "warn" : "dash"}">${esc(r.status)}</span></td><td class="mono">${esc(fmtDay(r.date))}</td><td class="n">${r.score ?? "–"}</td><td>${r.link ? `<a href="${esc(r.link)}" target="_blank" rel="noopener">Open ↗</a>` : ""}</td></tr>`; }).join("")}</tbody></table>`
+        : `<div class="pb"><div class="empty-note">No reports yet. Your first free scan is the best conversation starter you have.</div></div>`}</div></section>`;
+  $$("[data-type]", v).forEach((b) => (b.onclick = () => { pickType = b.dataset.type; refresh(true); }));
+  const sel = $("#runClient");
+  const sync = () => { const nw = sel.value === "__new"; $$(".newbiz", v).forEach((x) => (x.hidden = !nw)); $(".howto", v).innerHTML = howTo(pickType, nw ? null : client(sel.value)); };
+  sel.onchange = sync; sync();
+  $("#runf").onsubmit = async (e) => {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));
-    let id = slugify(f.name);
-    const existing = (await getDocs(collection(db, "clients"))).docs.map((d) => d.id);
-    while (existing.includes(id)) id += "-2";
-    await setDoc(doc(db, "clients", id), { name: f.name.trim(), trade: f.trade.trim(), town: f.town.trim(), website: f.website.trim(), stage: f.stage,
-      contacts: [], vendors: [], towns: [], brand: {}, next: { what: "", due: "" }, created: serverTimestamp(), updated: serverTimestamp(), lastTouch: serverTimestamp() });
-    await addDoc(collection(db, "clients", id, "log"), { at: serverTimestamp(), kind: "Note", text: `Added to the portal (stage: ${f.stage}).` });
-    location.hash = "#/c/" + id;
-  };
-  $("[name=name]").focus();
-}
-
-// ------------------------------------------------------------------ profile
-let C = null, LOG = [], REPORTS = [], editing = null;
-function renderClient(id) {
-  C = null; LOG = []; REPORTS = []; editing = null;
-  view.innerHTML = `<a class="back" href="#/">← Clients</a><div class="empty">Loading…</div>`;
-  const ref = doc(db, "clients", id);
-  unsub.push(onSnapshot(ref, (d) => { if (!d.exists()) { view.innerHTML = `<a class="back" href="#/">← Clients</a><div class="empty">Client not found.</div>`; return; } C = { id: d.id, ...d.data() }; paintClient(); }, (e) => toast("Couldn't load: " + e.code)));
-  unsub.push(onSnapshot(query(collection(ref, "log"), orderBy("at", "desc"), limit(200)), (s) => { LOG = s.docs.map((d) => ({ id: d.id, ...d.data() })); paintLog(); }));
-  unsub.push(onSnapshot(collection(ref, "reports"), (s) => { REPORTS = s.docs.map((d) => ({ id: d.id, ...d.data() })); paintReports(); }));
-}
-const cref = () => doc(db, "clients", C.id);
-const save = (patch) => updateDoc(cref(), { ...patch, updated: serverTimestamp() }).catch((e) => toast("Save failed: " + e.code));
-const logEntry = (text, kind = "Note") => Promise.all([addDoc(collection(cref(), "log"), { at: serverTimestamp(), kind, text }), updateDoc(cref(), { lastTouch: serverTimestamp() })]);
-
-function paintClient() {
-  if (!C) return;
-  const keepLog = $("#logText")?.value || "", keepKind = $("#kinds [aria-pressed=true]")?.dataset.k || "Note";
-  if (editing && $("#view form[data-edit]")) { paintHeadOnly(); return; } // don't clobber an open form
-  const d = dueInfo(C.next), si = STAGES.indexOf(C.stage);
-  const site = C.website ? (C.website.startsWith("http") ? C.website : "https://" + C.website) : "";
-  view.innerHTML = `<a class="back" href="#/">← Clients</a>
-    <section class="head" id="head">${headHtml()}</section>
-    <div class="pipeline" role="group" aria-label="Stage">${STAGES.map((s, i) => `<button data-stage="${esc(s)}" class="${i < si ? "past" : ""}" aria-pressed="${s === C.stage}">${esc(s)}</button>`).join("")}</div>
-
-    <section class="card nextcard ${d.over ? "over" : ""}" id="next" style="margin-top:14px">${nextHtml()}</section>
-
-    <section class="card"><h2>Log</h2>
-      <textarea class="i" id="logText" placeholder="Call notes, decisions, check-ins…" aria-label="New log entry">${esc(keepLog)}</textarea>
-      <div class="spread" style="margin-top:8px"><div class="kinds" id="kinds" role="group" aria-label="Entry type">${KINDS.map((k) => `<button class="chip" data-k="${k}" aria-pressed="${k === keepKind}">${k}</button>`).join("")}</div>
-        <button class="btn primary sm" id="addLog">Add</button></div>
-      <ul class="log" id="log"></ul></section>
-
-    <section class="card"><h2>Reports</h2><div class="items" id="reports"></div></section>
-    <section class="card" id="contacts"></section>
-    <section class="card" id="vendors"></section>
-    <section class="card" id="basics"></section>
-    <section class="card" id="brand"></section>
-    <div class="row" style="justify-content:center;margin-top:24px"><button class="btn danger sm" id="del">Delete client</button></div>`;
-  wireClient(); paintLog(); paintReports(); paintContacts(); paintVendors(); paintBasics(); paintBrand();
-  if (site) $("#site")?.setAttribute("href", site);
-}
-function headHtml() {
-  const site = C.website ? (C.website.startsWith("http") ? C.website : "https://" + C.website) : "";
-  return `<div class="kicker">${esc(C.trade || "Client")}${C.town ? " · " + esc(C.town) : ""}</div><h1>${esc(C.name)}</h1>
-    <div class="facts">${site ? `<a id="site" href="${esc(site)}" target="_blank" rel="noopener">${esc(C.website.replace(/^https?:\/\//, ""))} ↗</a>` : ""}
-    ${C.phone ? `<a href="tel:${esc(C.phone.replace(/[^\d+]/g, ""))}">${esc(C.phone)}</a>` : ""}<span class="muted">Touched ${esc(ago(C.lastTouch))}</span></div>`;
-}
-function paintHeadOnly() { const h = $("#head"); if (h) h.innerHTML = headHtml(); }
-function nextHtml() {
-  const d = dueInfo(C.next);
-  if (editing === "next") return `<form data-edit="next"><div class="spread"><span class="kicker">Next step</span></div>
-    <div class="formrow"><label class="f">What<input class="i" name="what" value="${esc(C.next?.what)}" placeholder="Send the Thryv checklist"></label>
-    <label class="f">By<input class="i" type="date" name="due" value="${esc(C.next?.due)}"></label></div>
-    <div class="row"><button class="btn primary sm">Save</button><button type="button" class="btn ghost sm" data-cancel>Cancel</button></div></form>`;
-  return `<div class="spread"><span class="kicker">Next step</span>${d.over ? `<span class="flag">Overdue</span>` : ""}</div>
-    <div class="what" style="margin:6px 0 4px">${esc(C.next?.what || "Nothing set")}</div>
-    <div class="due ${d.cls}">${C.next?.what ? esc(d.label) : ""}</div>
-    <div class="row" style="margin-top:10px"><button class="btn sm" data-edit-btn="next">${C.next?.what ? "Change" : "Set next step"}</button>${C.next?.what ? `<button class="btn sm" id="done">✓ Done</button>` : ""}</div>`;
-}
-function wireClient() {
-  $(".pipeline").onclick = async (e) => {
-    const b = e.target.closest("[data-stage]"); if (!b || b.dataset.stage === C.stage) return;
-    const from = C.stage; await save({ stage: b.dataset.stage }); await logEntry(`Stage: ${from} → ${b.dataset.stage}`, "Decision"); toast("Stage → " + b.dataset.stage);
-  };
-  $("#kinds").onclick = (e) => { const b = e.target.closest("[data-k]"); if (b) $$("#kinds .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); };
-  $("#addLog").onclick = async () => {
-    const t = $("#logText").value.trim(); if (!t) return $("#logText").focus();
-    const k = $("#kinds [aria-pressed=true]")?.dataset.k || "Note";
-    $("#logText").value = ""; await logEntry(t, k); toast("Logged");
-  };
-  $("#del").onclick = async (e) => {
-    const b = e.currentTarget;
-    if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "Tap again to delete everything for this client"; setTimeout(() => { b.dataset.armed = ""; b.textContent = "Delete client"; }, 4000); return; }
-    const batch = writeBatch(db);
-    LOG.forEach((l) => batch.delete(doc(cref(), "log", l.id))); REPORTS.forEach((r) => batch.delete(doc(cref(), "reports", r.id))); batch.delete(cref());
-    stop(); await batch.commit(); toast("Deleted"); location.hash = "#/";
-  };
-  view.onclick = async (e) => {
-    const eb = e.target.closest("[data-edit-btn]"); if (eb) { editing = eb.dataset.editBtn; repaintSection(editing); return; }
-    if (e.target.closest("[data-cancel]")) { const was = editing; editing = null; repaintSection(was); return; }
-    if (e.target.closest("#done")) { const w = C.next.what; await save({ next: { what: "", due: "" } }); await logEntry("Done: " + w, "Note"); toast("Nice. What's next?"); editing = "next"; repaintSection("next"); return; }
-    const rm = e.target.closest("[data-rm]"); if (rm) { const [field, i] = rm.dataset.rm.split(":"); const arr = (C[field] || []).slice(); if (rm.dataset.armed !== "1") { rm.dataset.armed = "1"; rm.textContent = "Sure?"; return; } arr.splice(+i, 1); await save({ [field]: arr }); return; }
-    const ed = e.target.closest("[data-edit-item]"); if (ed) { editing = ed.dataset.editItem; repaintSection(editing.split(":")[0]); return; }
-  };
-  view.onsubmit = async (e) => {
-    const f = e.target.closest("form[data-edit]"); if (!f) return;
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(f)), key = f.dataset.edit, [sec, idx] = key.split(":");
-    if (sec === "next") { await save({ next: { what: data.what.trim(), due: data.due } }); if (data.what.trim()) await logEntry(`Next step: ${data.what.trim()}${data.due ? " (by " + fmtDay(data.due) + ")" : ""}`, "Note"); }
-    else if (sec === "contacts" || sec === "vendors") { const arr = (C[sec] || []).slice(); const item = sec === "vendors" ? { ...data, notice_days: Number(data.notice_days) || 0 } : data; if (idx === "new") arr.push(item); else arr[+idx] = item; await save({ [sec]: arr }); }
-    else if (sec === "basics") await save({ name: data.name.trim(), trade: data.trade.trim(), town: data.town.trim(), website: data.website.trim(), phone: data.phone.trim(), hq: data.hq.trim(), towns: data.towns.split(",").map((s) => s.trim()).filter(Boolean) });
-    else if (sec === "brand") await save({ brand: { logo: data.logo.trim(), color1: data.color1, color2: data.color2, mascot: data.mascot.trim() } });
-    else if (sec === "report") await saveReport(idx, data);
-    editing = null; paintClient(); toast("Saved");
+    let id = f.client;
+    if (id === "__new") {
+      if (!f.nname.trim()) return toast("Add the business name first");
+      id = slugify(f.nname); while (client(id)) id += "-2";
+      await setDoc(cref(id), { name: f.nname.trim(), website: f.nweb.trim(), town: f.ntown.trim(), trade: "", stage: "Lead", phone: "", hq: "", towns: [], tags: [], brand: {}, contacts: [], interests: [], tech: [], vendors: [], next: { what: `Review the ${T.name} results`, due: "" }, created: serverTimestamp(), updated: serverTimestamp(), lastTouch: serverTimestamp() });
+      await addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind: "Note", text: "Added as a prospect from the assessment launcher." });
+    }
+    await addDoc(collection(cref(id), "reports"), { type: pickType, status: "requested", date: todayISO(), created: serverTimestamp(), updated: serverTimestamp() });
+    await logEntry(id, `${T.name} queued`, "Note");
+    toast(`${T.name} queued for ${client(id)?.name || f.nname}`);
   };
 }
-function repaintSection(sec) {
-  if (sec === "next") $("#next").innerHTML = nextHtml();
-  else if (sec === "contacts") paintContacts(); else if (sec === "vendors") paintVendors();
-  else if (sec === "basics") paintBasics(); else if (sec === "brand") paintBrand(); else if (sec === "report") paintReports();
-  const inp = $("form[data-edit] input, form[data-edit] select"); if (inp) inp.focus();
+function howTo(type, c) {
+  const nm = c ? c.name : "the business";
+  if (type === "presence-full") return `<b>How it runs today:</b> queueing logs it on the client. Then, in Claude Code, run <code>/clockworks-assessment ${esc(nm)}</code> <button class="btn sm" data-copy="/clockworks-assessment ${esc(nm)}">${ic("copy")}Copy</button><br>The one-click runner (GitHub Actions) is step 4 on the build list.`;
+  if (type === "presence-free") return `<b>How it runs today:</b> queueing logs the request on the client so nothing slips. The 60-second automated free scan is the next thing being built (step 3), and it will fill this in by itself.`;
+  return `<b>Coming soon:</b> Agent Team assessments arrive in steps 5 and 6. Queueing now records the interest on the client, so you'll know who to run first.`;
 }
-function paintLog() {
-  const el = $("#log"); if (!el) return;
-  el.innerHTML = LOG.length ? LOG.map((l) => `<li><span class="when">${whenShort(l.at)}</span><span><span class="k">${esc(l.kind || "Note")}</span><span class="txt">${esc(l.text)}</span></span><span></span></li>`).join("") : `<li><span></span><span class="muted">Nothing logged yet.</span><span></span></li>`;
-}
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-copy]"); if (!b) return; navigator.clipboard?.writeText(b.dataset.copy).then(() => toast("Copied"), () => toast(b.dataset.copy)); });
 
-// reports: the four types, in a fixed order, newest of each (older ones listed under it)
-function paintReports() {
-  const el = $("#reports"); if (!el || !C) return;
-  el.innerHTML = REPORT_TYPES.map(([type, label]) => {
-    const all = REPORTS.filter((r) => r.type === type).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-    if (editing === "report:" + type || (editing || "").startsWith("report:" + type + ":")) return reportForm(type, label, editing.split(":")[2] ? all.find((r) => r.id === editing.split(":")[2]) : null);
-    if (!all.length) return `<div class="rep none"><div><div class="t">${label}</div><div class="small muted">Not yet</div></div><button class="btn sm" data-edit-item="report:${type}">+ Add</button></div>`;
-    const r = all[0];
-    return `<div class="rep"><div><div class="t">${label} <span class="pill ${esc(r.status)}">${esc(r.status)}</span></div>
-      <div class="small muted">${esc(fmtDay(r.date))}${r.cost ? " · $" + esc(r.cost) : ""}${r.pin ? " · PIN " + esc(r.pin) : ""}</div>
-      <div class="row" style="margin-top:6px">${r.link ? `<a class="btn sm" href="${esc(r.link)}" target="_blank" rel="noopener">Open ↗</a>` : ""}<button class="btn sm ghost" data-edit-item="report:${type}:${r.id}">Edit</button><button class="btn sm ghost" data-edit-item="report:${type}">+ New</button></div>
-      ${all.length > 1 ? `<div class="small muted" style="margin-top:6px">Earlier: ${all.slice(1).map((o) => esc(fmtDay(o.date)) + (o.score != null ? " (" + o.score + ")" : "")).join(" · ")}</div>` : ""}</div>
-      <div class="score">${r.score ?? "–"}</div></div>`;
-  }).join("");
+// ------------------------------------------------------------------ quotes & invoices
+const qCls = (s) => ({ draft: "dash", sent: "data", accepted: "ok", declined: "bad", unpaid: "warn", paid: "ok", void: "dash" }[s] || "");
+function nextNumber(kind) { const pre = kind === "invoice" ? "INV-" : "Q-"; const n = S.quotes.filter((q) => q.kind === kind).map((q) => parseInt(String(q.number || "").replace(/\D/g, ""), 10) || 0); return pre + String((n.length ? Math.max(...n) : 0) + 1).padStart(4, "0"); }
+function newQuote(cid) {
+  const go = async (id) => {
+    const ref = await addDoc(collection(cref(id), "quotes"), { kind: "quote", number: nextNumber("quote"), title: "", status: "draft", date: todayISO(), items: [{ desc: "", qty: 1, price: 0 }], discountPct: 0, notes: "", created: serverTimestamp(), updated: serverTimestamp() });
+    location.hash = `#/q/${id}/${ref.id}`;
+  };
+  if (cid) return go(cid);
+  if (!S.clients.length) return addProspect();
+  formDialog({ title: "Draft a quote", intro: "Who's it for?", submit: "Start drafting", values: { client: S.clients[0].id }, fields: [{ k: "client", label: "Client", type: "select", full: true, options: S.clients.map((c) => [c.id, c.name]) }], onSave: (d) => go(d.client) });
 }
-function reportForm(type, label, r) {
-  r = r || { date: todayISO(), status: "draft" };
-  return `<form class="item" data-edit="report:${type}${r.id ? ":" + r.id : ""}"><div class="t">${label}${r.id ? "" : " · new"}</div>
-    <div class="grid2"><label class="f">Date<input class="i" type="date" name="date" value="${esc(r.date)}" required></label>
-    <label class="f">Status<select class="i" name="status"><option ${r.status === "draft" ? "selected" : ""}>draft</option><option ${r.status === "published" ? "selected" : ""}>published</option></select></label></div>
-    <label class="f">Share link<input class="i" name="link" value="${esc(r.link)}" inputmode="url" autocapitalize="off" placeholder="https://mnclockworks.com/…"></label>
-    <div class="grid2"><label class="f">PIN<input class="i" name="pin" value="${esc(r.pin)}" inputmode="numeric"></label><label class="f">Score (0–100)<input class="i" name="score" value="${esc(r.score)}" inputmode="numeric"></label></div>
-    <label class="f">Cost (USD)<input class="i" name="cost" value="${esc(r.cost)}" inputmode="decimal"></label>
-    <div class="row"><button class="btn primary sm">Save</button><button type="button" class="btn ghost sm" data-cancel>Cancel</button>${r.id ? `<button type="button" class="btn danger sm" data-rm-report="${r.id}">Delete</button>` : ""}</div></form>`;
+function viewQuotes(v) {
+  const all = S.quotes.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  const open = all.filter((q) => q.kind === "quote" && ["draft", "sent"].includes(q.status)), unpaid = all.filter((q) => q.kind === "invoice" && q.status === "unpaid"), paid = all.filter((q) => q.kind === "invoice" && q.status === "paid");
+  v.innerHTML = `<section class="hello"><div><div class="date">Quotes &amp; invoices</div><h1>${paid.length ? "Money in the door." : "Where the work gets priced."}</h1><p>${all.length ? `${open.length} open ${open.length === 1 ? "quote" : "quotes"}${unpaid.length ? ` · ${money(unpaid.reduce((a, q) => a + quoteTotal(q).total, 0))} to collect` : ""}${paid.length ? ` · ${money(paid.reduce((a, q) => a + quoteTotal(q).total, 0))} collected` : ""}.` : "Nothing here yet, and that's fine. Your first quote will come right after a good sit-down."}</p></div><div class="acts"><button class="btn p" data-newquote>${ic("plus")}New quote</button></div></section>
+    <section class="panel">${all.length ? `<div class="tablewrap"><table class="t"><thead><tr><th>Number</th><th>Client</th><th>For</th><th>Status</th><th>Date</th><th style="text-align:right">Total</th></tr></thead><tbody>${all.map((q) => `<tr><td class="mono"><a href="#/q/${esc(q.client)}/${esc(q.id)}">${esc(q.number)}</a></td><td>${esc(client(q.client)?.name || "")}</td><td>${esc(q.title || "Untitled")}</td><td><span class="chip ${qCls(q.status)}">${esc(q.kind === "invoice" ? "Invoice · " : "")}${esc(q.status)}</span></td><td class="mono">${esc(fmtDay(q.date))}</td><td class="n">${money(quoteTotal(q).total)}</td></tr>`).join("")}</tbody></table></div>`
+      : `<div class="pb"><div class="empty-note"><b>No quotes yet.</b> Draft one for a prospect when they're ready: line items, a discount if you like, and a total. You send it yourself; the portal keeps track.<button class="btn sm p" data-newquote>${ic("file")}Draft your first quote</button></div></div>`}</section>`;
+  wireCommon(v);
 }
-async function saveReport(key, data) {
-  // key = "<type>" (new) or "<type>" with id in the form's data-edit (handled by caller split)
-  const [type, id] = [key, (view.querySelector("form[data-edit^='report:']")?.dataset.edit || "").split(":")[2]];
-  const rec = { type, date: data.date, status: data.status, link: data.link.trim(), pin: data.pin.trim(), cost: data.cost.trim(), score: data.score.trim() === "" ? null : Math.max(0, Math.min(100, Number(data.score))), updated: serverTimestamp() };
-  if (id) await updateDoc(doc(cref(), "reports", id), rec); else { await addDoc(collection(cref(), "reports"), { ...rec, created: serverTimestamp() }); await logEntry(`Report added: ${REPORT_TYPES.find((t) => t[0] === type)[1]} (${rec.status})`, "Note"); }
-  // Latest score per family shows on the client card.
-  const fam = type.startsWith("presence") ? "presence" : "agent";
-  const all = REPORTS.filter((r) => r.type.startsWith(fam) && r.id !== id).concat([{ ...rec, id: id || "new" }]).filter((r) => r.score != null).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-  await save({ ["scores." + fam]: all[0] ? { score: all[0].score, date: all[0].date, type: all[0].type } : null });
+let qDraft = null;
+function viewQuote(v) {
+  const [cid, qid] = R.args, c = client(cid), q0 = S.quotes.find((x) => x.client === cid && x.id === qid);
+  if (!c || !q0) { v.innerHTML = `<div class="crumb"><a href="#/quotes">Quotes</a></div><div class="empty-note">Loading the quote… <a class="btn link" href="#/quotes">Back to quotes</a></div>`; return; }
+  if (!qDraft || qDraft.id !== qid) qDraft = JSON.parse(JSON.stringify(q0));
+  const q = qDraft, t = quoteTotal(q), isInv = q.kind === "invoice";
+  const life = isInv ? ["unpaid", "paid"] : ["draft", "sent", "accepted"];
+  const li = life.indexOf(q.status);
+  v.innerHTML = `<div class="crumb"><a href="#/quotes">Quotes &amp; invoices</a> / ${esc(q.number)}</div>
+    <section class="panel qdoc">
+      <div class="qhead-row">
+        <div class="qtitle"><div class="lbl">${isInv ? "Invoice" : "Quote"} · <span class="mono">${esc(q.number)}</span> · <a href="#/c/${esc(cid)}" style="color:var(--accent-ink);text-decoration:none">${esc(c.name)}</a></div>
+          <input class="input" id="qt" value="${esc(q.title)}" placeholder="What's this for? e.g. AI Time & Lead Audit + 3-month pilot"></div>
+        <div class="life">${life.map((s, i) => `<span class="${i < li ? "done" : i === li ? "cur" : ""}"><i></i>${esc(s)}</span>`).join("")}</div>
+      </div>
+      <div class="items"><div class="qline qhead lbl"><span>Item</span><span>Qty</span><span>Price</span><span style="text-align:right" class="qtot-h">Total</span><span></span></div>
+        ${q.items.map((it, i) => `<div class="qline"><input class="input" data-it="${i}" data-f="desc" value="${esc(it.desc)}" placeholder="Describe the work" aria-label="Item"><input class="input mono" data-it="${i}" data-f="qty" value="${esc(it.qty)}" inputmode="decimal" placeholder="Qty" aria-label="Quantity"><input class="input mono" data-it="${i}" data-f="price" value="${esc(it.price)}" inputmode="decimal" placeholder="$" aria-label="Price"><span class="tot">${money((Number(it.qty) || 0) * (Number(it.price) || 0))}</span><button class="btn sm ghost" data-rmi="${i}" aria-label="Remove line">${ic("trash")}</button></div>`).join("")}
+        <button class="btn sm ghost" id="addLine" style="justify-self:start">${ic("plus")}Add a line</button></div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:end">
+        <div style="display:grid;gap:10px;flex:1;min-width:240px"><label class="field" style="max-width:200px">Discount %<input class="input mono" id="qd" value="${esc(q.discountPct || 0)}" inputmode="decimal"></label><label class="field">Notes for the client<textarea class="input" id="qn" placeholder="Terms, timing, what's included…">${esc(q.notes || "")}</textarea></label></div>
+        <div class="qtot"><div><span>Subtotal</span><span class="mono">${money(t.sub)}</span></div>${t.disc ? `<div><span>Discount (${q.discountPct}%)</span><span class="mono">−${money(t.disc)}</span></div>` : ""}<div class="grand"><span class="gl">Total</span><span>${money(t.total)}</span></div></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">
+        <button class="btn ghost danger" id="qdel" style="margin-right:auto">${ic("trash")}Delete</button>
+        <button class="btn" id="qsave">Save</button>
+        ${!isInv && q.status === "draft" ? `<button class="btn p" data-st="sent">Mark as sent</button>` : ""}
+        ${!isInv && q.status === "sent" ? `<button class="btn" data-st="declined">Declined</button><button class="btn p" data-st="accepted">${ic("check")}Accepted</button>` : ""}
+        ${!isInv && q.status === "accepted" ? `<button class="btn p" id="toInv">${ic("file")}Create invoice</button>` : ""}
+        ${isInv && q.status === "unpaid" ? `<button class="btn p" data-st="paid">${ic("check")}Mark paid</button>` : ""}
+      </div>
+      <p style="margin:0;font-size:12.5px;color:var(--ink-3)">You send quotes and invoices yourself (email, text, or your invoicing tool). The portal keeps the record and the status.</p>
+    </section>`;
+  const sync = () => { q.title = $("#qt").value; q.discountPct = Number($("#qd").value) || 0; q.notes = $("#qn").value; $$("[data-it]", v).forEach((el) => { q.items[+el.dataset.it][el.dataset.f] = el.dataset.f === "desc" ? el.value : el.value.replace(/[^\d.]/g, ""); }); };
+  const persist = async (extra = {}) => { sync(); const { id, client: _c, ...rest } = q; await updateDoc(doc(db, "clients", cid, "quotes", qid), { ...rest, ...extra, items: q.items.map((it) => ({ desc: it.desc, qty: Number(it.qty) || 0, price: Number(it.price) || 0 })), updated: serverTimestamp() }); Object.assign(q, extra); };
+  $$("[data-it], #qd", v).forEach((el) => el.addEventListener("change", () => { sync(); paintQuoteTotals(v, q); }));
+  $$("[data-it], #qd", v).forEach((el) => el.addEventListener("input", () => { sync(); paintQuoteTotals(v, q); }));
+  $("#addLine").onclick = () => { sync(); q.items.push({ desc: "", qty: 1, price: 0 }); viewQuote(v); $$("[data-f=desc]", v).pop().focus(); };
+  $$("[data-rmi]", v).forEach((b) => (b.onclick = () => { sync(); q.items.splice(+b.dataset.rmi, 1); if (!q.items.length) q.items.push({ desc: "", qty: 1, price: 0 }); viewQuote(v); }));
+  $("#qsave").onclick = async () => { await persist(); toast("Saved"); };
+  $$("[data-st]", v).forEach((b) => (b.onclick = async () => { const s = b.dataset.st; await persist({ status: s, ...(s === "paid" ? { paidDate: todayISO() } : {}) }); await logEntry(cid, `${isInv ? "Invoice" : "Quote"} ${q.number} ${s}${q.title ? ": " + q.title : ""} (${money(quoteTotal(q).total)})`, "Decision"); if (["accepted", "paid", "sent"].includes(s)) confetti(); toast(s === "paid" ? "Paid. That's the good stuff." : `Marked ${s}`); qDraft = null; refresh(true); }));
+  const toInv = $("#toInv"); if (toInv) toInv.onclick = async () => { await persist(); const { id, client: _c, ...rest } = q; const ref = await addDoc(collection(cref(cid), "quotes"), { ...rest, kind: "invoice", number: nextNumber("invoice"), status: "unpaid", date: todayISO(), fromQuote: q.number, created: serverTimestamp(), updated: serverTimestamp() }); await logEntry(cid, `Invoice created from ${q.number}`, "Note"); toast("Invoice created"); qDraft = null; location.hash = `#/q/${cid}/${ref.id}`; };
+  $("#qdel").onclick = async (e) => { const b = e.currentTarget; if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "Tap again to delete"; return; } await deleteDoc(doc(db, "clients", cid, "quotes", qid)); qDraft = null; toast("Deleted"); location.hash = "#/quotes"; };
 }
-document.addEventListener("click", async (e) => {
-  const b = e.target.closest("[data-rm-report]"); if (!b) return;
-  if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "Sure?"; return; }
-  await deleteDoc(doc(cref(), "reports", b.dataset.rmReport)); editing = null; paintReports(); toast("Report deleted");
-});
-
-// contacts + vendors: small lists on the client doc
-function listSection(el, title, field, items, render, form) {
-  const open = (editing || "").startsWith(field + ":");
-  el.innerHTML = `<h2>${title}${open ? "" : `<button class="btn sm" data-edit-item="${field}:new">+ Add</button>`}</h2>
-    <div class="items">${items.map((it, i) => editing === `${field}:${i}` ? form(it, i) : `<div class="item">${render(it)}<div class="acts"><button class="btn link" data-edit-item="${field}:${i}">Edit</button><button class="btn link" data-rm="${field}:${i}">Remove</button></div></div>`).join("")}
-    ${editing === field + ":new" ? form({}, "new") : ""}${!items.length && editing !== field + ":new" ? `<div class="small muted">None yet.</div>` : ""}</div>`;
-}
-function paintContacts() {
-  const el = $("#contacts"); if (!el) return;
-  listSection(el, "Contacts", "contacts", C.contacts || [], (c) => `<div class="t">${esc(c.name)} <span class="muted small">${esc(c.role)}</span></div>
-    <div class="l">${[c.phone ? `<a href="tel:${esc(c.phone.replace(/[^\d+]/g, ""))}">${esc(c.phone)}</a>` : "", c.email ? `<a href="mailto:${esc(c.email)}">${esc(c.email)}</a>` : "", c.channel ? "prefers " + esc(c.channel.toLowerCase()) : ""].filter(Boolean).join(" · ")}</div>`,
-  (c, i) => `<form class="item" data-edit="contacts:${i}"><div class="grid2"><label class="f">Name<input class="i" name="name" value="${esc(c.name)}" required></label><label class="f">Role<input class="i" name="role" value="${esc(c.role)}"></label></div>
-    <div class="grid2"><label class="f">Phone<input class="i" name="phone" value="${esc(c.phone)}" inputmode="tel"></label><label class="f">Email<input class="i" name="email" value="${esc(c.email)}" inputmode="email" autocapitalize="off"></label></div>
-    <label class="f">Preferred channel<select class="i" name="channel">${["", ...CHANNELS].map((ch) => `<option ${ch === c.channel ? "selected" : ""}>${ch}</option>`).join("")}</select></label>
-    <div class="row"><button class="btn primary sm">Save</button><button type="button" class="btn ghost sm" data-cancel>Cancel</button></div></form>`);
-}
-function paintVendors() {
-  const el = $("#vendors"); if (!el) return;
-  listSection(el, "Vendors &amp; contracts", "vendors", C.vendors || [], (v) => { const n = noticeInfo(v); return `<div class="t">${esc(v.name)} <span class="muted small">${esc(v.what)}</span></div>
-    <div class="row"><span class="flag ${n.cls}">${esc(n.label)}</span>${v.notice_days ? `<span class="small muted">${v.notice_days}-day notice</span>` : ""}</div>${v.notes ? `<div class="l">${esc(v.notes)}</div>` : ""}`; },
-  (v, i) => `<form class="item" data-edit="vendors:${i}"><div class="grid2"><label class="f">Vendor<input class="i" name="name" value="${esc(v.name)}" required></label><label class="f">What it does<input class="i" name="what" value="${esc(v.what)}"></label></div>
-    <div class="grid2"><label class="f">Contract ends<input class="i" type="date" name="end" value="${esc(v.end)}"></label><label class="f">Notice window (days)<input class="i" name="notice_days" value="${esc(v.notice_days)}" inputmode="numeric"></label></div>
-    <label class="f">Notes<input class="i" name="notes" value="${esc(v.notes)}"></label>
-    <div class="row"><button class="btn primary sm">Save</button><button type="button" class="btn ghost sm" data-cancel>Cancel</button></div></form>`);
-}
-function paintBasics() {
-  const el = $("#basics"); if (!el) return;
-  if (editing === "basics") {
-    el.innerHTML = `<h2>Basics</h2><form data-edit="basics"><div class="formrow"><label class="f">Business name<input class="i" name="name" value="${esc(C.name)}" required></label></div>
-      <div class="grid2"><label class="f">Trade<input class="i" name="trade" value="${esc(C.trade)}"></label><label class="f">HQ town<input class="i" name="town" value="${esc(C.town)}"></label></div>
-      <div class="formrow"><label class="f">HQ address<input class="i" name="hq" value="${esc(C.hq)}"></label>
-      <label class="f">Service towns (comma-separated)<input class="i" name="towns" value="${esc((C.towns || []).join(", "))}"></label></div>
-      <div class="grid2"><label class="f">Website<input class="i" name="website" value="${esc(C.website)}" autocapitalize="off"></label><label class="f">Main phone<input class="i" name="phone" value="${esc(C.phone)}" inputmode="tel"></label></div>
-      <div class="row" style="margin-top:12px"><button class="btn primary sm">Save</button><button type="button" class="btn ghost sm" data-cancel>Cancel</button></div></form>`; return;
-  }
-  el.innerHTML = `<h2>Basics<button class="btn sm" data-edit-btn="basics">Edit</button></h2>
-    <div class="small"><div><span class="muted">HQ</span> ${esc(C.hq || "–")}</div><div style="margin-top:4px"><span class="muted">Serves</span> ${esc((C.towns || []).join(", ") || "–")}</div></div>`;
-}
-function paintBrand() {
-  const el = $("#brand"); if (!el) return;
-  const b = C.brand || {};
-  if (editing === "brand") {
-    el.innerHTML = `<h2>Brand</h2><form data-edit="brand"><div class="formrow"><label class="f">Logo URL<input class="i" name="logo" value="${esc(b.logo)}" autocapitalize="off"></label><label class="f">Mascot URL<input class="i" name="mascot" value="${esc(b.mascot)}" autocapitalize="off"></label></div>
-      <div class="row"><label class="f">Color 1<input class="i" type="color" name="color1" value="${esc(b.color1 || "#173A5E")}"></label><label class="f">Color 2<input class="i" type="color" name="color2" value="${esc(b.color2 || "#E4572E")}"></label></div>
-      <div class="row" style="margin-top:12px"><button class="btn primary sm">Save</button><button type="button" class="btn ghost sm" data-cancel>Cancel</button></div></form>`; return;
-  }
-  el.innerHTML = `<h2>Brand<button class="btn sm" data-edit-btn="brand">Edit</button></h2>
-    <div class="row small">${b.logo ? `<img src="${esc(b.logo)}" alt="" style="height:36px;border-radius:6px;background:#fff">` : `<span class="muted">No logo</span>`}
-    ${b.color1 ? `<span class="swatch" style="background:${esc(b.color1)}"></span>` : ""}${b.color2 ? `<span class="swatch" style="background:${esc(b.color2)}"></span>` : ""}
-    ${b.mascot ? `<img src="${esc(b.mascot)}" alt="" style="height:40px">` : ""}</div><div class="small muted" style="margin-top:6px">Used by the report kit.</div>`;
+function paintQuoteTotals(v, q) {
+  const t = quoteTotal(q);
+  $$(".qline", v).slice(1).forEach((row, i) => { const it = q.items[i]; const el = $(".tot", row); if (it && el) el.textContent = money((Number(it.qty) || 0) * (Number(it.price) || 0)); });
+  $(".qtot", v).innerHTML = `<div><span>Subtotal</span><span class="mono">${money(t.sub)}</span></div>${t.disc ? `<div><span>Discount (${q.discountPct}%)</span><span class="mono">−${money(t.disc)}</span></div>` : ""}<div class="grand"><span class="gl">Total</span><span>${money(t.total)}</span></div>`;
 }
