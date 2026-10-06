@@ -6,6 +6,7 @@ import {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager, connectFirestoreEmulator, terminate, clearIndexedDbPersistence,
   collection, collectionGroup, doc, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, getDocs, query, orderBy, limit, serverTimestamp, Timestamp, writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, connectStorageEmulator, ref as sref, listAll, getMetadata, getDownloadURL, uploadBytesResumable, deleteObject, updateMetadata } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { firebaseConfig } from "./config.js";
 
 const LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
@@ -13,7 +14,8 @@ const EMU = LOCAL && !new URLSearchParams(location.search).has("prod");
 const fb = initializeApp(firebaseConfig);
 const auth = getAuth(fb);
 const db = EMU ? initializeFirestore(fb, {}) : initializeFirestore(fb, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
-if (EMU) { connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true }); connectFirestoreEmulator(db, "127.0.0.1", 8080); }
+const storage = getStorage(fb);
+if (EMU) { connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true }); connectFirestoreEmulator(db, "127.0.0.1", 8080); connectStorageEmulator(storage, "127.0.0.1", 9199); }
 
 // ------------------------------------------------------------------ constants
 const STAGES = ["Lead", "Free scan sent", "Meeting", "Full assessment", "Proposal", "Pilot", "Active", "Paused", "Closed"];
@@ -33,6 +35,20 @@ const INT_ST = { active: "On the path", asked: "Asked about", earlier: "Earlier 
 const band = (s) => (s >= 80 ? "Strong" : s >= 60 ? "Good" : s >= 40 ? "Fair" : "Needs work");
 const bandCls = (s) => (s >= 60 ? "ok" : s >= 40 ? "warn" : "bad");
 const PALETTE = ["#2D62CF", "#1B9464", "#BF4D1C", "#7A4FD0", "#C68A1E", "#157F8A", "#B23A6B"];
+const DEAL_TYPES = [["audit", "Audit"], ["pilot", "Pilot"], ["managed", "Managed"], ["ai-team", "AI team"]];
+const PAY_ST = [["unpaid", "Unpaid"], ["paid", "Paid"], ["refunded", "Refunded"]];
+const INTAKE_ST = [["not-sent", "Not sent"], ["sent", "Sent"], ["returned", "Returned"], ["reviewed", "Reviewed"]];
+const INTAKE_RANK = { "not-sent": 0, sent: 1, returned: 2, reviewed: 3 };
+const LEAD_SRC = [["referral", "Referral"], ["outreach", "Outreach"], ["inbound", "Inbound"], ["alarm-network", "Alarm network"], ["other", "Other"]];
+const AI_SETUP = [
+  ["planSignedUp", "Plan signed up"],
+  ["accessShared", "Systems access shared"],
+  ["clientRoom", "Client room created"],
+  ["templateFolder", "Template folder set up"],
+  ["firstWorkflowLive", "First workflow live"],
+  ["week1Review", "Week 1 review"],
+];
+const labelOf = (pairs, id, fb = id) => (pairs.find((x) => x[0] === id) || [id, fb])[1];
 
 // ------------------------------------------------------------------ helpers
 const $ = (s, r = document) => r.querySelector(s);
@@ -57,6 +73,7 @@ const money = (n) => "$" + Math.round(n || 0).toLocaleString("en-US");
 const initials = (name) => (name || "?").replace(/\(.*?\)/g, "").replace(/'s\b/g, "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
 const colorOf = (c) => (c.brand && c.brand.color1) || PALETTE[[...(c.id || c.name || "")].reduce((a, ch) => a + ch.charCodeAt(0), 0) % PALETTE.length];
 const siteUrl = (w) => (w ? (w.startsWith("http") ? w : "https://" + w) : "");
+const mailLink = (e) => (e ? `<a href="mailto:${esc(e)}" style="color:var(--accent-ink);text-decoration:none">${esc(e)}</a>` : "");
 function dueInfo(next) {
   if (!next || !next.what) return { cls: "", label: "", rank: 9 };
   if (!next.due) return { cls: "nodate", label: "No date", rank: 3 };
@@ -76,6 +93,9 @@ const ICON = {
   pin: '<path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>', wrench: '<path d="M14.5 5.5a4 4 0 0 0 5 5L12 18l-3 3-3-3 3-3 7.5-7.5a4 4 0 0 1-2-2z"/>', spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
   msg: '<path d="M4 5h16v11H9l-5 4z"/>', flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>', trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>', link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
   copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', bolt: '<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>', trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4.5a3 3 0 0 0 3.5 4M16 6h3.5a3 3 0 0 1-3.5 4M12 13v4M8 20h8"/>',
+  box: '<path d="M3 8l9-4 9 4-9 4z"/><path d="M3 8v9l9 4 9-4V8"/><path d="M12 12v9M3 8l9 4 9-4"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 7 9-7"/>',
+  more: '<path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3"/>',
 };
 const ic = (n, cls = "i") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n] || ""}</svg>`;
 const mark = (cls = "mark") => `<svg class="${cls}" viewBox="0 0 364 361" aria-hidden="true">${$("#cw-mark").innerHTML}</svg>`;
@@ -173,6 +193,8 @@ function renderShell() {
         <a href="#/clients" data-r="clients">${ic("users")}Clients<span class="n" id="navClients"></span></a>
         <a href="#/assess" data-r="assess">${ic("gauge")}Assessments</a>
         <a href="#/quotes" data-r="quotes">${ic("file")}Quotes &amp; invoices</a>
+        <a href="#/assets" data-r="assets">${ic("box")}Assets</a>
+        <a href="#/due" data-r="due">${ic("cal")}Due</a>
       </nav>
       <div class="nav-lbl">Clients</div>
       <nav class="nav" id="navPins"></nav>
@@ -193,10 +215,12 @@ function renderShell() {
     <nav class="tabbar" id="tabs">
       <a href="#/" data-r="dash">${ic("home")}Home</a><a href="#/clients" data-r="clients">${ic("users")}Clients</a>
       <button class="plus" id="addTab"><span class="b">${ic("plus")}</span>Prospect</button>
-      <a href="#/assess" data-r="assess">${ic("gauge")}Assess</a><a href="#/quotes" data-r="quotes">${ic("file")}Quotes</a>
+      <a href="#/assess" data-r="assess">${ic("gauge")}Assess</a>
+      <button type="button" id="moreTab" data-r="more">${ic("more")}More</button>
     </nav></div>`;
   $("#out").onclick = doSignOut;
   $("#addTop").onclick = $("#addTab").onclick = () => addProspect();
+  $("#moreTab").onclick = openMore;
   $("#theme").onclick = toggleTheme; paintThemeIcon();
   wireSearch(); tickClock(); setInterval(tickClock, 1000);
   document.addEventListener("keydown", (e) => {
@@ -226,8 +250,9 @@ function wireSearch() {
     if (!t) { res.hidden = true; return; }
     hits = [];
     S.clients.forEach((c) => {
-      const hay = [c.name, c.trade, c.town, c.website, c.stage].join(" ").toLowerCase();
+      const hay = [c.name, c.trade, c.town, c.website, c.stage, c.email].join(" ").toLowerCase();
       if (hay.includes(t)) hits.push({ c, what: [c.trade, c.town, c.stage].filter(Boolean).join(" · ") });
+      if (c.email && String(c.email).toLowerCase().includes(t) && !hits.some((h) => h.c === c && /^Email/.test(h.what))) hits.push({ c, what: `Email · ${c.email}` });
       (c.contacts || []).forEach((p) => { if ([p.name, p.role, p.email, p.phone].join(" ").toLowerCase().includes(t)) hits.push({ c, what: `Contact · ${p.name}${p.role ? " · " + p.role : ""}` }); });
       (c.tech || []).forEach((x) => { if ([x.name, x.category].join(" ").toLowerCase().includes(t)) hits.push({ c, what: `Tech stack · ${x.name}` }); });
       (c.interests || []).forEach((x) => { if (x.title.toLowerCase().includes(t)) hits.push({ c, what: `Interested in · ${x.title}` }); });
@@ -256,7 +281,7 @@ function route() {
   const h = location.hash.replace(/^#\/?/, "").split("?")[0], parts = h.split("/").map(decodeURIComponent);
   R = parts[0] === "c" && parts[1] ? { name: "client", args: [parts[1]] }
     : parts[0] === "q" && parts[2] ? { name: "quote", args: [parts[1], parts[2]] }
-    : ["clients", "assess", "quotes"].includes(parts[0]) ? { name: parts[0], args: [] } : { name: "dash", args: [] };
+    : ["clients", "assess", "quotes", "assets", "due"].includes(parts[0]) ? { name: parts[0], args: [] } : { name: "dash", args: [] };
   if (R.name !== "quote") qDraft = null;
   window.scrollTo(0, 0);
   refresh(true);
@@ -271,7 +296,11 @@ function refresh(force) {
   requestAnimationFrame(() => { refreshQueued = false; paint(force); });
 }
 function paint(first) {
-  $$("#nav a, #tabs a").forEach((a) => a.classList.toggle("on", a.dataset.r === (R.name === "client" ? "clients" : R.name === "quote" ? "quotes" : R.name)));
+  const railR = R.name === "client" ? "clients" : R.name === "quote" ? "quotes" : R.name;
+  const moreR = ["assets", "quotes", "quote", "due", "settings", "more"];
+  const tabR = R.name === "client" ? "clients" : moreR.includes(R.name) ? "more" : R.name;
+  $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === railR));
+  $$("#tabs [data-r]").forEach((a) => a.classList.toggle("on", a.dataset.r === tabR));
   $("#navClients").textContent = S.clients.length || "";
   $("#navPins").innerHTML = S.clients.slice().sort((a, b) => (toDate(b.lastTouch) || 0) - (toDate(a.lastTouch) || 0)).slice(0, 5)
     .map((c) => `<a href="#/c/${esc(c.id)}" class="${R.name === "client" && R.args[0] === c.id ? "on" : ""}"><span class="dot" style="background:${colorOf(c)}"></span>${esc(c.name.replace(/ \(.*\)/, ""))}</a>`).join("");
@@ -284,7 +313,7 @@ function paint(first) {
   // the first data snapshots land within a few hundred ms of opening; let those repaints keep the entrance too
   entering = fresh || performance.now() - enterAt < 450;
   if (fresh) { enterAt = performance.now(); v.classList.remove("enter"); void v.offsetWidth; v.classList.add("enter"); clearTimeout(enterT); enterT = setTimeout(() => v.classList.remove("enter"), 1200); }
-  ({ dash: viewDash, clients: viewClients, client: viewClient, assess: viewAssess, quotes: viewQuotes, quote: viewQuote }[R.name])(v);
+  ({ dash: viewDash, clients: viewClients, client: viewClient, assess: viewAssess, quotes: viewQuotes, quote: viewQuote, assets: viewAssets, due: viewDue }[R.name])(v);
   if (!first) window.scrollTo(0, scroll);
   if (first) countUp(v); else $$("[data-count]", v).forEach((el) => (el.textContent = (el.dataset.pre || "") + Number(el.dataset.count).toLocaleString("en-US")));
 }
@@ -416,6 +445,36 @@ async function markDone(id) {
   setTimeout(() => editNext(id, true), 700);
 }
 
+// ------------------------------------------------------------------ more sheet (mobile overflow)
+function openMore() {
+  const themeLabel = curTheme() === "dark" ? "Switch to light" : "Switch to dark";
+  const themeIcon = curTheme() === "dark" ? "sun" : "moon";
+  openModal(`<div class="more-sheet">
+    <h2>More</h2>
+    <div class="more-list">
+      <a class="more-item" href="#/assets" data-go>${ic("box")}<span><b>Assets</b><small>Kit files &amp; intake forms</small></span></a>
+      <a class="more-item" href="#/quotes" data-go>${ic("file")}<span><b>Quotes &amp; invoices</b><small>Drafts, sent, paid</small></span></a>
+      <a class="more-item" href="#/due" data-go>${ic("cal")}<span><b>Due</b><small>Today &amp; overdue steps</small></span></a>
+    </div>
+    <div class="more-sec">Settings</div>
+    <div class="more-list">
+      <button type="button" class="more-item" id="moreTheme">${ic(themeIcon)}<span><b>Theme</b><small>${themeLabel}</small></span></button>
+      <button type="button" class="more-item" id="moreOut">${ic("out")}<span><b>Sign out</b><small>Leave the portal</small></span></button>
+    </div>
+  </div>`, (d) => {
+    $$("[data-go]", d).forEach((a) => (a.onclick = () => closeModal()));
+    $("#moreTheme", d).onclick = () => {
+      toggleTheme();
+      const t = curTheme() === "dark" ? "sun" : "moon";
+      const label = curTheme() === "dark" ? "Switch to light" : "Switch to dark";
+      $("#moreTheme", d).innerHTML = `${ic(t)}<span><b>Theme</b><small>${label}</small></span>`;
+      paintThemeIcon();
+    };
+    $("#moreOut", d).onclick = () => { closeModal(); doSignOut(); };
+  });
+  const mt = $("#moreTab"); if (mt) mt.classList.add("on");
+}
+
 // ------------------------------------------------------------------ modal + forms
 function openModal(html, onMount) {
   $("#modal").innerHTML = `<div class="scrim" id="scrim"><div class="dialog" role="dialog" aria-modal="true">${html}</div></div>`;
@@ -445,11 +504,11 @@ function addProspect(pre = {}) {
   formDialog({
     title: "Add a prospect", intro: "Just the basics. You can fill in the rest as you learn it.", submit: "Add prospect", values: { stage: "Lead", ...pre },
     fields: [{ k: "name", label: "Business name", required: true, full: true, placeholder: "e.g. Northside HVAC" }, { k: "trade", label: "Trade", placeholder: "Plumbing, HVAC…" }, { k: "town", label: "Town", placeholder: "Rogers, MN" },
-      { k: "website", label: "Website", placeholder: "example.com" }, { k: "stage", label: "Stage", type: "select", options: STAGES }, { k: "contact", label: "Contact name", placeholder: "Who you'd talk to" }, { k: "phone", label: "Contact phone", type: "tel" },
+      { k: "website", label: "Website", placeholder: "example.com" }, { k: "email", label: "Email (optional)", type: "email", placeholder: "hello@example.com" }, { k: "stage", label: "Stage", type: "select", options: STAGES }, { k: "contact", label: "Contact name", placeholder: "Who you'd talk to" }, { k: "phone", label: "Contact phone", type: "tel" },
       { k: "interest", label: "What are they interested in? (optional)", full: true, placeholder: "e.g. more Google reviews, missed calls after hours" }],
     onSave: async (d) => {
       let id = slugify(d.name); while (client(id)) id += "-2";
-      await setDoc(cref(id), { name: d.name, trade: d.trade, town: d.town, website: d.website, stage: d.stage, phone: "", hq: "", towns: [], tags: [], brand: {},
+      await setDoc(cref(id), { name: d.name, trade: d.trade, town: d.town, website: d.website, email: d.email || "", stage: d.stage, phone: "", hq: "", towns: [], tags: [], brand: {},
         contacts: d.contact ? [{ name: d.contact, role: "", phone: d.phone, email: "", channel: "Text" }] : [], interests: d.interest ? [{ title: d.interest, note: "", status: "active" }] : [], tech: [], vendors: [],
         next: { what: d.website ? "Run a free Presence scan" : "Say hello and learn what they need", due: "" }, created: serverTimestamp(), updated: serverTimestamp(), lastTouch: serverTimestamp() });
       await addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind: "Note", text: `Added as a prospect (${d.stage}).` });
@@ -480,6 +539,182 @@ function viewClients(v) {
   wireCommon(v);
 }
 
+// ------------------------------------------------------------------ files (Storage-only listing; no Firestore writes)
+const MAX_BYTES = 20 * 1024 * 1024;
+const FILE_TAGS = [{ id: "returned-intake", label: "Returned intake" }, { id: "general", label: "General" }];
+const ASSET_CATS = [
+  { id: "client-intake", label: "Client intake", blurb: "Blank forms and the kit you send out." },
+  { id: "marketing", label: "Marketing", blurb: "One-pagers and leave-behinds." },
+  { id: "other", label: "Other", blurb: "Everything else worth keeping." },
+];
+const tagLabel = (id) => FILE_TAGS.find((t) => t.id === id)?.label || "General";
+function fmtSize(n) {
+  const x = Number(n) || 0;
+  if (x < 1024) return `${x} B`;
+  if (x < 1024 * 1024) return `${x < 10 * 1024 ? (x / 1024).toFixed(1) : Math.round(x / 1024)} KB`;
+  const mb = x / (1024 * 1024);
+  return `${mb < 10 ? mb.toFixed(1) : Math.round(mb)} MB`;
+}
+function safeFileName(name) {
+  const base = String(name || "file").split(/[/\\]/).pop();
+  const cleaned = base.replace(/[^\w.\-()+ ]+/g, "-").replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^[.-]+|[.-]+$/g, "");
+  return (cleaned || "file").slice(0, 80);
+}
+const fileCache = {};
+const fileLoading = {};
+const fileFilter = {};
+const uploadCat = {};
+const uploads = {};
+function fileItems(prefix) {
+  const items = (fileCache[prefix]?.items || []).slice();
+  items.sort((a, b) => {
+    const ar = a.category === "returned-intake" ? 0 : 1, br = b.category === "returned-intake" ? 0 : 1;
+    if (ar !== br) return ar - br;
+    return (b.timeCreated || "").localeCompare(a.timeCreated || "");
+  });
+  const f = fileFilter[prefix] || "all";
+  return f === "all" ? items : items.filter((x) => x.category === f);
+}
+async function loadFiles(prefix, force) {
+  if (!force && fileCache[prefix]) return;
+  if (fileLoading[prefix]) return fileLoading[prefix];
+  fileLoading[prefix] = (async () => {
+    try {
+      const list = await listAll(sref(storage, prefix));
+      const items = await Promise.all(list.items.map(async (item) => {
+        const meta = await getMetadata(item);
+        const cm = meta.customMetadata || {};
+        const stored = item.name;
+        const original = cm.originalName || stored.replace(/^\d{10,}-/, "") || stored;
+        return {
+          path: item.fullPath, name: original, size: meta.size, timeCreated: meta.timeCreated,
+          uploadedBy: cm.uploadedBy || "", category: cm.category === "returned-intake" ? "returned-intake" : "general",
+          contentType: meta.contentType || "",
+        };
+      }));
+      fileCache[prefix] = { items, at: Date.now() };
+    } catch (e) {
+      fileCache[prefix] = { items: [], err: e.code || e.message || String(e), at: Date.now() };
+    } finally {
+      delete fileLoading[prefix];
+      refresh();
+    }
+  })();
+  return fileLoading[prefix];
+}
+function filesCardHtml(prefix, { title, empty, taggable }) {
+  if (!fileCache[prefix] && !fileLoading[prefix]) loadFiles(prefix);
+  const rec = fileCache[prefix];
+  const items = fileItems(prefix);
+  const ups = uploads[prefix] || [];
+  const filt = fileFilter[prefix] || "all";
+  const cat = uploadCat[prefix] || "general";
+  const n = rec ? (rec.items || []).length : 0;
+  const filterBar = taggable ? `<div class="file-filters">${[{ id: "all", label: "All" }, ...FILE_TAGS].map((t) => `<button type="button" class="chip ${t.id === filt ? "acc" : "dash"}" data-ff="${esc(t.id)}" style="cursor:pointer;border:0;height:26px">${esc(t.label)}</button>`).join("")}</div>` : "";
+  const tagSelect = taggable ? `<label class="field file-tag" style="min-width:150px;flex:0;margin:0">Tag<select class="input" data-upcat>${FILE_TAGS.map((t) => `<option value="${t.id}" ${t.id === cat ? "selected" : ""}>${esc(t.label)}</option>`).join("")}</select></label>` : "";
+  const list = [
+    ...ups.map((u) => `<div class="file" data-up="${esc(u.id)}"><div><b>${esc(u.name)}</b><small>Uploading… ${u.pct}%</small></div><div class="upbar"><i style="width:${u.pct}%"></i></div></div>`),
+    ...items.map((f) => `<div class="file">
+      <div><b>${esc(f.name)}</b><small>${esc(fmtSize(f.size))}${f.timeCreated ? " · " + esc(fmtDay(String(f.timeCreated).slice(0, 10))) : ""}${f.uploadedBy ? " · " + esc(f.uploadedBy) : ""}</small></div>
+      ${taggable ? `<button type="button" class="chip ${f.category === "returned-intake" ? "acc" : "dash"}" data-retag="${esc(f.path)}" data-cat="${esc(f.category)}" title="Tap to retag" style="cursor:pointer;border:0">${esc(tagLabel(f.category))}</button>` : ""}
+      <div class="file-acts"><button type="button" class="btn sm" data-dl="${esc(f.path)}">${ic("link")}Open</button><button type="button" class="btn sm ghost danger" data-rm="${esc(f.path)}" aria-label="Delete ${esc(f.name)}">${ic("trash")}</button></div>
+    </div>`),
+  ].join("");
+  let body;
+  if (!rec) body = `<div class="empty-note">Loading files…</div>`;
+  else if (rec.err && !n && !ups.length) body = `<div class="empty-note">Couldn't list files (${esc(rec.err)}). Storage may still be off for this project.</div>`;
+  else if (!items.length && !ups.length) body = `<div class="empty-note">${empty}</div>`;
+  else body = `<div class="files">${list}</div>`;
+  return `<section class="panel files-card" data-prefix="${esc(prefix)}" data-taggable="${taggable ? "1" : "0"}">
+    <div class="ph"><h2>${esc(title)} <small>${n || ""}</small></h2>
+      <div class="file-head">${tagSelect}<button type="button" class="btn sm p" data-uppick>${ic("plus")}Upload</button>
+      <input type="file" accept="application/pdf,image/*" multiple hidden data-filepick></div></div>
+    <div class="pb">${filterBar}${body}</div></section>`;
+}
+function wireFilesPanel(root) {
+  $$(".files-card", root).forEach((card) => {
+    const prefix = card.dataset.prefix;
+    const taggable = card.dataset.taggable === "1";
+    const pick = $("[data-filepick]", card);
+    const catSel = $("[data-upcat]", card);
+    if (catSel) catSel.onchange = () => { uploadCat[prefix] = catSel.value; };
+    const up = $("[data-uppick]", card);
+    if (up) up.onclick = () => pick.click();
+    pick.onchange = async () => {
+      const files = [...pick.files]; pick.value = "";
+      const tag = taggable ? (uploadCat[prefix] || catSel?.value || "general") : (prefix.split("/")[1] || "general");
+      for (const file of files) await uploadOne(prefix, file, tag);
+    };
+    $$("[data-ff]", card).forEach((b) => (b.onclick = () => { fileFilter[prefix] = b.dataset.ff; refresh(true); }));
+    $$("[data-dl]", card).forEach((b) => (b.onclick = async () => {
+      try { window.open(await getDownloadURL(sref(storage, b.dataset.dl)), "_blank", "noopener"); }
+      catch (e) { toast("Couldn't open: " + (e.code || e.message)); }
+    }));
+    $$("[data-rm]", card).forEach((b) => (b.onclick = async (e) => {
+      const btn = e.currentTarget;
+      if (btn.dataset.armed !== "1") { btn.dataset.armed = "1"; btn.textContent = "Tap again"; setTimeout(() => { if (btn.isConnected) { btn.dataset.armed = ""; btn.innerHTML = ic("trash"); } }, 4000); return; }
+      try { await deleteObject(sref(storage, btn.dataset.rm)); toast("File removed."); await loadFiles(prefix, true); }
+      catch (err) { toast("Delete failed: " + (err.code || err.message)); }
+    }));
+    $$("[data-retag]", card).forEach((b) => (b.onclick = async () => {
+      const next = b.dataset.cat === "returned-intake" ? "general" : "returned-intake";
+      try {
+        await updateMetadata(sref(storage, b.dataset.retag), { customMetadata: { category: next } });
+        toast(next === "returned-intake" ? "Tagged Returned intake." : "Tagged General.");
+        if (prefix.startsWith("clients/") && next === "returned-intake") await maybeBumpIntake(prefix.split("/")[1], next);
+        await loadFiles(prefix, true);
+      } catch (err) { toast("Retag failed: " + (err.code || err.message)); }
+    }));
+  });
+}
+async function maybeBumpIntake(clientId, category) {
+  if (category !== "returned-intake" || !clientId) return;
+  const c = client(clientId); if (!c) return;
+  const cur = c.intake?.status || "not-sent";
+  if ((INTAKE_RANK[cur] ?? 0) >= INTAKE_RANK.reviewed) return;
+  if ((INTAKE_RANK[cur] ?? 0) >= INTAKE_RANK.returned) return;
+  const today = todayISO();
+  await save(clientId, { intake: { ...(c.intake || {}), status: "returned", returnedAt: today, sentAt: c.intake?.sentAt || "", reviewedAt: c.intake?.reviewedAt || "" } });
+  toast("Intake marked returned.");
+}
+async function uploadOne(prefix, file, category) {
+  if (file.size >= MAX_BYTES) { toast(`${file.name} is over 20 MB. Shrink it and try again.`); return; }
+  const type = file.type || "";
+  if (type !== "application/pdf" && !type.startsWith("image/")) { toast("PDF or images only."); return; }
+  const id = String(Date.now()) + "-" + Math.random().toString(36).slice(2, 7);
+  const path = `${prefix}/${Date.now()}-${safeFileName(file.name)}`;
+  if (!uploads[prefix]) uploads[prefix] = [];
+  const u = { id, name: file.name, pct: 0 };
+  uploads[prefix].push(u);
+  refresh(true);
+  const meta = { contentType: type, customMetadata: { category, originalName: file.name, uploadedBy: me?.email || "" } };
+  const task = uploadBytesResumable(sref(storage, path), file, meta);
+  await new Promise((resolve) => {
+    task.on("state_changed", (s) => {
+      u.pct = s.totalBytes ? Math.round((s.bytesTransferred / s.totalBytes) * 100) : 0;
+      const row = document.querySelector(`[data-up="${id}"]`);
+      if (row) { const bar = $("i", row), sm = $("small", row); if (bar) bar.style.width = u.pct + "%"; if (sm) sm.textContent = `Uploading… ${u.pct}%`; }
+    }, (err) => { toast("Upload failed: " + (err.code || err.message)); uploads[prefix] = (uploads[prefix] || []).filter((x) => x.id !== id); refresh(true); resolve(); },
+    async () => {
+      uploads[prefix] = (uploads[prefix] || []).filter((x) => x.id !== id);
+      toast(`${file.name} is in.`);
+      if (prefix.startsWith("clients/") && category === "returned-intake") await maybeBumpIntake(prefix.split("/")[1], category);
+      loadFiles(prefix, true); resolve();
+    });
+  });
+}
+let assetCat = "client-intake";
+function viewAssets(v) {
+  const cat = ASSET_CATS.find((c) => c.id === assetCat) || ASSET_CATS[0];
+  const prefix = `assets/${cat.id}`;
+  v.innerHTML = `
+    <section class="hello"><div><div class="date">Assets</div><h1>The box.</h1><p>Intake forms, one-pagers, and the rest of the kit. Grab them from any desk.</p></div></section>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">${ASSET_CATS.map((c) => `<button type="button" class="chip ${c.id === cat.id ? "acc" : "dash"}" data-acat="${esc(c.id)}" style="cursor:pointer;border:0;height:30px;padding:0 12px">${esc(c.label)}</button>`).join("")}</div>
+    ${filesCardHtml(prefix, { title: cat.label, empty: `Nothing in ${esc(cat.label.toLowerCase())} yet. ${esc(cat.blurb)}`, taggable: false })}`;
+  $$("[data-acat]", v).forEach((b) => (b.onclick = () => { assetCat = b.dataset.acat; refresh(true); }));
+  wireFilesPanel(v);
+}
+
 // ------------------------------------------------------------------ client 360
 let composeKind = "Note";
 function viewClient(v) {
@@ -498,7 +733,7 @@ function viewClient(v) {
     <div class="hero-top">
       <div class="ident"><span class="avatar" style="background:${colorOf(c)}${c.brand?.color2 ? `;box-shadow:inset 0 0 0 3px ${esc(c.brand.color2)}` : ""}">${esc(initials(c.name))}</span>
         <div><h1>${esc(c.name)}</h1>
-          <div class="facts">${c.trade ? `<span>${ic("wrench")}${esc(c.trade)}</span>` : ""}${c.town ? `<span>${ic("pin")}${esc(c.town)}</span>` : ""}${c.phone ? `<span>${ic("phone")}<a href="tel:${esc(c.phone.replace(/[^\d+]/g, ""))}">${esc(c.phone)}</a></span>` : ""}${site ? `<span>${ic("globe")}<a href="${esc(site)}" target="_blank" rel="noopener">${esc(c.website.replace(/^https?:\/\//, ""))}</a></span>` : ""}</div>
+          <div class="facts">${c.trade ? `<span>${ic("wrench")}${esc(c.trade)}</span>` : ""}${c.town ? `<span>${ic("pin")}${esc(c.town)}</span>` : ""}${c.phone ? `<span>${ic("phone")}<a href="tel:${esc(c.phone.replace(/[^\d+]/g, ""))}">${esc(c.phone)}</a></span>` : ""}${c.email ? `<span>${ic("mail")}${mailLink(c.email)}</span>` : ""}${site ? `<span>${ic("globe")}<a href="${esc(site)}" target="_blank" rel="noopener">${esc(c.website.replace(/^https?:\/\//, ""))}</a></span>` : ""}</div>
           <div class="tags"><span class="chip data"><span class="d"></span>${esc(c.stage)}</span>${(c.tags || []).map((t, i) => `<span class="chip ${i === 0 ? "acc" : ""}">${esc(t)}</span>`).join("")}<button class="chip dash" data-edit="details" style="cursor:pointer;border:0">${ic("pen")}Edit details</button></div></div></div>
       <div class="next ${d.cls === "over" ? "over" : ""}"><div class="k"><span class="lbl">${ic("flag")} Next step</span>${d.label ? `<span class="chip ${d.cls === "over" ? "bad" : d.cls ? "warn" : ""}">${esc(d.label)}${d.sub && d.cls !== "over" ? " · " + esc(d.sub) : ""}</span>` : ""}</div>
         <div class="w">${esc(c.next?.what || `Nothing set yet. What's the next move with ${short}?`)}</div>
@@ -515,14 +750,25 @@ function viewClient(v) {
 
   <section class="grid g3">
     <div class="panel"><div class="ph"><h2>Details</h2><button class="btn sm ghost" data-edit="details">${ic("pen")}Edit</button></div><div class="pb">
-      <dl class="kv"><dt>Business</dt><dd>${esc(c.name)}</dd>${c.trade ? `<dt>Trade</dt><dd>${esc(c.trade)}</dd>` : ""}${c.hq ? `<dt>HQ</dt><dd>${esc(c.hq)}</dd>` : c.town ? `<dt>Town</dt><dd>${esc(c.town)}</dd>` : ""}${c.phone ? `<dt>Phone</dt><dd class="mono">${esc(c.phone)}</dd>` : ""}${site ? `<dt>Website</dt><dd><a href="${esc(site)}" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:none">${esc(c.website)}</a></dd>` : ""}${(c.towns || []).length ? `<dt>Serves</dt><dd class="towns">${c.towns.map((t) => `<span>${esc(t)}</span>`).join("")}</dd>` : ""}</dl>
-      ${!c.hq && !c.phone && !site ? `<div class="empty-note" style="margin-top:12px">Details fill in as you learn them. <button class="btn sm" data-edit="details">Add details</button></div>` : ""}</div></div>
+      <dl class="kv"><dt>Business</dt><dd>${esc(c.name)}</dd>${c.trade ? `<dt>Trade</dt><dd>${esc(c.trade)}</dd>` : ""}${c.hq ? `<dt>HQ</dt><dd>${esc(c.hq)}</dd>` : c.town ? `<dt>Town</dt><dd>${esc(c.town)}</dd>` : ""}${c.phone ? `<dt>Phone</dt><dd class="mono">${esc(c.phone)}</dd>` : ""}${c.email ? `<dt>Email</dt><dd>${mailLink(c.email)}</dd>` : ""}${site ? `<dt>Website</dt><dd><a href="${esc(site)}" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:none">${esc(c.website)}</a></dd>` : ""}${(c.towns || []).length ? `<dt>Serves</dt><dd class="towns">${c.towns.map((t) => `<span>${esc(t)}</span>`).join("")}</dd>` : ""}</dl>
+      ${!c.hq && !c.phone && !site && !c.email ? `<div class="empty-note" style="margin-top:12px">Details fill in as you learn them. <button class="btn sm" data-edit="details">Add details</button></div>` : ""}</div></div>
     <div class="panel"><div class="ph"><h2>Interested in <small>${ints.length || ""}</small></h2><button class="btn sm ghost" data-int="new">${ic("plus")}Add</button></div><div class="pb">
       ${ints.length ? `<div class="ints">${ints.map((x, i) => `<button class="int" data-int="${i}" style="background:none;border:0;padding:0;text-align:left;cursor:pointer;color:inherit">${x.status === "active" ? `<span class="no">${ints.filter((y, j) => y.status === "active" && j <= i).length}</span>` : `<span class="no ghost ${x.status === "asked" ? "asked" : ""}"></span>`}<span><b>${esc(x.title)}${x.status !== "active" ? ` <span class="chip ${x.status === "asked" ? "data" : "dash"} mini">${x.status === "asked" ? "Asked about" : "Earlier idea"}</span>` : ""}</b>${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span></span></button>`).join("")}</div>`
         : `<div class="empty-note">What is ${esc(short)} hoping to fix? Add it after your first chat.<button class="btn sm" data-int="new">${ic("plus")}Add an interest</button></div>`}</div></div>
     <div class="panel"><div class="ph"><h2>Contacts <small>${(c.contacts || []).length || ""}</small></h2><button class="btn sm ghost" data-contact="new">${ic("plus")}Add</button></div><div class="pb">
-      ${(c.contacts || []).length ? `<div class="people">${c.contacts.map((p, i) => `<div class="person"><span class="pa">${esc(initials(p.name))}</span><div><b>${esc(p.name)}</b>${p.channel ? ` <span class="chip ok" style="height:20px">Prefers ${esc(p.channel.toLowerCase())}</span>` : ""}<small>${esc(p.role || "")}</small>${p.phone ? `<small class="mono"><a href="tel:${esc(p.phone.replace(/[^\d+]/g, ""))}" style="text-decoration:none">${esc(p.phone)}</a></small>` : ""}${p.email ? `<small>${esc(p.email)}</small>` : ""}</div><button class="btn sm ghost" data-contact="${i}" aria-label="Edit ${esc(p.name)}">${ic("pen")}</button></div>`).join("")}</div>`
+      ${(c.contacts || []).length ? `<div class="people">${c.contacts.map((p, i) => `<div class="person"><span class="pa">${esc(initials(p.name))}</span><div><b>${esc(p.name)}</b>${p.channel ? ` <span class="chip ok" style="height:20px">Prefers ${esc(p.channel.toLowerCase())}</span>` : ""}<small>${esc(p.role || "")}</small>${p.phone ? `<small class="mono"><a href="tel:${esc(p.phone.replace(/[^\d+]/g, ""))}" style="text-decoration:none">${esc(p.phone)}</a></small>` : ""}${p.email ? `<small>${mailLink(p.email)}</small>` : ""}</div><button class="btn sm ghost" data-contact="${i}" aria-label="Edit ${esc(p.name)}">${ic("pen")}</button></div>`).join("")}</div>`
         : `<div class="empty-note">Who's the decision-maker?<button class="btn sm" data-contact="new">${ic("plus")}Add a contact</button></div>`}</div></div>
+  </section>
+
+  ${filesCardHtml(`clients/${c.id}`, { title: "Files", empty: `No files yet for ${esc(short)}. Drop a returned intake or a photo here — PDF or images, 20 MB each.`, taggable: true })}
+
+  <section class="crm-cards">
+    ${dealCard(c)}
+    ${paymentCard(c)}
+    ${intakeCard(c)}
+    ${leadCard(c)}
+    ${nextStepsCard(c)}
+    ${c.deal?.type === "ai-team" ? aiSetupCard(c) : ""}
   </section>
 
   <section class="panel"><div class="ph"><h2>Tech stack <small>as discovered · ${tech.length} ${tech.length === 1 ? "system" : "systems"}</small></h2><button class="btn sm ghost" data-tech="new">${ic("plus")}Add system</button></div><div class="pb">
@@ -577,8 +823,151 @@ function viewClient(v) {
     for (const sub of ["log", "reports", "quotes"]) (await getDocs(collection(cref(c.id), sub))).forEach((d) => batch.delete(d.ref));
     batch.delete(cref(c.id)); await batch.commit(); toast(`${short} deleted`); location.hash = "#/clients";
   };
+  wireFilesPanel(v);
+  wireCrm(c, v);
   wireCommon(v);
 }
+
+// ------------------------------------------------------------------ CRM cards (additive fields; missing = fine)
+function dealCard(c) {
+  const d = c.deal || {};
+  return `<div class="panel crm-card"><div class="ph"><h2>Deal terms</h2><button class="btn sm ghost" data-crm="deal">${ic("pen")}Edit</button></div><div class="pb">
+    ${d.type || d.startDate || d.guarantee ? `<dl class="kv">${d.type ? `<dt>Type</dt><dd><span class="chip acc">${esc(labelOf(DEAL_TYPES, d.type))}</span></dd>` : ""}${d.startDate ? `<dt>Start</dt><dd>${esc(fmtDay(d.startDate))}</dd>` : ""}${d.guarantee ? `<dt>Guarantee</dt><dd>${esc(d.guarantee)}</dd>` : ""}</dl>`
+      : `<div class="empty-note">No deal on file yet.<button class="btn sm" data-crm="deal">${ic("pen")}Set deal terms</button></div>`}</div></div>`;
+}
+function paymentCard(c) {
+  const p = c.payment || {};
+  const st = p.status ? `<span class="chip ${p.status === "paid" ? "ok" : p.status === "refunded" ? "warn" : "dash"}">${esc(labelOf(PAY_ST, p.status))}</span>` : "";
+  return `<div class="panel crm-card"><div class="ph"><h2>Payment</h2><button class="btn sm ghost" data-crm="payment">${ic("pen")}Edit</button></div><div class="pb">
+    ${p.status || p.amount != null || p.date ? `<dl class="kv">${p.status ? `<dt>Status</dt><dd>${st}</dd>` : ""}${p.amount != null && p.amount !== "" ? `<dt>Amount</dt><dd class="mono">${money(p.amount)}</dd>` : ""}${p.date ? `<dt>Date</dt><dd>${esc(fmtDay(p.date))}</dd>` : ""}</dl>`
+      : `<div class="empty-note">No payment logged.<button class="btn sm" data-crm="payment">${ic("pen")}Log payment</button></div>`}</div></div>`;
+}
+function intakeCard(c) {
+  const i = c.intake || {};
+  const st = i.status || "not-sent";
+  const chip = `<span class="chip ${st === "reviewed" ? "ok" : st === "returned" ? "acc" : st === "sent" ? "data" : "dash"}">${esc(labelOf(INTAKE_ST, st))}</span>`;
+  return `<div class="panel crm-card"><div class="ph"><h2>Intake</h2><button class="btn sm ghost" data-crm="intake">${ic("pen")}Edit</button></div><div class="pb">
+    <dl class="kv"><dt>Status</dt><dd>${chip}</dd>${i.sentAt ? `<dt>Sent</dt><dd>${esc(fmtDay(i.sentAt))}</dd>` : ""}${i.returnedAt ? `<dt>Returned</dt><dd>${esc(fmtDay(i.returnedAt))}</dd>` : ""}${i.reviewedAt ? `<dt>Reviewed</dt><dd>${esc(fmtDay(i.reviewedAt))}</dd>` : ""}</dl>
+  </div></div>`;
+}
+function leadCard(c) {
+  const l = c.lead || {};
+  return `<div class="panel crm-card"><div class="ph"><h2>Lead source</h2><button class="btn sm ghost" data-crm="lead">${ic("pen")}Edit</button></div><div class="pb">
+    ${l.source || l.note ? `<dl class="kv">${l.source ? `<dt>Source</dt><dd><span class="chip data">${esc(labelOf(LEAD_SRC, l.source))}</span></dd>` : ""}${l.note ? `<dt>Note</dt><dd>${esc(l.note)}</dd>` : ""}</dl>`
+      : `<div class="empty-note">Where did they come from?<button class="btn sm" data-crm="lead">${ic("pen")}Set source</button></div>`}</div></div>`;
+}
+function nextStepsCard(c) {
+  const steps = (c.nextSteps || []).slice().sort((a, b) => Number(a.done) - Number(b.done) || String(a.due || "9999").localeCompare(String(b.due || "9999")));
+  const open = steps.filter((x) => !x.done).length;
+  return `<div class="panel crm-card"><div class="ph"><h2>Next steps <small>${open ? open + " open" : ""}</small></h2><button class="btn sm ghost" data-ns="new">${ic("plus")}Add</button></div><div class="pb">
+    ${steps.length ? `<div class="ns-list">${steps.map((x) => {
+      const di = x.due ? dueInfo({ what: x.text, due: x.due }) : { cls: "", label: "" };
+      return `<div class="ns-row ${x.done ? "done" : ""}"><button type="button" class="btn sm ghost" data-ns-tog="${esc(x.id)}" aria-label="Toggle done">${ic(x.done ? "check" : "cal")}</button>
+        <div><b>${esc(x.text)}</b>${x.due ? `<small class="${di.cls === "over" ? "chip bad" : ""}" style="display:inline-block;margin-top:3px">${esc(di.label || fmtDay(x.due))}${di.sub ? " · " + esc(di.sub) : ""}</small>` : ""}</div>
+        <div class="ns-acts"><button type="button" class="btn sm ghost" data-ns-edit="${esc(x.id)}" aria-label="Edit">${ic("pen")}</button><button type="button" class="btn sm ghost danger" data-ns-del="${esc(x.id)}" aria-label="Delete">${ic("trash")}</button></div></div>`;
+    }).join("")}</div>` : `<div class="empty-note">Track the little moves here. Big next-step still lives up top.<button class="btn sm" data-ns="new">${ic("plus")}Add a step</button></div>`}</div></div>`;
+}
+function aiSetupCard(c) {
+  const a = c.aiSetup || {};
+  return `<div class="panel crm-card" style="grid-column:1/-1"><div class="ph"><h2>AI setup checklist</h2><small style="color:var(--ink-3)">Shown for AI team deals</small></div><div class="pb"><div class="ai-checks">
+    ${AI_SETUP.map(([k, label]) => {
+      const on = !!(a[k] && a[k].done);
+      const when = a[k]?.date ? fmtDay(a[k].date) : "";
+      return `<button type="button" class="ai-check ${on ? "on" : ""}" data-ai="${k}"><span class="box">${on ? ic("check") : ""}</span><span><b>${esc(label)}</b>${when ? `<small> · ${esc(when)}</small>` : ""}</span></button>`;
+    }).join("")}
+  </div></div></div>`;
+}
+function wireCrm(c, v) {
+  $$("[data-crm]", v).forEach((b) => (b.onclick = () => editCrm(c, b.dataset.crm)));
+  $$("[data-ns='new']", v).forEach((b) => (b.onclick = () => editNextStep(c, null)));
+  $$("[data-ns-edit]", v).forEach((b) => (b.onclick = () => editNextStep(c, b.dataset.nsEdit)));
+  $$("[data-ns-tog]", v).forEach((b) => (b.onclick = async () => {
+    const arr = (c.nextSteps || []).map((x) => x.id === b.dataset.nsTog ? { ...x, done: !x.done } : x);
+    await save(c.id, { nextSteps: arr }); toast(arr.find((x) => x.id === b.dataset.nsTog)?.done ? "Done." : "Reopened.");
+  }));
+  $$("[data-ns-del]", v).forEach((b) => (b.onclick = async (e) => {
+    const btn = e.currentTarget;
+    if (btn.dataset.armed !== "1") { btn.dataset.armed = "1"; btn.textContent = "Again"; setTimeout(() => { if (btn.isConnected) { btn.dataset.armed = ""; btn.innerHTML = ic("trash"); } }, 4000); return; }
+    await save(c.id, { nextSteps: (c.nextSteps || []).filter((x) => x.id !== btn.dataset.nsDel) }); toast("Step removed.");
+  }));
+  $$("[data-ai]", v).forEach((b) => (b.onclick = async () => {
+    const k = b.dataset.ai; const cur = { ...(c.aiSetup || {}) }; const was = !!(cur[k] && cur[k].done);
+    cur[k] = was ? { done: false, date: "" } : { done: true, date: todayISO() };
+    await save(c.id, { aiSetup: cur }); toast(was ? "Unchecked." : "Checked.");
+  }));
+}
+function editCrm(c, kind) {
+  if (kind === "deal") {
+    const d = c.deal || {};
+    formDialog({ title: "Deal terms", values: { type: d.type || "", startDate: d.startDate || "", guarantee: d.guarantee || "" },
+      fields: [{ k: "type", label: "Type", type: "select", options: [["", "—"], ...DEAL_TYPES] }, { k: "startDate", label: "Start date", type: "date" }, { k: "guarantee", label: "Guarantee", full: true, placeholder: "e.g. 30-day make-it-right" }],
+      onSave: async (x) => { await save(c.id, { deal: { type: x.type || "", startDate: x.startDate || "", guarantee: x.guarantee || "" } }); toast("Deal saved."); } });
+  } else if (kind === "payment") {
+    const p = c.payment || {};
+    formDialog({ title: "Payment", values: { status: p.status || "unpaid", amount: p.amount != null ? String(p.amount) : "", date: p.date || "" },
+      fields: [{ k: "status", label: "Status", type: "select", options: PAY_ST }, { k: "amount", label: "Amount (USD)", placeholder: "1500" }, { k: "date", label: "Date", type: "date" }],
+      onSave: async (x) => { const amount = x.amount === "" ? null : Number(String(x.amount).replace(/[^\d.]/g, "")); await save(c.id, { payment: { status: x.status || "unpaid", amount: Number.isFinite(amount) ? amount : null, date: x.date || "" } }); toast("Payment saved."); } });
+  } else if (kind === "intake") {
+    const i = c.intake || {};
+    formDialog({ title: "Intake", values: { status: i.status || "not-sent", sentAt: i.sentAt || "", returnedAt: i.returnedAt || "", reviewedAt: i.reviewedAt || "" },
+      fields: [{ k: "status", label: "Status", type: "select", options: INTAKE_ST }, { k: "sentAt", label: "Sent", type: "date" }, { k: "returnedAt", label: "Returned", type: "date" }, { k: "reviewedAt", label: "Reviewed", type: "date" }],
+      onSave: async (x) => {
+        const next = x.status || "not-sent";
+        const cur = i.status || "not-sent";
+        // Never silently downgrade from reviewed via this form either — warn and keep reviewed unless they pick reviewed or confirm... brief says never downgrade reviewed from file hook; form can set explicitly.
+        const patch = { status: next, sentAt: x.sentAt || "", returnedAt: x.returnedAt || "", reviewedAt: x.reviewedAt || "" };
+        if (next === "returned" && !patch.returnedAt) patch.returnedAt = todayISO();
+        if (next === "sent" && !patch.sentAt) patch.sentAt = todayISO();
+        if (next === "reviewed" && !patch.reviewedAt) patch.reviewedAt = todayISO();
+        await save(c.id, { intake: patch }); toast("Intake saved.");
+      } });
+  } else if (kind === "lead") {
+    const l = c.lead || {};
+    formDialog({ title: "Lead source", values: { source: l.source || "", note: l.note || "" },
+      fields: [{ k: "source", label: "Source", type: "select", options: [["", "—"], ...LEAD_SRC] }, { k: "note", label: "Note", full: true, placeholder: "Who referred them, which campaign…" }],
+      onSave: async (x) => { await save(c.id, { lead: { source: x.source || "", note: x.note || "" } }); toast("Lead source saved."); } });
+  }
+}
+function editNextStep(c, id) {
+  const cur = id ? (c.nextSteps || []).find((x) => x.id === id) : { text: "", due: "", done: false };
+  if (id && !cur) return;
+  formDialog({ title: id ? "Edit step" : "Add step", values: { text: cur.text || "", due: cur.due || "" },
+    fields: [{ k: "text", label: "Step", full: true, required: true, placeholder: "e.g. Send intake form" }, { k: "due", label: "Due", type: "date" }],
+    onSave: async (x) => {
+      const arr = (c.nextSteps || []).slice();
+      if (id) { const i = arr.findIndex((z) => z.id === id); if (i >= 0) arr[i] = { ...arr[i], text: x.text, due: x.due || "" }; }
+      else arr.push({ id: "ns-" + Date.now().toString(36), text: x.text, due: x.due || "", done: false });
+      await save(c.id, { nextSteps: arr }); toast(id ? "Saved." : "Step added.");
+    } });
+}
+function openDueDigest() {
+  const rows = [];
+  const today = todayISO();
+  for (const c of S.clients) {
+    for (const s of (c.nextSteps || [])) {
+      if (s.done || !s.due) continue;
+      if (s.due <= today) rows.push({ client: c.name, slug: c.id, text: s.text, due: s.due });
+    }
+  }
+  rows.sort((a, b) => a.due.localeCompare(b.due) || a.client.localeCompare(b.client));
+  return rows;
+}
+function viewDue(v) {
+  const rows = openDueDigest();
+  v.innerHTML = `<section class="hello"><div><div class="date">Due</div><h1>What's due.</h1><p>Open next steps due today or overdue, across every client. Read-only digest.</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn p" id="dueExport">${ic("file")}Export JSON</button></div></section>
+    ${rows.length ? `<div class="due-list">${rows.map((r) => {
+      const over = r.due < todayISO();
+      return `<a class="due-row ${over ? "over" : ""}" href="#/c/${esc(r.slug)}"><div class="when">${over ? (daysUntil(r.due) === 0 ? "Today" : `${-daysUntil(r.due)}d overdue`) : "Today"}</div><div><b>${esc(r.text)}</b><br><small>${esc(r.client)}</small></div><div class="chip ${over ? "bad" : "warn"}">${esc(fmtDay(r.due))}</div></a>`;
+    }).join("")}</div>` : `<div class="empty-note">Nothing due today or overdue. Nice.</div>`}`;
+  $("#dueExport").onclick = () => {
+    const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `due-steps-${todayISO()}.json`; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast("Exported.");
+  };
+}
+
+
 function contractHtml(x, i) {
   let tl = `<span class="t-now" style="left:4%" title="Today"></span>`, note = "";
   if (x.end) {
@@ -594,9 +983,9 @@ function contractHtml(x, i) {
 }
 function editDetails(c) {
   formDialog({ title: "Business details", values: { ...c, towns: (c.towns || []).join(", "), tags: (c.tags || []).join(", "), color1: c.brand?.color1 || "" },
-    fields: [{ k: "name", label: "Business name", required: true, full: true }, { k: "trade", label: "Trade" }, { k: "town", label: "Town" }, { k: "hq", label: "HQ address", full: true }, { k: "phone", label: "Main phone", type: "tel" }, { k: "website", label: "Website" },
+    fields: [{ k: "name", label: "Business name", required: true, full: true }, { k: "trade", label: "Trade" }, { k: "town", label: "Town" }, { k: "hq", label: "HQ address", full: true }, { k: "phone", label: "Main phone", type: "tel" }, { k: "email", label: "Email", type: "email", placeholder: "hello@example.com" }, { k: "website", label: "Website" },
       { k: "towns", label: "Service towns (comma-separated)", full: true }, { k: "tags", label: "Tags (comma-separated)", full: true, placeholder: "Family client, Referral…" }, { k: "color1", label: "Brand color (hex)", placeholder: "#173A5E" }],
-    onSave: async (d) => { await save(c.id, { name: d.name, trade: d.trade, town: d.town, hq: d.hq, phone: d.phone, website: d.website, towns: d.towns.split(",").map((s) => s.trim()).filter(Boolean), tags: d.tags.split(",").map((s) => s.trim()).filter(Boolean), brand: { ...(c.brand || {}), color1: /^#[0-9a-f]{3,8}$/i.test(d.color1) ? d.color1 : c.brand?.color1 || "" } }); toast("Saved"); } });
+    onSave: async (d) => { await save(c.id, { name: d.name, trade: d.trade, town: d.town, hq: d.hq, phone: d.phone, email: d.email || "", website: d.website, towns: d.towns.split(",").map((s) => s.trim()).filter(Boolean), tags: d.tags.split(",").map((s) => s.trim()).filter(Boolean), brand: { ...(c.brand || {}), color1: /^#[0-9a-f]{3,8}$/i.test(d.color1) ? d.color1 : c.brand?.color1 || "" } }); toast("Saved"); } });
 }
 const LISTS = {
   interests: { title: "What they're interested in", fields: [{ k: "title", label: "Interest", full: true, required: true, placeholder: "e.g. More Google reviews" }, { k: "note", label: "Note", full: true }, { k: "status", label: "Where it stands", type: "select", options: Object.entries(INT_ST) }], blank: { status: "active" }, log: (x) => `Interested in: ${x.title}` },
@@ -645,7 +1034,7 @@ function viewAssess(v) {
     if (id === "__new") {
       if (!f.nname.trim()) return toast("Add the business name first");
       id = slugify(f.nname); while (client(id)) id += "-2";
-      await setDoc(cref(id), { name: f.nname.trim(), website: f.nweb.trim(), town: f.ntown.trim(), trade: "", stage: "Lead", phone: "", hq: "", towns: [], tags: [], brand: {}, contacts: [], interests: [], tech: [], vendors: [], next: { what: `Review the ${T.name} results`, due: "" }, created: serverTimestamp(), updated: serverTimestamp(), lastTouch: serverTimestamp() });
+      await setDoc(cref(id), { name: f.nname.trim(), website: f.nweb.trim(), town: f.ntown.trim(), trade: "", email: "", stage: "Lead", phone: "", hq: "", towns: [], tags: [], brand: {}, contacts: [], interests: [], tech: [], vendors: [], next: { what: `Review the ${T.name} results`, due: "" }, created: serverTimestamp(), updated: serverTimestamp(), lastTouch: serverTimestamp() });
       await addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind: "Note", text: "Added as a prospect from the assessment launcher." });
     }
     await addDoc(collection(cref(id), "reports"), { type: pickType, status: "requested", date: todayISO(), created: serverTimestamp(), updated: serverTimestamp() });
