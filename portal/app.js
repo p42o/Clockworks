@@ -22,10 +22,10 @@ const STAGES = ["Lead", "Free scan sent", "Meeting", "Full assessment", "Proposa
 const MAIN = STAGES.slice(0, 7);
 const STAGE_SHORT = { "Free scan sent": "Free scan", "Full assessment": "Full" };
 const REPORTS = [
-  { type: "presence-free", name: "Presence · Free", fam: "presence", cost: "~$0.50", time: "~60 s", desc: "Home-town Maps rank, a 3×3 grid, one AI question to two assistants, reviews vs the top 3 nearby, speed + schema." },
-  { type: "presence-full", name: "Presence · Full", fam: "presence", cost: "~$10", time: "30–60 min", desc: "The Eicher-level report: 16 towns, 4 AI assistants, listings, website, domain, top fixes, receipts." },
   { type: "agent-free", name: "Agent Team · Free", fam: "agent", cost: "~$0.50", time: "~2 min", desc: "From public signals: likely systems, likely tasks and hours, a compliance heads-up, a starter team sketch." },
   { type: "agent-full", name: "Agent Team · Full", fam: "agent", cost: "intake + call", time: "1–2 sessions", desc: "Intake + discovery: integration gap matrix, real-number ROI, full compliance review, roster proposal." },
+  { type: "presence-free", name: "Presence · Free", fam: "presence", cost: "~$0.50", time: "~60 s", desc: "Home-town Maps rank, a 3×3 grid, one AI question to two assistants, reviews vs the top 3 nearby, speed + schema." },
+  { type: "presence-full", name: "Presence · Full", fam: "presence", cost: "~$10", time: "30–60 min", desc: "The Eicher-level report: 16 towns, 4 AI assistants, listings, website, domain, top fixes, receipts." },
 ];
 const RTYPE = Object.fromEntries(REPORTS.map((r) => [r.type, r]));
 const PILLARS = [["maps", "Maps"], ["reviews", "Reviews"], ["ai", "AI"], ["search", "Search"], ["listings", "Listings"], ["website", "Website"]];
@@ -49,6 +49,130 @@ const AI_SETUP = [
   ["week1Review", "Week 1 review"],
 ];
 const labelOf = (pairs, id, fb = id) => (pairs.find((x) => x[0] === id) || [id, fb])[1];
+
+// path UI label ↔ schema. Presence is an opt-in module; Teams/Life are the defaults.
+const PATH_OPTS = [["business", "Teams"], ["personal", "Life"]];
+const PATH_HINT = { business: "Business crew", personal: "Your household" };
+const ENGAGE_BUSINESS = [["teams", "Agent crew"], ["presence", "Presence scan"], ["audit", "Business audit"]];
+const ALWAYS_MODULES = ["profile", "contacts", "intake", "files", "log", "next_steps"];
+const MODULE_CATALOG = [
+  "profile", "contacts", "intake", "files", "log", "next_steps",
+  "team_bots", "presence", "tech_stack", "vendors", "seo_track", "quotes",
+  "household", "events", "finance", "meals", "health", "shopping", "family",
+];
+const MODULE_LABELS = {
+  team_bots: "Agent crew", presence: "Presence", tech_stack: "Tech", vendors: "Vendors",
+  intake: "Intake", seo_track: "SEO", quotes: "Quotes", household: "Household",
+  events: "Events", finance: "Finance", meals: "Meals", health: "Health",
+  shopping: "Shopping", family: "Family", profile: "Profile", contacts: "Contacts",
+  files: "Files", log: "Log", next_steps: "Next steps",
+};
+const ON_STATUSES = new Set(["available", "active", "done"]);
+function clientPath(c) { return c?.path === "personal" ? "personal" : "business"; }
+function clientEngagement(c) {
+  const p = clientPath(c);
+  if (c?.engagement) return c.engagement;
+  return p === "personal" ? "household" : "teams";
+}
+function pathLabel(path) { return labelOf(PATH_OPTS, path || "business"); }
+function seedModules(path, engagement) {
+  const p = path === "personal" ? "personal" : "business";
+  const eng = p === "personal" ? "household" : (engagement || "teams");
+  const st = Object.fromEntries(MODULE_CATALOG.map((id) => [id, { status: "off" }]));
+  ALWAYS_MODULES.forEach((id) => { st[id] = { status: "active" }; });
+  if (p === "personal") {
+    st.household = { status: "active" };
+    st.intake = { status: "active" };
+    return st;
+  }
+  st.tech_stack = { status: "active" };
+  st.vendors = { status: "active" };
+  st.intake = { status: "active" };
+  if (eng === "presence") {
+    st.presence = { status: "active" };
+    st.team_bots = { status: "available" };
+  } else if (eng === "audit") {
+    st.presence = { status: "available" };
+    st.team_bots = { status: "available" };
+  } else {
+    st.team_bots = { status: "active" };
+    st.presence = { status: "off" };
+  }
+  st.seo_track = { status: "off" };
+  st.quotes = { status: "off" };
+  return st;
+}
+function defaultModuleIds(path, engagement) {
+  return Object.entries(seedModules(path, engagement)).filter(([, m]) => m.status !== "off").map(([id]) => id);
+}
+function hasModule(c, id) {
+  const m = c?.modules?.[id];
+  if (m) return ON_STATUSES.has(m.status);
+  const path = c?.path || "business";
+  const eng = c?.engagement || (path === "personal" ? "household" : "teams");
+  return defaultModuleIds(path, eng).includes(id);
+}
+function defaultNextWhat(path, engagement, hasWebsite) {
+  const p = path === "personal" ? "personal" : "business";
+  const eng = p === "personal" ? "household" : (engagement || "teams");
+  if (p === "personal") return hasWebsite ? "Send Life intake" : "Say hello and learn what they need";
+  if (eng === "presence") return hasWebsite ? "Run a Presence scan" : "Say hello and learn what they need";
+  return hasWebsite ? "Send intake / start agent crew onboarding" : "Say hello and learn what they need";
+}
+function reportModule(type) {
+  const t = String(type || "");
+  if (t.startsWith("presence")) return "presence";
+  if (t.startsWith("agent")) return "team_bots";
+  return "";
+}
+function mergeModules(existing, path, engagement) {
+  const seed = seedModules(path, engagement);
+  if (!existing || typeof existing !== "object") return seed;
+  const out = { ...seed };
+  for (const [id, m] of Object.entries(existing)) {
+    const next = seed[id];
+    const nextOn = next && next.status !== "off";
+    const curOn = m && m.status && m.status !== "off";
+    if (nextOn && curOn) out[id] = { ...m };
+    else if (next) out[id] = next;
+    else out[id] = m;
+  }
+  return out;
+}
+function blankClientDoc({ name, trade = "", town = "", website = "", email = "", stage = "Lead", phone = "", contacts = [], interests = [], path = "business", engagement }) {
+  const p = path === "personal" ? "personal" : "business";
+  const eng = p === "personal" ? "household" : (engagement || "teams");
+  return {
+    name, trade, town, website, email: email || "", stage, phone: phone || "", hq: "", towns: [], tags: [], brand: {},
+    contacts, interests, tech: [], vendors: [],
+    path: p, engagement: eng, modules: seedModules(p, eng),
+    next: { what: defaultNextWhat(p, eng, !!website), due: "" },
+    created: serverTimestamp(), updated: serverTimestamp(), lastTouch: serverTimestamp(),
+  };
+}
+function moduleChipsHtml(c) {
+  const path = clientPath(c);
+  const eng = clientEngagement(c);
+  const mods = c.modules || seedModules(path, eng);
+  const skip = new Set();
+  const chips = [];
+  const engLabel = path === "personal" ? "Household" : labelOf(ENGAGE_BUSINESS, eng, "Agent crew");
+  const engMod = path === "personal" ? "household" : eng === "presence" ? "presence" : "team_bots";
+  const engSt = mods[engMod]?.status || "active";
+  chips.push(`<span class="chip ${engSt === "done" ? "ok" : "acc"}">${esc(engLabel)}</span>`);
+  skip.add(engMod);
+  if (path === "personal") skip.add("household");
+  const extras = Object.entries(mods).filter(([id, m]) => {
+    if (skip.has(id) || !m || m.status === "off" || m.status === "available") return false;
+    if (ALWAYS_MODULES.includes(id) && id !== "intake") return false;
+    return true;
+  });
+  extras.forEach(([id, m]) => chips.push(`<span class="chip ${m.status === "done" ? "ok" : "acc"}">${esc(MODULE_LABELS[id] || id)}</span>`));
+  const availId = mods.presence?.status === "available" && !skip.has("presence") ? "presence"
+    : Object.keys(mods).find((id) => mods[id]?.status === "available" && !skip.has(id) && !(ALWAYS_MODULES.includes(id) && id !== "intake"));
+  if (availId) chips.push(`<span class="chip dash">+ ${esc(MODULE_LABELS[availId] || availId)}</span>`);
+  return chips.join("");
+}
 
 // ------------------------------------------------------------------ helpers
 const $ = (s, r = document) => r.querySelector(s);
@@ -328,7 +452,7 @@ function milestones() {
   const meeting = S.clients.find((c) => c.stage === "Meeting");
   return [
     { t: "First prospect added", done: S.clients.length > 0, when: created[0] ? dayOf(created[0]) : "", hint: "Add someone you'd like to help." },
-    { t: "First assessment published", done: pub.length > 0, when: pub[0] ? fmtDay(pub[0].date) : "", hint: "Run a free scan for a prospect.", sub: pub[0] ? `${client(pub[0].client)?.name || ""} · ${pub[0].score ?? ""}` : "" },
+    { t: "First assessment published", done: pub.length > 0, when: pub[0] ? fmtDay(pub[0].date) : "", hint: "Queue an Agent Team report for a prospect.", sub: pub[0] ? `${client(pub[0].client)?.name || ""} · ${pub[0].score ?? ""}` : "" },
     { t: "First sit-down held", done: pastMeeting.length > 0, when: "", hint: meeting ? `${meeting.name} agreed to talk. Lock in the date.` : "Book a conversation with a prospect." },
     { t: "First quote sent", done: sent.length > 0, when: sent[0] ? fmtDay(sent[0].date) : "", hint: "Draft the pilot quote after the sit-down." },
     { t: "First paid invoice", done: paid.length > 0, when: paid[0] ? fmtDay(paid[0].paidDate || paid[0].date) : "", hint: "The pilot pays for itself. This is the big one." },
@@ -364,7 +488,7 @@ function viewDash(v) {
   const latestPub = pub.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""))[0];
   const stepAct = [
     `<button class="btn sm p" data-add>${ic("plus")}Add a prospect</button>`,
-    `<a class="btn sm p" href="#/assess">${ic("gauge")}Run a free scan</a>`,
+    `<a class="btn sm p" href="#/assess">${ic("spark")}Start an agent crew</a>`,
     meeting ? `<a class="btn sm p" href="#/c/${esc(meeting.id)}">${ic("cal")}Open ${esc(meeting.name.replace(/ \(.*\)/, ""))}</a>` : `<a class="btn sm p" href="#/clients">${ic("users")}Pick someone</a>`,
     `<button class="btn sm p" data-newquote>${ic("file")}Draft the quote</button>`,
     `<a class="btn sm p" href="#/quotes">${ic("file")}Open quotes</a>`,
@@ -375,8 +499,8 @@ function viewDash(v) {
   // next moves: real next steps first, then a couple of friendly suggestions
   const q = S.clients.filter((c) => c.next && c.next.what).map((c) => ({ c, d: dueInfo(c.next) })).sort((a, b) => a.d.rank - b.d.rank || (a.c.next.due || "").localeCompare(b.c.next.due || ""));
   const ideas = [];
-  const noScan = S.clients.find((c) => c.website && !clientReports(c.id).some((r) => r.type.startsWith("presence")));
-  if (noScan) ideas.push({ t: `Run a free Presence scan for ${noScan.name}`, sub: "60 seconds, about fifty cents. A great conversation opener.", act: `<a class="btn sm" href="#/assess?client=${esc(noScan.id)}">Open</a>` });
+  const noScan = S.clients.find((c) => hasModule(c, "presence") && c.website && !clientReports(c.id).some((r) => r.type.startsWith("presence")));
+  if (noScan) ideas.push({ t: `Run a Presence scan for ${noScan.name}`, sub: "Opt-in Presence module. About fifty cents, a conversation opener.", act: `<a class="btn sm" href="#/assess?client=${esc(noScan.id)}&type=presence-free">Open</a>` });
   if (S.clients.length < 5) ideas.push({ t: `Add prospect #${S.clients.length + 1}`, sub: "A plumber, electrician or HVAC shop you already know. Warm intros win.", act: `<button class="btn sm" data-add>Add</button>` });
   const noInt = S.clients.find((c) => !(c.interests || []).length);
   if (noInt && ideas.length < 2) ideas.push({ t: `Note what ${noInt.name.replace(/ \(.*\)/, "")} cares about`, sub: "Even one line helps you walk in prepared.", act: `<a class="btn sm" href="#/c/${esc(noInt.id)}">Open</a>` });
@@ -387,7 +511,7 @@ function viewDash(v) {
   v.innerHTML = `
   <section class="hello dash-hello">
     <div><div class="date">${DAYS[d.getDay()]} · ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}</div><h1>${greet}, ${esc(first)}.</h1><p>${esc(summary)}</p></div>
-    <div class="acts"><a class="btn" href="#/assess">${ic("gauge")}Run assessment</a><button class="btn" data-newquote>${ic("file")}Draft quote</button></div>
+    <div class="acts"><a class="btn p" href="#/assess">${ic("spark")}Start an agent crew</a><button class="btn" data-add>${ic("plus")}Add a prospect</button>${S.clients.some((c) => hasModule(c, "presence")) ? `<a class="btn ghost" href="#/assess?type=presence-free">${ic("globe")}Presence scan</a>` : ""}</div>
   </section>
 
   <section class="tiles">
@@ -424,7 +548,7 @@ function viewDash(v) {
         <div class="ph" style="padding:0"><h2>Pipeline <small>${S.clients.length} ${S.clients.length === 1 ? "client" : "clients"}</small></h2></div>
         <div class="lane-track">${MAIN.map((s) => { const here = S.clients.filter((c) => c.stage === s); return `<div class="lane-col ${here.length ? "has" : ""}"><span class="bar"></span><small>${esc(STAGE_SHORT[s] || s)}</small><div class="pucks">${here.map((c) => `<a class="puck" href="#/c/${esc(c.id)}" title="${esc(c.name)}" style="background:${colorOf(c)}">${esc(initials(c.name))}</a>`).join("")}</div></div>`; }).join("")}</div>
       </div>
-      ${pub.length ? `<div class="panel p-scores"><div class="ph"><h2>Presence scores <small>latest per client</small></h2></div><div class="pb scores">${S.clients.map((c) => ({ c, r: latestPresence(c.id) })).filter((x) => x.r).map(({ c, r }) => `<div class="score-row"><a href="#/c/${esc(c.id)}" style="text-decoration:none"><b style="font:600 13.5px var(--ff)">${esc(c.name)}</b><br><small class="chip ${bandCls(r.score)}" style="height:20px;margin-top:3px">${esc(band(r.score))}</small></a><span class="track"><span class="fill ${bandCls(r.score)}" style="width:${r.score}%"></span></span><b>${r.score}</b></div>`).join("")}</div></div>` : ""}
+      ${(() => { const rows = S.clients.map((c) => ({ c, r: latestPresence(c.id) })).filter((x) => x.r && hasModule(x.c, "presence")); return rows.length ? `<div class="panel p-scores"><div class="ph"><h2>Presence scores <small>latest per client</small></h2></div><div class="pb scores">${rows.map(({ c, r }) => `<div class="score-row"><a href="#/c/${esc(c.id)}" style="text-decoration:none"><b style="font:600 13.5px var(--ff)">${esc(c.name)}</b><br><small class="chip ${bandCls(r.score)}" style="height:20px;margin-top:3px">${esc(band(r.score))}</small></a><span class="track"><span class="fill ${bandCls(r.score)}" style="width:${r.score}%"></span></span><b>${r.score}</b></div>`).join("")}</div></div>` : ""; })()}
     </div>
   </section>`;
   requestAnimationFrame(() => { const fg = $(".ring .fg", v); if (fg) fg.setAttribute("stroke-dashoffset", fg.dataset.off); });
@@ -484,37 +608,88 @@ function openModal(html, onMount) {
 }
 function closeModal() { $("#modal").innerHTML = ""; refresh(true); }
 // fields: [{k, label, type, options, placeholder, full}]
-function formDialog({ title, intro, fields, values = {}, submit = "Save", onSave, onDelete }) {
+function formDialog({ title, intro, fields, values = {}, submit = "Save", onSave, onDelete, onMount }) {
   const f = (x) => {
     const val = values[x.k] ?? "";
-    const inp = x.type === "select" ? `<select class="input" name="${x.k}">${x.options.map((o) => { const [ov, ol] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(ov)}" ${ov === val ? "selected" : ""}>${esc(ol)}</option>`; }).join("")}</select>`
-      : x.type === "textarea" ? `<textarea class="input" name="${x.k}" placeholder="${esc(x.placeholder || "")}">${esc(val)}</textarea>`
-      : `<input class="input" name="${x.k}" type="${x.type || "text"}" value="${esc(val)}" placeholder="${esc(x.placeholder || "")}" ${x.required ? "required" : ""} ${x.type === "tel" ? 'inputmode="tel"' : ""} autocomplete="off">`;
-    return `<label class="field" style="${x.full ? "flex-basis:100%" : ""}">${esc(x.label)}${inp}</label>`;
+    let inp;
+    if (x.type === "segment") {
+      inp = `<div class="seg" role="radiogroup" aria-label="${esc(x.label)}">${x.options.map((o) => { const [ov, ol] = Array.isArray(o) ? o : [o, o]; return `<label class="seg-opt"><input type="radio" name="${x.k}" value="${esc(ov)}" ${ov === val ? "checked" : ""}><span>${esc(ol)}</span></label>`; }).join("")}</div>${x.hint ? `<small class="seg-hint">${esc(x.hint)}</small>` : ""}`;
+    } else if (x.type === "select") {
+      inp = `<select class="input" name="${x.k}">${x.options.map((o) => { const [ov, ol] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(ov)}" ${ov === val ? "selected" : ""}>${esc(ol)}</option>`; }).join("")}</select>`;
+    } else if (x.type === "textarea") {
+      inp = `<textarea class="input" name="${x.k}" placeholder="${esc(x.placeholder || "")}">${esc(val)}</textarea>`;
+    } else {
+      inp = `<input class="input" name="${x.k}" type="${x.type || "text"}" value="${esc(val)}" placeholder="${esc(x.placeholder || "")}" ${x.required ? "required" : ""} ${x.type === "tel" ? 'inputmode="tel"' : ""} autocomplete="off">`;
+    }
+    return `<label class="field" ${x.hide ? "hidden" : ""} data-fk="${esc(x.k)}" style="${x.full ? "flex-basis:100%" : ""}">${esc(x.label)}${inp}</label>`;
   };
   openModal(`<form id="fd"><div style="display:grid;gap:14px"><h2>${esc(title)}</h2>${intro ? `<p>${intro}</p>` : ""}<div class="row">${fields.map(f).join("")}</div>
     <div class="foot">${onDelete ? `<button type="button" class="btn danger ghost" id="fdDel" style="margin-right:auto">${ic("trash")}Remove</button>` : ""}<button type="button" class="btn ghost" id="fdX">Cancel</button><button class="btn p">${esc(submit)}</button></div></div></form>`, (d) => {
     $("#fdX", d).onclick = closeModal;
     if (onDelete) $("#fdDel", d).onclick = async (e) => { const b = e.currentTarget; if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "Tap again to remove"; return; } await onDelete(); closeModal(); };
     $("#fd", d).onsubmit = async (e) => { e.preventDefault(); const data = Object.fromEntries(new FormData(e.target)); Object.keys(data).forEach((k) => (data[k] = String(data[k]).trim())); try { await onSave(data); closeModal(); } catch (err) { console.error(err); } };
+    onMount && onMount(d);
   });
 }
 function slugify(s) { return s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "client"; }
+function pathSegHtml(val, hintId) {
+  return `<label class="field" style="flex-basis:100%">Path
+    <div class="seg" role="radiogroup" aria-label="Path">${PATH_OPTS.map(([ov, ol]) => `<label class="seg-opt"><input type="radio" name="path" value="${esc(ov)}" ${ov === val ? "checked" : ""}><span>${esc(ol)}</span></label>`).join("")}</div>
+    <small class="seg-hint" id="${hintId}">${esc(PATH_HINT[val] || PATH_HINT.business)}</small></label>`;
+}
+function engSegHtml(val) {
+  return `<label class="field" style="flex-basis:100%" id="engField">Engagement
+    <div class="seg" role="radiogroup" aria-label="Engagement">${ENGAGE_BUSINESS.map(([ov, ol]) => `<label class="seg-opt"><input type="radio" name="engagement" value="${esc(ov)}" ${ov === val ? "checked" : ""}><span>${esc(ol)}</span></label>`).join("")}</div></label>`;
+}
+function wirePathEng(d) {
+  const sync = () => {
+    const path = $("[name=path]:checked", d)?.value || "business";
+    const hint = $("#pathHint", d);
+    if (hint) hint.textContent = PATH_HINT[path] || PATH_HINT.business;
+    const eng = $("#engField", d);
+    if (eng) eng.hidden = path === "personal";
+  };
+  $$("[name=path]", d).forEach((r) => (r.onchange = sync));
+  sync();
+}
 function addProspect(pre = {}) {
-  formDialog({
-    title: "Add a prospect", intro: "Just the basics. You can fill in the rest as you learn it.", submit: "Add prospect", values: { stage: "Lead", ...pre },
-    fields: [{ k: "name", label: "Business name", required: true, full: true, placeholder: "e.g. Northside HVAC" }, { k: "trade", label: "Trade", placeholder: "Plumbing, HVAC…" }, { k: "town", label: "Town", placeholder: "Rogers, MN" },
-      { k: "website", label: "Website", placeholder: "example.com" }, { k: "email", label: "Email (optional)", type: "email", placeholder: "hello@example.com" }, { k: "stage", label: "Stage", type: "select", options: STAGES }, { k: "contact", label: "Contact name", placeholder: "Who you'd talk to" }, { k: "phone", label: "Contact phone", type: "tel" },
-      { k: "interest", label: "What are they interested in? (optional)", full: true, placeholder: "e.g. more Google reviews, missed calls after hours" }],
-    onSave: async (d) => {
-      let id = slugify(d.name); while (client(id)) id += "-2";
-      await setDoc(cref(id), { name: d.name, trade: d.trade, town: d.town, website: d.website, email: d.email || "", stage: d.stage, phone: "", hq: "", towns: [], tags: [], brand: {},
-        contacts: d.contact ? [{ name: d.contact, role: "", phone: d.phone, email: "", channel: "Text" }] : [], interests: d.interest ? [{ title: d.interest, note: "", status: "active" }] : [], tech: [], vendors: [],
-        next: { what: d.website ? "Run a free Presence scan" : "Say hello and learn what they need", due: "" }, created: serverTimestamp(), updated: serverTimestamp(), lastTouch: serverTimestamp() });
-      await addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind: "Note", text: `Added as a prospect (${d.stage}).` });
-      confetti(); toast(`${d.name} added. Welcome aboard.`);
+  const path0 = pre.path === "personal" ? "personal" : "business";
+  const eng0 = pre.engagement || "teams";
+  openModal(`<form id="fd"><div style="display:grid;gap:14px"><h2>Add a prospect</h2><p>Just the basics. You can fill in the rest as you learn it.</p>
+    <div class="row">
+      ${pathSegHtml(path0, "pathHint")}
+      <label class="field" style="flex-basis:100%">Name<input class="input" name="name" required placeholder="e.g. Northside HVAC" value="${esc(pre.name || "")}" autocomplete="off"></label>
+      <label class="field">Town<input class="input" name="town" placeholder="Rogers, MN" value="${esc(pre.town || "")}" autocomplete="off"></label>
+      <label class="field">Trade<input class="input" name="trade" placeholder="Plumbing, HVAC…" value="${esc(pre.trade || "")}" autocomplete="off"></label>
+      <label class="field" style="flex-basis:100%">Website<input class="input" name="website" placeholder="example.com" value="${esc(pre.website || "")}" autocomplete="off"></label>
+      ${engSegHtml(eng0)}
+      <label class="field">Stage<select class="input" name="stage">${STAGES.map((s) => `<option ${s === (pre.stage || "Lead") ? "selected" : ""}>${esc(s)}</option>`).join("")}</select></label>
+      <label class="field">Contact name<input class="input" name="contact" placeholder="Who you'd talk to" value="${esc(pre.contact || "")}" autocomplete="off"></label>
+      <label class="field">Contact phone<input class="input" name="phone" type="tel" inputmode="tel" value="${esc(pre.phone || "")}" autocomplete="off"></label>
+      <label class="field" style="flex-basis:100%">What are they interested in? (optional)<input class="input" name="interest" placeholder="e.g. more Google reviews, missed calls after hours" value="${esc(pre.interest || "")}" autocomplete="off"></label>
+    </div>
+    <div class="foot"><button type="button" class="btn ghost" id="fdX">Cancel</button><button class="btn p">Add prospect</button></div></div></form>`, (d) => {
+    $("#fdX", d).onclick = closeModal;
+    wirePathEng(d);
+    $("#fd", d).onsubmit = async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+      Object.keys(data).forEach((k) => (data[k] = String(data[k]).trim()));
+      if (!data.name) return toast("Add a name first");
+      const path = data.path === "personal" ? "personal" : "business";
+      const engagement = path === "personal" ? "household" : (data.engagement || "teams");
+      let id = slugify(data.name); while (client(id)) id += "-2";
+      await setDoc(cref(id), blankClientDoc({
+        name: data.name, trade: data.trade, town: data.town, website: data.website, stage: data.stage || "Lead",
+        phone: data.phone || "", path, engagement,
+        contacts: data.contact ? [{ name: data.contact, role: "", phone: data.phone || "", email: "", channel: "Text" }] : [],
+        interests: data.interest ? [{ title: data.interest, note: "", status: "active" }] : [],
+      }));
+      await addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind: "Note", text: `Added as a prospect (${data.stage || "Lead"}).` });
+      confetti(); toast(`${data.name} added. Welcome aboard.`);
+      closeModal();
       setTimeout(() => (location.hash = "#/c/" + id), 250);
-    },
+    };
   });
 }
 function editNext(id, fresh) {
@@ -533,7 +708,7 @@ function viewClients(v) {
     <div style="display:flex;flex-wrap:wrap;gap:6px">${stages.map((s) => `<button class="chip ${s === clientFilter ? "acc" : "dash"}" data-f="${esc(s)}" style="cursor:pointer;border:0;height:30px;padding:0 12px">${esc(s)} <span class="mono">${s === "All" ? S.clients.length : S.clients.filter((c) => c.stage === s).length}</span></button>`).join("")}</div>
     <div class="clist">${list.map((c) => { const d = dueInfo(c.next), r = latestPresence(c.id); return `<a class="panel ccard" href="#/c/${esc(c.id)}"><div class="top"><span class="avatar" style="background:${colorOf(c)}">${esc(initials(c.name))}</span><div><div class="nm">${esc(c.name)}</div><div class="sub">${esc([c.trade, c.town].filter(Boolean).join(" · ") || "Details to come")}</div></div></div>
       <div class="nx">${ic("flag")}<span>${esc(c.next?.what || "No next step yet")}</span></div>
-      <div class="meta"><span class="chip data">${esc(c.stage)}</span>${d.cls ? `<span class="chip ${d.cls === "over" ? "bad" : "warn"}">${esc(d.label)}</span>` : ""}${r ? `<span class="chip ${bandCls(r.score)}">Presence ${r.score}</span>` : ""}<span class="chip dash">Touched ${esc(ago(c.lastTouch))}</span></div></a>`; }).join("")}
+      <div class="meta"><span class="chip data">${esc(c.stage)}</span><span class="chip ${clientPath(c) === "personal" ? "acc" : "dash"}">${esc(pathLabel(clientPath(c)))}</span>${d.cls ? `<span class="chip ${d.cls === "over" ? "bad" : "warn"}">${esc(d.label)}</span>` : ""}${r && hasModule(c, "presence") ? `<span class="chip ${bandCls(r.score)}">Presence ${r.score}</span>` : ""}<span class="chip dash">Touched ${esc(ago(c.lastTouch))}</span></div></a>`; }).join("")}
       <button class="panel addcard" data-add><span class="plus">${ic("plus")}</span><b>Add a prospect</b><small>A shop you already know is the best place to start. <kbd>N</kbd> works anywhere.</small></button></div>`;
   $$("[data-f]", v).forEach((b) => (b.onclick = () => { clientFilter = b.dataset.f; refresh(true); }));
   wireCommon(v);
@@ -543,8 +718,11 @@ function viewClients(v) {
 const MAX_BYTES = 20 * 1024 * 1024;
 const FILE_TAGS = [{ id: "returned-intake", label: "Returned intake" }, { id: "general", label: "General" }];
 const ASSET_CATS = [
-  { id: "client-intake", label: "Client intake", blurb: "Blank forms and the kit you send out." },
+  { id: "client-intake", label: "Onboarding kit", blurb: "Blank business intakes." },
+  { id: "personal-intake", label: "Life kit", blurb: "Personal intake PDFs." },
   { id: "marketing", label: "Marketing", blurb: "One-pagers and leave-behinds." },
+  { id: "playbooks", label: "Playbooks", blurb: "Short agent-handable cheat sheets." },
+  { id: "agreements", label: "Agreements", blurb: "Contracts and engagement letters." },
   { id: "other", label: "Other", blurb: "Everything else worth keeping." },
 ];
 const tagLabel = (id) => FILE_TAGS.find((t) => t.id === id)?.label || "General";
@@ -734,23 +912,25 @@ function viewClient(v) {
       <div class="ident"><span class="avatar" style="background:${colorOf(c)}${c.brand?.color2 ? `;box-shadow:inset 0 0 0 3px ${esc(c.brand.color2)}` : ""}">${esc(initials(c.name))}</span>
         <div><h1>${esc(c.name)}</h1>
           <div class="facts">${c.trade ? `<span>${ic("wrench")}${esc(c.trade)}</span>` : ""}${c.town ? `<span>${ic("pin")}${esc(c.town)}</span>` : ""}${c.phone ? `<span>${ic("phone")}<a href="tel:${esc(c.phone.replace(/[^\d+]/g, ""))}">${esc(c.phone)}</a></span>` : ""}${c.email ? `<span>${ic("mail")}${mailLink(c.email)}</span>` : ""}${site ? `<span>${ic("globe")}<a href="${esc(site)}" target="_blank" rel="noopener">${esc(c.website.replace(/^https?:\/\//, ""))}</a></span>` : ""}</div>
-          <div class="tags"><span class="chip data"><span class="d"></span>${esc(c.stage)}</span>${(c.tags || []).map((t, i) => `<span class="chip ${i === 0 ? "acc" : ""}">${esc(t)}</span>`).join("")}<button class="chip dash" data-edit="details" style="cursor:pointer;border:0">${ic("pen")}Edit details</button></div></div></div>
+          <div class="tags"><span class="chip data"><span class="d"></span>${esc(c.stage)}</span>${moduleChipsHtml(c)}${(c.tags || []).map((t) => `<span class="chip">${esc(t)}</span>`).join("")}<button class="chip dash" data-edit="details" style="cursor:pointer;border:0">${ic("pen")}Edit details</button></div></div></div>
       <div class="next ${d.cls === "over" ? "over" : ""}"><div class="k"><span class="lbl">${ic("flag")} Next step</span>${d.label ? `<span class="chip ${d.cls === "over" ? "bad" : d.cls ? "warn" : ""}">${esc(d.label)}${d.sub && d.cls !== "over" ? " · " + esc(d.sub) : ""}</span>` : ""}</div>
         <div class="w">${esc(c.next?.what || `Nothing set yet. What's the next move with ${short}?`)}</div>
         <div class="acts">${c.next?.what ? `<button class="btn sm p" data-do="done">${ic("check")}Done</button><button class="btn sm" data-do="next">${ic("cal")}${c.next.due ? "Change" : "Set date"}</button>` : `<button class="btn sm p" data-do="next">${ic("flag")}Set next step</button>`}<button class="btn sm" data-do="log">${ic("pen")}Log</button><a class="btn sm" href="#/assess?client=${esc(c.id)}">${ic("gauge")}Assess</a><button class="btn sm" data-newquote="${esc(c.id)}">${ic("file")}Quote</button></div></div>
     </div>
     <div class="stages" role="group" aria-label="Stage (tap to move)">${STAGES.map((s, i) => `${i === 7 ? `<span class="gap"></span>` : ""}<button class="stg ${i < si && si < 7 ? "past" : ""} ${i === si ? "cur" : ""} ${i >= 7 && i !== si ? "off" : ""}" data-stage="${esc(s)}" title="Move to ${esc(s)}"><i></i><small>${esc(STAGE_SHORT[s] || s)}</small></button>`).join("")}</div>
     <div class="strip">
-      <div><span class="lbl">Presence score</span><b>${pr ? `${pr.score}<small class="chip ${bandCls(pr.score)}" style="height:20px">${band(pr.score)}</small>` : `<span style="font:600 14px var(--ff);color:var(--ink-3)">Not run yet</span>`}</b></div>
+      ${hasModule(c, "presence")
+        ? `<div><span class="lbl">Presence score</span><b>${pr ? `${pr.score}<small class="chip ${bandCls(pr.score)}" style="height:20px">${band(pr.score)}</small>` : `<span style="font:600 14px var(--ff);color:var(--ink-3)">Not run yet</span>`}</b></div>`
+        : `<div><span class="lbl">Path</span><b>${esc(pathLabel(clientPath(c)))}</b></div>`}
       <div><span class="lbl">Open quotes</span><b>${openQ.length ? money(openQ.reduce((a, q) => a + quoteTotal(q).total, 0)) : `<span style="font:600 14px var(--ff);color:var(--ink-3)">None yet</span>`}</b></div>
-      <div><span class="lbl">Tech confirmed</span><b>${tech.length ? `${tc.confirmed}/${tech.length}` : `<span style="font:600 14px var(--ff);color:var(--ink-3)">Discovering</span>`}</b></div>
+      ${hasModule(c, "tech_stack") ? `<div><span class="lbl">Tech confirmed</span><b>${tech.length ? `${tc.confirmed}/${tech.length}` : `<span style="font:600 14px var(--ff);color:var(--ink-3)">Discovering</span>`}</b></div>` : ""}
       <div><span class="lbl">Last touch</span><b style="font-size:16px">${esc(ago(c.lastTouch))}</b></div>
     </div>
   </section>
 
   <section class="grid g3">
     <div class="panel"><div class="ph"><h2>Details</h2><button class="btn sm ghost" data-edit="details">${ic("pen")}Edit</button></div><div class="pb">
-      <dl class="kv"><dt>Business</dt><dd>${esc(c.name)}</dd>${c.trade ? `<dt>Trade</dt><dd>${esc(c.trade)}</dd>` : ""}${c.hq ? `<dt>HQ</dt><dd>${esc(c.hq)}</dd>` : c.town ? `<dt>Town</dt><dd>${esc(c.town)}</dd>` : ""}${c.phone ? `<dt>Phone</dt><dd class="mono">${esc(c.phone)}</dd>` : ""}${c.email ? `<dt>Email</dt><dd>${mailLink(c.email)}</dd>` : ""}${site ? `<dt>Website</dt><dd><a href="${esc(site)}" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:none">${esc(c.website)}</a></dd>` : ""}${(c.towns || []).length ? `<dt>Serves</dt><dd class="towns">${c.towns.map((t) => `<span>${esc(t)}</span>`).join("")}</dd>` : ""}</dl>
+      <dl class="kv"><dt>${clientPath(c) === "personal" ? "Name" : "Business"}</dt><dd>${esc(c.name)}</dd>${c.trade ? `<dt>Trade</dt><dd>${esc(c.trade)}</dd>` : ""}${c.hq ? `<dt>HQ</dt><dd>${esc(c.hq)}</dd>` : c.town ? `<dt>Town</dt><dd>${esc(c.town)}</dd>` : ""}${c.phone ? `<dt>Phone</dt><dd class="mono">${esc(c.phone)}</dd>` : ""}${c.email ? `<dt>Email</dt><dd>${mailLink(c.email)}</dd>` : ""}${site ? `<dt>Website</dt><dd><a href="${esc(site)}" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:none">${esc(c.website)}</a></dd>` : ""}${(c.towns || []).length ? `<dt>Serves</dt><dd class="towns">${c.towns.map((t) => `<span>${esc(t)}</span>`).join("")}</dd>` : ""}</dl>
       ${!c.hq && !c.phone && !site && !c.email ? `<div class="empty-note" style="margin-top:12px">Details fill in as you learn them. <button class="btn sm" data-edit="details">Add details</button></div>` : ""}</div></div>
     <div class="panel"><div class="ph"><h2>Interested in <small>${ints.length || ""}</small></h2><button class="btn sm ghost" data-int="new">${ic("plus")}Add</button></div><div class="pb">
       ${ints.length ? `<div class="ints">${ints.map((x, i) => `<button class="int" data-int="${i}" style="background:none;border:0;padding:0;text-align:left;cursor:pointer;color:inherit">${x.status === "active" ? `<span class="no">${ints.filter((y, j) => y.status === "active" && j <= i).length}</span>` : `<span class="no ghost ${x.status === "asked" ? "asked" : ""}"></span>`}<span><b>${esc(x.title)}${x.status !== "active" ? ` <span class="chip ${x.status === "asked" ? "data" : "dash"} mini">${x.status === "asked" ? "Asked about" : "Earlier idea"}</span>` : ""}</b>${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span></span></button>`).join("")}</div>`
@@ -762,38 +942,44 @@ function viewClient(v) {
 
   ${filesCardHtml(`clients/${c.id}`, { title: "Files", empty: `No files yet for ${esc(short)}. Drop a returned intake or a photo here — PDF or images, 20 MB each.`, taggable: true })}
 
+  ${hasModule(c, "household") ? `<section class="panel"><div class="ph"><h2>Household</h2></div><div class="pb"><div class="empty-note"><b>Coming soon — household.</b> Life stays on the always-on cards for now.</div></div></section>` : ""}
+
   <section class="crm-cards">
-    ${dealCard(c)}
-    ${paymentCard(c)}
+    ${(() => { const filled = !!(c.deal?.type || c.deal?.startDate || c.deal?.guarantee); return filled || clientPath(c) === "business" ? dealCard(c) : ""; })()}
+    ${(() => { const filled = !!(c.payment?.status || c.payment?.amount != null || c.payment?.date); return filled || clientPath(c) === "business" ? paymentCard(c) : ""; })()}
     ${intakeCard(c)}
     ${leadCard(c)}
     ${nextStepsCard(c)}
-    ${c.deal?.type === "ai-team" ? aiSetupCard(c) : ""}
+    ${hasModule(c, "team_bots") ? aiSetupCard(c) : ""}
   </section>
 
-  <section class="panel"><div class="ph"><h2>Tech stack <small>as discovered · ${tech.length} ${tech.length === 1 ? "system" : "systems"}</small></h2><button class="btn sm ghost" data-tech="new">${ic("plus")}Add system</button></div><div class="pb">
+  ${hasModule(c, "tech_stack") ? `<section class="panel"><div class="ph"><h2>Tech stack <small>as discovered · ${tech.length} ${tech.length === 1 ? "system" : "systems"}</small></h2><button class="btn sm ghost" data-tech="new">${ic("plus")}Add system</button></div><div class="pb">
     ${tech.length ? `<div class="tech-bar"><i style="flex:${tc.confirmed || 0};background:var(--ok-fill)"></i><i style="flex:${tc.assumed || 0};background:repeating-linear-gradient(135deg,var(--warn-fill) 0 4px,transparent 4px 7px)"></i><i style="flex:${tc.unknown || 0};background:var(--line-strong)"></i></div>
       <div class="tech-legend"><span>Confirmed <b>${tc.confirmed}</b></span><span>Assumed <b>${tc.assumed}</b></span><span>Unknown <b>${tc.unknown}</b></span></div>
       <div class="techs">${tech.map((t, i) => `<button class="tech ${esc(t.status)}" data-tech="${i}"><span class="cat">${esc(t.category || "System")}</span><b>${esc(t.name)}</b>${t.source ? `<small>${esc(t.source)}</small>` : ""}<span class="st">${esc(TECH_ST[t.status] || t.status)}</span></button>`).join("")}</div>`
-      : `<div class="empty-note">Nothing discovered yet. A free scan fills in the website, DNS and listings; add the rest (CRM, phones, payments) as you learn it.<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn sm" href="#/assess?client=${esc(c.id)}">${ic("gauge")}Run a free scan</a><button class="btn sm" data-tech="new">${ic("plus")}Add a system</button></div></div>`}</div></section>
+      : `<div class="empty-note">Nothing discovered yet. Add the systems you learn about (CRM, phones, payments).<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-tech="new">${ic("plus")}Add a system</button></div></div>`}</div></section>` : ""}
 
-  <section class="grid g2">
-    <div class="panel"><div class="ph"><h2>Reports</h2><a class="btn sm ghost" href="#/assess?client=${esc(c.id)}">${ic("gauge")}Run one</a></div><div class="pb"><div class="reps">${REPORTS.map((t) => {
+  ${(() => {
+    const vis = REPORTS.filter((t) => hasModule(c, reportModule(t.type)));
+    const runType = hasModule(c, "team_bots") ? "agent-free" : (vis[0]?.type || "agent-free");
+    const showQuotes = quotes.length > 0 || clientPath(c) === "business";
+    const reportsHtml = vis.length ? `<div class="panel"><div class="ph"><h2>Reports</h2><a class="btn sm ghost" href="#/assess?client=${esc(c.id)}&type=${esc(runType)}">${ic("gauge")}Run one</a></div><div class="pb"><div class="reps">${vis.map((t) => {
       const r = reps.find((x) => x.type === t.type);
       if (!r) return `<div class="rep none"><div class="rt"><span>${esc(t.name)}</span><span class="chip dash">Not run</span></div><small>${esc(t.cost)} · ${esc(t.time)}</small><a class="btn sm" href="#/assess?client=${esc(c.id)}&type=${t.type}" style="justify-self:start">${ic("play")}Run</a></div>`;
       return `<div class="rep"><div class="rt"><span>${esc(t.name)}</span><span class="chip ${r.status === "published" ? "ok" : r.status === "draft" ? "warn" : "dash"}">${esc(r.status)}</span></div>
         ${r.score != null ? `<div class="sc"><b>${r.score}</b><span class="chip ${bandCls(r.score)}">${band(r.score)}</span></div>` : ""}<small>${esc(fmtDay(r.date))}${r.cost ? " · $" + esc(r.cost) : ""}${r.pin ? " · PIN on file" : ""}</small>
         ${r.pillars ? `<div class="pillars">${PILLARS.map(([k, n]) => r.pillars[k] != null ? `<div><span>${n}</span><b>${r.pillars[k]}</b><i><u style="width:${r.pillars[k]}%"></u></i></div>` : "").join("")}</div>` : ""}
         ${r.link ? `<a class="btn sm" href="${esc(r.link)}" target="_blank" rel="noopener" style="justify-self:start">${ic("link")}Open report</a>` : ""}</div>`;
-    }).join("")}</div></div></div>
-    <div class="panel"><div class="ph"><h2>Quotes &amp; invoices</h2><button class="btn sm ghost" data-newquote="${esc(c.id)}">${ic("plus")}New quote</button></div><div class="pb">
+    }).join("")}</div></div></div>` : "";
+    const quotesHtml = showQuotes ? `<div class="panel"><div class="ph"><h2>Quotes &amp; invoices</h2><button class="btn sm ghost" data-newquote="${esc(c.id)}">${ic("plus")}New quote</button></div><div class="pb">
       ${quotes.length ? `<div class="rows">${quotes.map((q) => `<a class="rw" href="#/q/${esc(c.id)}/${esc(q.id)}" style="text-decoration:none"><span><b>${esc(q.title || "Untitled")}</b><small class="mono">${esc(q.number)} · ${esc(fmtDay(q.date))}</small></span><span class="chip ${qCls(q.status)}">${esc(q.kind === "invoice" ? "Invoice · " : "")}${esc(q.status)}</span><span class="amt">${money(quoteTotal(q).total)}</span></a>`).join("")}</div>`
-        : `<div class="empty-note">No quotes yet. When ${esc(short)} is ready, draft one here in a minute.<button class="btn sm" data-newquote="${esc(c.id)}">${ic("file")}Draft a quote</button></div>`}</div></div>
-  </section>
+        : `<div class="empty-note">No quotes yet. When ${esc(short)} is ready, draft one here in a minute.<button class="btn sm" data-newquote="${esc(c.id)}">${ic("file")}Draft a quote</button></div>`}</div></div>` : "";
+    return reportsHtml || quotesHtml ? `<section class="grid g2">${reportsHtml}${quotesHtml}</section>` : "";
+  })()}
 
   <section class="grid g2">
-    <div class="panel"><div class="ph"><h2>Contracts <small>vendors they're locked into</small></h2><button class="btn sm ghost" data-vendor="new">${ic("plus")}Add</button></div><div class="pb">
-      ${(c.vendors || []).length ? c.vendors.map((x, i) => contractHtml(x, i)).join("") : `<div class="empty-note">No contracts on file. If they're tied to a vendor (a Thryv, a website company), note the end date and notice window here.<button class="btn sm" data-vendor="new">${ic("plus")}Add a contract</button></div>`}</div></div>
+    ${hasModule(c, "vendors") ? `<div class="panel"><div class="ph"><h2>Contracts <small>vendors they're locked into</small></h2><button class="btn sm ghost" data-vendor="new">${ic("plus")}Add</button></div><div class="pb">
+      ${(c.vendors || []).length ? c.vendors.map((x, i) => contractHtml(x, i)).join("") : `<div class="empty-note">No contracts on file. If they're tied to a vendor (a Thryv, a website company), note the end date and notice window here.<button class="btn sm" data-vendor="new">${ic("plus")}Add a contract</button></div>`}</div></div>` : ""}
     <div class="panel"><div class="ph"><h2>Activity <small>${logs.length}</small></h2></div><div class="pb">
       <div class="composer"><div class="kinds" role="group" aria-label="Kind">${KINDS.map((k) => `<button type="button" data-kind="${k}" aria-pressed="${k === composeKind}">${k}</button>`).join("")}</div>
         <div class="row"><textarea id="compose" placeholder="What happened? e.g. Texted Shanna about Thursday" rows="1"></textarea><button class="btn p" id="addLog">Add</button></div></div>
@@ -869,7 +1055,7 @@ function nextStepsCard(c) {
 }
 function aiSetupCard(c) {
   const a = c.aiSetup || {};
-  return `<div class="panel crm-card" style="grid-column:1/-1"><div class="ph"><h2>AI setup checklist</h2><small style="color:var(--ink-3)">Shown for AI team deals</small></div><div class="pb"><div class="ai-checks">
+  return `<div class="panel crm-card" style="grid-column:1/-1"><div class="ph"><h2>AI setup checklist</h2><small style="color:var(--ink-3)">Teams module</small></div><div class="pb"><div class="ai-checks">
     ${AI_SETUP.map(([k, label]) => {
       const on = !!(a[k] && a[k].done);
       const when = a[k]?.date ? fmtDay(a[k].date) : "";
@@ -982,10 +1168,46 @@ function contractHtml(x, i) {
     <div class="tl">${tl}</div><div style="font-size:12.5px;color:var(--ink-2)">${note}</div>${x.notes ? `<div style="font-size:12.5px;color:var(--ink-3)">${esc(x.notes)}</div>` : ""}</div>`;
 }
 function editDetails(c) {
-  formDialog({ title: "Business details", values: { ...c, towns: (c.towns || []).join(", "), tags: (c.tags || []).join(", "), color1: c.brand?.color1 || "" },
-    fields: [{ k: "name", label: "Business name", required: true, full: true }, { k: "trade", label: "Trade" }, { k: "town", label: "Town" }, { k: "hq", label: "HQ address", full: true }, { k: "phone", label: "Main phone", type: "tel" }, { k: "email", label: "Email", type: "email", placeholder: "hello@example.com" }, { k: "website", label: "Website" },
-      { k: "towns", label: "Service towns (comma-separated)", full: true }, { k: "tags", label: "Tags (comma-separated)", full: true, placeholder: "Family client, Referral…" }, { k: "color1", label: "Brand color (hex)", placeholder: "#173A5E" }],
-    onSave: async (d) => { await save(c.id, { name: d.name, trade: d.trade, town: d.town, hq: d.hq, phone: d.phone, email: d.email || "", website: d.website, towns: d.towns.split(",").map((s) => s.trim()).filter(Boolean), tags: d.tags.split(",").map((s) => s.trim()).filter(Boolean), brand: { ...(c.brand || {}), color1: /^#[0-9a-f]{3,8}$/i.test(d.color1) ? d.color1 : c.brand?.color1 || "" } }); toast("Saved"); } });
+  const path0 = clientPath(c);
+  const eng0 = c.engagement || (path0 === "personal" ? "household" : "teams");
+  openModal(`<form id="fd"><div style="display:grid;gap:14px"><h2>Details</h2>
+    <div class="row">
+      ${pathSegHtml(path0, "pathHint")}
+      ${engSegHtml(eng0 === "household" ? "teams" : eng0)}
+      <label class="field" style="flex-basis:100%">Name<input class="input" name="name" required value="${esc(c.name || "")}" autocomplete="off"></label>
+      <label class="field">Trade<input class="input" name="trade" value="${esc(c.trade || "")}" autocomplete="off"></label>
+      <label class="field">Town<input class="input" name="town" value="${esc(c.town || "")}" autocomplete="off"></label>
+      <label class="field" style="flex-basis:100%">HQ address<input class="input" name="hq" value="${esc(c.hq || "")}" autocomplete="off"></label>
+      <label class="field">Main phone<input class="input" name="phone" type="tel" inputmode="tel" value="${esc(c.phone || "")}" autocomplete="off"></label>
+      <label class="field">Email<input class="input" name="email" type="email" placeholder="hello@example.com" value="${esc(c.email || "")}" autocomplete="off"></label>
+      <label class="field" style="flex-basis:100%">Website<input class="input" name="website" value="${esc(c.website || "")}" autocomplete="off"></label>
+      <label class="field" style="flex-basis:100%">Service towns (comma-separated)<input class="input" name="towns" value="${esc((c.towns || []).join(", "))}" autocomplete="off"></label>
+      <label class="field" style="flex-basis:100%">Tags (comma-separated)<input class="input" name="tags" placeholder="Family client, Referral…" value="${esc((c.tags || []).join(", "))}" autocomplete="off"></label>
+      <label class="field">Brand color (hex)<input class="input" name="color1" placeholder="#173A5E" value="${esc(c.brand?.color1 || "")}" autocomplete="off"></label>
+    </div>
+    <div class="foot"><button type="button" class="btn ghost" id="fdX">Cancel</button><button class="btn p">Save</button></div></div></form>`, (d) => {
+    $("#fdX", d).onclick = closeModal;
+    wirePathEng(d);
+    $("#fd", d).onsubmit = async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+      Object.keys(data).forEach((k) => (data[k] = String(data[k]).trim()));
+      const path = data.path === "personal" ? "personal" : "business";
+      const engagement = path === "personal" ? "household" : (data.engagement || "teams");
+      const pathChanged = path !== clientPath(c) || engagement !== (c.engagement || clientEngagement(c));
+      const patch = {
+        name: data.name, trade: data.trade, town: data.town, hq: data.hq, phone: data.phone, email: data.email || "", website: data.website,
+        towns: data.towns.split(",").map((s) => s.trim()).filter(Boolean),
+        tags: data.tags.split(",").map((s) => s.trim()).filter(Boolean),
+        brand: { ...(c.brand || {}), color1: /^#[0-9a-f]{3,8}$/i.test(data.color1) ? data.color1 : c.brand?.color1 || "" },
+        path, engagement,
+      };
+      if (pathChanged) patch.modules = mergeModules(c.modules, path, engagement);
+      await save(c.id, patch);
+      toast("Saved");
+      closeModal();
+    };
+  });
 }
 const LISTS = {
   interests: { title: "What they're interested in", fields: [{ k: "title", label: "Interest", full: true, required: true, placeholder: "e.g. More Google reviews" }, { k: "note", label: "Note", full: true }, { k: "status", label: "Where it stands", type: "select", options: Object.entries(INT_ST) }], blank: { status: "active" }, log: (x) => `Interested in: ${x.title}` },
@@ -1001,32 +1223,56 @@ function editList(c, field, idx) {
 }
 
 // ------------------------------------------------------------------ assessments
-let pickType = "presence-free";
+let pickType = "agent-free";
+let pickClient = "";
+function reportEnabled(c, type) { return !c || hasModule(c, reportModule(type)); }
+function firstEnabledReport(c) {
+  if (!c) return REPORTS[0].type;
+  const t = REPORTS.find((r) => hasModule(c, reportModule(r.type)));
+  return t ? t.type : "";
+}
 function viewAssess(v) {
   const params = new URLSearchParams(location.hash.split("?")[1] || "");
   if (params.get("type")) pickType = params.get("type");
-  const pre = params.get("client") || "";
+  if (params.get("client")) pickClient = params.get("client");
+  if (!pickClient && S.clients[0]) pickClient = S.clients[0].id;
+  const selC = pickClient && pickClient !== "__new" ? client(pickClient) : null;
+  if (selC && pickType && !reportEnabled(selC, pickType)) pickType = firstEnabledReport(selC) || pickType;
   const all = S.reports.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-  const T = RTYPE[pickType];
+  const T = RTYPE[pickType] || REPORTS[0];
+  const pickOn = reportEnabled(selC, pickType);
   v.innerHTML = `<section class="hello"><div><div class="date">Assessments</div><h1>Show them what you see.</h1><p>Pick a report, pick a business, and queue it. Every report uses the same design, so a free scan grows into the full one.</p></div></section>
-    <section class="tools">${REPORTS.map((t) => `<button class="panel tool" data-type="${t.type}" aria-pressed="${t.type === pickType}"><span class="ico ${t.type.endsWith("full") ? "full" : ""}">${ic(t.fam === "presence" ? "globe" : "spark")}</span><b>${esc(t.name)}</b><p>${esc(t.desc)}</p><span class="cost"><span>${esc(t.cost)}</span><span>${esc(t.time)}</span></span></button>`).join("")}</section>
+    <section class="tools">${REPORTS.map((t) => {
+      const on = reportEnabled(selC, t.type);
+      const tip = on ? "" : `${MODULE_LABELS[reportModule(t.type)] || "This module"} is off for this client`;
+      return `<button class="panel tool ${on ? "" : "is-off"}" data-type="${t.type}" aria-pressed="${t.type === pickType && on}" ${on ? "" : `disabled title="${esc(tip)}"`}><span class="ico ${t.type.endsWith("full") ? "full" : ""}">${ic(t.fam === "presence" ? "globe" : "spark")}</span><b>${esc(t.name)}</b><p>${esc(t.desc)}</p><span class="cost"><span>${esc(t.cost)}</span><span>${esc(t.time)}</span></span></button>`;
+    }).join("")}</section>
     <section class="panel run"><div class="ph" style="padding:0"><h2>Run ${esc(T.name)}</h2></div>
       <form id="runf" class="row">
-        <label class="field">For<select class="input" name="client" id="runClient">${S.clients.map((c) => `<option value="${esc(c.id)}" ${c.id === pre ? "selected" : ""}>${esc(c.name)}</option>`).join("")}<option value="__new">+ A new business…</option></select></label>
+        <label class="field">For<select class="input" name="client" id="runClient">${S.clients.map((c) => `<option value="${esc(c.id)}" ${c.id === pickClient ? "selected" : ""}>${esc(c.name)}</option>`).join("")}<option value="__new" ${pickClient === "__new" ? "selected" : ""}>+ A new business…</option></select></label>
         <label class="field newbiz" hidden>Business name<input class="input" name="nname" placeholder="e.g. Crow River Landscaping"></label>
         <label class="field newbiz" hidden>Website<input class="input" name="nweb" placeholder="example.com"></label>
         <label class="field newbiz" hidden>Town<input class="input" name="ntown" placeholder="Dayton, MN"></label>
-        <button class="btn p">${ic("play")}Queue ${esc(T.name)}</button>
+        <button class="btn p" ${pickOn ? "" : "disabled"}>${ic("play")}Queue ${esc(T.name)}</button>
       </form>
-      <div class="howto">${howTo(pickType, client(pre) || S.clients[0])}</div>
+      <div class="howto">${howTo(pickType, selC)}</div>
     </section>
     <section class="panel"><div class="ph"><h2>All reports <small>${all.length}</small></h2></div><div class="tablewrap" style="margin-top:8px">
       ${all.length ? `<table class="t"><thead><tr><th>Client</th><th>Report</th><th>Status</th><th>Date</th><th style="text-align:right">Score</th><th></th></tr></thead><tbody>${all.map((r) => { const c = client(r.client); return `<tr><td><a href="#/c/${esc(r.client)}">${esc(c?.name || r.client)}</a></td><td>${esc(RTYPE[r.type]?.name || r.type)}</td><td><span class="chip ${r.status === "published" ? "ok" : r.status === "draft" ? "warn" : "dash"}">${esc(r.status)}</span></td><td class="mono">${esc(fmtDay(r.date))}</td><td class="n">${r.score ?? "–"}</td><td>${r.link ? `<a href="${esc(r.link)}" target="_blank" rel="noopener">Open ↗</a>` : ""}</td></tr>`; }).join("")}</tbody></table>`
-        : `<div class="pb"><div class="empty-note">No reports yet. Your first free scan is the best conversation starter you have.</div></div>`}</div></section>`;
-  $$("[data-type]", v).forEach((b) => (b.onclick = () => { pickType = b.dataset.type; refresh(true); }));
+        : `<div class="pb"><div class="empty-note">No reports yet. Queue an Agent Team report to start the conversation.</div></div>`}</div></section>`;
+  $$("[data-type]", v).forEach((b) => (b.onclick = () => {
+    if (b.disabled) return toast(b.title || "That report is off for this client");
+    pickType = b.dataset.type; refresh(true);
+  }));
   const sel = $("#runClient");
   const sync = () => { const nw = sel.value === "__new"; $$(".newbiz", v).forEach((x) => (x.hidden = !nw)); $(".howto", v).innerHTML = howTo(pickType, nw ? null : client(sel.value)); };
-  sel.onchange = sync; sync();
+  sel.onchange = () => {
+    pickClient = sel.value;
+    const c = pickClient === "__new" ? null : client(pickClient);
+    if (c && !reportEnabled(c, pickType)) pickType = firstEnabledReport(c) || pickType;
+    refresh(true);
+  };
+  sync();
   $("#runf").onsubmit = async (e) => {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));
@@ -1034,9 +1280,13 @@ function viewAssess(v) {
     if (id === "__new") {
       if (!f.nname.trim()) return toast("Add the business name first");
       id = slugify(f.nname); while (client(id)) id += "-2";
-      await setDoc(cref(id), { name: f.nname.trim(), website: f.nweb.trim(), town: f.ntown.trim(), trade: "", email: "", stage: "Lead", phone: "", hq: "", towns: [], tags: [], brand: {}, contacts: [], interests: [], tech: [], vendors: [], next: { what: `Review the ${T.name} results`, due: "" }, created: serverTimestamp(), updated: serverTimestamp(), lastTouch: serverTimestamp() });
+      await setDoc(cref(id), blankClientDoc({ name: f.nname.trim(), website: f.nweb.trim(), town: f.ntown.trim(), path: "business", engagement: "teams" }));
       await addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind: "Note", text: "Added as a prospect from the assessment launcher." });
+    } else {
+      const c = client(id);
+      if (c && !reportEnabled(c, pickType)) return toast("That report is off for this client");
     }
+    if (!RTYPE[pickType]) return toast("Pick a report first");
     await addDoc(collection(cref(id), "reports"), { type: pickType, status: "requested", date: todayISO(), created: serverTimestamp(), updated: serverTimestamp() });
     await logEntry(id, `${T.name} queued`, "Note");
     toast(`${T.name} queued for ${client(id)?.name || f.nname}`);
