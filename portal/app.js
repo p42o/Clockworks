@@ -682,8 +682,9 @@ function openMore() {
 }
 
 // ------------------------------------------------------------------ modal + forms
-function openModal(html, onMount) {
-  $("#modal").innerHTML = `<div class="scrim" id="scrim"><div class="dialog" role="dialog" aria-modal="true">${html}</div></div>`;
+function openModal(html, onMount, dialogClass = "") {
+  const cls = dialogClass ? `dialog ${dialogClass}` : "dialog";
+  $("#modal").innerHTML = `<div class="scrim" id="scrim"><div class="${cls}" role="dialog" aria-modal="true">${html}</div></div>`;
   $("#scrim").addEventListener("mousedown", (e) => { if (e.target.id === "scrim") closeModal(); });
   const f = $("#modal input, #modal textarea, #modal select"); if (f) setTimeout(() => f.focus(), 30);
   onMount && onMount($("#modal .dialog"));
@@ -845,11 +846,14 @@ async function loadFiles(prefix, force) {
         const meta = await getMetadata(item);
         const cm = meta.customMetadata || {};
         const stored = item.name;
-        const original = cm.originalName || stored.replace(/^\d{10,}-/, "") || stored;
+        const stripped = stored.replace(/^\d{10,}-/, "") || stored;
+        const downloadName = cm.downloadName || cm.originalName || stripped;
+        const display = cm.displayName || prettyAssetTitle(downloadName);
+        const contentType = meta.contentType || "";
         return {
-          path: item.fullPath, name: original, size: meta.size, timeCreated: meta.timeCreated,
+          path: item.fullPath, name: display, downloadName, size: meta.size, timeCreated: meta.timeCreated,
           uploadedBy: cm.uploadedBy || "", category: cm.category === "returned-intake" ? "returned-intake" : "general",
-          contentType: meta.contentType || "",
+          contentType, thumbPath: cm.thumbPath || assetThumbPath(item.fullPath, contentType, downloadName),
         };
       }));
       fileCache[prefix] = { items, at: Date.now() };
@@ -867,6 +871,89 @@ function isPdfType(t, name) {
   const n = String(name || "").toLowerCase();
   return String(t || "") === "application/pdf" || n.endsWith(".pdf");
 }
+function baseNameNoExt(name) {
+  const b = String(name || "").split("/").pop() || "file";
+  return b.replace(/\.[^.]+$/, "") || b;
+}
+function prettyAssetTitle(name) {
+  const raw = String(name || "").replace(/\.[^.]+$/, "");
+  const known = {
+    "AI-Team-OnePager": "AI Team One-Pager",
+    "Grok-Teams-Brief": "Team Bots Brief",
+    "Grok-Bot-Security-Brief": "Security 2-Pager",
+    "Grok-vs-Dots-vs-Muse": "Grok vs Dots vs Muse",
+    "Client-Intake-Form-Blank-v2": "Client Intake Form (Blank)",
+    "Personal-Life-Intake-Blank-v2": "Personal Life Intake (Blank)",
+  };
+  if (known[raw]) return known[raw];
+  return raw.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+function assetThumbPath(fullPath, contentType, name) {
+  if (isImageType(contentType)) return fullPath;
+  if (!isPdfType(contentType, name || fullPath)) return "";
+  const parts = String(fullPath).split("/");
+  const file = parts.pop() || "";
+  return `${parts.join("/")}/thumbs/${baseNameNoExt(file)}.jpg`;
+}
+async function downloadAssetBlob(path, downloadName) {
+  const url = await getDownloadURL(sref(storage, path));
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`download ${res.status}`);
+  const blob = await res.blob();
+  const a = document.createElement("a");
+  const href = URL.createObjectURL(blob);
+  a.href = href;
+  a.download = downloadName || path.split("/").pop() || "download";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(href), 1500);
+}
+async function openAssetViewer(file) {
+  const path = file.path;
+  const title = file.name || path.split("/").pop() || "Asset";
+  const dlName = file.downloadName || (path.split("/").pop() || "download.pdf").replace(/^\d{10,}-/, "");
+  const pdf = isPdfType(file.contentType, dlName);
+  let url;
+  try { url = await getDownloadURL(sref(storage, path)); }
+  catch (e) { toast("Couldn't open: " + (e.code || e.message)); return; }
+  let zoom = 1;
+  const body = pdf
+    ? `<div class="av-frame"><iframe class="av-iframe" title="${esc(title)}" src="${esc(url)}"></iframe></div>`
+    : isImageType(file.contentType)
+      ? `<div class="av-frame"><img class="av-img" alt="${esc(title)}" src="${esc(url)}"></div>`
+      : `<div class="av-frame av-fallback"><p>Preview isn't available for this file type.</p><a class="btn p" href="${esc(url)}" target="_blank" rel="noopener">Open in new tab</a></div>`;
+  openModal(`<div class="av-head"><div><h2>${esc(title)}</h2><small>${esc(dlName)}</small></div>
+    <div class="av-tools">
+      <button type="button" class="btn sm ghost" data-av-zoom="-">−</button>
+      <span class="av-zoom-lbl">100%</span>
+      <button type="button" class="btn sm ghost" data-av-zoom="+">+</button>
+      <button type="button" class="btn sm ghost" data-av-zoom="1">Reset</button>
+      <button type="button" class="btn sm p" data-av-dl>${ic("link")}Download</button>
+      <button type="button" class="btn sm ghost" data-av-x aria-label="Close">✕</button>
+    </div></div>${body}`, (d) => {
+    const frame = $(".av-frame", d);
+    const lbl = $(".av-zoom-lbl", d);
+    const applyZoom = () => {
+      if (!frame) return;
+      frame.style.transform = `scale(${zoom})`;
+      if (lbl) lbl.textContent = `${Math.round(zoom * 100)}%`;
+    };
+    $$("[data-av-zoom]", d).forEach((b) => (b.onclick = () => {
+      const v = b.dataset.avZoom;
+      if (v === "+") zoom = Math.min(2.5, +(zoom + 0.15).toFixed(2));
+      else if (v === "-") zoom = Math.max(0.5, +(zoom - 0.15).toFixed(2));
+      else zoom = 1;
+      applyZoom();
+    }));
+    $("[data-av-dl]", d).onclick = async () => {
+      try { await downloadAssetBlob(path, dlName); toast("Download started."); }
+      catch (e) { toast("Download failed: " + (e.message || e)); }
+    };
+    $("[data-av-x]", d).onclick = closeModal;
+    applyZoom();
+  }, "asset-viewer");
+}
 function filesCardHtml(prefix, { title, empty, taggable, showcase }) {
   if (!fileCache[prefix] && !fileLoading[prefix]) loadFiles(prefix);
   const rec = fileCache[prefix];
@@ -882,23 +969,24 @@ function filesCardHtml(prefix, { title, empty, taggable, showcase }) {
       ...ups.map((u) => `<div class="file tile" data-up="${esc(u.id)}"><div class="tile-thumb ph"><span class="tile-ph">Uploading</span></div><div class="tile-meta"><b>${esc(u.name)}</b><small>${u.pct}%</small></div><div class="upbar"><i style="width:${u.pct}%"></i></div></div>`),
       ...items.map((f) => {
         const img = isImageType(f.contentType);
-        const pdf = !img && isPdfType(f.contentType, f.name);
-        const thumb = img
-          ? `<button type="button" class="tile-thumb" data-dl="${esc(f.path)}" data-thumb="${esc(f.path)}" aria-label="Open ${esc(f.name)}"><span class="tile-ph">…</span></button>`
-          : `<button type="button" class="tile-thumb ${pdf ? "pdf" : "file"}" data-dl="${esc(f.path)}" aria-label="Open ${esc(f.name)}"><span class="tile-ph">${pdf ? "PDF" : "FILE"}</span></button>`;
-        return `<div class="file tile">
+        const pdf = !img && isPdfType(f.contentType, f.downloadName || f.name);
+        const hasThumb = !!(f.thumbPath);
+        const thumbCls = hasThumb ? "" : (pdf ? "pdf" : "file");
+        const ph = hasThumb ? "…" : (pdf ? "PDF" : "FILE");
+        const thumb = `<button type="button" class="tile-thumb ${thumbCls}" data-view="${esc(f.path)}" ${hasThumb ? `data-thumb="${esc(f.thumbPath)}"` : ""} aria-label="Open ${esc(f.name)}"><span class="tile-ph">${ph}</span></button>`;
+        return `<div class="file tile" data-fpath="${esc(f.path)}" data-fname="${esc(f.name)}" data-fdl="${esc(f.downloadName || f.name)}" data-ftype="${esc(f.contentType || "")}">
       ${thumb}
       <div class="tile-meta"><b title="${esc(f.name)}">${esc(f.name)}</b><small>${esc(fmtSize(f.size))}${f.timeCreated ? " · " + esc(fmtDay(String(f.timeCreated).slice(0, 10))) : ""}</small></div>
-      <div class="file-acts"><button type="button" class="btn sm" data-dl="${esc(f.path)}">${ic("link")}Open</button><button type="button" class="btn sm ghost danger" data-rm="${esc(f.path)}" aria-label="Delete ${esc(f.name)}">${ic("trash")}</button></div>
+      <div class="file-acts"><button type="button" class="btn sm" data-view="${esc(f.path)}">${ic("link")}Open</button><button type="button" class="btn sm ghost danger" data-rm="${esc(f.path)}" aria-label="Delete ${esc(f.name)}">${ic("trash")}</button></div>
     </div>`;
       }),
     ].join("")
     : [
       ...ups.map((u) => `<div class="file" data-up="${esc(u.id)}"><div><b>${esc(u.name)}</b><small>Uploading… ${u.pct}%</small></div><div class="upbar"><i style="width:${u.pct}%"></i></div></div>`),
-      ...items.map((f) => `<div class="file">
+      ...items.map((f) => `<div class="file" data-fpath="${esc(f.path)}" data-fname="${esc(f.name)}" data-fdl="${esc(f.downloadName || f.name)}" data-ftype="${esc(f.contentType || "")}">
       <div><b>${esc(f.name)}</b><small>${esc(fmtSize(f.size))}${f.timeCreated ? " · " + esc(fmtDay(String(f.timeCreated).slice(0, 10))) : ""}${f.uploadedBy ? " · " + esc(f.uploadedBy) : ""}</small></div>
       ${taggable ? `<button type="button" class="chip ${f.category === "returned-intake" ? "acc" : "dash"}" data-retag="${esc(f.path)}" data-cat="${esc(f.category)}" title="Tap to retag" style="cursor:pointer;border:0">${esc(tagLabel(f.category))}</button>` : ""}
-      <div class="file-acts"><button type="button" class="btn sm" data-dl="${esc(f.path)}">${ic("link")}Open</button><button type="button" class="btn sm ghost danger" data-rm="${esc(f.path)}" aria-label="Delete ${esc(f.name)}">${ic("trash")}</button></div>
+      <div class="file-acts"><button type="button" class="btn sm" data-view="${esc(f.path)}">${ic("link")}Open</button><button type="button" class="btn sm ghost danger" data-rm="${esc(f.path)}" aria-label="Delete ${esc(f.name)}">${ic("trash")}</button></div>
     </div>`),
     ].join("");
   let body;
@@ -927,14 +1015,39 @@ function wireFilesPanel(root) {
       for (const file of files) await uploadOne(prefix, file, tag);
     };
     $$("[data-ff]", card).forEach((b) => (b.onclick = () => { fileFilter[prefix] = b.dataset.ff; refresh(true); }));
+    const fileFromBtn = (b) => {
+      const row = b.closest("[data-fpath]") || b.closest(".file");
+      const path = b.dataset.view || b.dataset.dl || row?.dataset.fpath;
+      const cached = (fileCache[prefix]?.items || []).find((x) => x.path === path);
+      if (cached) return cached;
+      return {
+        path,
+        name: row?.dataset.fname || path?.split("/").pop() || "Asset",
+        downloadName: row?.dataset.fdl || path?.split("/").pop() || "download",
+        contentType: row?.dataset.ftype || "",
+      };
+    };
+    $$("[data-view]", card).forEach((b) => (b.onclick = async () => {
+      try { await openAssetViewer(fileFromBtn(b)); }
+      catch (e) { toast("Couldn't open: " + (e.code || e.message)); }
+    }));
     $$("[data-dl]", card).forEach((b) => (b.onclick = async () => {
-      try { window.open(await getDownloadURL(sref(storage, b.dataset.dl)), "_blank", "noopener"); }
+      try { await openAssetViewer(fileFromBtn(b)); }
       catch (e) { toast("Couldn't open: " + (e.code || e.message)); }
     }));
     $$("[data-rm]", card).forEach((b) => (b.onclick = async (e) => {
       const btn = e.currentTarget;
       if (btn.dataset.armed !== "1") { btn.dataset.armed = "1"; btn.textContent = "Tap again"; setTimeout(() => { if (btn.isConnected) { btn.dataset.armed = ""; btn.innerHTML = ic("trash"); } }, 4000); return; }
-      try { await deleteObject(sref(storage, btn.dataset.rm)); toast("File removed."); await loadFiles(prefix, true); }
+      try {
+        const path = btn.dataset.rm;
+        const cached = (fileCache[prefix]?.items || []).find((x) => x.path === path);
+        await deleteObject(sref(storage, path));
+        if (cached?.thumbPath && cached.thumbPath !== path) {
+          try { await deleteObject(sref(storage, cached.thumbPath)); } catch (_) { /* thumb may be missing */ }
+        }
+        toast("File removed.");
+        await loadFiles(prefix, true);
+      }
       catch (err) { toast("Delete failed: " + (err.code || err.message)); }
     }));
     $$("[data-retag]", card).forEach((b) => (b.onclick = async () => {
@@ -950,9 +1063,11 @@ function wireFilesPanel(root) {
       $$("[data-thumb]", card).forEach(async (el) => {
         try {
           const url = await getDownloadURL(sref(storage, el.dataset.thumb));
+          el.classList.remove("pdf", "file");
           el.innerHTML = `<img src="${esc(url)}" alt="" loading="lazy" decoding="async">`;
         } catch (e) {
-          el.innerHTML = `<span class="tile-ph">IMG</span>`;
+          const pdf = el.classList.contains("pdf");
+          el.innerHTML = `<span class="tile-ph">${pdf ? "PDF" : "FILE"}</span>`;
         }
       });
     }
@@ -973,12 +1088,26 @@ async function uploadOne(prefix, file, category) {
   const type = file.type || "";
   if (type !== "application/pdf" && !type.startsWith("image/")) { toast("PDF or images only."); return; }
   const id = String(Date.now()) + "-" + Math.random().toString(36).slice(2, 7);
-  const path = `${prefix}/${Date.now()}-${safeFileName(file.name)}`;
+  const clean = safeFileName(file.name);
+  const isAsset = prefix.startsWith("assets/");
+  const path = isAsset ? `${prefix}/${clean}` : `${prefix}/${Date.now()}-${clean}`;
   if (!uploads[prefix]) uploads[prefix] = [];
   const u = { id, name: file.name, pct: 0 };
   uploads[prefix].push(u);
   refresh(true);
-  const meta = { contentType: type, customMetadata: { category, originalName: file.name, uploadedBy: me?.email || "" } };
+  const displayName = isAsset ? prettyAssetTitle(clean) : file.name;
+  const thumbPath = isAsset && type === "application/pdf" ? `${prefix}/thumbs/${baseNameNoExt(clean)}.jpg` : "";
+  const meta = {
+    contentType: type,
+    customMetadata: {
+      category,
+      originalName: file.name,
+      downloadName: clean,
+      displayName,
+      uploadedBy: me?.email || "",
+      ...(thumbPath ? { thumbPath } : {}),
+    },
+  };
   const task = uploadBytesResumable(sref(storage, path), file, meta);
   await new Promise((resolve) => {
     task.on("state_changed", (s) => {
