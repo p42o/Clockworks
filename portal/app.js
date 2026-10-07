@@ -278,11 +278,34 @@ const logEntry = (id, text, kind = "Note") => Promise.all([addDoc(collection(cre
 // ------------------------------------------------------------------ auth
 let me = null;
 function renderGate(kind) {
-  $("#app").innerHTML = `<div class="gate"><div class="card">${mark("mark sweep")}<h1>${kind === "denied" ? "Not on the list" : "Clockworks"}</h1>
-    <p>${kind === "denied" ? `${esc(me.email)} is signed in, but this account doesn't have portal access.` : "Your clients, assessments and quotes. Sign in to get to work."}</p>
-    ${kind === "denied" ? `<button class="btn" id="out">Sign out</button>` : `<button class="btn p" id="signin" style="width:100%">Sign in with Google</button>`}
-    ${EMU && kind !== "denied" ? `<button class="btn link" id="devin">Emulator: sign in as Parker</button>` : ""}</div></div>`;
-  if (kind === "denied") { $("#out").onclick = doSignOut; return; }
+  const denied = kind === "denied";
+  $("#app").innerHTML = `<div class="gate" data-kind="${denied ? "denied" : "in"}">
+    <div class="gate-bg" aria-hidden="true">
+      <span class="gate-orb o1"></span>
+      <span class="gate-orb o2"></span>
+      <span class="gate-orb o3"></span>
+      <div class="gate-grid"></div>
+      <div class="gate-ticks"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="card gate-card">
+      <div class="gate-mark-wrap">
+        <span class="gate-ring" aria-hidden="true"></span>
+        <span class="gate-ring r2" aria-hidden="true"></span>
+        ${mark("mark sweep gate-mark")}
+      </div>
+      <p class="gate-kicker">${denied ? "Access" : "MN Clockworks"}</p>
+      <h1>${denied ? "Not on the list" : "Clockworks"}</h1>
+      <p class="gate-lead">${denied
+        ? `${esc(me.email)} is signed in, but this account doesn't have portal access.`
+        : "Your clients, assessments and quotes. Sign in to get to work."}</p>
+      ${denied
+        ? `<button class="btn" id="out">Sign out</button>`
+        : `<button class="btn p gate-cta" id="signin">Sign in with Google</button>`}
+      ${EMU && !denied ? `<button class="btn link" id="devin">Emulator: sign in as Parker</button>` : ""}
+      ${denied ? "" : `<p class="gate-foot"><span class="gate-pulse" aria-hidden="true"></span>Operator command center</p>`}
+    </div>
+  </div>`;
+  if (denied) { $("#out").onclick = doSignOut; return; }
   $("#signin").onclick = async () => {
     const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" });
     try { await signInWithPopup(auth, p); } catch (e) { if (/popup/.test(e.code || "")) return signInWithRedirect(auth, p); toast("Sign-in failed: " + (e.code || e.message)); }
