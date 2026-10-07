@@ -48,6 +48,23 @@ const AI_SETUP = [
   ["firstWorkflowLive", "First workflow live"],
   ["week1Review", "Week 1 review"],
 ];
+const SCOPE_ROWS = [
+  ["team_bots", "Agent crew"], ["presence", "Presence"], ["intake", "Intake"], ["tech_stack", "Tech stack"],
+  ["vendors", "Contracts / vendors"], ["quotes", "Quotes"], ["seo_track", "SEO track"], ["household", "Household"],
+];
+const TOUCH_CH = [["Call", "Call"], ["Text", "Text"], ["Email", "Email"], ["In-person", "In-person"], ["DM", "DM"], ["Other", "Other"]];
+const AGREE_ST = [["none", "None"], ["draft", "Draft"], ["sent", "Sent"], ["signed", "Signed"], ["expired", "Expired"]];
+const MONEY_ST = [["unpaid", "Unpaid"], ["partial", "Partial"], ["paid", "Paid"], ["comp", "Comp"], ["na", "N/A"]];
+const ACCESS_ST = [["shared", "Shared"], ["requested", "Requested"], ["revoked", "Revoked"], ["na", "N/A"]];
+const ACCESS_LOGOS = [
+  ["gmail", "Gmail"], ["gcal", "Google Calendar"], ["quo", "Quo"], ["discord", "Discord"], ["notion", "Notion"],
+  ["slack", "Slack"], ["microsoft", "Microsoft 365"], ["apple", "Apple"], ["stripe", "Stripe"], ["venmo", "Venmo"],
+  ["alarm", "Alarm.com"], ["generic", "Other"],
+];
+const TIME_KINDS = [["call", "Call"], ["text", "Text"], ["meeting", "Meeting"], ["build", "Build"], ["research", "Research"], ["admin", "Admin"], ["other", "Other"]];
+const FACE_KINDS = new Set(["call", "text", "meeting"]);
+const BUILD_KINDS = new Set(["build", "research", "admin"]);
+
 const labelOf = (pairs, id, fb = id) => (pairs.find((x) => x[0] === id) || [id, fb])[1];
 
 // path UI label ↔ schema. Presence is an opt-in module; Teams/Life are the defaults.
@@ -61,8 +78,8 @@ const MODULE_CATALOG = [
   "household", "events", "finance", "meals", "health", "shopping", "family",
 ];
 const MODULE_LABELS = {
-  team_bots: "Agent crew", presence: "Presence", tech_stack: "Tech", vendors: "Vendors",
-  intake: "Intake", seo_track: "SEO", quotes: "Quotes", household: "Household",
+  team_bots: "Agent crew", presence: "Presence", tech_stack: "Tech stack", vendors: "Contracts / vendors",
+  intake: "Intake", seo_track: "SEO track", quotes: "Quotes", household: "Household",
   events: "Events", finance: "Finance", meals: "Meals", health: "Health",
   shopping: "Shopping", family: "Family", profile: "Profile", contacts: "Contacts",
   files: "Files", log: "Log", next_steps: "Next steps",
@@ -250,22 +267,27 @@ function countUp(root = document) {
 }
 
 // ------------------------------------------------------------------ data (live)
-const S = { clients: [], logs: {}, reports: [], quotes: [], ready: false };
-let unsubs = [], logUnsubs = {};
+const S = { clients: [], logs: {}, timeLogs: {}, reports: [], quotes: [], ready: false };
+let unsubs = [], logUnsubs = {}, timeLogUnsubs = {};
 function listen() {
   unsubs.push(onSnapshot(collection(db, "clients"), (snap) => {
     S.clients = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     S.clients.forEach((c) => {
-      if (logUnsubs[c.id]) return;
-      logUnsubs[c.id] = onSnapshot(query(collection(db, "clients", c.id, "log"), orderBy("at", "desc"), limit(60)), (s) => { S.logs[c.id] = s.docs.map((d) => ({ id: d.id, client: c.id, ...d.data() })); refresh(); });
+      if (!logUnsubs[c.id]) {
+        logUnsubs[c.id] = onSnapshot(query(collection(db, "clients", c.id, "log"), orderBy("at", "desc"), limit(60)), (s) => { S.logs[c.id] = s.docs.map((d) => ({ id: d.id, client: c.id, ...d.data() })); refresh(); });
+      }
+      if (!timeLogUnsubs[c.id]) {
+        timeLogUnsubs[c.id] = onSnapshot(query(collection(db, "clients", c.id, "timeLogs"), orderBy("at", "desc"), limit(40)), (s) => { S.timeLogs[c.id] = s.docs.map((d) => ({ id: d.id, client: c.id, ...d.data() })); refresh(); }, () => { S.timeLogs[c.id] = S.timeLogs[c.id] || []; });
+      }
     });
     Object.keys(logUnsubs).forEach((id) => { if (!S.clients.find((c) => c.id === id)) { logUnsubs[id](); delete logUnsubs[id]; delete S.logs[id]; } });
+    Object.keys(timeLogUnsubs).forEach((id) => { if (!S.clients.find((c) => c.id === id)) { timeLogUnsubs[id](); delete timeLogUnsubs[id]; delete S.timeLogs[id]; } });
     S.ready = true; refresh();
   }, (e) => toast("Couldn't load clients: " + e.code)));
   unsubs.push(onSnapshot(collectionGroup(db, "reports"), (s) => { S.reports = s.docs.map((d) => ({ id: d.id, client: d.ref.parent.parent.id, ...d.data() })); refresh(); }));
   unsubs.push(onSnapshot(collectionGroup(db, "quotes"), (s) => { S.quotes = s.docs.map((d) => ({ id: d.id, client: d.ref.parent.parent.id, ...d.data() })); refresh(); }));
 }
-function stopAll() { unsubs.forEach((f) => f()); unsubs = []; Object.values(logUnsubs).forEach((f) => f()); logUnsubs = {}; }
+function stopAll() { unsubs.forEach((f) => f()); unsubs = []; Object.values(logUnsubs).forEach((f) => f()); logUnsubs = {}; Object.values(timeLogUnsubs).forEach((f) => f()); timeLogUnsubs = {}; }
 const client = (id) => S.clients.find((c) => c.id === id);
 const allLogs = () => Object.values(S.logs).flat().sort((a, b) => (toDate(b.at) || 0) - (toDate(a.at) || 0));
 const clientReports = (id) => S.reports.filter((r) => r.client === id).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
@@ -273,7 +295,42 @@ const clientQuotes = (id) => S.quotes.filter((q) => q.client === id).sort((a, b)
 const latestPresence = (id) => clientReports(id).find((r) => r.type.startsWith("presence") && r.status === "published" && r.score != null);
 const cref = (id) => doc(db, "clients", id);
 const save = (id, patch) => updateDoc(cref(id), { ...patch, updated: serverTimestamp() }).catch((e) => { toast("Save failed: " + e.code); throw e; });
-const logEntry = (id, text, kind = "Note") => Promise.all([addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind, text }), updateDoc(cref(id), { lastTouch: serverTimestamp() })]);
+const logEntry = (id, text, kind = "Note", meta = null) => {
+  const patch = { lastTouch: serverTimestamp() };
+  if (meta && meta.channel) patch.lastTouchMeta = { channel: meta.channel, note: meta.note || "" };
+  return Promise.all([addDoc(collection(cref(id), "log"), { at: serverTimestamp(), kind, text }), updateDoc(cref(id), patch)]);
+};
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+function accessLogoHtml(key, system) {
+  const k = (key || "generic").toLowerCase();
+  const label = system || labelOf(ACCESS_LOGOS, k, k);
+  const ini = initials(label).slice(0, 2) || "?";
+  const colors = { gmail: "#EA4335", gcal: "#4285F4", quo: "#5B5FC7", discord: "#5865F2", notion: "#111111", slack: "#4A154B", microsoft: "#00A4EF", apple: "#555555", stripe: "#635BFF", venmo: "#008CFF", alarm: "#E4572E", generic: "#6B7280" };
+  return `<span class="acc-logo" style="--acc:${colors[k] || colors.generic}" title="${esc(label)}" aria-hidden="true">${esc(ini)}</span>`;
+}
+function moneyTruth(c) {
+  const m = c.money;
+  if (m && (m.status || m.owed != null || m.paid != null || m.home || m.nextInvoice)) return m;
+  const p = c.payment || {};
+  if (!(p.status || p.amount != null || p.date)) return null;
+  return { owed: p.status === "paid" ? 0 : (p.amount ?? null), paid: p.status === "paid" ? (p.amount ?? null) : null, currency: "USD", nextInvoice: { amount: null, due: "", label: "" }, home: "", homeNote: "", status: p.status === "paid" ? "paid" : (p.status === "refunded" ? "na" : "unpaid"), _fromPayment: true };
+}
+function recomputeHours(rows) {
+  let face = 0, build = 0, billable = 0, nonBillable = 0;
+  for (const r of rows) {
+    const h = Number(r.hours) || 0;
+    if (FACE_KINDS.has(r.kind)) face += h;
+    else if (BUILD_KINDS.has(r.kind)) build += h;
+    else build += h;
+    if (r.billable) billable += h; else nonBillable += h;
+  }
+  const round = (n) => Math.round(n * 10) / 10;
+  return { total: round(face + build), face: round(face), build: round(build), billable: round(billable), nonBillable: round(nonBillable), updatedAt: serverTimestamp() };
+}
+async function persistHoursRollup(clientId) {
+  const rows = S.timeLogs[clientId] || [];
+  await save(clientId, { hours: recomputeHours(rows) });
+}
 
 // ------------------------------------------------------------------ auth
 let me = null;
@@ -980,13 +1037,15 @@ function viewClient(v) {
         : `<div><span class="lbl">Path</span><b>${esc(pathLabel(clientPath(c)))}</b></div>`}
       <div><span class="lbl">Open quotes</span><b>${openQ.length ? money(openQ.reduce((a, q) => a + quoteTotal(q).total, 0)) : `<span style="font:600 14px var(--ff);color:var(--ink-3)">None yet</span>`}</b></div>
       ${hasModule(c, "tech_stack") ? `<div><span class="lbl">Tech confirmed</span><b>${tech.length ? `${tc.confirmed}/${tech.length}` : `<span style="font:600 14px var(--ff);color:var(--ink-3)">Discovering</span>`}</b></div>` : ""}
-      <div><span class="lbl">Last touch</span><b style="font-size:16px">${esc(ago(c.lastTouch))}</b></div>
+      <div><span class="lbl">Last touch</span><b style="font-size:16px">${esc(ago(c.lastTouch))}${c.lastTouchMeta?.channel ? ` · ${esc(c.lastTouchMeta.channel)}` : ""}</b></div>
     </div>
   </section>
 
+  ${scopeLockCard(c)}
+
   <section class="grid g3">
     <div class="panel"><div class="ph"><h2>Details</h2><button class="btn sm ghost" data-edit="details">${ic("pen")}Edit</button></div><div class="pb">
-      <dl class="kv"><dt>${clientPath(c) === "personal" ? "Name" : "Business"}</dt><dd>${esc(c.name)}</dd>${c.trade ? `<dt>Trade</dt><dd>${esc(c.trade)}</dd>` : ""}${c.hq ? `<dt>HQ</dt><dd>${esc(c.hq)}</dd>` : c.town ? `<dt>Town</dt><dd>${esc(c.town)}</dd>` : ""}${c.phone ? `<dt>Phone</dt><dd class="mono">${esc(c.phone)}</dd>` : ""}${c.email ? `<dt>Email</dt><dd>${mailLink(c.email)}</dd>` : ""}${site ? `<dt>Website</dt><dd><a href="${esc(site)}" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:none">${esc(c.website)}</a></dd>` : ""}${(c.towns || []).length ? `<dt>Serves</dt><dd class="towns">${c.towns.map((t) => `<span>${esc(t)}</span>`).join("")}</dd>` : ""}</dl>
+      <dl class="kv"><dt>${clientPath(c) === "personal" ? "Name" : "Business"}</dt><dd>${esc(c.name)}</dd>${c.trade ? `<dt>Trade</dt><dd>${esc(c.trade)}</dd>` : ""}${c.hq ? `<dt>HQ</dt><dd>${esc(c.hq)}</dd>` : c.town ? `<dt>Town</dt><dd>${esc(c.town)}</dd>` : ""}${c.phone ? `<dt>Phone</dt><dd class="mono">${esc(c.phone)}</dd>` : ""}${c.email ? `<dt>Email</dt><dd>${mailLink(c.email)}</dd>` : ""}${site ? `<dt>Website</dt><dd><a href="${esc(site)}" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:none">${esc(c.website)}</a></dd>` : ""}${(c.towns || []).length ? `<dt>Serves</dt><dd class="towns">${c.towns.map((t) => `<span>${esc(t)}</span>`).join("")}</dd>` : ""}<dt>Touched</dt><dd>Touched ${esc(ago(c.lastTouch))}${c.lastTouchMeta?.channel ? ` · ${esc(c.lastTouchMeta.channel)}` : ""}${c.lastTouchMeta?.note ? ` · ${esc(c.lastTouchMeta.note)}` : ""}</dd></dl>
       ${!c.hq && !c.phone && !site && !c.email ? `<div class="empty-note" style="margin-top:12px">Details fill in as you learn them. <button class="btn sm" data-edit="details">Add details</button></div>` : ""}</div></div>
     <div class="panel"><div class="ph"><h2>Interested in <small>${ints.length || ""}</small></h2><button class="btn sm ghost" data-int="new">${ic("plus")}Add</button></div><div class="pb">
       ${ints.length ? `<div class="ints">${ints.map((x, i) => `<button class="int" data-int="${i}" style="background:none;border:0;padding:0;text-align:left;cursor:pointer;color:inherit">${x.status === "active" ? `<span class="no">${ints.filter((y, j) => y.status === "active" && j <= i).length}</span>` : `<span class="no ghost ${x.status === "asked" ? "asked" : ""}"></span>`}<span><b>${esc(x.title)}${x.status !== "active" ? ` <span class="chip ${x.status === "asked" ? "data" : "dash"} mini">${x.status === "asked" ? "Asked about" : "Earlier idea"}</span>` : ""}</b>${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><span></span></button>`).join("")}</div>`
@@ -1001,9 +1060,12 @@ function viewClient(v) {
   ${hasModule(c, "household") ? `<section class="panel"><div class="ph"><h2>Household</h2></div><div class="pb"><div class="empty-note"><b>Coming soon — household.</b> Life stays on the always-on cards for now.</div></div></section>` : ""}
 
   <section class="crm-cards">
+    ${moneyCard(c)}
+    ${agreementCard(c)}
+    ${accessCard(c)}
+    ${hoursCard(c)}
     ${(() => { const filled = !!(c.deal?.type || c.deal?.startDate || c.deal?.guarantee); return filled || clientPath(c) === "business" ? dealCard(c) : ""; })()}
-    ${(() => { const filled = !!(c.payment?.status || c.payment?.amount != null || c.payment?.date); return filled || clientPath(c) === "business" ? paymentCard(c) : ""; })()}
-    ${intakeCard(c)}
+    ${hasModule(c, "intake") ? intakeCard(c) : ""}
     ${leadCard(c)}
     ${nextStepsCard(c)}
     ${hasModule(c, "team_bots") ? aiSetupCard(c) : ""}
@@ -1018,7 +1080,7 @@ function viewClient(v) {
   ${(() => {
     const vis = REPORTS.filter((t) => hasModule(c, reportModule(t.type)));
     const runType = hasModule(c, "team_bots") ? "agent-free" : (vis[0]?.type || "agent-free");
-    const showQuotes = quotes.length > 0 || clientPath(c) === "business";
+    const showQuotes = hasModule(c, "quotes") || quotes.length > 0;
     const reportsHtml = vis.length ? `<div class="panel"><div class="ph"><h2>Reports</h2><a class="btn sm ghost" href="#/assess?client=${esc(c.id)}&type=${esc(runType)}">${ic("gauge")}Run one</a></div><div class="pb"><div class="reps">${vis.map((t) => {
       const r = reps.find((x) => x.type === t.type);
       if (!r) return `<div class="rep none"><div class="rt"><span>${esc(t.name)}</span><span class="chip dash">Not run</span></div><small>${esc(t.cost)} · ${esc(t.time)}</small><a class="btn sm" href="#/assess?client=${esc(c.id)}&type=${t.type}" style="justify-self:start">${ic("play")}Run</a></div>`;
@@ -1038,6 +1100,7 @@ function viewClient(v) {
       ${(c.vendors || []).length ? c.vendors.map((x, i) => contractHtml(x, i)).join("") : `<div class="empty-note">No contracts on file. If they're tied to a vendor (a Thryv, a website company), note the end date and notice window here.<button class="btn sm" data-vendor="new">${ic("plus")}Add a contract</button></div>`}</div></div>` : ""}
     <div class="panel"><div class="ph"><h2>Activity <small>${logs.length}</small></h2></div><div class="pb">
       <div class="composer"><div class="kinds" role="group" aria-label="Kind">${KINDS.map((k) => `<button type="button" data-kind="${k}" aria-pressed="${k === composeKind}">${k}</button>`).join("")}</div>
+        <div class="kinds touch-chs" role="group" aria-label="Channel">${[["", "No channel"], ...TOUCH_CH].map(([k, lab]) => `<button type="button" data-ch="${esc(k)}" aria-pressed="${(window.__touchCh || "") === k}">${esc(lab)}</button>`).join("")}</div>
         <div class="row"><textarea id="compose" placeholder="What happened? e.g. Texted Shanna about Thursday" rows="1"></textarea><button class="btn p" id="addLog">Add</button></div></div>
       <div class="log">${logs.map((l) => `<div class="le"><time>${esc(dayOf(l.at) || "…")}</time><div><span class="k">${esc(l.kind || "Note")}</span><p>${esc(l.text)}</p></div></div>`).join("") || `<div class="le"><time></time><div><p style="color:var(--ink-3)">Nothing logged yet.</p></div></div>`}</div></div></div>
   </section>
@@ -1052,7 +1115,13 @@ function viewClient(v) {
   $$("[data-tech]", v).forEach((b) => (b.onclick = () => editList(c, "tech", b.dataset.tech)));
   $$("[data-vendor]", v).forEach((b) => (b.onclick = () => editList(c, "vendors", b.dataset.vendor)));
   $$("[data-kind]", v).forEach((b) => (b.onclick = () => { composeKind = b.dataset.kind; $$("[data-kind]", v).forEach((x) => x.setAttribute("aria-pressed", x === b)); }));
-  const addLog = async () => { const t = $("#compose").value.trim(); if (!t) return $("#compose").focus(); $("#compose").value = ""; $("#compose").blur(); await logEntry(c.id, t, composeKind); toast("Logged"); };
+  $$("[data-ch]", v).forEach((b) => (b.onclick = () => { window.__touchCh = b.dataset.ch || ""; $$("[data-ch]", v).forEach((x) => x.setAttribute("aria-pressed", x === b)); }));
+  const addLog = async () => {
+    const t = $("#compose").value.trim(); if (!t) return $("#compose").focus(); $("#compose").value = ""; $("#compose").blur();
+    const ch = window.__touchCh || "";
+    await logEntry(c.id, t, composeKind, ch ? { channel: ch } : null);
+    toast("Logged");
+  };
   $("#addLog").onclick = addLog;
   $("#compose").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) addLog(); });
   // On a phone the stage track scrolls sideways; bring the current stage into view.
@@ -1067,10 +1136,63 @@ function viewClient(v) {
   };
   wireFilesPanel(v);
   wireCrm(c, v);
+  wireScopeAccessHours(c, v);
   wireCommon(v);
 }
 
 // ------------------------------------------------------------------ CRM cards (additive fields; missing = fine)
+
+function scopeLockCard(c) {
+  const path = clientPath(c);
+  const eng = clientEngagement(c);
+  const mods = c.modules || seedModules(path, eng);
+  const onCount = SCOPE_ROWS.filter(([id]) => hasModule(c, id)).length;
+  const rows = SCOPE_ROWS.map(([id, label]) => {
+    const on = hasModule(c, id);
+    return `<label class="scope-row"><input type="checkbox" data-scope="${esc(id)}" ${on ? "checked" : ""}><span class="scope-lab">${esc(label)}</span><span class="chip ${on ? "ok" : "dash"} mini">${on ? "On" : "Off"}</span></label>`;
+  }).join("");
+  return `<section class="panel scope-lock"><div class="ph"><h2>Scope lock <small>${onCount} of ${SCOPE_ROWS.length} on</small></h2><button class="btn sm ghost" data-crm="scope">${ic("pen")}Edit</button></div><div class="pb">
+    <div class="scope-list">${rows}</div>
+    ${c.scopeNote ? `<p class="scope-note">${esc(c.scopeNote)}</p>` : `<p class="scope-note muted">Optional note on what's in / out of scope.</p>`}
+  </div></section>`;
+}
+function moneyCard(c) {
+  const m = moneyTruth(c);
+  const st = m?.status ? `<span class="chip ${m.status === "paid" || m.status === "comp" ? "ok" : m.status === "partial" ? "warn" : "dash"}">${esc(labelOf(MONEY_ST, m.status))}</span>` : "";
+  const has = !!(m && (m.status || m.owed != null || m.paid != null || m.home || m.nextInvoice?.amount != null));
+  return `<div class="panel crm-card"><div class="ph"><h2>Money</h2><button class="btn sm ghost" data-crm="money">${ic("pen")}Edit</button></div><div class="pb">
+    ${has ? `<div class="stat-row"><div><span class="lbl">Owed</span><b class="mono">${m.owed != null ? money(m.owed) : "—"}</b></div><div><span class="lbl">Paid</span><b class="mono">${m.paid != null ? money(m.paid) : "—"}</b></div><div><span class="lbl">Status</span><b>${st || "—"}</b></div></div>
+      <dl class="kv" style="margin-top:10px">${m.nextInvoice?.amount != null || m.nextInvoice?.due || m.nextInvoice?.label ? `<dt>Next invoice</dt><dd class="mono">${m.nextInvoice.amount != null ? money(m.nextInvoice.amount) : "—"}${m.nextInvoice.due ? ` · due ${esc(fmtDay(m.nextInvoice.due))}` : ""}${m.nextInvoice.label ? ` · ${esc(m.nextInvoice.label)}` : ""}</dd>` : ""}${m.home || m.homeNote ? `<dt>Lives</dt><dd>${esc(m.home || "—")}${m.homeNote ? ` · ${esc(m.homeNote)}` : ""}</dd>` : ""}${m._fromPayment ? `<dt></dt><dd><small style="color:var(--ink-3)">From legacy payment · edit to upgrade</small></dd>` : ""}</dl>`
+      : `<div class="empty-note">Owed, paid, next invoice — operator truth, not QuickBooks.<button class="btn sm" data-crm="money">${ic("pen")}Set money</button></div>`}</div></div>`;
+}
+function agreementCard(c) {
+  const a = c.agreement || {};
+  const st = a.status || "none";
+  const chip = `<span class="chip ${st === "signed" ? "ok" : st === "sent" || st === "draft" ? "data" : st === "expired" ? "warn" : "dash"}">${esc(labelOf(AGREE_ST, st))}</span>`;
+  const filled = st !== "none" || a.sentAt || a.signedAt || a.expiresAt || a.note;
+  return `<div class="panel crm-card"><div class="ph"><h2>Agreement</h2><button class="btn sm ghost" data-crm="agreement">${ic("pen")}Edit</button></div><div class="pb">
+    ${filled ? `<dl class="kv"><dt>Status</dt><dd>${chip}</dd>${a.sentAt ? `<dt>Sent</dt><dd>${esc(fmtDay(a.sentAt))}</dd>` : ""}${a.signedAt ? `<dt>Signed</dt><dd>${esc(fmtDay(a.signedAt))}</dd>` : ""}${a.expiresAt ? `<dt>Expires</dt><dd>${esc(fmtDay(a.expiresAt))}</dd>` : ""}${a.note ? `<dt>Note</dt><dd>${esc(a.note)}</dd>` : ""}</dl>`
+      : `<div class="empty-note">Draft / sent / signed — separate from Assets → Agreements files.<button class="btn sm" data-crm="agreement">${ic("pen")}Set status</button></div>`}</div></div>`;
+}
+function accessCard(c) {
+  const rows = c.access || [];
+  return `<div class="panel crm-card" style="grid-column:1/-1"><div class="ph"><h2>Access <small>${rows.length || ""}</small></h2><button class="btn sm ghost" data-access="new">${ic("plus")}Add</button></div><div class="pb">
+    ${rows.length ? `<div class="access-grid">${rows.map((r) => {
+      const stCls = r.status === "shared" ? "ok" : r.status === "requested" ? "data" : r.status === "revoked" ? "bad" : "dash";
+      return `<button type="button" class="access-tile" data-access="${esc(r.id)}">${accessLogoHtml(r.logoKey, r.system)}<span class="access-meta"><b>${esc(r.system || "System")}</b><span class="chip ${stCls} mini">${esc(labelOf(ACCESS_ST, r.status || "na"))}</span>${r.revokeNote && r.status === "revoked" ? `<small class="rev">${esc(r.revokeNote)}</small>` : ""}${r.notes ? `<small>${esc(r.notes)}</small>` : ""}</span></button>`;
+    }).join("")}</div>`
+      : `<div class="empty-note">What systems have they shared? Gmail, Quo, calendar…<button class="btn sm" data-access="new">${ic("plus")}Add access</button></div>`}</div></div>`;
+}
+function hoursCard(c) {
+  const h = c.hours || {};
+  const rows = (S.timeLogs[c.id] || []).slice(0, 8);
+  const has = h.total != null || rows.length;
+  return `<div class="panel crm-card" style="grid-column:1/-1"><div class="ph"><h2>Hours <small>${h.total != null ? h.total + "h total" : ""}</small></h2><button class="btn sm ghost" data-time="new">${ic("plus")}Add time</button></div><div class="pb">
+    ${has ? `<div class="stat-row"><div><span class="lbl">Face</span><b class="mono">${h.face != null ? h.face + "h" : "—"}</b></div><div><span class="lbl">Build</span><b class="mono">${h.build != null ? h.build + "h" : "—"}</b></div><div><span class="lbl">Total</span><b class="mono">${h.total != null ? h.total + "h" : "—"}</b></div></div>
+      ${rows.length ? `<div class="time-list">${rows.map((r) => `<div class="time-row"><span class="chip dash mini">${esc(labelOf(TIME_KINDS, r.kind || "other"))}</span><b class="mono">${esc(String(r.hours))}h</b><span>${esc(r.who || "")}${r.note ? ` · ${esc(r.note)}` : ""}</span><small>${esc(fmtDay((toDate(r.at) || new Date()).toISOString().slice(0, 10)))}</small><span class="ns-acts"><button type="button" class="btn sm ghost" data-time="${esc(r.id)}" aria-label="Edit">${ic("pen")}</button><button type="button" class="btn sm ghost danger" data-time-del="${esc(r.id)}" aria-label="Delete">${ic("trash")}</button></span></div>`).join("")}</div>` : ""}`
+      : `<div class="empty-note">Face time vs build time. Add a call, text, or fleet hours.<button class="btn sm" data-time="new">${ic("plus")}Add time</button></div>`}</div></div>`;
+}
+
 function dealCard(c) {
   const d = c.deal || {};
   return `<div class="panel crm-card"><div class="ph"><h2>Deal terms</h2><button class="btn sm ghost" data-crm="deal">${ic("pen")}Edit</button></div><div class="pb">
@@ -1094,8 +1216,10 @@ function intakeCard(c) {
 }
 function leadCard(c) {
   const l = c.lead || {};
+  const ref = l.referrer || {};
+  const refBits = l.source === "referral" && (ref.name || ref.company || ref.phone || ref.email || ref.note);
   return `<div class="panel crm-card"><div class="ph"><h2>Lead source</h2><button class="btn sm ghost" data-crm="lead">${ic("pen")}Edit</button></div><div class="pb">
-    ${l.source || l.note ? `<dl class="kv">${l.source ? `<dt>Source</dt><dd><span class="chip data">${esc(labelOf(LEAD_SRC, l.source))}</span></dd>` : ""}${l.note ? `<dt>Note</dt><dd>${esc(l.note)}</dd>` : ""}</dl>`
+    ${l.source || l.note || refBits ? `<dl class="kv">${l.source ? `<dt>Source</dt><dd><span class="chip data">${esc(labelOf(LEAD_SRC, l.source))}</span></dd>` : ""}${l.note ? `<dt>Note</dt><dd>${esc(l.note)}</dd>` : ""}${refBits ? `${ref.name ? `<dt>Referrer</dt><dd>${esc(ref.name)}${ref.company ? ` · ${esc(ref.company)}` : ""}</dd>` : ""}${ref.phone ? `<dt>Ref phone</dt><dd class="mono">${esc(ref.phone)}</dd>` : ""}${ref.email ? `<dt>Ref email</dt><dd>${mailLink(ref.email)}</dd>` : ""}${ref.note ? `<dt>Ref note</dt><dd>${esc(ref.note)}</dd>` : ""}` : ""}</dl>`
       : `<div class="empty-note">Where did they come from?<button class="btn sm" data-crm="lead">${ic("pen")}Set source</button></div>`}</div></div>`;
 }
 function nextStepsCard(c) {
@@ -1165,9 +1289,71 @@ function editCrm(c, kind) {
       } });
   } else if (kind === "lead") {
     const l = c.lead || {};
-    formDialog({ title: "Lead source", values: { source: l.source || "", note: l.note || "" },
-      fields: [{ k: "source", label: "Source", type: "select", options: [["", "—"], ...LEAD_SRC] }, { k: "note", label: "Note", full: true, placeholder: "Who referred them, which campaign…" }],
-      onSave: async (x) => { await save(c.id, { lead: { source: x.source || "", note: x.note || "" } }); toast("Lead source saved."); } });
+    const ref = l.referrer || {};
+    formDialog({ title: "Lead source", values: { source: l.source || "", note: l.note || "", refName: ref.name || "", refCompany: ref.company || "", refPhone: ref.phone || "", refEmail: ref.email || "", refNote: ref.note || "" },
+      fields: [
+        { k: "source", label: "Source", type: "select", options: [["", "—"], ...LEAD_SRC] },
+        { k: "note", label: "Note", full: true, placeholder: "Campaign, context…" },
+        { k: "refName", label: "Referrer name", placeholder: "When source is referral" },
+        { k: "refCompany", label: "Referrer company" },
+        { k: "refPhone", label: "Referrer phone", type: "tel" },
+        { k: "refEmail", label: "Referrer email", type: "email" },
+        { k: "refNote", label: "Referrer note", full: true },
+      ],
+      onSave: async (x) => {
+        const referrer = { name: x.refName || "", company: x.refCompany || "", phone: x.refPhone || "", email: x.refEmail || "", note: x.refNote || "" };
+        const hasRef = Object.values(referrer).some(Boolean);
+        await save(c.id, { lead: { source: x.source || "", note: x.note || "", ...(hasRef || x.source === "referral" ? { referrer } : {}) } });
+        toast("Lead source saved.");
+      } });
+  } else if (kind === "money") {
+    const m = moneyTruth(c) || {};
+    const ni = m.nextInvoice || {};
+    formDialog({ title: "Money", values: {
+        status: m.status || "unpaid", owed: m.owed != null ? String(m.owed) : "", paid: m.paid != null ? String(m.paid) : "",
+        nextAmount: ni.amount != null ? String(ni.amount) : "", nextDue: ni.due || "", nextLabel: ni.label || "",
+        home: m.home || "", homeNote: m.homeNote || "",
+      },
+      fields: [
+        { k: "status", label: "Status", type: "select", options: MONEY_ST },
+        { k: "owed", label: "Owed (USD)", placeholder: "0" },
+        { k: "paid", label: "Paid (USD)", placeholder: "0" },
+        { k: "nextAmount", label: "Next invoice amount" },
+        { k: "nextDue", label: "Next invoice due", type: "date" },
+        { k: "nextLabel", label: "Next invoice label", full: true, placeholder: "e.g. Pilot month 1" },
+        { k: "home", label: "Where money lives", placeholder: "Amex · Spire · Venmo…" },
+        { k: "homeNote", label: "Home note", full: true, placeholder: "Spire Autopay · invoice via email" },
+      ],
+      onSave: async (x) => {
+        const num = (s) => { if (s === "" || s == null) return null; const n = Number(String(s).replace(/[^\d.]/g, "")); return Number.isFinite(n) ? n : null; };
+        await save(c.id, { money: {
+          owed: num(x.owed), paid: num(x.paid), currency: "USD",
+          nextInvoice: { amount: num(x.nextAmount), due: x.nextDue || "", label: x.nextLabel || "" },
+          home: x.home || "", homeNote: x.homeNote || "", status: x.status || "unpaid",
+        }});
+        toast("Money saved.");
+      } });
+  } else if (kind === "agreement") {
+    const a = c.agreement || {};
+    formDialog({ title: "Agreement", values: { status: a.status || "none", sentAt: a.sentAt || "", signedAt: a.signedAt || "", expiresAt: a.expiresAt || "", note: a.note || "" },
+      fields: [
+        { k: "status", label: "Status", type: "select", options: AGREE_ST },
+        { k: "sentAt", label: "Sent", type: "date" },
+        { k: "signedAt", label: "Signed", type: "date" },
+        { k: "expiresAt", label: "Expires", type: "date" },
+        { k: "note", label: "Note", full: true, type: "textarea", placeholder: "MSA, SOW, handshake…" },
+      ],
+      onSave: async (x) => {
+        await save(c.id, { agreement: { status: x.status || "none", sentAt: x.sentAt || "", signedAt: x.signedAt || "", expiresAt: x.expiresAt || "", note: x.note || "" } });
+        toast("Agreement saved.");
+      } });
+  } else if (kind === "scope") {
+    editScope(c);
+  } else if (kind === "touch") {
+    const m = c.lastTouchMeta || {};
+    formDialog({ title: "Last touch channel", values: { channel: m.channel || "", note: m.note || "" },
+      fields: [{ k: "channel", label: "Channel", type: "select", options: [["", "—"], ...TOUCH_CH] }, { k: "note", label: "Note", full: true }],
+      onSave: async (x) => { await save(c.id, { lastTouchMeta: { channel: x.channel || "", note: x.note || "" }, lastTouch: serverTimestamp() }); toast("Last touch updated."); } });
   }
 }
 function editNextStep(c, id) {
@@ -1182,6 +1368,158 @@ function editNextStep(c, id) {
       await save(c.id, { nextSteps: arr }); toast(id ? "Saved." : "Step added.");
     } });
 }
+
+function editScope(c) {
+  const path = clientPath(c);
+  const eng = clientEngagement(c);
+  const mods = { ...(c.modules || seedModules(path, eng)) };
+  const fieldsHtml = SCOPE_ROWS.map(([id, label]) => {
+    const on = hasModule(c, id);
+    return `<label class="scope-row edit"><input type="checkbox" name="mod_${id}" ${on ? "checked" : ""}><span>${esc(label)}</span></label>`;
+  }).join("");
+  openModal(`<form id="fd"><div style="display:grid;gap:14px"><h2>Scope lock</h2><p>Unchecked offerings hide on Client 360 via the same module gates.</p>
+    <div class="scope-list">${fieldsHtml}</div>
+    <label class="field" style="flex-basis:100%">Scope note<textarea class="input" name="scopeNote" rows="2" placeholder="e.g. CoS for Lisa shop first; PSCX later">${esc(c.scopeNote || "")}</textarea></label>
+    <div class="foot"><button type="button" class="btn ghost" id="fdX">Cancel</button><button class="btn p">Save scope</button></div></div></form>`, (d) => {
+    $("#fdX", d).onclick = closeModal;
+    $("#fd", d).onsubmit = async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const next = { ...mods };
+      const hidden = [];
+      for (const [id, label] of SCOPE_ROWS) {
+        const was = hasModule(c, id);
+        const on = fd.get("mod_" + id) === "on";
+        const cur = next[id] || { status: "off" };
+        if (on) next[id] = { ...cur, status: cur.status && cur.status !== "off" ? cur.status : "active" };
+        else { next[id] = { ...cur, status: "off" }; if (was) hidden.push(label); }
+      }
+      await save(c.id, { modules: next, scopeNote: String(fd.get("scopeNote") || "").trim() });
+      closeModal();
+      if (hidden.length) toast(hidden.length === 1 ? `${hidden[0]} hidden` : `${hidden.join(", ")} hidden`);
+      else toast("Scope saved.");
+    };
+  });
+}
+function editAccess(c, id) {
+  const rows = (c.access || []).slice();
+  const cur = id ? rows.find((x) => x.id === id) : null;
+  const isNew = !cur;
+  formDialog({
+    title: isNew ? "Add access" : "Edit access",
+    values: {
+      system: cur?.system || "", logoKey: cur?.logoKey || "generic", status: cur?.status || "shared",
+      sharedAt: cur?.sharedAt || "", revokeNote: cur?.revokeNote || "", notes: cur?.notes || "",
+    },
+    fields: [
+      { k: "logoKey", label: "System", type: "select", options: ACCESS_LOGOS },
+      { k: "system", label: "Label (optional)", placeholder: "Overrides logo name" },
+      { k: "status", label: "Status", type: "select", options: ACCESS_ST },
+      { k: "sharedAt", label: "Shared on", type: "date" },
+      { k: "revokeNote", label: "Revoke note", full: true, placeholder: "Required when revoked" },
+      { k: "notes", label: "Notes", full: true },
+    ],
+    onDelete: isNew ? null : async () => {
+      await save(c.id, { access: rows.filter((x) => x.id !== id) });
+      toast("Access removed.");
+    },
+    onSave: async (x) => {
+      if (x.status === "revoked" && !x.revokeNote) { toast("Add a revoke note."); throw new Error("revokeNote"); }
+      const logoKey = x.logoKey || "generic";
+      const system = x.system || labelOf(ACCESS_LOGOS, logoKey, logoKey);
+      const row = { id: cur?.id || uid(), system, logoKey, status: x.status || "na", sharedAt: x.sharedAt || "", revokeNote: x.revokeNote || "", notes: x.notes || "" };
+      if (isNew) rows.push(row); else { const i = rows.findIndex((z) => z.id === id); if (i >= 0) rows[i] = row; }
+      const patch = { access: rows };
+      if (rows.some((r) => r.status === "shared")) {
+        const ai = { ...(c.aiSetup || {}) };
+        if (!(ai.accessShared && ai.accessShared.done)) {
+          ai.accessShared = { done: true, date: todayISO() };
+          patch.aiSetup = ai;
+        }
+      }
+      await save(c.id, patch);
+      toast(isNew ? "Access added." : "Access saved.");
+    },
+  });
+}
+function editTime(c, id) {
+  const rows = S.timeLogs[c.id] || [];
+  const cur = id ? rows.find((x) => x.id === id) : null;
+  const isNew = !cur;
+  const atISO = cur?.at ? (toDate(cur.at) || new Date()).toISOString().slice(0, 10) : todayISO();
+  formDialog({
+    title: isNew ? "Add time" : "Edit time",
+    values: { hours: cur?.hours != null ? String(cur.hours) : "", kind: cur?.kind || "call", who: cur?.who || "Parker", note: cur?.note || "", billable: cur?.billable ? "yes" : "no", at: atISO },
+    fields: [
+      { k: "hours", label: "Hours", required: true, placeholder: "0.5" },
+      { k: "kind", label: "Kind", type: "select", options: TIME_KINDS },
+      { k: "who", label: "Who", placeholder: "Parker · Theo · fleet" },
+      { k: "at", label: "Date", type: "date" },
+      { k: "billable", label: "Billable", type: "select", options: [["no", "No"], ["yes", "Yes"]] },
+      { k: "note", label: "Note", full: true, placeholder: "estimate · editable" },
+    ],
+    onDelete: isNew ? null : async () => {
+      await deleteDoc(doc(db, "clients", c.id, "timeLogs", id));
+      // refresh listener will update; rollup after short wait via local filter
+      const left = rows.filter((x) => x.id !== id);
+      S.timeLogs[c.id] = left;
+      await save(c.id, { hours: recomputeHours(left) });
+      toast("Time removed.");
+    },
+    onSave: async (x) => {
+      const hours = Number(String(x.hours).replace(/[^\d.]/g, ""));
+      if (!Number.isFinite(hours) || hours <= 0) { toast("Enter hours (e.g. 0.5)."); throw new Error("hours"); }
+      const payload = {
+        at: x.at ? Timestamp.fromDate(new Date(x.at + "T12:00:00")) : serverTimestamp(),
+        hours, kind: x.kind || "other", who: x.who || "Parker", note: x.note || "", billable: x.billable === "yes",
+      };
+      if (isNew) {
+        const ref = await addDoc(collection(cref(c.id), "timeLogs"), payload);
+        const next = [{ id: ref.id, ...payload }, ...rows];
+        S.timeLogs[c.id] = next;
+        await save(c.id, { hours: recomputeHours(next) });
+        toast("Time added.");
+      } else {
+        await updateDoc(doc(db, "clients", c.id, "timeLogs", id), payload);
+        const next = rows.map((r) => r.id === id ? { ...r, ...payload } : r);
+        S.timeLogs[c.id] = next;
+        await save(c.id, { hours: recomputeHours(next) });
+        toast("Time saved.");
+      }
+    },
+  });
+}
+function wireScopeAccessHours(c, v) {
+  $$("[data-crm='scope']", v).forEach((b) => (b.onclick = () => editScope(c)));
+  $$("[data-scope]", v).forEach((box) => {
+    box.onchange = async () => {
+      const id = box.dataset.scope;
+      const path = clientPath(c);
+      const eng = clientEngagement(c);
+      const mods = { ...(c.modules || seedModules(path, eng)) };
+      const label = labelOf(SCOPE_ROWS, id, id);
+      const cur = mods[id] || { status: "off" };
+      if (box.checked) mods[id] = { ...cur, status: cur.status && cur.status !== "off" ? cur.status : "active" };
+      else mods[id] = { ...cur, status: "off" };
+      await save(c.id, { modules: mods });
+      toast(box.checked ? `${label} on` : `${label} hidden`);
+    };
+  });
+  $$("[data-access]", v).forEach((b) => (b.onclick = () => editAccess(c, b.dataset.access === "new" ? null : b.dataset.access)));
+  $$("[data-time]", v).forEach((b) => (b.onclick = () => editTime(c, b.dataset.time === "new" ? null : b.dataset.time)));
+  $$("[data-time-del]", v).forEach((b) => (b.onclick = async (e) => {
+    const btn = e.currentTarget;
+    if (btn.dataset.armed !== "1") { btn.dataset.armed = "1"; btn.textContent = "Again"; setTimeout(() => { if (btn.isConnected) { btn.dataset.armed = ""; btn.innerHTML = ic("trash"); } }, 4000); return; }
+    const id = btn.dataset.timeDel;
+    await deleteDoc(doc(db, "clients", c.id, "timeLogs", id));
+    const left = (S.timeLogs[c.id] || []).filter((x) => x.id !== id);
+    S.timeLogs[c.id] = left;
+    await save(c.id, { hours: recomputeHours(left) });
+    toast("Time removed.");
+  }));
+}
+
+
 function openDueDigest() {
   const rows = [];
   const today = todayISO();
