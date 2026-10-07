@@ -102,10 +102,12 @@ body {
   background-size: 0% 1px;
   background-repeat: no-repeat;
   background-position: 0 100%;
-  transition: background-size 0.35s var(--ease-spring);
+  transition: background-size 0.35s var(--ease-spring), color 0.25s ease;
   padding-bottom: 2px;
 }
-.link-draw:hover { background-size: 100% 1px; }
+.link-draw:hover,
+.link-draw.is-active,
+.link-draw[aria-current="page"] { background-size: 100% 1px; }
 
 /* — View transitions: the site reads as one continuous sheet — */
 @media not (prefers-reduced-motion: reduce) {
@@ -207,9 +209,117 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .launcher-pulse,
-  .group:hover .launcher-dot {
-    animation: none;
+  .group:hover .launcher-dot,
+  .hero-glow,
+  .hero-glow-b,
+  details.faq-item[open] > p {
+    animation: none !important;
   }
+  .hero-glow, .hero-glow-b { opacity: 0.55; transform: none; }
+}
+
+/* — Soft copper hero glow (portal splash kinship, tasteful) — */
+.hero-glow {
+  position: absolute;
+  width: min(72vw, 540px);
+  height: min(72vw, 540px);
+  left: -10%;
+  top: 12%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle at 40% 40%, rgba(212, 88, 42, 0.16), transparent 68%);
+  filter: blur(48px);
+  opacity: 0.85;
+  will-change: transform;
+  animation: hero-glow-drift 14s ease-in-out infinite alternate;
+}
+.hero-glow-b {
+  left: auto;
+  right: 8%;
+  top: 42%;
+  width: min(42vw, 320px);
+  height: min(42vw, 320px);
+  background: radial-gradient(circle at 50% 50%, rgba(212, 88, 42, 0.08), transparent 70%);
+  animation-duration: 18s;
+  animation-direction: alternate-reverse;
+}
+@keyframes hero-glow-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(4%, 6%, 0) scale(1.06); }
+}
+
+/* — Card lift: translateY + shadow + copper kiss (fine pointer only) — */
+@media (hover: hover) and (pointer: fine) {
+  .card-lift {
+    transition:
+      transform 0.45s var(--ease-spring),
+      box-shadow 0.45s var(--ease-spring),
+      background-color 0.4s ease,
+      border-color 0.35s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 14px 32px -18px rgba(26, 25, 22, 0.38),
+      0 0 0 1px color-mix(in srgb, var(--color-copper) 32%, transparent);
+    z-index: 1;
+  }
+  .card-lift-quiet:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -16px rgba(26, 25, 22, 0.28);
+  }
+}
+
+/* — Button / CTA press micro-interaction — */
+.btn-press {
+  transition:
+    transform 0.22s var(--ease-spring),
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.25s ease,
+    opacity 0.2s ease;
+}
+.btn-press:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+/* — Trust chips: quiet staged entrance on hero (SSR still visible) — */
+.trust-chip {
+  transition: border-color 0.35s ease, background-color 0.35s ease, transform 0.35s var(--ease-spring);
+}
+@media (hover: hover) and (pointer: fine) {
+  .trust-chip:hover {
+    border-color: color-mix(in srgb, var(--color-copper) 40%, var(--color-line));
+    background-color: var(--color-cream-bright);
+    transform: translateY(-1px);
+  }
+}
+
+/* — FAQ summary polish — */
+details.faq-item summary {
+  transition: color 0.25s ease;
+}
+details.faq-item summary:hover {
+  color: var(--color-copper);
+}
+details.faq-item[open] > p {
+  animation: faq-open 0.4s var(--ease-spring) both;
+}
+@keyframes faq-open {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* — Soft section eyebrow rule (cheap CSS accent) — */
+.section-rule::after {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 2px;
+  margin-top: 0.85rem;
+  background: var(--color-copper);
+  opacity: 0.45;
+  border-radius: 1px;
 }
 
 /* — Focus visibly, always — */

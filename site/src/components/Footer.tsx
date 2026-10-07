@@ -16,7 +16,7 @@ export default function Footer() {
           </div>
           <Link
             href="/book/"
-            className="inline-flex w-fit items-center gap-3 rounded-[3px] bg-copper px-7 py-3.5 font-medium text-cream-bright transition-colors hover:bg-copper-deep"
+            className="btn-press inline-flex w-fit items-center gap-3 rounded-[3px] bg-copper px-7 py-3.5 font-medium text-cream-bright hover:bg-copper-deep"
           >
             {site.cta.label}
             <span aria-hidden>→</span>

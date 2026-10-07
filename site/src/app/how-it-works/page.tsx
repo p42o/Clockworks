@@ -89,7 +89,7 @@ export default function HowItWorks() {
           <Reveal delay={0.1}>
             <ol className="space-y-4">
               {AUDIT_AGENDA.map((a) => (
-                <li key={a.t} className="flex gap-5 rounded-[3px] border hairline bg-cream-bright/60 p-5">
+                <li key={a.t} className="card-lift card-lift-quiet flex gap-5 rounded-[3px] border hairline bg-cream-bright/60 p-5">
                   <span className="font-mono text-[0.72rem] tracking-wider text-copper whitespace-nowrap pt-1">{a.t}</span>
                   <span className="leading-relaxed text-ink-soft">{a.d}</span>
                 </li>

@@ -108,7 +108,7 @@ export default function About() {
           </Reveal>
           <div className="mt-10 grid gap-8 sm:grid-cols-2">
             {VALUES.map((v, i) => (
-              <Reveal key={v.t} delay={i * 0.05} className="border-t-2 border-copper/60 pt-5">
+              <Reveal key={v.t} delay={i * 0.05} variant="rise" className="border-t-2 border-copper/60 pt-5">
                 <h3 className="display text-2xl">{v.t}</h3>
                 <p className="mt-2 leading-relaxed text-ink-soft">{v.d}</p>
               </Reveal>

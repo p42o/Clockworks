@@ -29,3 +29,6 @@ lab/*.bak
 # Eicher gate: generated at deploy / by the server
 eicher/_config.php
 eicher/_state/
+
+# local preview screenshots
+site/.preview-*.png

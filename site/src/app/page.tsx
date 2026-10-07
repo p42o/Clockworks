@@ -101,40 +101,42 @@ export default function Home() {
           <Escapement className="h-full w-full opacity-25 lg:opacity-90" />
           <div className="absolute inset-0 bg-gradient-to-r from-paper via-paper/70 to-transparent lg:via-paper/20" />
         </div>
+        <div className="hero-glow" aria-hidden />
+        <div className="hero-glow hero-glow-b" aria-hidden />
 
         <div className="relative mx-auto w-full max-w-6xl px-5 pb-20 pt-32 sm:px-8">
-          <Reveal>
-            <p className="eyebrow">
+          <Reveal immediate>
+            <p className="eyebrow section-rule">
               AI systems for trades businesses · {site.city}, MN
             </p>
           </Reveal>
-          <Reveal delay={0.08}>
+          <Reveal immediate delay={0.08}>
             <h1 className="display mt-5 max-w-3xl text-[17vw] leading-[0.95] sm:text-8xl lg:text-[6.5rem]">
               Get your <em className="text-copper">evenings</em> back<span className="text-copper">.</span>
             </h1>
           </Reveal>
-          <Reveal delay={0.16}>
+          <Reveal immediate delay={0.16}>
             <p className="mt-7 max-w-xl text-[1.1rem] leading-relaxed text-ink-soft">
               I build quiet, reliable systems for Twin Cities plumbing, HVAC, electrical, and
               landscaping companies — they catch the calls you miss, chase the quotes you sent,
               and keep the paperwork moving while you&rsquo;re on the job.
             </p>
           </Reveal>
-          <Reveal delay={0.24}>
+          <Reveal immediate delay={0.24}>
             <div className="mt-9 flex flex-wrap items-center gap-5">
               <MagneticButton href="/book/">{site.cta.label} →</MagneticButton>
-              <Link href="/how-it-works/" className="link-draw text-ink-soft hover:text-ink">
+              <Link href="/how-it-works/" className="link-draw text-[0.95rem] text-ink-soft hover:text-ink">
                 See how it works
               </Link>
             </div>
             <p className="mt-4 text-sm text-ink-faint">{site.cta.sub}</p>
           </Reveal>
-          <Reveal delay={0.32}>
+          <Reveal immediate delay={0.32}>
             <div className="mt-8 flex flex-wrap gap-2">
               {TRUST.map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border hairline bg-cream-bright/60 px-3 py-1.5 font-mono text-[0.68rem] tracking-wide text-ink-soft"
+                  className="trust-chip rounded-full border hairline bg-cream-bright/60 px-3 py-1.5 font-mono text-[0.68rem] tracking-wide text-ink-soft"
                 >
                   <span className="text-copper">✓</span> {t}
                 </span>
@@ -165,7 +167,7 @@ export default function Home() {
       <section id="week" className="border-t hairline bg-cream-bright/40">
         <div className="mx-auto max-w-6xl px-5 pt-20 sm:px-8 sm:pt-28">
           <Reveal>
-            <p className="eyebrow">01 — The problem</p>
+            <p className="eyebrow section-rule">01 — The problem</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
               The work isn&rsquo;t the problem. <em>The pile</em> is.
             </h2>
@@ -189,14 +191,14 @@ export default function Home() {
         </span>
         <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
           <Reveal>
-            <p className="eyebrow">02 — What I do</p>
+            <p className="eyebrow section-rule">02 — What I do</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
               Six systems. One quiet machine<span className="text-copper">.</span>
             </h2>
           </Reveal>
           <div className="mt-12 grid gap-px overflow-hidden rounded-[4px] border hairline bg-line sm:grid-cols-2">
             {SYSTEMS.map((s, i) => (
-              <Reveal key={s.n} delay={i * 0.06} className="group bg-paper p-7 transition-colors duration-500 hover:bg-cream-bright sm:p-9">
+              <Reveal key={s.n} delay={i * 0.055} variant="rise" className="card-lift group bg-paper p-7 hover:bg-cream-bright sm:p-9">
                 <div className="flex items-baseline justify-between">
                   <span className="font-mono text-[0.7rem] tracking-[0.2em] text-copper">{s.code}</span>
                   <span className="font-mono text-[0.7rem] text-ink-faint">{s.n}</span>
@@ -322,7 +324,7 @@ export default function Home() {
       <section className="border-t hairline">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
           <Reveal>
-            <p className="eyebrow">04 — How it works</p>
+            <p className="eyebrow section-rule">04 — How it works</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
               Three steps. No mystery<span className="text-copper">.</span>
             </h2>
@@ -345,7 +347,7 @@ export default function Home() {
                 body: "I watch it, tune it, and improve it while it works. You get a plain-English report of what it caught. Cancel anytime — you own every piece, and it keeps working without me.",
               },
             ].map((s, i) => (
-              <Reveal key={s.title} delay={i * 0.08} className="border-t-2 border-copper/70 pt-6">
+              <Reveal key={s.title} delay={i * 0.08} variant="rise" className="border-t-2 border-copper/70 pt-6">
                 <p className="font-mono text-[0.7rem] tracking-[0.18em] text-copper">{s.step}</p>
                 <h3 className="display mt-3 text-3xl">{s.title}</h3>
                 <p className="mt-3 leading-relaxed text-ink-soft">{s.body}</p>
@@ -423,15 +425,15 @@ export default function Home() {
       <section className="border-t hairline">
         <div className="mx-auto max-w-3xl px-5 py-20 sm:px-8 sm:py-28">
           <Reveal>
-            <p className="eyebrow">07 — Straight answers</p>
+            <p className="eyebrow section-rule">07 — Straight answers</p>
             <h2 className="display mt-4 text-4xl sm:text-5xl">
               The stuff you&rsquo;d actually ask<span className="text-copper">.</span>
             </h2>
           </Reveal>
           <div className="mt-10 divide-y divide-line-soft border-y hairline-soft">
             {FAQS.map((f, i) => (
-              <Reveal key={f.q} as="div" delay={i * 0.04}>
-                <details className="group py-5 marker:content-none">
+              <Reveal key={f.q} as="div" delay={i * 0.045} variant="rise">
+                <details className="faq-item group py-5 marker:content-none">
                   <summary className="flex cursor-pointer list-none items-baseline justify-between gap-6 text-lg font-medium [&::-webkit-details-marker]:hidden">
                     {f.q}
                     <span

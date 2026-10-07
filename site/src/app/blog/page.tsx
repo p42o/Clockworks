@@ -38,7 +38,7 @@ export default function BlogIndex() {
           <Reveal>
             <Link
               href={`/blog/${latest.slug}/`}
-              className="group block rounded-[4px] border-2 border-copper/50 bg-cream-bright/70 p-7 transition-all hover:border-copper sm:p-10"
+              className="card-lift group block rounded-[4px] border-2 border-copper/50 bg-cream-bright/70 p-7 hover:border-copper sm:p-10"
             >
               <p className="font-mono text-[0.68rem] tracking-[0.18em] text-copper">
                 LATEST — {fmt(latest.date).toUpperCase()}
@@ -56,10 +56,10 @@ export default function BlogIndex() {
 
         <div className="mt-8 grid gap-px overflow-hidden rounded-[4px] border hairline bg-line sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((p, i) => (
-            <Reveal key={p.slug} delay={Math.min(i * 0.03, 0.15)} className="h-full">
+            <Reveal key={p.slug} delay={Math.min(i * 0.04, 0.2)} variant="rise" className="h-full">
               <Link
                 href={`/blog/${p.slug}/`}
-                className="flex h-full flex-col bg-paper p-6 transition-colors duration-300 hover:bg-cream-bright"
+                className="card-lift flex h-full flex-col bg-paper p-6 hover:bg-cream-bright"
               >
                 <p className="font-mono text-[0.65rem] tracking-wider text-ink-faint">{fmt(p.date)}</p>
                 <h3 className="display mt-2 text-xl leading-snug">{p.title}</h3>

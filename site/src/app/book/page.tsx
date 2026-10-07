@@ -40,7 +40,7 @@ export default function Book() {
             </p>
           </Reveal>
         </div>
-        <Reveal delay={0.15} className="rounded-[4px] border hairline bg-paper-deep/60 p-6 sm:p-10">
+        <Reveal delay={0.15} className="rounded-[4px] border hairline bg-paper-deep/60 p-6 shadow-[0_20px_50px_-36px_rgba(26,25,22,0.35)] sm:p-10">
           <AuditFlow />
         </Reveal>
       </div>
