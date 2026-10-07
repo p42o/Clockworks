@@ -1,1 +1,1 @@
-@/workspace/ops/portal/app.js.gh-main
+@/tmp/appjs_chunks/app.js
