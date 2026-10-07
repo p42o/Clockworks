@@ -485,20 +485,20 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .gate-orb.o1 {
   width: min(52vw, 420px); height: min(52vw, 420px);
   left: -12%; top: -8%;
-  background: radial-gradient(circle at 40% 40%, rgba(191,77,28,.55), transparent 68%);
-  animation: gate-drift-a 16s ease-in-out infinite alternate;
+  background: radial-gradient(circle at 40% 40%, rgba(236,116,64,.75), transparent 68%);
+  animation: gate-drift-a 9s ease-in-out infinite alternate;
 }
 .gate-orb.o2 {
   width: min(48vw, 380px); height: min(48vw, 380px);
   right: -14%; bottom: -10%;
-  background: radial-gradient(circle at 50% 50%, rgba(45,98,207,.45), transparent 70%);
-  animation: gate-drift-b 19s ease-in-out infinite alternate;
+  background: radial-gradient(circle at 50% 50%, rgba(110,155,255,.65), transparent 70%);
+  animation: gate-drift-b 11s ease-in-out infinite alternate;
 }
 .gate-orb.o3 {
   width: min(36vw, 280px); height: min(36vw, 280px);
   left: 38%; top: 42%;
   background: radial-gradient(circle at 50% 50%, rgba(236,116,64,.22), transparent 72%);
-  animation: gate-drift-c 13s ease-in-out infinite alternate;
+  animation: gate-drift-c 7s ease-in-out infinite alternate;
 }
 .gate-grid {
   position: absolute; inset: -20%;
@@ -545,7 +545,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .gate-ring {
   position: absolute; inset: 0; border-radius: 50%;
   border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  animation: gate-ring-pulse 3.2s ease-out infinite;
+  animation: gate-ring-pulse 2.4s ease-out infinite;
 }
 .gate-ring.r2 {
   inset: -8px; opacity: .55;
@@ -558,7 +558,8 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   position: relative; z-index: 1;
   filter: drop-shadow(0 6px 16px rgba(19,29,43,.18));
 }
-.gate svg.gate-mark .m-gear { transform-origin: 178px 180px; transform-box: fill-box; animation: gate-gear 18s linear infinite; }
+.gate svg.gate-mark .m-gear { transform-box: view-box; transform-origin: 178px 180px; animation: gate-gear 14s linear infinite; }
+.gate svg.gate-mark.sweep .m-hands { animation: sweep 2.8s cubic-bezier(.45,.05,.2,1) infinite; }
 .gate-kicker {
   margin: 0; font: 600 11px/1 var(--fm); letter-spacing: .16em; text-transform: uppercase;
   color: var(--accent-ink);

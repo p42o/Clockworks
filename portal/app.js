@@ -320,6 +320,8 @@ window.__portalDevSignIn = EMU ? (email = "parks.phone@gmail.com") => signInWith
 
 onAuthStateChanged(auth, async (u) => {
   stopAll(); me = u;
+  // Local preview: ?splash=1 forces the signed-out gate so motion can be reviewed without signing out.
+  if (LOCAL && /(?:^|[?&])splash=1(?:&|$)/.test(location.search)) return renderGate("in");
   if (!u) return renderGate("in");
   const tok = await u.getIdTokenResult(true);
   // The rules decide who's an admin (claim or the allowlist kept in firestore.rules), so just try a read.
