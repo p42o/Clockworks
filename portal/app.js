@@ -805,7 +805,12 @@ async function loadFiles(prefix, force) {
   })();
   return fileLoading[prefix];
 }
-function filesCardHtml(prefix, { title, empty, taggable }) {
+function isImageType(t) { return String(t || "").startsWith("image/"); }
+function isPdfType(t, name) {
+  const n = String(name || "").toLowerCase();
+  return String(t || "") === "application/pdf" || n.endsWith(".pdf");
+}
+function filesCardHtml(prefix, { title, empty, taggable, showcase }) {
   if (!fileCache[prefix] && !fileLoading[prefix]) loadFiles(prefix);
   const rec = fileCache[prefix];
   const items = fileItems(prefix);
@@ -815,20 +820,36 @@ function filesCardHtml(prefix, { title, empty, taggable }) {
   const n = rec ? (rec.items || []).length : 0;
   const filterBar = taggable ? `<div class="file-filters">${[{ id: "all", label: "All" }, ...FILE_TAGS].map((t) => `<button type="button" class="chip ${t.id === filt ? "acc" : "dash"}" data-ff="${esc(t.id)}" style="cursor:pointer;border:0;height:26px">${esc(t.label)}</button>`).join("")}</div>` : "";
   const tagSelect = taggable ? `<label class="field file-tag" style="min-width:150px;flex:0;margin:0">Tag<select class="input" data-upcat>${FILE_TAGS.map((t) => `<option value="${t.id}" ${t.id === cat ? "selected" : ""}>${esc(t.label)}</option>`).join("")}</select></label>` : "";
-  const list = [
-    ...ups.map((u) => `<div class="file" data-up="${esc(u.id)}"><div><b>${esc(u.name)}</b><small>Uploading… ${u.pct}%</small></div><div class="upbar"><i style="width:${u.pct}%"></i></div></div>`),
-    ...items.map((f) => `<div class="file">
+  const list = showcase
+    ? [
+      ...ups.map((u) => `<div class="file tile" data-up="${esc(u.id)}"><div class="tile-thumb ph"><span class="tile-ph">Uploading</span></div><div class="tile-meta"><b>${esc(u.name)}</b><small>${u.pct}%</small></div><div class="upbar"><i style="width:${u.pct}%"></i></div></div>`),
+      ...items.map((f) => {
+        const img = isImageType(f.contentType);
+        const pdf = !img && isPdfType(f.contentType, f.name);
+        const thumb = img
+          ? `<button type="button" class="tile-thumb" data-dl="${esc(f.path)}" data-thumb="${esc(f.path)}" aria-label="Open ${esc(f.name)}"><span class="tile-ph">…</span></button>`
+          : `<button type="button" class="tile-thumb ${pdf ? "pdf" : "file"}" data-dl="${esc(f.path)}" aria-label="Open ${esc(f.name)}"><span class="tile-ph">${pdf ? "PDF" : "FILE"}</span></button>`;
+        return `<div class="file tile">
+      ${thumb}
+      <div class="tile-meta"><b title="${esc(f.name)}">${esc(f.name)}</b><small>${esc(fmtSize(f.size))}${f.timeCreated ? " · " + esc(fmtDay(String(f.timeCreated).slice(0, 10))) : ""}</small></div>
+      <div class="file-acts"><button type="button" class="btn sm" data-dl="${esc(f.path)}">${ic("link")}Open</button><button type="button" class="btn sm ghost danger" data-rm="${esc(f.path)}" aria-label="Delete ${esc(f.name)}">${ic("trash")}</button></div>
+    </div>`;
+      }),
+    ].join("")
+    : [
+      ...ups.map((u) => `<div class="file" data-up="${esc(u.id)}"><div><b>${esc(u.name)}</b><small>Uploading… ${u.pct}%</small></div><div class="upbar"><i style="width:${u.pct}%"></i></div></div>`),
+      ...items.map((f) => `<div class="file">
       <div><b>${esc(f.name)}</b><small>${esc(fmtSize(f.size))}${f.timeCreated ? " · " + esc(fmtDay(String(f.timeCreated).slice(0, 10))) : ""}${f.uploadedBy ? " · " + esc(f.uploadedBy) : ""}</small></div>
       ${taggable ? `<button type="button" class="chip ${f.category === "returned-intake" ? "acc" : "dash"}" data-retag="${esc(f.path)}" data-cat="${esc(f.category)}" title="Tap to retag" style="cursor:pointer;border:0">${esc(tagLabel(f.category))}</button>` : ""}
       <div class="file-acts"><button type="button" class="btn sm" data-dl="${esc(f.path)}">${ic("link")}Open</button><button type="button" class="btn sm ghost danger" data-rm="${esc(f.path)}" aria-label="Delete ${esc(f.name)}">${ic("trash")}</button></div>
     </div>`),
-  ].join("");
+    ].join("");
   let body;
   if (!rec) body = `<div class="empty-note">Loading files…</div>`;
   else if (rec.err && !n && !ups.length) body = `<div class="empty-note">Couldn't list files (${esc(rec.err)}). Storage may still be off for this project.</div>`;
   else if (!items.length && !ups.length) body = `<div class="empty-note">${empty}</div>`;
-  else body = `<div class="files">${list}</div>`;
-  return `<section class="panel files-card" data-prefix="${esc(prefix)}" data-taggable="${taggable ? "1" : "0"}">
+  else body = `<div class="files${showcase ? " showcase" : ""}">${list}</div>`;
+  return `<section class="panel files-card${showcase ? " showcase-card" : ""}" data-prefix="${esc(prefix)}" data-taggable="${taggable ? "1" : "0"}" data-showcase="${showcase ? "1" : "0"}">
     <div class="ph"><h2>${esc(title)} <small>${n || ""}</small></h2>
       <div class="file-head">${tagSelect}<button type="button" class="btn sm p" data-uppick>${ic("plus")}Upload</button>
       <input type="file" accept="application/pdf,image/*" multiple hidden data-filepick></div></div>
@@ -868,6 +889,16 @@ function wireFilesPanel(root) {
         await loadFiles(prefix, true);
       } catch (err) { toast("Retag failed: " + (err.code || err.message)); }
     }));
+    if (card.dataset.showcase === "1") {
+      $$("[data-thumb]", card).forEach(async (el) => {
+        try {
+          const url = await getDownloadURL(sref(storage, el.dataset.thumb));
+          el.innerHTML = `<img src="${esc(url)}" alt="" loading="lazy" decoding="async">`;
+        } catch (e) {
+          el.innerHTML = `<span class="tile-ph">IMG</span>`;
+        }
+      });
+    }
   });
 }
 async function maybeBumpIntake(clientId, category) {
@@ -913,7 +944,7 @@ function viewAssets(v) {
   v.innerHTML = `
     <section class="hello"><div><div class="date">Assets</div><h1>The box.</h1><p>Intake forms, one-pagers, and the rest of the kit. Grab them from any desk.</p></div></section>
     <div style="display:flex;flex-wrap:wrap;gap:6px">${ASSET_CATS.map((c) => `<button type="button" class="chip ${c.id === cat.id ? "acc" : "dash"}" data-acat="${esc(c.id)}" style="cursor:pointer;border:0;height:30px;padding:0 12px">${esc(c.label)}</button>`).join("")}</div>
-    ${filesCardHtml(prefix, { title: cat.label, empty: `Nothing in ${esc(cat.label.toLowerCase())} yet. ${esc(cat.blurb)}`, taggable: false })}`;
+    ${filesCardHtml(prefix, { title: cat.label, empty: `Nothing in ${esc(cat.label.toLowerCase())} yet. ${esc(cat.blurb)}`, taggable: false, showcase: true })}`;
   $$("[data-acat]", v).forEach((b) => (b.onclick = () => { assetCat = b.dataset.acat; refresh(true); }));
   wireFilesPanel(v);
 }
