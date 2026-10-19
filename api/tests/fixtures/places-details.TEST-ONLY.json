@@ -1,0 +1,27 @@
+{
+  "_TEST_ONLY": true,
+  "id": "TEST-ONLY-NOT-A-PLACE",
+  "displayName": {"text": "TEST FIXTURE — not a real business"},
+  "rating": 4.5,
+  "userRatingCount": 2,
+  "googleMapsUri": "https://example.invalid/TEST-ONLY-place",
+  "reviews": [
+    {
+      "authorAttribution": {"displayName": "TEST FIXTURE — not a real review", "uri": "https://example.invalid/TEST-ONLY-author", "photoUri": ""},
+      "rating": 4,
+      "text": {"text": "TEST-ONLY mock content. This is not a customer testimonial. <script>Text must remain text.</script>", "languageCode": "en"},
+      "originalText": {"text": "TEST-ONLY original text", "languageCode": "es"},
+      "relativePublishTimeDescription": "TEST-ONLY relative time",
+      "publishTime": "2026-01-01T12:00:00Z",
+      "googleMapsUri": "https://example.invalid/TEST-ONLY-review",
+      "flagContentUri": "https://example.invalid/TEST-ONLY-report"
+    },
+    {
+      "authorAttribution": {"displayName": "TEST FIXTURE — rating only, not a real review", "uri": "https://example.invalid/TEST-ONLY-author-2"},
+      "rating": 5,
+      "relativePublishTimeDescription": "TEST-ONLY relative time",
+      "publishTime": "2026-01-02T12:00:00Z",
+      "googleMapsUri": "https://example.invalid/TEST-ONLY-review-2"
+    }
+  ]
+}

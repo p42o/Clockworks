@@ -1,3 +1,4 @@
+import GoogleReviews from "@/components/GoogleReviews";
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import AuditCTA from "@/components/AuditCTA";
@@ -88,6 +89,8 @@ export default function Results() {
           </article>
         </Reveal>
       </section>
+
+      <GoogleReviews />
 
       <AuditCTA
         title="Want one of these with your name on it?"

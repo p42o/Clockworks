@@ -1,3 +1,4 @@
+import GoogleReviews from "@/components/GoogleReviews";
 import { Link } from "next-view-transitions";
 import Escapement from "@/components/Escapement";
 import WeekFlow from "@/components/WeekFlow";
@@ -383,6 +384,8 @@ export default function Home() {
           </Reveal>
         </div>
       </section>
+
+      <GoogleReviews />
 
       {/* ---------- ABOUT TEASER ---------- */}
       <section className="border-t hairline">

@@ -29,5 +29,10 @@ jobs:
             **/.git*/**
             **/.DS_Store
             Archive.zip
+            api/tests/**
+            api/_reviews-config.php
+            api/_cache/*.json
+            api/_cache/*.lock
+            api/_cache/refresh-*
             site/**
             **/node_modules/**
