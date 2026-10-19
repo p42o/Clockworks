@@ -82,8 +82,7 @@ function InsightsSample({ open, onClose }: { open: boolean; onClose: () => void 
         Demand signals from real conversations — not guesses.
       </div>
       <p className="mt-4 text-center text-[0.8rem] text-ink-faint">
-        The bubble you just used logs and learns exactly like this — for Parker.{" "}
-        <a href="/your-own-agent/" className="text-copper underline underline-offset-2">Your own agent →</a>
+        The bubble you just used logs and learns exactly like this — for Parker.
       </p>
     </DemoShell>
   );
@@ -316,10 +315,7 @@ export default function ChatWidget() {
             <div className="border-b hairline bg-ground px-4 py-3 text-paper">
               <p className="display text-lg leading-none">The Front Desk<span className="text-copper">.</span></p>
               <p className="mt-1 text-[0.7rem] text-paper/60">
-                Live demo — this bot IS the product.{" "}
-                <a href="/your-own-agent/" className="text-copper underline underline-offset-2" title="Learn more about having your own agent">
-                  Get one for your shop →
-                </a>
+                Live demo — this bot IS the product.
               </p>
             </div>
 

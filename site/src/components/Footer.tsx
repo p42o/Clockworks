@@ -46,11 +46,6 @@ export default function Footer() {
             <p className="eyebrow mb-4">More</p>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/your-own-agent/" className="text-paper/70 transition-colors hover:text-paper">
-                  Your own agent
-                </Link>
-              </li>
-              <li>
                 <a href={legacy.privacy} className="text-paper/70 transition-colors hover:text-paper">
                   Privacy
                 </a>

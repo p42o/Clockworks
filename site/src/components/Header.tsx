@@ -51,7 +51,7 @@ export default function Header() {
         <nav className="hidden items-center gap-5 lg:gap-7 md:flex whitespace-nowrap" aria-label="Primary">
           {nav.map((item) => {
             const active = pathname?.startsWith(item.href.replace(/\/$/, ""));
-            const isResults = item.href === "/results/";
+            const isResults = (item.href as string) === "/results/"; // Results is out of nav while /results/ redirects; kept for when it returns
             return (
               <Link
                 key={item.href}

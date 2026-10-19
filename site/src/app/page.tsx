@@ -221,11 +221,6 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
-          <Reveal className="mt-8">
-            <Link href="/what-i-do/" className="link-draw text-ink-soft hover:text-ink">
-              The full spec sheet, including what each one costs →
-            </Link>
-          </Reveal>
         </div>
       </section>
 
@@ -252,11 +247,6 @@ export default function Home() {
           <div className="mt-12">
             <DemoGallery />
           </div>
-          <Reveal className="mt-8">
-            <Link href="/results/" className="link-draw text-ink-soft hover:text-ink">
-              More proof, and the honest &ldquo;early days&rdquo; part →
-            </Link>
-          </Reveal>
         </div>
       </section>
 
@@ -375,11 +365,6 @@ export default function Home() {
               family&rsquo;s life and businesses right now — answering, scheduling, logging,
               chasing. When I say &ldquo;it just runs,&rdquo; I&rsquo;m describing my Tuesday.
             </p>
-          </Reveal>
-          <Reveal className="mt-8" delay={0.1}>
-            <Link href="/results/" className="link-draw text-ink-soft hover:text-ink">
-              See the receipts →
-            </Link>
           </Reveal>
         </div>
       </section>
