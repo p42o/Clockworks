@@ -340,7 +340,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.015em}
     <div class="stubs">
       <div class="stub"><b>Missed calls</b><p>Most callers won't leave a voicemail. They dial the next name on Google, and you never know the job existed.</p></div>
       <div class="stub"><b>Quiet quotes</b><p>Quotes rarely lose to a competitor. They lose to silence — yours and theirs. Nobody followed up.</p></div>
-      <div class="stub"><b>Unasked reviews</b><p>Five-star work, 4.1 rating. Not a quality problem. An asking problem.</p></div>
+      <div class="stub"><b>Unasked reviews</b><p>A consistent ask for every customer, whatever their experience.</p></div>
       <div class="stub"><b>Paperwork nights</b><p>Invoices chased at the kitchen table. Job notes in a camera roll. Again.</p></div>
     </div>
   </section>
@@ -363,7 +363,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.015em}
       </button>
       <button class="sys" onclick="go('lab','review')">
         <span class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg></span>
-        <h3>Review Engine</h3><p>Every finished job gets the ask. Unhappy customers reach you first, privately.</p><span class="go">Try the demo →</span>
+        <h3>Review Engine</h3><p>Every customer gets the same Google review link and private feedback option together.</p><span class="go">Try the demo →</span>
       </button>
       <button class="sys" onclick="go('lab','desk')">
         <span class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg></span>
@@ -492,7 +492,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.015em}
                 <div class="sw-label">Require my approval for jobs over <output id="callThreshOut">$500</output><small>Anything bigger waits for you</small></div>
                 <input type="range" id="callThresh" min="100" max="2000" step="100" value="500" aria-label="Approval threshold in dollars">
               </div>
-              <div class="sw"><span class="sw-label">Emergencies always ring me<small>Burst pipe, gas smell, no heat</small></span><button class="tgl" role="switch" aria-checked="true" aria-disabled="true" title="Always on — not negotiable"><svg class="lock" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div>
+              <div class="sw"><span class="sw-label">Emergencies always ring me<small>Burst pipe, gas smell, no heat</small></span><button class="tgl" role="switch" aria-checked="true" aria-disabled="true" title="Always on. Not negotiable."><svg class="lock" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div>
               <div class="sw"><span class="sw-label">Daily digest at 7:00 AM<small>Every catch, one coffee-length read</small></span><button class="tgl" role="switch" aria-checked="true" data-t="callDigest"></button></div>
               <p class="etch on-dark" style="margin-top:14px;margin-bottom:6px">Waiting on you</p>
               <div class="queue" id="callQueue"><div class="q-empty">Nothing waiting. Run a scenario ↖</div></div>
@@ -553,11 +553,11 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.015em}
       <div class="demo">
         <div class="stage">
           <div class="scen" id="reviewScen">
-            <button data-s="happy" class="live">Job closes — happy customer</button>
-            <button data-s="unhappy">Job closes — something went wrong</button>
+            <button data-s="happy" class="live">Sample: customer chooses Google</button>
+            <button data-s="unhappy">Sample: customer chooses a private note</button>
           </div>
           <div class="chartbox" style="margin-top:0;display:flex;justify-content:space-between;align-items:center">
-            <div><p class="etch">North Fork · Google rating</p><b style="font-family:var(--mono);font-size:1.7rem" id="revRating">★ 4.4</b></div>
+            <div><p class="etch">Sample Google rating</p><b style="font-family:var(--mono);font-size:1.7rem" id="revRating">★ 4.4</b></div>
             <div style="text-align:right"><p class="etch">Reviews</p><b style="font-family:var(--mono);font-size:1.7rem" id="revCount">87</b></div>
           </div>
           <div class="rows" id="reviewFeed" style="margin-top:12px"></div>
@@ -566,8 +566,8 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.015em}
           <div class="panel">
             <div class="panel-head"><span class="etch on-dark">Human-in-the-loop controls</span><span class="led"></span></div>
             <div class="panel-body">
-              <div class="sw"><span class="sw-label">Ask after every closed job<small>Text with your review link</small></span><button class="tgl" role="switch" aria-checked="true" data-t="revAsk"></button></div>
-              <div class="sw"><span class="sw-label">Unhappy customers route to my cell<small>Before anything goes public</small></span><button class="tgl" role="switch" aria-checked="true" aria-disabled="true" title="Always on — not negotiable"><svg class="lock" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div>
+              <div class="sw"><span class="sw-label">Ask after every closed job<small>Same Google link and private note option for everyone</small></span><button class="tgl" role="switch" aria-checked="true" data-t="revAsk"></button></div>
+              <div class="sw"><span class="sw-label">Private feedback alongside the Google link<small>Both options for every customer</small></span><button class="tgl" role="switch" aria-checked="true" aria-disabled="true" title="Always on. Not negotiable."><svg class="lock" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div>
               <div class="sw"><span class="sw-label">Draft public replies for my OK<small>To every new review, good or bad</small></span><button class="tgl" role="switch" aria-checked="true" data-t="revDraft"></button></div>
               <p class="etch on-dark" style="margin-top:14px;margin-bottom:6px">Waiting on you</p>
               <div class="queue" id="reviewQueue"><div class="q-empty">Nothing waiting. Run a scenario ↖</div></div>
@@ -576,7 +576,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.015em}
         </aside>
       </div>
       <div class="demo-cta">
-        <div><b>Your rating should match your work.</b><p>A conversation checks your ask-rate against your close-rate — most shops are leaving stars on the table.</p></div>
+        <div><b>Ask every customer consistently.</b><p>I can help set up the same thank-you, Google review link, and private feedback option for every customer.</p></div>
         <button class="cta" onclick="bookToast('Review Engine')">Send a message</button>
       </div>
     </section>
@@ -607,7 +607,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.015em}
                   <button class="btn sm" data-tone="brisk" style="background:transparent;color:var(--slate-400)">Brisk</button>
                 </span>
               </div>
-              <div class="sw"><span class="sw-label">Hand off to a human when<small>Emergency words, angry tone, legal</small></span><button class="tgl" role="switch" aria-checked="true" aria-disabled="true" title="Always on — not negotiable"><svg class="lock" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div>
+              <div class="sw"><span class="sw-label">Hand off to a human when<small>Emergency words, angry tone, legal</small></span><button class="tgl" role="switch" aria-checked="true" aria-disabled="true" title="Always on. Not negotiable."><svg class="lock" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div>
               <div class="sw"><span class="sw-label">Quote ballparks without me<small>Uses your published price ranges</small></span><button class="tgl" role="switch" aria-checked="false" data-t="deskBallpark"></button></div>
               <div class="sw"><span class="sw-label">Nightly transcript digest<small>What people asked, what booked</small></span><button class="tgl" role="switch" aria-checked="true" data-t="deskDigest"></button></div>
               <p class="etch on-dark" style="margin-top:14px;margin-bottom:6px">Waiting on you</p>
@@ -807,7 +807,7 @@ function selectTab(name){
 $$('.tab').forEach(t=>t.onclick=()=>selectTab(t.dataset.tab));
 function scenGroup(id,fn){$$(`#${id} button`).forEach(b=>b.onclick=()=>{$$(`#${id} button`).forEach(x=>x.classList.remove('live'));b.classList.add('live');fn(b.dataset.s)})}
 $$('.tgl:not([aria-disabled])').forEach(t=>t.onclick=()=>{const on=t.getAttribute('aria-checked')!=='true';t.setAttribute('aria-checked',on);if(t.dataset.t==='quoteDraft')state.quoteDraft=on;if(t.dataset.t==='revDraft')state.revDraft=on;toast(on?'Switched on.':'Switched off — you can flip it back anytime.',1800)});
-$$('.tgl[aria-disabled]').forEach(t=>t.onclick=()=>toast('That one’s bolted on. Emergencies and unhappy customers always reach a human.',3200));
+$$('.tgl[aria-disabled]').forEach(t=>t.onclick=()=>toast('That stays available. Every customer can send private feedback alongside the Google review link.',3200));
 
 /* ============ CALL CATCH ============ */
 const callQ=$('#callQueue'),callM=$('#callMsgs');
@@ -911,7 +911,7 @@ function feedCard(html,cls='ok'){const c=document.createElement('div');c.classNa
 scenGroup('reviewScen',async s=>{
   const rq=$('#reviewQueue');
   if(s==='happy'){
-    feedCard('<div class="t-top"><span class="t-title">Job #1147 closed — sump pump, Fridley</span><span class="badge a">Ask sent</span></div><p class="t-sub">“Thanks for having us out, Dana R! Quick favor — how’d we do? [review link]”</p>');
+    feedCard('<div class="t-top"><span class="t-title">Sample job #1147 closed: sump pump, Fridley</span><span class="badge a">Ask sent</span></div><p class="t-sub">“Thanks for having me out. Leave a Google review: [Google review link]. Or reply here with a private note.” Same message for everyone.</p>');
     await wait(1500);
     revCount++;rating=Math.min(5,Math.round((rating+0.01)*10)/10);
     $('#revCount').textContent=revCount;$('#revRating').textContent='★ '+rating.toFixed(1);
@@ -925,11 +925,11 @@ scenGroup('reviewScen',async s=>{
     } else toast('Reply posted automatically — style you already approved.',2400);
   }
   if(s==='unhappy'){
-    feedCard('<div class="t-top"><span class="t-title">Job #1149 closed — faucet install, Rogers</span><span class="badge r">2/5 private</span></div><p class="t-sub">“Crew left mud on the carpet. Pretty frustrated.” — caught in the private check-in, <b>never reached Google</b>.</p>','needs');
+    feedCard('<div class="t-top"><span class="t-title">Sample job #1149 closed: faucet install, Rogers</span><span class="badge r">Private note chosen</span></div><p class="t-sub">Same ask sent: “Thanks for having me out. Leave a Google review: [Google review link]. Or reply here with a private note.” <b>The customer chose a private reply.</b></p>','needs');
     clearEmpty(rq);
     const c=document.createElement('div');c.className='ticket needs';
-    c.innerHTML=`<div class="t-top"><span class="t-title" style="font-size:.86rem">Marcus O. — routed to your cell</span><span class="badge r">Call back</span></div><p class="t-sub">Number + job notes queued. This route is bolted on — it works the same in every mode.</p><div class="t-actions"><button class="btn approve sm">Mark handled</button></div>`;
-    $('.approve',c).onclick=()=>{stampAndClear(c,'Handled',()=>emptyIf(rq));feedCard('<div class="t-top"><span class="t-title">Follow-up: carpet cleaned, $75 credit</span><span class="badge a">Recovered</span></div><p class="t-sub">Marcus updated his private note: “Owner called in 10 minutes. Class act.”</p>');toast('Saved the relationship before it became a public review.')};
+    c.innerHTML=`<div class="t-top"><span class="t-title" style="font-size:.86rem">Sample private note: follow up personally</span><span class="badge r">Call back</span></div><p class="t-sub">The customer chose to reply privately. The Google review link remains available, regardless of sentiment or star rating.</p><div class="t-actions"><button class="btn approve sm">Mark handled</button></div>`;
+    $('.approve',c).onclick=()=>{stampAndClear(c,'Handled',()=>emptyIf(rq));feedCard('<div class="t-top"><span class="t-title">Sample follow-up: customer contacted</span><span class="badge a">Recovered</span></div><p class="t-sub">I follow up on the note. The customer can still leave a Google review.</p>');toast('Private feedback handled. The Google review option stays available.')};
     rq.appendChild(c);
   }
 });

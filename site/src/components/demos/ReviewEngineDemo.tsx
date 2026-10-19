@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { CHART } from "./DemoShell";
 
-/** Job closes → review ask → two very different paths. Sample data throughout. */
+/** Job closes → same review ask with both options → customer chooses. Sample data throughout. */
 
 export default function ReviewEngineDemo() {
   const reduced = useReducedMotion();
@@ -31,11 +31,11 @@ export default function ReviewEngineDemo() {
       <div className="mb-5 rounded-[3px] border hairline bg-cream-bright/70 px-4 py-3">
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">JOB #1147 — CLOSED 3:20 PM</p>
-            <p className="text-[0.9rem]">Sump pump replacement — Fridley</p>
+            <p className="font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">SAMPLE JOB #1147: CLOSED 3:20 PM</p>
+            <p className="text-[0.9rem]">Sump pump replacement, Fridley</p>
           </div>
           <div className="text-right">
-            <p className="font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">YOUR GOOGLE RATING</p>
+            <p className="font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">SAMPLE GOOGLE RATING</p>
             <p className="font-mono text-xl tabular-nums">
               <motion.span
                 key={rating}
@@ -51,7 +51,7 @@ export default function ReviewEngineDemo() {
         </div>
       </div>
 
-      <p className="mb-3 text-center text-sm text-ink-soft">How did the job actually go? (You decide — the system handles both.)</p>
+      <p className="mb-3 text-center text-sm text-ink-soft">Every customer gets both options. Choose a sample response.</p>
       <div className="mb-6 flex justify-center gap-3">
         <button
           type="button"
@@ -61,7 +61,7 @@ export default function ReviewEngineDemo() {
           }`}
           style={mood === "happy" ? { background: CHART.pine } : undefined}
         >
-          😊 Customer&rsquo;s thrilled
+          Google review example
         </button>
         <button
           type="button"
@@ -70,7 +70,7 @@ export default function ReviewEngineDemo() {
             mood === "unhappy" ? "border-copper bg-copper text-cream-bright" : "hairline bg-cream-bright/70 hover:border-copper/60"
           }`}
         >
-          😾 Something went sideways
+          Private note example
         </button>
       </div>
 
@@ -87,25 +87,25 @@ export default function ReviewEngineDemo() {
                 <motion.div initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-md rounded-[12px] bg-paper-deep px-4 py-3">
                   <p className="font-mono text-[0.6rem] tracking-wider text-ink-faint">TEXT → CUSTOMER, 6 MIN AFTER CLOSE</p>
                   <p className="mt-1 text-[0.85rem] leading-snug">
-                    Hi Dana — thanks for having us out today. Quick favor: how&rsquo;d we do, 1–5?
+                    Thanks for having me out today. Leave a Google review: g.page/r/sample-business. Or reply here with a private note. Both options are open to everyone.
                   </p>
                 </motion.div>
               )}
               {stage >= 2 && (
                 <motion.div initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-md rounded-[12px] bg-copper px-4 py-3 text-cream-bright">
-                  <p className="text-[0.85rem]">{mood === "happy" ? "5! Tech was great, basement's dry." : "2 — the crew left mud on the carpet and I'm pretty frustrated."}</p>
+                  <p className="text-[0.85rem]">{mood === "happy" ? "I chose the Google link. Both options were in my message." : "I chose a private note. The Google link is in my message too."}</p>
                 </motion.div>
               )}
               {stage >= 3 && mood === "happy" && (
                 <motion.div initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-md space-y-3">
                   <div className="rounded-[12px] bg-paper-deep px-4 py-3">
                     <p className="text-[0.85rem] leading-snug">
-                      That&rsquo;s great to hear. If you have 60 seconds, a Google review helps our little crew more than you&rsquo;d guess: <span className="underline decoration-copper/60">g.page/r/nelson-plumbing</span>
+                      The same Google review link and private reply option go to every customer: <span className="underline decoration-copper/60">g.page/r/sample-business</span>
                     </p>
                   </div>
                   <div className="rounded-[3px] border-2 p-4" style={{ borderColor: CHART.pine, background: "rgba(213,219,213,0.4)" }}>
-                    <p className="font-mono text-[0.6rem] tracking-wider" style={{ color: CHART.pine }}>NEW PUBLIC REVIEW — 22 MIN LATER</p>
-                    <p className="mt-1 text-[0.9rem]">★★★★★ &ldquo;Fast, tidy, explained everything. Basement is bone dry.&rdquo; — Dana R.</p>
+                    <p className="font-mono text-[0.6rem] tracking-wider" style={{ color: CHART.pine }}>SAMPLE: CUSTOMER CHOOSES GOOGLE</p>
+                    <p className="mt-1 text-[0.9rem]">The customer can share any rating or experience on Google.</p>
                   </div>
                 </motion.div>
               )}
@@ -113,17 +113,17 @@ export default function ReviewEngineDemo() {
                 <motion.div initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-md space-y-3">
                   <div className="rounded-[12px] bg-paper-deep px-4 py-3">
                     <p className="text-[0.85rem] leading-snug">
-                      I&rsquo;m really sorry about that — that&rsquo;s not how we like to leave a home. I&rsquo;m flagging this straight to the owner right now; expect a personal call today.
+                      Thanks for the note. I&rsquo;ll follow up personally. Your Google review link is still available: g.page/r/sample-business.
                     </p>
                   </div>
                   <div className="rounded-[3px] border-2 border-copper bg-ember/40 p-4">
-                    <p className="font-mono text-[0.6rem] tracking-wider text-copper">→ YOUR PHONE, PRIVATELY — NOT GOOGLE</p>
+                    <p className="font-mono text-[0.6rem] tracking-wider text-copper">SAMPLE: CUSTOMER CHOOSES A PRIVATE NOTE</p>
                     <p className="mt-1 text-[0.9rem] leading-snug">
-                      ⚠ Dana R. rated job #1147 a 2/5 — &ldquo;mud on the carpet.&rdquo; Full transcript attached. No public review was requested.
+                      The customer replies privately by choice. The same message already offered a Google review link alongside this option.
                     </p>
                   </div>
                   <p className="text-center text-[0.8rem] text-ink-faint">
-                    Public rating: untouched. You get the chance to fix it while it&rsquo;s still a conversation.
+                    Both options stay available, regardless of sentiment or star rating.
                   </p>
                 </motion.div>
               )}
@@ -132,7 +132,7 @@ export default function ReviewEngineDemo() {
         </AnimatePresence>
         {!mood && (
           <p className="pt-10 text-center text-sm text-ink-faint">
-            Great companies sit at 4.1 because happy customers are quiet. Asking every time is the whole trick.
+            I send the same ask to every customer. Google review or private note: the customer chooses.
           </p>
         )}
       </div>

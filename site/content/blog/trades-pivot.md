@@ -25,7 +25,7 @@ You already have the hard part. You can braze a joint, balance a system, bend co
 
 **Quote Chaser** deals with the estimates that go quiet. Most quotes don't die on price. They die of silence, on a counter, under a permission slip. A short, polite follow-up sequence keeps the conversation alive and stops the moment the customer replies. The 9:40 p.m. thumb-typing session gets a lot shorter when the follow-ups send themselves.
 
-**Review Engine** asks for the review every single time, at the moment the job wraps, the thing everyone means to do and almost nobody does consistently. Happy customers get a direct link to your Google Business Profile. Unhappy ones get routed to you privately first, so you hear about the problem before the internet does.
+**Review Engine** asks for the review every single time, at the moment the job wraps, the thing everyone means to do and almost nobody does consistently. Every customer gets the same thank-you and Google review link, with a private feedback option alongside it. The ask never changes based on sentiment or star rating.
 
 **Paper Mover** is the boring one, which is why it might be the best one. It nudges unpaid invoices politely, keeps job records tidy as they happen, and sends you one Friday summary you can read in the truck: what came in, what went out, what's overdue, what needs you.
 

@@ -65,7 +65,7 @@ Write a reply to a new inquiry from someone who [describe what they're asking ab
 For following up after you've completed a job, to check in and (gently) ask for a review.
 
 ```
-Write a short follow-up email to a customer I completed work for about [X] days ago. The job was [brief description]. I want to check in, make sure they're happy, and mention that a Google review would mean a lot to us without being aggressive about it. Friendly and genuine, under 100 words.
+Write a short follow-up email to a customer I completed work for about [X] days ago. The job was [brief description]. Give every customer the same thank-you and Google review link, with a private feedback option alongside it, regardless of sentiment or star rating. Friendly and genuine, under 100 words.
 ```
 
 **Template 05**

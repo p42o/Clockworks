@@ -46,7 +46,7 @@ Reply at any point and the sequence stops. A Bloomington contractor we work with
 
 ### 3. The review automation
 
-One hour after a job is marked complete, an automated text goes out: *"Thanks for having us out. Everything looking good?"* If yes, the next message includes a direct link to your Google Business Profile. If anything below 3 stars, you get an alert before the review goes public, so you can call the customer and make it right.
+One hour after a job is marked complete, every customer gets the same thank-you text with a direct Google review link and a private feedback option alongside it. Neither option depends on sentiment or star rating.
 
 A Wayzata roofing crew went from 14 reviews in 18 months to 27 new 5-star reviews in 30 days. They were already earning the reviews. They were just never asking for them at the right moment.
 

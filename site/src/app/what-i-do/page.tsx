@@ -44,17 +44,17 @@ const SPECS = [
   {
     n: "03",
     code: "REVIEW ENGINE",
-    title: "Five-star reviews on autopilot",
+    title: "A review ask after every job",
     price: "",
-    firstIf: "Your work is better than your Google rating suggests.",
+    firstIf: "You want a consistent way to ask every customer for a review.",
     what: [
-      "When a job closes, the customer gets a short text asking how it went, with your review link.",
-      "Happy customers get walked straight to Google. Unhappy ones reach you privately first — you fix it before it’s public.",
+      "When a job closes, every customer gets the same thank-you text with a Google review link.",
+      "A private feedback option sits alongside the Google link for everyone, regardless of sentiment or star rating.",
       "Fresh reviews keep your Google Business Profile alive, which is where your next customer is already searching.",
     ],
     runs: "Google Business Profile · Jobber · Housecall Pro",
     truth:
-      "You’ve done five-star work for years — it’s just never been asked for out loud. This asks, politely, every single time.",
+      "I set up the same polite review ask for every customer, with both options in the message.",
   },
   {
     n: "04",

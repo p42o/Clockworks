@@ -37,8 +37,8 @@ const SYSTEMS = [
   {
     n: "03",
     code: "REVIEW ENGINE",
-    title: "Five-star reviews on autopilot",
-    body: "Job closes, customer gets a short text with your review link. Happy customers talk you up in public. Unhappy ones reach you privately first — before they reach Google.",
+    title: "A review ask after every job",
+    body: "Every customer gets the same thank-you text with a Google review link and a private feedback option alongside it.",
     runs: "Google Business Profile · Jobber",
   },
   {

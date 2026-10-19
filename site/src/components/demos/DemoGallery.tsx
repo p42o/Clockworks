@@ -32,11 +32,11 @@ const DEMOS = [
   {
     key: "reviews",
     code: "DEMO 03 · REVIEW ENGINE",
-    title: "Two customers, two paths",
-    blurb: "You decide how the job went. Happy walks to Google; unhappy walks straight to your phone — privately.",
-    verbs: "Pick a mood · watch the fork",
+    title: "Every customer, the same ask",
+    blurb: "Every customer gets the same thank-you and Google review link, with a private note option alongside it.",
+    verbs: "One ask · both options",
     component: ReviewEngineDemo,
-    assumptions: "Sample texts; the ask timing and wording are set by the owner.",
+    assumptions: "Sample texts. Every customer gets both options, regardless of sentiment or star rating.",
   },
   {
     key: "dashboard",
