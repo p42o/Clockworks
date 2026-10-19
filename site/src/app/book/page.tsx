@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PhoneIcon from "@/components/PhoneIcon";
 import Reveal from "@/components/Reveal";
 import AuditFlow from "@/components/AuditFlow";
 import { site } from "@/lib/site";
@@ -35,9 +36,9 @@ export default function Book() {
               ))}
             </ul>
             <p className="mt-8 text-sm text-ink-faint">
-              This form is the whole front door — it lands on my phone in seconds, and a
-              human answers it.
+              This form is the whole front door — it lands on my phone in seconds, and a human answers it.
             </p>
+            <p className="mt-6 text-sm text-ink-soft">Rather talk? <a href={site.phone.href} className="link-draw mt-2 inline-flex items-center gap-2 border-b border-copper/60 pb-1 hover:text-copper"><PhoneIcon className="h-4 w-4" />Call or text <span className="font-mono">{site.phone.display}</span></a></p>
           </Reveal>
         </div>
         <Reveal delay={0.15} className="rounded-[4px] border hairline bg-paper-deep/60 p-6 shadow-[0_20px_50px_-36px_rgba(26,25,22,0.35)] sm:p-10">

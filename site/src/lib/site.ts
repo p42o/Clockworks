@@ -1,5 +1,8 @@
 export const site = {
   name: "MN Clockworks",
+  legalName: "PGS Ventures LLC",
+  phone: { display: "(763) 202-7778", e164: "+17632027778", schema: "+1-763-202-7778", href: "tel:+17632027778" },
+  areaServed: "Maple Grove and the northwest Twin Cities metro",
   url: "https://mnclockworks.com",
   email: "parker@mnclockworks.com",
   owner: "Parker Swanson",

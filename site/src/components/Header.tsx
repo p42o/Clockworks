@@ -5,6 +5,7 @@ import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { nav, site } from "@/lib/site";
+import PhoneIcon from "@/components/PhoneIcon";
 import LogoMark from "@/components/LogoMark";
 
 const easeGate: [number, number, number, number] = [0.2, 0.9, 0.25, 1.05];
@@ -39,15 +40,15 @@ export default function Header() {
           : "border-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
+      <div className="site-header-row mx-auto flex max-w-6xl xl:max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
         <Link href="/" className="group flex items-center gap-3" aria-label="MN Clockworks home">
-          <LogoMark className="h-11 w-11 transition-transform duration-700 group-hover:rotate-[24deg]" />
-          <span className="display text-[1.7rem] leading-none">
+          <LogoMark className="h-9 w-9 md:h-11 md:w-11 transition-transform duration-700 group-hover:rotate-[24deg]" />
+          <span className="display text-[1.5rem] md:text-[1.7rem] leading-none">
             Clockworks<span className="text-copper transition-opacity group-hover:animate-tick">.</span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-5 lg:gap-7 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-5 lg:gap-7 md:flex whitespace-nowrap" aria-label="Primary">
           {nav.map((item) => {
             const active = pathname?.startsWith(item.href.replace(/\/$/, ""));
             const isResults = item.href === "/results/";
@@ -70,6 +71,7 @@ export default function Header() {
               </Link>
             );
           })}
+          <a href={site.phone.href} aria-label="Call MN Clockworks at (763) 202-7778" className="link-draw flex h-9 w-9 shrink-0 items-center justify-center rounded-full border hairline text-ink-soft transition-colors hover:text-copper xl:h-auto xl:w-auto xl:gap-2 xl:rounded-none xl:border-0 xl:font-mono xl:text-xs"><PhoneIcon /><span className="hidden xl:inline">{site.phone.display}</span></a>
           <Link
             href="/book/"
             className="btn-press rounded-[3px] bg-ink px-5 py-2.5 text-[0.875rem] font-medium text-paper transition-colors duration-300 hover:bg-copper"
@@ -87,6 +89,7 @@ export default function Header() {
           >
             Free audit
           </Link>
+          <a href={site.phone.href} aria-label="Call MN Clockworks at (763) 202-7778" tabIndex={open ? -1 : undefined} className={`flex h-10 w-10 items-center justify-center rounded-full border hairline text-ink-soft transition-opacity hover:text-copper ${open ? "pointer-events-none opacity-0" : "opacity-100"}`}><PhoneIcon /></a>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -126,7 +129,7 @@ export default function Header() {
           >
             <div className="grain absolute inset-0" aria-hidden />
             <nav
-              className="relative mt-24 flex flex-col gap-2 px-7"
+              className="relative mt-24 flex flex-col gap-2 overflow-y-auto px-7 pb-8"
               aria-label="Mobile"
             >
               {[{ href: "/", label: "Home" }, ...nav].map((item, i) => (
@@ -148,7 +151,7 @@ export default function Header() {
                 initial={reduced ? false : { opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: reduced ? 0 : 0.38, duration: 0.48, ease: easeGate }}
-                className="mt-8"
+                className="mt-4"
               >
                 <Link
                   href="/book/"
@@ -156,6 +159,7 @@ export default function Header() {
                 >
                   {site.cta.label}
                 </Link>
+                <motion.a href={site.phone.href} initial={reduced ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduced ? 0 : 0.46, duration: 0.48, ease: easeGate }} className="mt-3 flex min-h-[60px] w-full items-center justify-center gap-3 rounded-[3px] border hairline px-3 py-4 text-sm font-medium transition-colors hover:text-copper"><PhoneIcon />Call or text {site.phone.display}</motion.a>
                 <p className="mt-3 text-center text-sm text-ink-faint">{site.cta.sub}</p>
               </motion.div>
             </nav>

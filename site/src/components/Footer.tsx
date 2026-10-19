@@ -1,5 +1,6 @@
 import { Link } from "next-view-transitions";
 import { legacy, nav, site } from "@/lib/site";
+import PhoneIcon from "@/components/PhoneIcon";
 import LogoMark from "@/components/LogoMark";
 
 export default function Footer() {
@@ -63,15 +64,16 @@ export default function Footer() {
           </div>
           <div className="col-span-2">
             <p className="eyebrow mb-4">Contact</p>
+            <a href={site.phone.href} className="mb-4 inline-flex items-center gap-3 font-mono text-xl text-paper transition-colors hover:text-copper"><PhoneIcon />{site.phone.display}</a>
             <Link
               href="/book/"
-              className="font-medium text-paper underline decoration-copper/60 underline-offset-4 hover:decoration-copper"
+              className="block w-fit font-medium text-paper underline decoration-copper/60 underline-offset-4 hover:decoration-copper"
             >
               Send a message →
             </Link>
             <p className="mt-3 max-w-xs text-paper/55">
               Every message lands on my phone within minutes, and a real person answers.
-              {" "}{site.city}, Minnesota — serving the Twin Cities in person, everywhere else remotely.
+              {" "}Serving {site.areaServed}; everywhere else remotely.
             </p>
           </div>
         </div>
@@ -79,7 +81,7 @@ export default function Footer() {
         <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-[0.8rem] text-paper/40 sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-center gap-2">
             <LogoMark tone="paper" className="h-4 w-4 opacity-60" />
-            © {new Date().getFullYear()} MN Clockworks · PGS Ventures LLC
+            © {new Date().getFullYear()} {site.name} · {site.legalName}
           </p>
           <p className="font-mono tracking-wide">Built in Minnesota. Runs like clockwork.</p>
         </div>
