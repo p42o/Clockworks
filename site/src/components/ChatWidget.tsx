@@ -317,7 +317,7 @@ export default function ChatWidget() {
               <p className="mt-1 text-[0.7rem] text-paper/60">
                 Live demo — this bot IS the product.{" "}
                 <a href="/book/" className="text-copper underline underline-offset-2">
-                  Send a message →
+                  Get in touch
                 </a>
               </p>
             </div>

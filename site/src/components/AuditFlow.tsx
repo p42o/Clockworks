@@ -92,7 +92,7 @@ export default function AuditFlow() {
     () => [
       {
         key: "you",
-        title: "First things first — who am I talking to?",
+        title: "Who am I talking to?",
         valid: form.name.trim().length > 1 && form.business.trim().length > 1,
         hint: "Name and business, that's it.",
       },
@@ -110,13 +110,13 @@ export default function AuditFlow() {
       },
       {
         key: "contact",
-        title: "Where should the written plan go?",
+        title: "Where should I reply?",
         valid: /.+@.+\..+/.test(form.email),
         hint: "I reply within one business day.",
       },
       {
         key: "review",
-        title: "Here's what I heard — look right?",
+        title: "Here's what I heard. Look right?",
         valid: true,
         hint: "",
       },
@@ -298,7 +298,7 @@ export default function AuditFlow() {
 
               {current.key === "contact" && (
                 <>
-                  <Field label="Email — where the plan goes">
+                  <Field label="Email">
                     <input
                       autoFocus
                       type="email"
@@ -311,7 +311,7 @@ export default function AuditFlow() {
                       onKeyDown={(e) => e.key === "Enter" && current.valid && go(1)}
                     />
                   </Field>
-                  <Field label="Phone (optional — some folks would rather talk)">
+                  <Field label="Phone (optional)">
                     <input
                       type="tel"
                       inputMode="tel"

@@ -5,9 +5,9 @@ import AuditFlow from "@/components/AuditFlow";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Call or send a message",
+  title: "Get in touch",
   description:
-    "Call or text (763) 202-7778, or send a message to MN Clockworks in Maple Grove, MN.",
+    "Get in touch with MN Clockworks in Maple Grove. In person in the Twin Cities, remote elsewhere. You approve what goes out.",
 };
 
 export default function Book() {
@@ -25,9 +25,9 @@ export default function Book() {
           <Reveal delay={0.1}>
             <ul className="mt-8 space-y-5 text-[0.98rem] leading-relaxed text-ink-soft">
               {[
-                ["What this is", "Tell me where calls, quotes, and hours get stuck."],
+                ["What this is", "A Chief of Staff AI team for your small business. It handles email, quotes, and marketing. You approve what goes out."],
                 ["What to share", "A little about your business and what you want help with."],
-                ["What happens next", "Every message lands on my phone within minutes, and a real person answers."],
+                ["What happens next", "Every message lands on my phone within minutes, and a real person answers. In person in the Twin Cities, remote elsewhere."],
               ].map(([t, d]) => (
                 <li key={t} className="border-l-2 border-copper/50 pl-4">
                   <p className="font-mono text-[0.7rem] tracking-[0.18em] text-copper">{t.toUpperCase()}</p>
@@ -36,7 +36,7 @@ export default function Book() {
               ))}
             </ul>
             <p className="mt-8 text-sm text-ink-faint">
-              This form is the whole front door — it lands on my phone in seconds, and a human answers it.
+              This form comes to my phone, and I answer it.
             </p>
             <p className="mt-6 text-sm text-ink-soft">Rather talk? <a href={site.phone.href} className="link-draw mt-2 inline-flex items-center gap-2 border-b border-copper/60 pb-1 hover:text-copper"><PhoneIcon className="h-4 w-4" />Call or text <span className="font-mono">{site.phone.display}</span></a>{" "}or email <a href={`mailto:${site.email}`} className="break-all underline decoration-copper/60 underline-offset-4 hover:text-copper">{site.email}</a></p>
           </Reveal>
