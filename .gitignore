@@ -33,7 +33,5 @@ eicher/_state/
 # local preview screenshots
 site/.preview-*.png
 
-# Google reviews: server-only config and cache
+# Google reviews: server-only config
 api/_reviews-config.php
-api/_cache/*
-!api/_cache/.htaccess

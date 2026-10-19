@@ -10,5 +10,16 @@ Options -Indexes
 </FilesMatch>
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  # Keep _cache denied in case a stale folder remains on the host.
   RewriteRule ^(?:_cache|tests)(?:/|$) - [F,L,NC]
+</IfModule>
+<IfModule mod_headers.c>
+  <Files "reviews.php">
+    Header always set Cache-Control "no-store"
+  </Files>
+</IfModule>
+<IfModule mod_expires.c>
+  <Files "reviews.php">
+    ExpiresActive Off
+  </Files>
 </IfModule>
