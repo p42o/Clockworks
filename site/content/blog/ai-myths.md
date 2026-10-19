@@ -6,7 +6,7 @@ legacyPath: "/blog/ai-myths.html"
 tags: [myths, adoption, small-business]
 ---
 
-Hey, I'm Parker. I run Clockworks, and every week I talk to business owners who've decided AI isn't for them, usually based on something they heard that isn't true.
+Hey, I'm Parker. I run MN Clockworks, and every week I talk to business owners who've decided AI isn't for them, usually based on something they heard that isn't true.
 
 These aren't dumb beliefs. They made sense at some point, or they came from a real experience with a bad tool. But they're holding people back from saving real time and real money. So I want to address them directly.
 
@@ -76,4 +76,4 @@ If any of these resonated because you've been telling yourself one of them, that
 
 ---
 
-If you're not sure where to start or want to pressure-test your specific situation, reach out. I offer free 20-minute calls and I won't push you into anything you don't need.
+Call or send a message at mnclockworks.com.

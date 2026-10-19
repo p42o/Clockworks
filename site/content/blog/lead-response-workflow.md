@@ -76,4 +76,4 @@ Conservative math from a recent client (small plumbing shop, ~$1.2M revenue):
 
 That's the kind of math that makes "AI for small business" stop sounding like a buzzword.
 
-Build it yourself if you've got the afternoon. If you don't, that's literally what we do at Clockworks: fixed price, two-week ship, full handoff. Either way, plug the leak.
+Build it yourself if you've got the afternoon. If you don't, that's literally what we do at MN Clockworks: fixed price, two-week ship, full handoff. Either way, plug the leak.

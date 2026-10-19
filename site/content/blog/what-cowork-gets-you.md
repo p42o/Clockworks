@@ -1,12 +1,12 @@
 ---
-title: "What a $150 AI Session Actually Gets You (The Inside Story)"
+title: "What an AI Session Actually Gets You (The Inside Story)"
 date: "2026-06-15"
-description: "A minute-by-minute look at what happens in a Clockworks Cowork session, and what you walk away with."
+description: "A minute-by-minute look at what happens in a MN Clockworks Cowork session, and what you walk away with."
 legacyPath: "/blog/what-cowork-gets-you.html"
 tags: [cowork, services, behind-the-scenes]
 ---
 
-Hey, I'm Parker. I've been running Clockworks for a while now and one thing I've learned is that "AI consulting" sounds mysterious to most people. They don't know what to expect. They've never paid someone to help them with AI before. They're not sure what a two-hour session actually produces.
+Hey, I'm Parker. I've been running MN Clockworks for a while now and one thing I've learned is that "AI consulting" sounds mysterious to most people. They don't know what to expect. They've never paid someone to help them with AI before. They're not sure what a two-hour session actually produces.
 
 So this post is a full walk-through. Why the Cowork format exists, what happens minute by minute, what people actually leave with, and where the model honestly falls short. No fluff.
 
@@ -18,7 +18,7 @@ Most AI training falls into two categories: general tutorials that don't apply t
 
 The Cowork format exists to fill that gap. It's a focused, two-hour working session where we tackle your actual business problems with AI, right now, while you're watching. You don't leave with a plan. You leave with things that are already built and working. That distinction matters. Plans sit in a drawer. Working templates get used on Monday morning.
 
-The price is $150. I set it that way deliberately. It's accessible enough that a small business owner can try it without a significant budget conversation. And it's scoped tightly enough that I can deliver real value in the time we have.
+
 
 ---
 
@@ -98,4 +98,4 @@ And finally: this isn't magic. What you build in the session works well if you u
 
 ---
 
-If this sounds like what you need, the free 20-minute call is where we figure out if a Cowork session is the right fit for your situation. We'll talk through what you'd want to tackle and I'll tell you honestly whether two hours is enough or whether you'd need something different.
+Call or send a message at mnclockworks.com.

@@ -1,5 +1,5 @@
 /**
- * Parker's existing Clockworks mark — a gear with clock hands — recolored to
+ * Parker's existing MN Clockworks mark — a gear with clock hands — recolored to
  * the v3 palette. `tone` picks ink-on-paper (header) or paper-on-ground (footer).
  */
 export default function LogoMark({

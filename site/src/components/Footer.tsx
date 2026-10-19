@@ -37,7 +37,7 @@ export default function Footer() {
               ))}
               <li>
                 <Link href="/book/" className="text-paper/70 transition-colors hover:text-paper">
-                  Book your audit
+                  Send a message
                 </Link>
               </li>
             </ul>
@@ -65,6 +65,7 @@ export default function Footer() {
           <div className="col-span-2">
             <p className="eyebrow mb-4">Contact</p>
             <a href={site.phone.href} className="mb-4 inline-flex items-center gap-3 font-mono text-xl text-paper transition-colors hover:text-copper"><PhoneIcon />{site.phone.display}</a>
+            <a href={`mailto:${site.email}`} className="mb-4 block w-fit break-all text-paper underline decoration-copper/60 underline-offset-4 hover:decoration-copper">{site.email}</a>
             <Link
               href="/book/"
               className="block w-fit font-medium text-paper underline decoration-copper/60 underline-offset-4 hover:decoration-copper"

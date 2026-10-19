@@ -64,4 +64,4 @@ I've tried every "AI inbox" SaaS on the market. Most of them fail for the same r
 
 The setup above lives inside the inbox you already use. Your team already knows it. Nothing to learn. No vendor to fire when prices go up.
 
-Take the 20 minutes today. If you want me to look over your shoulder while you set it up, that's what the free call is for.
+Call or send a message at mnclockworks.com.

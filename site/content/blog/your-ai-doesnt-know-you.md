@@ -1,14 +1,14 @@
 ---
 title: "Your AI doesn’t know you. That’s why every answer feels generic."
 date: "2026-05-22"
-description: "The Clockworks pivot, explained. Why I’m moving from workflow automation to AI integration, what a Context Vault is, and why your AI keeps giving generic answers."
+description: "The MN Clockworks pivot, explained. Why I’m moving from workflow automation to AI integration, what a Context Vault is, and why your AI keeps giving generic answers."
 legacyPath: "/blog/2026-05/your-ai-doesnt-know-you.html"
 tags: [context-vault, announcement, ai-integration]
 ---
 
 I caught myself this week typing the same paragraph into ChatGPT for what felt like the fifth time:
 
-> “I run a small AI consulting business in Maple Grove called Clockworks. I work with small business owners in the Twin Cities. Direct, lightly contrarian, anti-corporate voice. Don’t write like a Mailchimp template. Here’s what I want to do…”
+> “I run a small AI consulting business in Maple Grove called MN Clockworks. I work with small business owners in the Twin Cities. Direct, lightly contrarian, anti-corporate voice. Don’t write like a Mailchimp template. Here’s what I want to do…”
 
 Sometimes I copy-paste it. Sometimes I rewrite it. Either way, ten seconds vanish before the AI even knows what I’m asking for.
 
@@ -20,7 +20,7 @@ It’s not that AI isn’t for them. It’s that AI doesn’t *know* them. There
 
 ## A year ago I was selling the wrong thing
 
-I built Clockworks to help small businesses use AI for real. For the first year, that meant: “let me build you an automation that runs in the background.” Invoicing, lead follow-up, review requests. Useful. Cool. But also, it required learning a new platform, hooking it into your tools, and trusting a robot to do things while you weren’t looking.
+I built MN Clockworks to help small businesses use AI for real. For the first year, that meant: “let me build you an automation that runs in the background.” Invoicing, lead follow-up, review requests. Useful. Cool. But also, it required learning a new platform, hooking it into your tools, and trusting a robot to do things while you weren’t looking.
 
 That’s a fine product. It’s not the product I wish I’d been selling.
 
@@ -32,7 +32,7 @@ Not a new app. Not another subscription. Not another login. Just get Claude, get
 
 ## The Context Vault
 
-I call that document a **Context Vault**. I built one for myself almost a year ago and have not gone back. Every AI tool I open already knows who Parker is. What Clockworks is. What my voice sounds like. Who’s on my team and who isn’t. What’s on my calendar. Where my work lives. What my kids’ names are when I’m drafting a birthday invitation.
+I call that document a **Context Vault**. I built one for myself almost a year ago and have not gone back. Every AI tool I open already knows who Parker is. What MN Clockworks is. What my voice sounds like. Who’s on my team and who isn’t. What’s on my calendar. Where my work lives. What my kids’ names are when I’m drafting a birthday invitation.
 
 The minute I stopped re-explaining myself, two things happened. The answers got dramatically better. And I stopped giving up halfway through a chat because the response was a generic blob that could’ve been written for any random business in America.
 
@@ -42,7 +42,7 @@ The “AI feels generic” complaint (the thing every small business owner I tal
 
 ## So that’s the pivot
 
-For the next stretch, Clockworks is one thing:
+For the next stretch, MN Clockworks is one thing:
 
 **I sit down with you for 30 minutes, learn how your business actually runs, build your Context Vault, and wire it into Claude, ChatGPT, and Gemini. I also connect them to the tools you already use (your inbox, calendar, docs, CRM) so your AI can actually do things, not just talk. Two weeks. You own everything I build.**
 

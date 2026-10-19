@@ -69,6 +69,6 @@ Once it’s built, you stop opening a blank chat. You start asking your AI thing
 
 And what comes back, for the first time, is something that sounds like you wrote it, on your worst day, in five seconds. That’s the bar. That’s the unlock.
 
-If you’d rather not build this yourself, that’s what I do at Clockworks: I sit down with you, build your vault, and wire it into Claude, ChatGPT, and Gemini. About two weeks, you own everything. Limited clients. Reach out if you want to talk about it.
+If you’d rather not build this yourself, that’s what I do at MN Clockworks: I sit down with you, build your vault, and wire it into Claude, ChatGPT, and Gemini. About two weeks, you own everything. Limited clients. Reach out if you want to talk about it.
 
 If you’d rather build it yourself, you have everything you need above. Open a doc, start with section 01, and don’t skip section 04.

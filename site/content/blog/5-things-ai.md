@@ -6,7 +6,7 @@ legacyPath: "/blog/5-things-ai.html"
 tags: [prompts, productivity, quick-wins]
 ---
 
-Hey, I'm Parker. I run Clockworks, an AI consulting firm in Maple Grove, MN. Most of the business owners I work with aren't looking for a five-year digital transformation. They want to save time this week. Real time, on real tasks.
+Hey, I'm Parker. I run MN Clockworks, an AI consulting firm in Maple Grove, MN. Most of the business owners I work with aren't looking for a five-year digital transformation. They want to save time this week. Real time, on real tasks.
 
 So here are five specific things you can do with free AI tools (ChatGPT or Claude, both have free tiers) starting right now. I'm including the exact prompts. Copy them, swap in your details, hit send.
 
@@ -108,4 +108,4 @@ The business owners who get the most out of AI aren't the ones who went all-in o
 
 ---
 
-If you want help turning any of these into a repeatable system (or if you're not sure which one to start with), I'm happy to talk through it. That's exactly what the free call is for.
+Call or send a message at mnclockworks.com.

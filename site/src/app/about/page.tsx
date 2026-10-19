@@ -118,8 +118,8 @@ export default function About() {
       </section>
 
       <AuditCTA
-        title="Let's talk about your week."
-        context="Coffee in Maple Grove, a visit to your shop, or a 30-minute call — whatever's easiest. Worst case, you leave with a free plan and a strong opinion about me."
+        title="Let’s talk about your business."
+        context="Tell me where your week gets stuck."
       />
     </>
   );

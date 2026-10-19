@@ -35,6 +35,8 @@ All four run on the tools you already have: Jobber, Housecall Pro, QuickBooks, G
 
 There are national apps that sell pieces of this. Some are decent. Here's what they can't sell you: a person in Maple Grove who will sit at your counter, learn how your shop actually runs, and answer the phone when something breaks, which, given what I sell, would be embarrassing not to.
 
-And here's the part I care about most: you own everything I build. The engagement is simple. A free 30-minute audit, where I map where your time and leads are leaking. You get a written one-page plan either way, and if there's nothing worth automating, the coffee's on me. Then one fixed-price pilot, $2,000 to $5,000, with a working demo in 48 hours and the system live in about two weeks. After that, $99 to $299 a month to keep it running and tuned, no contract. Cancel any month and the system, the docs, and the accounts stay yours.
+And here's the part I care about most: you own everything I build. The engagement is simple. Then one fixed-price pilot, with a working demo in 48 hours and the system live in about two weeks. After that, ongoing care to keep it running and tuned, no contract. Cancel any month and the system, the docs, and the accounts stay yours.
 
-That's the whole pitch. If your evenings look anything like that kitchen table, book the free AI Time & Lead Audit at mnclockworks.com/book: 30 minutes, one page, no pressure either way.
+That's the whole pitch.
+
+Call or send a message at mnclockworks.com.

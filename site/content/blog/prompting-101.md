@@ -6,7 +6,7 @@ legacyPath: "/blog/prompting-101.html"
 tags: [prompts, guide, beginners]
 ---
 
-Hey, I'm Parker. I run Clockworks, and I've now taught AI prompting to several dozen small business owners across the trades, real estate, and local services. Almost all of them came to me with the same problem: they'd tried AI, gotten mediocre results, and assumed the technology wasn't mature enough.
+Hey, I'm Parker. I run MN Clockworks, and I've now taught AI prompting to several dozen small business owners across the trades, real estate, and local services. Almost all of them came to me with the same problem: they'd tried AI, gotten mediocre results, and assumed the technology wasn't mature enough.
 
 In almost every case, the technology was fine. The prompts were the problem. This guide covers everything you need to know to write prompts that actually work, without any technical background whatsoever.
 
@@ -176,4 +176,4 @@ The goal isn't to be great at prompting. The goal is to be consistent enough tha
 
 ---
 
-If you want to work through your first five prompts with someone who can troubleshoot in real time, that's exactly what a Clockworks session is for. Reach out and we'll build your starter library together.
+If you want to work through your first five prompts with someone who can troubleshoot in real time, that's exactly what a MN Clockworks session is for. Reach out and we'll build your starter library together.

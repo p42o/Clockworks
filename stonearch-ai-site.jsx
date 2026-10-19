@@ -136,7 +136,7 @@ function SEOHead() {
           "description": "AI consulting for small businesses in the Twin Cities. We help local business owners find, set up, and use AI tools to save time and grow their business.",
           "url": "https://clockworksai.com",
           "telephone": "",
-          "email": "hello@clockworksai.com",
+          "email": "parker@mnclockworks.com",
           "address": {
             "@type": "PostalAddress",
             "addressLocality": "Maple Grove",

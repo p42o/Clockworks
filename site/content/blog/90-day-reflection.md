@@ -56,11 +56,11 @@ I also didn't expect how much the consulting work would shape the content, and v
 
 I'm going to be straight: building a consulting business around AI is not a simple thing. The technology changes fast. Client expectations vary widely. And there's a lot of noise in this space: people making big claims, selling courses and systems that overpromise.
 
-What I've learned is that the Clockworks model (focused, scoped sessions, honest conversations, no-pitch free calls) works better than I thought it would. People appreciate the directness. They appreciate that I'll tell them when they don't need me, or when a different tool or approach would serve them better.
+What I've learned is that the MN Clockworks model (focused, scoped sessions, honest conversations, conversations) works better than I thought it would. People appreciate the directness. They appreciate that I'll tell them when they don't need me, or when a different tool or approach would serve them better.
 
 The businesses that have gotten the most value from working with me are the ones that came with specific problems, not vague aspirations. "I spend 10 hours a week on these three tasks" beats "I want to use AI better" every single time. Specific problems lead to specific solutions lead to measurable results.
 
-What's next for Clockworks is more of what's already working: hands-on sessions, honest content, and a growing library of resources for the business owners who want to do it themselves. I'm not trying to scale into a software company or an agency. I'm trying to be genuinely useful to a specific group of people, and get better at that every month.
+What's next for MN Clockworks is more of what's already working: hands-on sessions, honest content, and a growing library of resources for the business owners who want to do it themselves. I'm not trying to scale into a software company or an agency. I'm trying to be genuinely useful to a specific group of people, and get better at that every month.
 
 ---
 

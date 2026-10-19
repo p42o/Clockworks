@@ -35,4 +35,6 @@ And the snap has a second act nobody preps for: the replacement quotes. A brutal
 
 None of it replaces the part where somebody competent shows up with a truck. It just decides how full that truck's schedule is, and whether you built the schedule or the queue built it for you.
 
-The checklist above is yours either way. If you want a second set of eyes on your cold-snap setup before the real one hits, the 30-minute AI Time & Lead Audit is free at mnclockworks.com/book. You'll leave with a one-page plan, and worst case I buy the coffee.
+The checklist above is yours either way.
+
+Call or send a message at mnclockworks.com.

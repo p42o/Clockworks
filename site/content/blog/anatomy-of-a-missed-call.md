@@ -41,4 +41,6 @@ It doesn't: fix the pipe, quote the job, promise an arrival time you didn't auth
 
 One more honest note: you could just answer your own phone at 2 a.m. Some owners do, and it works. That's a real system too. The cost is just carried in your sleep, your marriage, and your mood on the ladder the next day. The question isn't whether the calls get handled. It's who's awake for it.
 
-Company A didn't lose that job because of skill, price, or reviews. It lost it in the 90 seconds where the phone rang into a recording from 2019. If you're not sure which company you are, book the free 30-minute AI Time & Lead Audit at mnclockworks.com/book. We'll run your own 2 a.m. test, and you'll leave with a one-page plan either way.
+Company A didn't lose that job because of skill, price, or reviews. It lost it in the 90 seconds where the phone rang into a recording from 2019. We'll run your own 2 a.m. test, and you'll leave with a one-page plan either way.
+
+Call or send a message at mnclockworks.com.

@@ -43,8 +43,8 @@ export default function Header() {
       <div className="site-header-row mx-auto flex max-w-6xl xl:max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
         <Link href="/" className="group flex items-center gap-3" aria-label="MN Clockworks home">
           <LogoMark className="h-9 w-9 md:h-11 md:w-11 transition-transform duration-700 group-hover:rotate-[24deg]" />
-          <span className="display text-[1.5rem] md:text-[1.7rem] leading-none">
-            Clockworks<span className="text-copper transition-opacity group-hover:animate-tick">.</span>
+          <span className="display whitespace-nowrap text-[1.25rem] md:text-[1.7rem] leading-none">
+            MN Clockworks<span className="text-copper transition-opacity group-hover:animate-tick">.</span>
           </span>
         </Link>
 
@@ -76,7 +76,7 @@ export default function Header() {
             href="/book/"
             className="btn-press rounded-[3px] bg-ink px-5 py-2.5 text-[0.875rem] font-medium text-paper transition-colors duration-300 hover:bg-copper"
           >
-            {site.cta.label}
+            Send a message
           </Link>
         </nav>
 
@@ -87,7 +87,7 @@ export default function Header() {
               open ? "pointer-events-none opacity-0" : "opacity-100"
             }`}
           >
-            Free audit
+            Message
           </Link>
           <a href={site.phone.href} aria-label="Call MN Clockworks at (763) 202-7778" tabIndex={open ? -1 : undefined} className={`flex h-10 w-10 items-center justify-center rounded-full border hairline text-ink-soft transition-opacity hover:text-copper ${open ? "pointer-events-none opacity-0" : "opacity-100"}`}><PhoneIcon /></a>
           <button
@@ -157,7 +157,7 @@ export default function Header() {
                   href="/book/"
                   className="btn-press block rounded-[3px] bg-copper px-6 py-4 text-center text-lg font-medium text-cream-bright"
                 >
-                  {site.cta.label}
+                  Send a message
                 </Link>
                 <motion.a href={site.phone.href} initial={reduced ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduced ? 0 : 0.46, duration: 0.48, ease: easeGate }} className="mt-3 flex min-h-[60px] w-full items-center justify-center gap-3 rounded-[3px] border hairline px-3 py-4 text-sm font-medium transition-colors hover:text-copper"><PhoneIcon />Call or text {site.phone.display}</motion.a>
                 <p className="mt-3 text-center text-sm text-ink-faint">{site.cta.sub}</p>

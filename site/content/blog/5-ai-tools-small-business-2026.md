@@ -6,7 +6,7 @@ legacyPath: "/blog/2026-05/5-ai-tools-small-business-2026.html"
 tags: [tools, small-business, 2026]
 ---
 
-Hey, I'm Parker. I run Clockworks, an AI consulting firm based in Maple Grove, MN. I help small business owners, contractors, and service companies figure out which AI tools are actually worth their time. Not the hype. Not the Twitter discourse. The stuff that saves you real hours every week.
+Hey, I'm Parker. I run MN Clockworks, an AI consulting firm based in Maple Grove, MN. I help small business owners, contractors, and service companies figure out which AI tools are actually worth their time. Not the hype. Not the Twitter discourse. The stuff that saves you real hours every week.
 
 Most small business owners I talk to have heard of ChatGPT. A lot of them have tried it. Maybe they asked it to write an email and it came back sounding like a college essay written by a robot. So they closed the tab and went back to doing everything manually.
 
@@ -100,6 +100,6 @@ The businesses I work with that get the most out of AI aren't the ones using the
 
 ---
 
-If you want help figuring out which tool fits your specific workflow, that's literally what I do. I offer a free 30-minute strategy session where we look at your business and figure out where AI and automation would actually make a difference. No sales pitch. Just an honest conversation about what's worth your time.
+If you want help figuring out which tool fits your specific workflow, that's literally what I do. No sales pitch. Just an honest conversation about what's worth your time.
 
-Parker Swanson, Founder of Clockworks
+Parker Swanson, Founder of MN Clockworks

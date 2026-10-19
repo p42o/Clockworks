@@ -35,4 +35,6 @@ Paper Mover, the fourth system I build, is essentially the sequence above runnin
 
 The honest limits: it will not collect from the customer who's decided not to pay. That's a phone call or a small-claims form, not an automation. And it won't make your accountant love you; it'll just shorten the January email. What it does is narrower and, I'd argue, worth more: it makes sure nothing slips through from forgetfulness, yours or theirs. In my experience the forgetfulness pile is a lot bigger than the deadbeat pile.
 
-Run the four-week sequence either way; it's free and it works. If you'd rather the pile never form again, the 30-minute AI Time & Lead Audit at mnclockworks.com/book is free too. You'll get a one-page plan for your paperwork either way, coffee's on me if there's nothing worth building.
+Run the four-week sequence either way; it's free and it works.
+
+Call or send a message at mnclockworks.com.

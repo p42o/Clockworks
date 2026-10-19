@@ -6,7 +6,7 @@ legacyPath: "/blog/claude-for-email.html"
 tags: [claude, email, templates]
 ---
 
-Hey, I'm Parker. I run Clockworks, and email is one of the first things I tackle with every client. Not because it's the biggest time sink (though it often is) but because it's the easiest win. You see the result immediately, and it builds confidence to go tackle the harder stuff.
+Hey, I'm Parker. I run MN Clockworks, and email is one of the first things I tackle with every client. Not because it's the biggest time sink (though it often is) but because it's the easiest win. You see the result immediately, and it builds confidence to go tackle the harder stuff.
 
 Here's the setup I recommend, the five email templates I use most often, the "rough draft first" technique that changes how you work, and how to make the output actually sound like you, not like a chatbot.
 
@@ -102,4 +102,4 @@ Then after you get a draft, read it out loud. Anything that sounds weird coming 
 
 ---
 
-If you want help setting this up for your specific business (including the Project instructions and a set of templates that match what you actually send), that's what a Clockworks session is for. Reach out and we'll build it together.
+If you want help setting this up for your specific business (including the Project instructions and a set of templates that match what you actually send), that's what a MN Clockworks session is for. Reach out and we'll build it together.

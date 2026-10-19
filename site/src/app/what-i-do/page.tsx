@@ -13,7 +13,7 @@ const SPECS = [
     n: "01",
     code: "CALL CATCH",
     title: "Never miss another job call",
-    price: "Pilot $2,000–$3,500 · from $99/mo",
+    price: "",
     firstIf: "Your voicemail has ever been full, or you wince thinking about weekend calls.",
     what: [
       "A missed call gets a text back in seconds — your words, your name, your number.",
@@ -29,7 +29,7 @@ const SPECS = [
     n: "02",
     code: "QUOTE CHASER",
     title: "Quotes that follow up themselves",
-    price: "Pilot $2,000–$3,000 · from $99/mo",
+    price: "",
     firstIf: "You have quotes from last month sitting in “Sent” that you keep meaning to chase.",
     what: [
       "Every quote gets a follow-up schedule the moment you send it — day 3, day 7, day 14, or whatever rhythm fits your trade.",
@@ -45,7 +45,7 @@ const SPECS = [
     n: "03",
     code: "REVIEW ENGINE",
     title: "Five-star reviews on autopilot",
-    price: "Pilot $2,000–$2,500 · from $99/mo",
+    price: "",
     firstIf: "Your work is better than your Google rating suggests.",
     what: [
       "When a job closes, the customer gets a short text asking how it went, with your review link.",
@@ -60,7 +60,7 @@ const SPECS = [
     n: "04",
     code: "PAPER MOVER",
     title: "The office pile, handled",
-    price: "Pilot $2,500–$5,000 · $199–$299/mo",
+    price: "",
     firstIf: "Invoicing night is a real night at your house.",
     what: [
       "Unpaid invoices get friendly reminders on a schedule, with a pay-by-card link — you stop being the bad guy.",
@@ -76,7 +76,7 @@ const SPECS = [
     n: "05",
     code: "INTEL DESK",
     title: "Know what the big guys know",
-    price: "Pilot $2,500–$5,000 · $199–$299/mo",
+    price: "",
     firstIf: "You’ve ever learned about a competitor’s price change from a customer, six months late.",
     what: [
       "A live dashboard on your own numbers — calls caught, jobs booked, cash outstanding, review velocity — readable in two minutes with coffee.",
@@ -93,7 +93,7 @@ const SPECS = [
     n: "06",
     code: "FRONT DESK",
     title: "A website that answers back",
-    price: "Pilot $2,000–$4,000 · from $99/mo",
+    price: "",
     firstIf: "Your website is a brochure that has never once answered a customer’s question.",
     what: [
       "A trained agent living on your site and your text line — answers questions about your services, pricing, and scheduling, in your words, 24/7.",
@@ -165,15 +165,15 @@ export default function WhatIDo() {
             <p className="mt-3 max-w-2xl text-lg leading-relaxed text-ink-soft">
               Scheduling chaos, material reorders, GPS-stamped job photos, safety checklists,
               hiring paperwork — if it happens on a computer or a phone more than once a week,
-              it can probably be a system. Bring it to the audit; the plan is free either way.
+              it can probably be a system. Tell me about it.
             </p>
           </article>
         </Reveal>
       </section>
 
       <AuditCTA
-        title="Not sure which one you need?"
-        context="That's literally what the audit is for. Thirty minutes, we walk your week, and the plan tells you which system pays back fastest — with the math shown."
+        title="Let’s talk about your business."
+        context="Tell me where your week gets stuck."
       />
     </>
   );

@@ -10,10 +10,10 @@ export const site = {
   region: "MN",
   area: "Twin Cities, Minnesota",
   description:
-    "Practical AI systems for Twin Cities trades businesses — plumbing, HVAC, electrical, landscaping. Never miss a call, chase every quote, get your evenings back.",
+    "A ready AI team for your business, set up in person and working on day one. You own it, and you approve what goes out. MN Clockworks, Maple Grove, MN.",
   cta: {
-    label: "Book your free audit",
-    sub: "30 minutes, no pitch. You leave with a written plan either way.",
+    label: "Call or send a message",
+    sub: "Call or text (763) 202-7778, or send a message. A real person answers.",
   },
 } as const;
 

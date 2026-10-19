@@ -6,7 +6,7 @@ legacyPath: "/blog/ai-vs-automation.html"
 tags: [automation, ai-basics, guide]
 ---
 
-Hey, I'm Parker. I run Clockworks, an AI consulting firm based in Maple Grove, MN. We help tradespeople, real estate agents, and local service businesses actually use AI in ways that make their lives easier. Not hype. Not theory. Real stuff that works.
+Hey, I'm Parker. I run MN Clockworks, an AI consulting firm based in Maple Grove, MN. We help tradespeople, real estate agents, and local service businesses actually use AI in ways that make their lives easier. Not hype. Not theory. Real stuff that works.
 
 I spent 15+ years in SaaS and IoT before pivoting to AI consulting full-time. In that time, I've sat across from a lot of smart business owners who had no idea they were confusing two very different things: AI and automation.
 
@@ -72,8 +72,8 @@ A customer texts you a question. AI reads it, drafts a smart response, and decid
 
 Most small businesses I meet with are either doing everything manually (burning hours on tasks a computer could do in seconds) or they've bolted on some automation that breaks the moment anything goes sideways.
 
-The goal isn't to automate your business. The goal is to free up your time for the work only you can do, and let the machines handle the rest. That's what we build at Clockworks.
+The goal isn't to automate your business. The goal is to free up your time for the work only you can do, and let the machines handle the rest. That's what we build at MN Clockworks.
 
 ---
 
-If you're a contractor, real estate agent, or local service business owner wondering where to even start, reach out. I do free 20-minute calls. No pitch, just clarity.
+Call or send a message at mnclockworks.com.

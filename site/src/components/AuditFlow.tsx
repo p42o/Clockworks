@@ -182,10 +182,7 @@ export default function AuditFlow() {
             a real reply from a real person, which is a little ironic given what I sell.
           </p>
           <p>
-            We&rsquo;ll pick a time that fits around your jobs
-            {form.preferred ? ` (you said ${form.preferred.toLowerCase()} works best)` : ""}, and
-            thirty minutes later you&rsquo;ll have a written plan. No pitch, no pressure —
-            and if there&rsquo;s nothing worth automating, the coffee&rsquo;s on me.
+            Thanks for telling me about your business.
           </p>
         </div>
         <p className="mt-6 font-mono text-[0.75rem] text-ink-faint">
@@ -397,7 +394,7 @@ export default function AuditFlow() {
             disabled={state === "sending"}
             className="rounded-[3px] bg-copper px-7 py-3 font-medium text-cream-bright shadow-[0_12px_32px_-14px_rgba(212,88,42,0.6)] transition-colors duration-300 hover:bg-copper-deep disabled:opacity-60"
           >
-            {state === "sending" ? "Winding it up…" : "Book my free audit"}
+            {state === "sending" ? "Winding it up…" : "Send message"}
           </button>
         )}
       </div>

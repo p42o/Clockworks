@@ -93,8 +93,8 @@ export default function Results() {
       <GoogleReviews />
 
       <AuditCTA
-        title="Want one of these with your name on it?"
-        context="The audit finds which machine pays back fastest for your shop — with the math shown. Thirty minutes, written plan, zero pitch."
+        title="Let’s talk about your business."
+        context="Tell me where your week gets stuck."
       />
     </>
   );

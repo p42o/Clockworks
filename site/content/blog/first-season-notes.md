@@ -21,9 +21,9 @@ The dashboards? Nobody asked. Not once. A Friday text summary beat every dashboa
 
 **"Won't it sound like a robot?"** Heard this the most, and it deserves a straight answer: a little, yes, at first. The first draft of any shop's wording is my guess at their voice, and my guess is always wrong in ways only the owner can hear. That's what the shadow week is for. Two other honest pieces: the after-hours AI announces that it's automated rather than pretending, and the bar it has to clear isn't "indistinguishable from a human." The bar is a voicemail box from 2019. It clears that bar in the first nine seconds.
 
-**"I had automations break before and nobody noticed for a month."** This one changed how I build more than any other. The owners who said it weren't being difficult. They were describing a real scar. Some tool got set up by a well-meaning nephew or a vendor who churned, it silently died, and the shop found out via an angry customer. My answer became structural: the Friday summary exists partly so a silent failure can't stay silent past a week, the handover doc always includes the off switch, and the managed service is month-to-month at $99 to $299 precisely so nobody feels trapped babysitting a mystery. A system nobody watches eventually becomes the problem it replaced.
+**"I had automations break before and nobody noticed for a month."** This one changed how I build more than any other. The owners who said it weren't being difficult. They were describing a real scar. Some tool got set up by a well-meaning nephew or a vendor who churned, it silently died, and the shop found out via an angry customer. My answer became structural: the Friday summary exists partly so a silent failure can't stay silent past a week, the handover doc always includes the off switch, and the managed service is month-to-month precisely so nobody feels trapped babysitting a mystery. A system nobody watches eventually becomes the problem it replaced.
 
-**"Can't I just do this myself?"** Some of it, genuinely, yes, and I started saying so in the first meeting. The voicemail greeting, the Google Business Profile cleanup, a basic text-back rule, the year-end invoice sweep: I've published those as checklists on this blog on purpose. A few audits this season ended with "do these three free things, there's nothing here worth paying me for," a one-page plan, and coffee on me. That's the deal working as designed. What people pay for is the wiring between tools, the judgment about what the messages should say, and having one accountable person when it misbehaves.
+**"Can't I just do this myself?"** Some of it, genuinely, yes, and I started saying so in the first meeting. The voicemail greeting, the Google Business Profile cleanup, a basic text-back rule, the year-end invoice sweep: I've published those as checklists on this blog on purpose. That's the deal working as designed. What people pay for is the wiring between tools, the judgment about what the messages should say, and having one accountable person when it misbehaves.
 
 ## What I changed
 
@@ -33,6 +33,8 @@ I also got humbler about what "simple" means. Every shop had one weird thing: a 
 
 ## 2027
 
-The plan is mostly to keep the shape: one person, Maple Grove, trades only, fixed prices on the site. Deeper into Jobber and Housecall Pro rather than wider into new tools. Seasonal playbooks on this blog. The heating-season and year-end posts earned their keep, so spring will get one for landscapers. And I want to get better at the smallest version of the engagement, because "do these three free things" turned out to be some of the most useful meetings I had all season.
+The plan is mostly to keep the shape: one person, Maple Grove, trades only. Deeper into Jobber and Housecall Pro rather than wider into new tools. Seasonal playbooks on this blog. The heating-season and year-end posts earned their keep, so spring will get one for landscapers. And I want to get better at the smallest version of the engagement, because "do these three free things" turned out to be some of the most useful meetings I had all season.
 
-Thanks for reading along this year. The replies from actual owners shaped half of what's above. If you want to be one of next season's notes, the 30-minute AI Time & Lead Audit is free at mnclockworks.com/book: one page, no pitch, and if there's nothing worth building I'll say so over a coffee that's on me.
+Thanks for reading along this year. The replies from actual owners shaped half of what's above.
+
+Call or send a message at mnclockworks.com.

@@ -6,7 +6,7 @@ legacyPath: "/blog/30-day-challenge.html"
 tags: [challenge, habits, getting-started]
 ---
 
-Hey, I'm Parker. I run Clockworks, and I've watched a lot of people try to "get into AI" and stall out by week two. Not because they're not capable. Because they tried to do too much at once, hit a confusing moment, and quietly stopped.
+Hey, I'm Parker. I run MN Clockworks, and I've watched a lot of people try to "get into AI" and stall out by week two. Not because they're not capable. Because they tried to do too much at once, hit a confusing moment, and quietly stopped.
 
 This challenge is designed to prevent that. One task per day. Short. Specific. Each week builds on the last. By day 30, you won't just understand AI. You'll have habits, templates, and a workflow that actually fits how you work.
 
@@ -108,4 +108,4 @@ The people who do this challenge and see the most results aren't the ones who do
 
 ---
 
-If you want help getting started or troubleshooting something specific, reach out. A lot of people find that a Clockworks session at the beginning of the challenge sets them up to do weeks 2–4 on their own with a lot more confidence.
+If you want help getting started or troubleshooting something specific, reach out. A lot of people find that a MN Clockworks session at the beginning of the challenge sets them up to do weeks 2–4 on their own with a lot more confidence.

@@ -31,7 +31,7 @@ export default function AuthorBio() {
               href="/book/"
               className="inline-flex items-center gap-2 rounded-[3px] bg-ink px-4 py-2 text-[0.85rem] font-medium text-paper transition-colors hover:bg-copper"
             >
-              Book a free audit →
+              Call or send a message →
             </Link>
             <Link href="/about/" className="link-draw text-[0.85rem] text-ink-soft hover:text-ink">
               More about Parker

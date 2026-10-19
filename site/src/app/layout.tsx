@@ -21,17 +21,17 @@ const instrument = Instrument_Serif({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "MN Clockworks — AI systems for Twin Cities trades businesses",
+    default: "MN Clockworks — AI team setup in Maple Grove & the NW Twin Cities metro",
     template: "%s · MN Clockworks",
   },
   description: site.description,
   keywords: [
     "AI automation Minnesota",
-    "AI for plumbers",
-    "AI for HVAC companies",
+    "AI team setup",
+    "Chief of Staff AI",
     "missed call text back",
     "AI receptionist Twin Cities",
-    "trades business automation",
+    "NW Twin Cities metro",
     "Maple Grove",
     "Minneapolis",
     "St. Paul",
@@ -66,7 +66,7 @@ const jsonLd = {
   email: site.email,
   image: `${site.url}/og.png`,
   "@id": `${site.url}/#business`,
-  contactPoint: { "@type": "ContactPoint", telephone: site.phone.schema, contactType: "customer service", areaServed: "US", availableLanguage: "English" },
+  contactPoint: { "@type": "ContactPoint", email: site.email, telephone: site.phone.schema, contactType: "customer service", areaServed: "US", availableLanguage: "English" },
   url: site.url,
   founder: { "@type": "Person", name: site.owner },
   description: site.description,
@@ -80,7 +80,6 @@ const jsonLd = {
     { "@type": "City", name: site.city },
     { "@type": "AdministrativeArea", name: "Northwest Twin Cities metro (Minneapolis–St. Paul, MN)" },
   ],
-  priceRange: "$99 - $5,000",
   knowsAbout: [
     "AI automation",
     "missed-call text back",

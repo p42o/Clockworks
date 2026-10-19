@@ -84,7 +84,7 @@ I'm a Twin Cities small-business owner myself. I know what you're thinking: "thi
 
 Fair. None of that has to happen.
 
-What I do at Clockworks is sit in your truck (figuratively or literally) for an hour, find the two or three boring tasks that are eating the most of your week, and build the automations that handle them. They sound like you. They sign off as you. They route real conversations back to a human (you) when the system reaches the edge of what it should handle. And they document everything in plain English so you're never locked out of your own systems.
+What I do at MN Clockworks is sit in your truck (figuratively or literally) for an hour, find the two or three boring tasks that are eating the most of your week, and build the automations that handle them. They sound like you. They sign off as you. They route real conversations back to a human (you) when the system reaches the edge of what it should handle. And they document everything in plain English so you're never locked out of your own systems.
 
 The whole thing usually takes about two weeks from first call to fully running. The investment for a small shop is in the same range as a single missed job for most trades. And the lift compounds: every week the systems run, you reclaim hours that were quietly leaking out of your business.
 

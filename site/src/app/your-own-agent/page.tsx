@@ -130,7 +130,7 @@ export default function YourOwnAgent() {
             <h2 className="display mt-3 max-w-2xl text-4xl sm:text-5xl">Own it. Don&rsquo;t rent it.</h2>
             <div className="mt-6 grid max-w-4xl gap-6 sm:grid-cols-3">
               {[
-                ["COST", "Rented AI receptionists run $99–$800 every month, forever, with meters on your minutes. Yours runs on a small cloud server you own — typically $10–20/month to keep the lights on, plus pennies of AI usage."],
+                ["COST", "Rented AI receptionists charge a monthly fee every month, forever, with meters on your minutes. Yours runs on a small cloud server you own — typically $10–20/month to keep the lights on, plus pennies of AI usage."],
                 ["CONTROL", "Rented tools decide what you can customize. Yours does whatever you want it to — new services, new rules, new channels, no feature-request queue, no 'contact sales.'"],
                 ["VISIBILITY", "Rented tools show you their dashboard. Yours logs every word on your own server — your customer conversations are your business asset, not somebody else's training data."],
               ].map(([t, d]) => (
@@ -141,8 +141,8 @@ export default function YourOwnAgent() {
               ))}
             </div>
             <p className="mt-8 max-w-2xl leading-relaxed text-paper/60">
-              Parker sets it all up (pilot $2,000–$4,000, live in about two weeks), then either
-              hands you the keys or stays on as the mechanic from $99/month — no contract, and
+              Parker sets it all up (live in about two weeks), then either
+              hands you the keys or stays on as the mechanic — no contract, and
               firing him doesn&rsquo;t turn it off. That&rsquo;s the whole point.
             </p>
           </Reveal>
@@ -150,8 +150,8 @@ export default function YourOwnAgent() {
       </section>
 
       <AuditCTA
-        title="Want one with your name on it?"
-        context="The free audit figures out whether an agent like this pays for itself in your shop — with the math shown. Or just grill the demo bot some more; it doesn't get tired."
+        title="Let’s talk about your business."
+        context="Tell me where your week gets stuck."
       />
     </>
   );

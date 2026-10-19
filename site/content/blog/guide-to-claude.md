@@ -90,4 +90,4 @@ You don't need a tech background for any of this. You just need to be willing to
 
 ---
 
-If you want help setting up your Claude Project or want to walk through those starter prompts with someone who can troubleshoot in real time, that's what Clockworks is here for. Reach out and we'll figure it out together.
+If you want help setting up your Claude Project or want to walk through those starter prompts with someone who can troubleshoot in real time, that's what MN Clockworks is here for. Reach out and we'll figure it out together.

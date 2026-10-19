@@ -10,7 +10,7 @@ import DemoGallery from "@/components/demos/DemoGallery";
 import { asset, site } from "@/lib/site";
 
 const TOOLS = ["Jobber", "QuickBooks", "Housecall Pro", "Google", "Your phone #"];
-const TRUST = ["Working demo in 48 hrs", "You own everything", "No contracts", "Coffee-bet guarantee"];
+const TRUST = ["Working demo in 48 hrs", "You own everything", "No contracts"];
 
 /*
  * H1 candidates considered:
@@ -77,7 +77,7 @@ const FAQS = [
   },
   {
     q: "What does it actually cost?",
-    a: "The audit is free. A pilot — one working system, built and live — is a fixed quote between $2,000 and $5,000 depending on scope. After that, I keep it running, tuned, and improving from $99 to $299 a month. No contracts. One saved job typically covers months of it.",
+    a: "Call or send a message to talk about your business.",
   },
   {
     q: "Am I locked in?",
@@ -85,7 +85,7 @@ const FAQS = [
   },
   {
     q: "Couldn't I just do this myself with ChatGPT?",
-    a: "You could, and for some owners that's the honest answer. Here's the real math, though: the paid tiers add up — ChatGPT, Claude, or Gemini run about $20+ a month each, an automation platform like n8n is roughly $25+ a month hosted (or a $10–20/month server you maintain yourself), and none of it arrives assembled. The tools are maybe $50–100 a month; the hundred hours of wiring them into Jobber and QuickBooks — and keeping it running when something updates — is the actual product. From $99 a month I bring the tooling AND the mechanic. If you enjoy the duct tape, I'll cheer you on; the audit plan works as a DIY map too.",
+    a: "You could, and for some owners that's the honest answer. Here's the real math, though: the paid tiers add up — ChatGPT, Claude, or Gemini run about $20+ a month each, an automation platform like n8n is roughly $25+ a month hosted (or a $10–20/month server you maintain yourself), and none of it arrives assembled. The tools are maybe $50–100 a month; the hundred hours of wiring them into Jobber and QuickBooks — and keeping it running when something updates — is the actual product. If you enjoy the duct tape, I'll cheer you on.",
   },
   {
     q: "Will customers know it's AI?",
@@ -294,16 +294,15 @@ export default function Home() {
           <Reveal>
             <p className="eyebrow !text-copper">03 — Straight numbers</p>
           </Reveal>
-          <div className="mt-10 grid grid-cols-2 gap-10 lg:grid-cols-4">
+          <div className="mt-10 grid grid-cols-2 gap-10 lg:grid-cols-3">
             {[
               { v: 10, suffix: " hrs", label: "a week of admin a typical owner carries — the hours we go find" },
               { v: 9, suffix: " sec", label: "for a missed call to get a text back with your name on it" },
               { v: 48, suffix: " hrs", label: "from kickoff to a working demo you can poke at" },
-              { v: 0, prefix: "$", label: "cost of the audit — a written plan, yours either way" },
             ].map((s, i) => (
               <Reveal key={s.label} delay={i * 0.07}>
                 <p className="display text-5xl text-cream-bright sm:text-6xl">
-                  <StatCount value={s.v} prefix={s.prefix ?? ""} suffix={s.suffix ?? ""} />
+                  <StatCount value={s.v} suffix={s.suffix ?? ""} />
                 </p>
                 <p className="mt-3 max-w-[26ch] text-sm leading-relaxed text-paper/60">{s.label}</p>
               </Reveal>
@@ -333,17 +332,17 @@ export default function Home() {
           <div className="mt-12 grid gap-10 md:grid-cols-3">
             {[
               {
-                step: "STEP 1 — FREE",
-                title: "The audit",
-                body: "Thirty minutes, in person or on a call. We walk your week and find where the hours and leads actually leak. You get a one-page written plan — keep it, shop it around, or hand it to me.",
+                step: "STEP 1",
+                title: "A conversation",
+                body: "Tell me about your week and where the hours and leads get stuck.",
               },
               {
-                step: "STEP 2 — $2,000–$5,000 FIXED",
+                step: "STEP 2",
                 title: "The pilot",
                 body: "I build the one system from the plan that pays back fastest. Working demo in 48 hours, live in about two weeks. Fixed quote before we start — if it grows, that's a new conversation, not a surprise invoice.",
               },
               {
-                step: "STEP 3 — FROM $99/MO",
+                step: "STEP 3",
                 title: "It runs",
                 body: "I watch it, tune it, and improve it while it works. You get a plain-English report of what it caught. Cancel anytime — you own every piece, and it keeps working without me.",
               },
@@ -357,7 +356,7 @@ export default function Home() {
           </div>
           <Reveal className="mt-10">
             <Link href="/how-it-works/" className="link-draw text-ink-soft hover:text-ink">
-              Exactly what happens in the audit →
+              How it works →
             </Link>
           </Reveal>
         </div>

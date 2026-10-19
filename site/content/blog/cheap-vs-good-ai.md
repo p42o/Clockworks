@@ -6,7 +6,7 @@ legacyPath: "/blog/cheap-vs-good-ai.html"
 tags: [budget, tools, strategy]
 ---
 
-Hey, I'm Parker. I run Clockworks, and part of what I do is help people stop paying for AI tools they're not getting real value from. It's more common than you'd think.
+Hey, I'm Parker. I run MN Clockworks, and part of what I do is help people stop paying for AI tools they're not getting real value from. It's more common than you'd think.
 
 There's a pattern I see over and over: someone tries a cheap AI tool, gets mediocre output, decides "AI isn't ready yet," and misses out on the tools that actually could help them. The problem wasn't AI. The problem was the wrong tool at the wrong price point.
 

@@ -1,17 +1,16 @@
 ---
-title: "What $2,000 to $5,000 Actually Buys"
+title: "What a Pilot Actually Buys"
 date: "2026-09-01"
 description: "The two-week pilot, walked day by day: fixed quote, a working demo at hour 48, a shadow week, and a handover where you own everything."
 tags: [trades, pilot, pricing]
 ---
 
-Every price on my site is public: the audit is free, the pilot is $2,000 to $5,000 fixed, the managed service is $99 to $299 a month. What the site can't show you is what those two pilot weeks actually feel like from your side of the counter. So here it is, day by day.
+Here is what the pilot looks like from your side of the counter, day by day.
 
 To be clear up front: this isn't a story about a client. It's the standard process, what a typical build week looks like for anyone who signs on. Yours will differ in the details; it shouldn't differ in the shape.
 
 ## Day 0: a number, not a range
 
-By Day 0 we've already done the free 30-minute audit, and you're holding a one-page plan that says which system matters most for your shop, usually one of Call Catch, Quote Chaser, Review Engine, or Paper Mover, sometimes two.
 
 The quote I hand you is a fixed number. Not "starting at." Not "depending on complexity." A number, in writing, that doesn't move.
 
@@ -35,6 +34,8 @@ This week is mostly about words. "We'd never say 'reach out,' we say 'give us a 
 
 The last week is about making me unnecessary. You get the passwords, all of them, in your password manager, not mine. You get a plain-English document, usually two or three pages: what runs, where it lives, what it costs monthly in raw tool fees, how to change the wording, and (this is the one people underline) how to turn it off. Every system I build has an off switch you can reach without calling me.
 
-Then it goes live for real, and you choose what's next. Most owners take the managed service: $99 to $299 a month, and I watch it, tune it, and answer when something's weird. No contract; any month you can stop, and everything keeps running under your accounts because it was built there from Day 0. Or you take the keys and run it yourself. Either answer is fine with me. A client who stays because leaving is painful isn't a client. That's a hostage, and it's a lousy business model for a guy whose name is on the thing.
+Then it goes live for real, and you choose what's next. Most owners take the managed service: I watch it, tune it, and answer when something's weird. No contract; any month you can stop, and everything keeps running under your accounts because it was built there from Day 0. Or you take the keys and run it yourself. Either answer is fine with me. A client who stays because leaving is painful isn't a client. That's a hostage, and it's a lousy business model for a guy whose name is on the thing.
 
-That's what the money buys: two weeks, a fixed number, a demo you can poke on day two, and a system you own on day fourteen. If you want the one-page plan that comes before any of it, the 30-minute AI Time & Lead Audit is free at mnclockworks.com/book. And if there's nothing worth building, I'll tell you that too, over coffee that's on me.
+That's what the money buys: two weeks, a fixed number, a demo you can poke on day two, and a system you own on day fourteen.
+
+Call or send a message at mnclockworks.com.

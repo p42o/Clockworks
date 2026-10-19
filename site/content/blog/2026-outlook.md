@@ -61,4 +61,4 @@ If you do nothing else this year, do these three:
 
 That's a weekend of work. It will outperform 80% of "AI transformation" engagements I see pitched to small businesses.
 
-If you want a no-pitch read on which of these would actually move the needle for your business, that's literally what the free call is for.
+Call or send a message at mnclockworks.com.

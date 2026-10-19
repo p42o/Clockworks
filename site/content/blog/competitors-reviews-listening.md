@@ -104,6 +104,6 @@ If you want to turn that 5-minute experiment into an automated system that runs 
 
 ---
 
-I offer a free 30-minute strategy session where we look at your business and figure out where automation makes the biggest difference. Competitive monitoring is usually the one that surprises people most. They didn't know it was possible. Once they see it, they want it immediately.
+ Competitive monitoring is usually the one that surprises people most. They didn't know it was possible. Once they see it, they want it immediately.
 
-Parker Swanson, Founder of Clockworks
+Parker Swanson, Founder of MN Clockworks

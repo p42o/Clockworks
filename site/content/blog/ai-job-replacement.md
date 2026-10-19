@@ -6,7 +6,7 @@ legacyPath: "/blog/ai-job-replacement.html"
 tags: [jobs, ai-impact, small-business]
 ---
 
-Hey, I'm Parker. I run Clockworks, and I want to be careful with this one. A lot of people, on both sides, are not being straight with you about AI and jobs. The optimists say "AI will just create new jobs!" and wave away legitimate concerns. The doom crowd says entire professions are about to disappear overnight. Neither is accurate.
+Hey, I'm Parker. I run MN Clockworks, and I want to be careful with this one. A lot of people, on both sides, are not being straight with you about AI and jobs. The optimists say "AI will just create new jobs!" and wave away legitimate concerns. The doom crowd says entire professions are about to disappear overnight. Neither is accurate.
 
 Here's my honest take. I think some jobs will change significantly. Some won't. And the biggest factor in which category you end up in isn't the industry you're in. It's what you decide to do about it right now.
 
@@ -80,4 +80,4 @@ You don't need to be an AI expert. You need to be someone who uses it regularly 
 
 ---
 
-If you're thinking about your own situation and want an honest, outside perspective (not a sales pitch, just a conversation about where AI does and doesn't apply to your work), that's exactly what the free call is for.
+Call or send a message at mnclockworks.com.

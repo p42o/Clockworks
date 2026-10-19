@@ -74,8 +74,8 @@ export default function BlogIndex() {
       </section>
 
       <AuditCTA
-        title="Reading is free. So is the audit."
-        context="If a post made you wonder whether this stuff would work in your shop, that's exactly what the 30-minute audit answers — with your numbers."
+        title="Let’s talk about your business."
+        context="Tell me where your week gets stuck."
       />
     </>
   );

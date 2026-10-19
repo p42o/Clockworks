@@ -6,7 +6,7 @@ legacyPath: "/blog/chatgpt-prompts.html"
 tags: [chatgpt, prompts, tips]
 ---
 
-Hey, I'm Parker. I run Clockworks, an AI consulting firm in Maple Grove, MN. Most of my clients come to me after the same frustrating experience: they tried ChatGPT, got garbage back, and concluded that "AI just isn't for me."
+Hey, I'm Parker. I run MN Clockworks, an AI consulting firm in Maple Grove, MN. Most of my clients come to me after the same frustrating experience: they tried ChatGPT, got garbage back, and concluded that "AI just isn't for me."
 
 Nine times out of ten, the problem isn't the tool. The problem is the prompt. And the fix is simpler than you think.
 
@@ -102,4 +102,4 @@ That's the real unlock. Not a new tool, not a subscription upgrade. Just a bette
 
 ---
 
-If you want to practice this with a real task from your business (something you're actually working on this week), that's exactly what a Clockworks session is for. Reach out and we'll dig in together.
+If you want to practice this with a real task from your business (something you're actually working on this week), that's exactly what a MN Clockworks session is for. Reach out and we'll dig in together.

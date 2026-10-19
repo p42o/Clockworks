@@ -6,7 +6,7 @@ legacyPath: "/blog/client-story.html"
 tags: [case-study, productivity, email]
 ---
 
-Hey, I'm Parker. I run Clockworks, and I want to tell you about Mike.
+Hey, I'm Parker. I run MN Clockworks, and I want to tell you about Mike.
 
 Mike runs a 6-person HVAC company in the western suburbs of Minneapolis. He's been in the trades for 22 years. He's good at what he does. He has a full book of business and a team he trusts. What he does not have is time.
 
@@ -30,7 +30,7 @@ None of this was complicated work. It was just slow, manual, and relentlessly re
 
 ## What we built in two hours
 
-Mike and I did a two-hour Clockworks session on a Wednesday afternoon. Here's what we actually built:
+Mike and I did a two-hour MN Clockworks session on a Wednesday afternoon. Here's what we actually built:
 
 **The weekly report template.** We created a Claude Project called "Weekly Report" with standing instructions about what the report needed to cover, what Mike's business partner cared about, and what format worked best. We also created a simple fill-in-the-blanks input form, a Google Doc that Mike fills in each week with raw notes: jobs done, numbers, any issues. He pastes those notes into Claude with one line: "Turn these notes into this week's report." That's it.
 
@@ -72,4 +72,4 @@ The two-hour investment paid for itself in the first week. The habits Mike built
 
 ---
 
-If you recognize yourself in Mike's story, reach out. The free call is for exactly this: figuring out which two hours would make the biggest difference in your week. No pitch, just an honest look at your situation.
+Call or send a message at mnclockworks.com.
