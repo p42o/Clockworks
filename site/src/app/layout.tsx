@@ -21,7 +21,7 @@ const instrument = Instrument_Serif({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "MN Clockworks — AI team setup in Maple Grove & the NW Twin Cities metro",
+    default: "MN Clockworks: Chief of Staff AI for small businesses",
     template: "%s · MN Clockworks",
   },
   description: site.description,

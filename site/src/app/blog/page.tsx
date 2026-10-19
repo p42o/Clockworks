@@ -7,7 +7,7 @@ import { getPublishedPosts } from "@/lib/blog";
 export const metadata: Metadata = {
   title: "Field notes",
   description:
-    "Plain-English notes on AI for small business and the trades — missed calls, follow-up, paperwork, and what's actually worth automating. From Maple Grove, MN.",
+    "Plain-English notes on AI for small businesses, from Maple Grove, MN.",
 };
 
 const fmt = (d: string) =>
@@ -73,10 +73,7 @@ export default function BlogIndex() {
         </div>
       </section>
 
-      <AuditCTA
-        title="Let’s talk about your business."
-        context="Tell me where your week gets stuck."
-      />
+      <AuditCTA />
     </>
   );
 }

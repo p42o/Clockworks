@@ -6,13 +6,13 @@ import { asset, site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Parker Swanson — Maple Grove, MN. A decade-plus of technical operations, now building practical AI systems so Twin Cities trades owners can be home for dinner.",
+    "Parker Swanson, Maple Grove, MN. I set up Chief of Staff AI teams so small business owners can be home for dinner.",
 };
 
 const VALUES = [
   {
-    t: "Prices in print",
-    d: "Every number I charge is on this website. If a price ever feels mysterious, ask me to explain it until it doesn't.",
+    t: "You see the work",
+    d: "I describe the work in writing before I start. You approve what the team sends.",
   },
   {
     t: "You own everything",
@@ -55,15 +55,15 @@ export default function About() {
                   household and side projects today.
                 </p>
                 <p>
-                  Then I watched the owners around me — the people who fix our sinks and
-                  furnaces and yards — quoting jobs at their kitchen tables at 9pm, losing
+                  Then I watched the owners around me, the people who fix our sinks and
+                  furnaces and yards, quoting jobs at their kitchen tables at 9pm, losing
                   weekend calls to a full voicemail box. The gap was obvious: this technology
-                  is ready for the trades, but the people selling it are agencies with sales
+                  is ready for small businesses. A plumber, a salon, a bookkeeper. The people selling it are agencies with sales
                   scripts, or faceless apps from three time zones away.
                 </p>
                 <p>
-                  MN Clockworks is my answer: one local person who builds the machine, shows
-                  you the price, and answers his own phone. The name is the promise — a good
+                  MN Clockworks is my answer: one local person who builds the machine, sets
+                  up the team, and answers his own phone. The name is the promise. A good
                   system should be like a good clock. You don&rsquo;t think about it.
                   It just keeps your time.
                 </p>
@@ -90,7 +90,7 @@ export default function About() {
                   href="/book/"
                   className="font-mono text-[0.7rem] tracking-wider text-copper hover:underline"
                 >
-                  SEND A MESSAGE →
+                  GET IN TOUCH
                 </a>
               </div>
             </div>
@@ -117,10 +117,7 @@ export default function About() {
         </div>
       </section>
 
-      <AuditCTA
-        title="Let’s talk about your business."
-        context="Tell me where your week gets stuck."
-      />
+      <AuditCTA />
     </>
   );
 }

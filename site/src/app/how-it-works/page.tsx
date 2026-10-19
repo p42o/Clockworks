@@ -5,21 +5,28 @@ import AuditCTA from "@/components/AuditCTA";
 export const metadata: Metadata = {
   title: "How it works",
   description:
-    "A conversation, a working system, and ongoing care. You own everything.",
+    "How a Chief of Staff AI team gets set up. In person in the Twin Cities, remote elsewhere. You approve what goes out.",
 };
 
 const AUDIT_AGENDA = [
-  { t: "Your week", d: "You talk, I listen. What a normal week looks like, where the evenings go." },
-  { t: "Your leads", d: "We follow the leads: where calls come in, what happens when you can’t answer, where quotes and invoices sit." },
-  { t: "Your systems", d: "I sketch the two or three places a system would pay for itself fastest — with the math, out loud." },
-  { t: "Next steps", d: "We talk about what to build." },
+  { t: "Your week.", d: "You talk, I listen. What a normal week looks like." },
+  { t: "Your email.", d: "Where messages sit, and what you want a person to see first." },
+  { t: "Your quotes.", d: "What goes out, what goes quiet, and who should nudge." },
+  { t: "Next steps.", d: "We decide what the team handles on day one." },
 ] as const;
 
-const PILOT_TIMELINE = [
-  { t: "Day 0", d: "We pick the one system from your plan with the fastest payback. Fixed quote, in writing, before anything starts." },
-  { t: "Hour 48", d: "Working demo. You call the number, you see the text arrive, you poke at it with real scenarios. We adjust the words until it sounds like you." },
-  { t: "Week 1", d: "It runs quietly alongside your normal week — catching, chasing, logging — while we watch it together." },
-  { t: "Week 2", d: "Live and handed over. Your accounts, your logins, your system. I document everything in plain English." },
+const READY_TEAM = [
+  { t: "Day one.", d: "The team drafts email, quotes, and marketing. You approve what goes out." },
+  { t: "Your tools.", d: "It uses the email, phone, and files you already have." },
+  { t: "Your words.", d: "I set the voice with you before anything sends." },
+  { t: "Your accounts.", d: "Logins stay in your name." },
+] as const;
+
+const YOU_APPROVE = [
+  "You approve email, quotes, and marketing before they send.",
+  "A plain-English note of what the team drafted and what you sent.",
+  "When the week changes, text me and I adjust it.",
+  "You own the setup.",
 ] as const;
 
 const jsonLd = {
@@ -59,9 +66,9 @@ export default function HowItWorks() {
         <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1fr_1.3fr]">
           <Reveal>
             <p className="font-mono text-[0.7rem] tracking-[0.18em] text-copper">STEP 1</p>
-            <h2 className="display mt-3 text-4xl sm:text-5xl">A conversation</h2>
+            <h2 className="display mt-3 text-4xl sm:text-5xl">A conversation.</h2>
             <p className="mt-4 max-w-md leading-relaxed text-ink-soft">
-              Tell me about your week and where the hours and leads get stuck.
+              Tell me about the week. Where email, quotes, and marketing pile up. In person in the Twin Cities, remote elsewhere.
             </p>
           </Reveal>
           <Reveal delay={0.1}>
@@ -82,20 +89,17 @@ export default function HowItWorks() {
         <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1fr_1.3fr]">
           <Reveal>
             <p className="font-mono text-[0.7rem] tracking-[0.18em] text-copper">STEP 2</p>
-            <h2 className="display mt-3 text-4xl sm:text-5xl">The pilot</h2>
+            <h2 className="display mt-3 text-4xl sm:text-5xl">A ready team.</h2>
             <p className="mt-4 max-w-md leading-relaxed text-ink-soft">
-              One system, built end to end on the tools you already use. Fixed quote before we
-              start. Working demo in 48 hours, because you shouldn&rsquo;t pay for promises you
-              can&rsquo;t poke at.
+              I set up a Chief of Staff team that handles email, quotes, and marketing. You can see it working on day one. You own it.
             </p>
           </Reveal>
           <Reveal delay={0.1}>
-            <ol className="relative space-y-0 border-l-2 border-copper/50 pl-8">
-              {PILOT_TIMELINE.map((a) => (
-                <li key={a.t} className="relative pb-8 last:pb-0">
-                  <span className="absolute -left-[41px] top-1 h-4 w-4 rounded-full border-2 border-copper bg-paper" aria-hidden />
-                  <p className="font-mono text-[0.72rem] tracking-wider text-copper">{a.t}</p>
-                  <p className="mt-1 leading-relaxed text-ink-soft">{a.d}</p>
+            <ol className="space-y-4">
+              {READY_TEAM.map((a) => (
+                <li key={a.t} className="card-lift card-lift-quiet flex gap-5 rounded-[3px] border hairline bg-cream-bright/60 p-5">
+                  <span className="font-mono text-[0.72rem] tracking-wider text-copper whitespace-nowrap pt-1">{a.t}</span>
+                  <span className="leading-relaxed text-ink-soft">{a.d}</span>
                 </li>
               ))}
             </ol>
@@ -108,20 +112,14 @@ export default function HowItWorks() {
         <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1fr_1.3fr]">
           <Reveal>
             <p className="font-mono text-[0.7rem] tracking-[0.18em] text-copper">STEP 3</p>
-            <h2 className="display mt-3 text-4xl sm:text-5xl">It runs</h2>
+            <h2 className="display mt-3 text-4xl sm:text-5xl">You approve.</h2>
             <p className="mt-4 max-w-md leading-relaxed text-ink-soft">
-              Machines need a mechanic. I watch yours, tune it, and make it better every month —
-              and you can see exactly what it&rsquo;s doing for you.
+              The team drafts. You approve. Nothing goes out until you say so.
             </p>
           </Reveal>
           <Reveal delay={0.1}>
             <ul className="space-y-4">
-              {[
-                "A monthly plain-English report: calls caught, quotes chased, reviews earned, hours returned.",
-                "Tweaks included — new hours, new techs, new service area, changed wording. Text me; it's handled.",
-                "Improvements as the tools get better. Your system in December is smarter than it was in June.",
-                "No contract. Cancel with an email. Everything keeps working because you own everything.",
-              ].map((x) => (
+              {YOU_APPROVE.map((x) => (
                 <li key={x} className="flex gap-3 leading-relaxed text-ink-soft">
                   <span className="mt-[0.55em] h-px w-4 shrink-0 bg-copper" aria-hidden />
                   {x}

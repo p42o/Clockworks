@@ -37,7 +37,7 @@ export default function Footer() {
               ))}
               <li>
                 <Link href="/book/" className="text-paper/70 transition-colors hover:text-paper">
-                  Send a message
+                  Get in touch
                 </Link>
               </li>
             </ul>
@@ -65,11 +65,11 @@ export default function Footer() {
               href="/book/"
               className="block w-fit font-medium text-paper underline decoration-copper/60 underline-offset-4 hover:decoration-copper"
             >
-              Send a message →
+              Get in touch →
             </Link>
             <p className="mt-3 max-w-xs text-paper/55">
               Every message lands on my phone within minutes, and a real person answers.
-              {" "}Serving {site.areaServed}; everywhere else remotely.
+              {" "}In person in the Twin Cities, remote elsewhere.
             </p>
           </div>
         </div>

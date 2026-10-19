@@ -10,9 +10,9 @@ export const site = {
   region: "MN",
   area: "Twin Cities, Minnesota",
   description:
-    "A ready AI team for your business, in person in the Twin Cities, remote elsewhere and working on day one. You own it, and you approve what goes out. MN Clockworks, Maple Grove, MN.",
+    "Chief of Staff AI for small businesses. Email, quotes, marketing from day one. You approve what goes out. In person in the Twin Cities, remote elsewhere.",
   cta: {
-    label: "Call or send a message",
+    label: "Get in touch",
     sub: "Call or text (763) 202-7778, or send a message. A real person answers.",
   },
 } as const;

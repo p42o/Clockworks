@@ -4,13 +4,12 @@ import Escapement from "@/components/Escapement";
 import WeekFlow from "@/components/WeekFlow";
 import MagneticButton from "@/components/MagneticButton";
 import Reveal from "@/components/Reveal";
-import StatCount from "@/components/StatCount";
 import AuditCTA from "@/components/AuditCTA";
 import DemoGallery from "@/components/demos/DemoGallery";
 import { asset, site } from "@/lib/site";
 
 const TOOLS = ["Jobber", "QuickBooks", "Housecall Pro", "Google", "Your phone #"];
-const TRUST = ["Working demo in 48 hrs", "You own everything", "No contracts"];
+const TRUST = ["Working on day one", "You own everything", "No contracts"];
 
 /*
  * H1 candidates considered:
@@ -25,7 +24,7 @@ const SYSTEMS = [
     n: "01",
     code: "CALL CATCH",
     title: "Never miss another job call",
-    body: "You're under a sink; the phone rings twice and quits. Call Catch texts the caller back in seconds — in your words, from your number — and books them before they dial the next guy.",
+    body: "You're with a customer. The phone rings twice and quits. Call Catch texts the caller back in seconds, in your words, from your number, and books them before they dial the next guy.",
     runs: "Your existing number · Jobber · Housecall Pro",
   },
   {
@@ -53,12 +52,12 @@ const SYSTEMS = [
     n: "05",
     code: "INTEL DESK",
     title: "Know what the big guys know",
-    body: "Live dashboards on your numbers — plus competitor price moves, local demand spikes, and material costs, read automatically from the public web. The analyst desk, scaled to one truck.",
+    body: "Live dashboards on your numbers, plus competitor price moves, local demand spikes, and material costs, read automatically from the public web. The analyst desk, scaled to a small crew.",
     runs: "Public data · QuickBooks · a weekly digest",
   },
   {
     n: "06",
-    code: "FRONT DESK",
+    code: "SITE AGENT",
     title: "A website that answers back",
     body: "A trained agent on your site and your text line: answers questions your way, books jobs at 2am, and shows you what customers keep asking for.",
     runs: "Your site · SMS · your knowledge",
@@ -85,7 +84,7 @@ const FAQS = [
   },
   {
     q: "Couldn't I just do this myself with ChatGPT?",
-    a: "You could, and for some owners that's the honest answer. Here's the real math, though: the paid tiers add up — ChatGPT, Claude, or Gemini run about $20+ a month each, an automation platform like n8n is roughly $25+ a month hosted (or a $10–20/month server you maintain yourself), and none of it arrives assembled. The tools are maybe $50–100 a month; the hundred hours of wiring them into Jobber and QuickBooks — and keeping it running when something updates — is the actual product. If you enjoy the duct tape, I'll cheer you on.",
+    a: "You could, and for some owners that's the honest answer. The paid tiers add up, and none of it arrives assembled. Wiring the tools into Jobber and QuickBooks, and keeping it running when something updates, is the actual product. If you enjoy the duct tape, I'll cheer you on.",
   },
   {
     q: "Will customers know it's AI?",
@@ -108,7 +107,7 @@ export default function Home() {
         <div className="relative mx-auto w-full max-w-6xl px-5 pb-20 pt-32 sm:px-8">
           <Reveal immediate>
             <p className="eyebrow section-rule">
-              AI systems for trades businesses · {site.city}, MN
+              Chief of Staff AI for small businesses · {site.city}, MN
             </p>
           </Reveal>
           <Reveal immediate delay={0.08}>
@@ -118,9 +117,7 @@ export default function Home() {
           </Reveal>
           <Reveal immediate delay={0.16}>
             <p className="mt-7 max-w-xl text-[1.1rem] leading-relaxed text-ink-soft">
-              I build quiet, reliable systems for Twin Cities plumbing, HVAC, electrical, and
-              landscaping companies — they catch the calls you miss, chase the quotes you sent,
-              and keep the paperwork moving while you&rsquo;re on the job.
+              I set up a Chief of Staff AI team for small businesses. A plumber, a salon, a bookkeeper: same kind of week. The team handles email, quotes, and marketing from day one, and you approve what goes out. In person in the Twin Cities, remote elsewhere.
             </p>
           </Reveal>
           <Reveal immediate delay={0.24}>
@@ -241,8 +238,14 @@ export default function Home() {
             <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
               Every card below is a working demo running right here in your browser, on clearly-labeled
               sample data. Text the missed-call bot back, run a week of quote follow-ups, poke the
-              dashboards. This is the actual stuff I build — rebuilt around your shop when it&rsquo;s yours.
+              dashboards. This is the actual stuff I build, rebuilt around your shop when it&rsquo;s yours.
             </p>
+            <p className="mt-4 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
+              Sample data only. When you want this for your business, get in touch.
+            </p>
+            <Link href="/book/" className="link-draw mt-4 inline-block text-ink-soft hover:text-ink">
+              Get in touch
+            </Link>
           </Reveal>
           <div className="mt-12">
             <DemoGallery />
@@ -284,21 +287,7 @@ export default function Home() {
           <Reveal>
             <p className="eyebrow !text-copper">03 — Straight numbers</p>
           </Reveal>
-          <div className="mt-10 grid grid-cols-2 gap-10 lg:grid-cols-3">
-            {[
-              { v: 10, suffix: " hrs", label: "a week of admin a typical owner carries — the hours we go find" },
-              { v: 9, suffix: " sec", label: "for a missed call to get a text back with your name on it" },
-              { v: 48, suffix: " hrs", label: "from kickoff to a working demo you can poke at" },
-            ].map((s, i) => (
-              <Reveal key={s.label} delay={i * 0.07}>
-                <p className="display text-5xl text-cream-bright sm:text-6xl">
-                  <StatCount value={s.v} suffix={s.suffix ?? ""} />
-                </p>
-                <p className="mt-3 max-w-[26ch] text-sm leading-relaxed text-paper/60">{s.label}</p>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="mt-14 border-t border-white/10 pt-8">
+          <Reveal className="mt-8 border-t border-white/10 pt-8">
             <p className="max-w-2xl text-lg leading-relaxed text-paper/80">
               Most callers who hit voicemail don&rsquo;t leave one — they call the next name on
               the list. The first company to answer usually wins the job.{" "}
@@ -323,18 +312,18 @@ export default function Home() {
             {[
               {
                 step: "STEP 1",
-                title: "A conversation",
-                body: "Tell me about your week and where the hours and leads get stuck.",
+                title: "A conversation.",
+                body: "Tell me about the week. Where email, quotes, and marketing pile up. In person in the Twin Cities, remote elsewhere.",
               },
               {
                 step: "STEP 2",
-                title: "The pilot",
-                body: "I build the one system from the plan that pays back fastest. Working demo in 48 hours, live in about two weeks. Fixed quote before we start — if it grows, that's a new conversation, not a surprise invoice.",
+                title: "A ready team.",
+                body: "I set up a Chief of Staff team that handles email, quotes, and marketing. You can see it working on day one. You own it.",
               },
               {
                 step: "STEP 3",
-                title: "It runs",
-                body: "I watch it, tune it, and improve it while it works. You get a plain-English report of what it caught. Cancel anytime — you own every piece, and it keeps working without me.",
+                title: "You approve.",
+                body: "The team drafts. You approve. Nothing goes out until you say so.",
               },
             ].map((s, i) => (
               <Reveal key={s.title} delay={i * 0.08} variant="rise" className="border-t-2 border-copper/70 pt-6">
@@ -362,9 +351,15 @@ export default function Home() {
             </h2>
             <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
               Before I ever sold one, I built them for myself. Thirty-plus automations run my own
-              family&rsquo;s life and businesses right now — answering, scheduling, logging,
+              family&rsquo;s life and businesses right now, answering, scheduling, logging,
               chasing. When I say &ldquo;it just runs,&rdquo; I&rsquo;m describing my Tuesday.
             </p>
+            <p className="mt-4 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
+              I run this on my own household and side projects first. No client case studies yet, and I won&rsquo;t make any up.
+            </p>
+            <Link href="/about/" className="link-draw mt-5 inline-block text-ink-soft hover:text-ink">
+              The longer story
+            </Link>
           </Reveal>
         </div>
       </section>

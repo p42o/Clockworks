@@ -31,7 +31,7 @@ export interface AuditProvider {
 
 export function summarize(req: AuditRequest): string {
   return [
-    `Trade: ${req.trade}`,
+    `Business: ${req.trade}`,
     `Biggest time-sink: ${req.painPoint}`,
     req.detail ? `In their words: ${req.detail}` : null,
     req.phone ? `Phone: ${req.phone}` : null,

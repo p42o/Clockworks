@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 export default function AuditCTA({
   title = "Let’s talk about your business.",
-  context = "Tell me where your week gets stuck.",
+  context = "Tell me where email, quotes, and marketing pile up. In person in the Twin Cities, remote elsewhere.",
 }: {
   title?: string;
   context?: string;

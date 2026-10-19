@@ -11,7 +11,7 @@ import { site } from "@/lib/site";
  * expectations plainly. Honeypot field keeps the bots polite.
  */
 
-const TRADES = ["Plumbing", "HVAC", "Electrical", "Landscaping", "Other trade / service"];
+const TRADES = ["A plumber", "A salon", "A bookkeeper", "Something else"];
 const PAINS = [
   "Missed calls",
   "Quotes nobody chased",
@@ -98,7 +98,7 @@ export default function AuditFlow() {
       },
       {
         key: "trade",
-        title: `Good to meet you, ${form.name.split(" ")[0] || "there"}. What's your trade?`,
+        title: `Good to meet you, ${form.name.split(" ")[0] || "there"}. What kind of business is it?`,
         valid: form.trade !== "",
         hint: "Tap one.",
       },
@@ -338,7 +338,7 @@ export default function AuditFlow() {
                   <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
                     {[
                       ["Who", `${form.name} · ${form.business}`],
-                      ["Trade", form.trade],
+                      ["Business", form.trade],
                       ["Biggest time-sink", form.painPoint],
                       ["Reply to", form.email + (form.phone ? ` · ${form.phone}` : "")],
                       ["Best time", form.preferred || "Whenever"],

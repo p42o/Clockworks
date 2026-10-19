@@ -48,7 +48,7 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-5 lg:gap-7 md:flex whitespace-nowrap" aria-label="Primary">
+        <nav className="hidden items-center gap-3 lg:gap-7 md:flex whitespace-nowrap" aria-label="Primary">
           {nav.map((item) => {
             const active = pathname?.startsWith(item.href.replace(/\/$/, ""));
             const isResults = (item.href as string) === "/results/"; // Results is out of nav while /results/ redirects; kept for when it returns
@@ -71,24 +71,16 @@ export default function Header() {
               </Link>
             );
           })}
-          <a href={site.phone.href} aria-label="Call MN Clockworks at (763) 202-7778" className="link-draw flex h-9 w-9 shrink-0 items-center justify-center rounded-full border hairline text-ink-soft transition-colors hover:text-copper xl:h-auto xl:w-auto xl:gap-2 xl:rounded-none xl:border-0 xl:font-mono xl:text-xs"><PhoneIcon /><span className="hidden xl:inline">{site.phone.display}</span></a>
+          <a href={site.phone.href} aria-label="Call MN Clockworks at (763) 202-7778" className="link-draw flex shrink-0 items-center gap-1.5 font-mono text-[0.7rem] text-ink-soft transition-colors hover:text-copper lg:gap-2 lg:text-xs"><PhoneIcon /><span>{site.phone.display}</span></a>
           <Link
             href="/book/"
-            className="btn-press rounded-[3px] bg-ink px-5 py-2.5 text-[0.875rem] font-medium text-paper transition-colors duration-300 hover:bg-copper"
+            className="btn-press rounded-[3px] bg-ink px-3.5 py-2 text-[0.8rem] font-medium text-paper transition-colors duration-300 hover:bg-copper lg:px-5 lg:py-2.5 lg:text-[0.875rem]"
           >
-            Send a message
+            Get in touch
           </Link>
         </nav>
 
         <div className="flex items-center gap-1.5 md:hidden">
-          <Link
-            href="/book/"
-            className={`btn-press rounded-[3px] bg-ink px-3.5 py-2 text-[0.8rem] font-medium text-paper transition-opacity duration-200 ${
-              open ? "pointer-events-none opacity-0" : "opacity-100"
-            }`}
-          >
-            Message
-          </Link>
           <a href={site.phone.href} aria-label="Call MN Clockworks at (763) 202-7778" tabIndex={open ? -1 : undefined} className={`flex h-10 w-10 items-center justify-center rounded-full border hairline text-ink-soft transition-opacity hover:text-copper ${open ? "pointer-events-none opacity-0" : "opacity-100"}`}><PhoneIcon /></a>
           <button
             type="button"
@@ -157,9 +149,9 @@ export default function Header() {
                   href="/book/"
                   className="btn-press block rounded-[3px] bg-copper px-6 py-4 text-center text-lg font-medium text-cream-bright"
                 >
-                  Send a message
+                  Get in touch
                 </Link>
-                <motion.a href={site.phone.href} initial={reduced ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduced ? 0 : 0.46, duration: 0.48, ease: easeGate }} className="mt-3 flex min-h-[60px] w-full items-center justify-center gap-3 rounded-[3px] border hairline px-3 py-4 text-sm font-medium transition-colors hover:text-copper"><PhoneIcon />Call or text {site.phone.display}</motion.a>
+                <motion.a href={site.phone.href} initial={reduced ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduced ? 0 : 0.46, duration: 0.48, ease: easeGate }} className="mt-3 flex min-h-[60px] w-full items-center justify-center gap-3 rounded-[3px] border hairline px-3 py-4 text-sm font-medium transition-colors hover:text-copper"><PhoneIcon />{site.phone.display}</motion.a>
                 <p className="mt-3 text-center text-sm text-ink-faint">{site.cta.sub}</p>
               </motion.div>
             </nav>

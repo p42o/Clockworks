@@ -26,7 +26,7 @@ const HINTS = [
 /* Two-beat invitation: a friendly hello, then one gentle re-invite if it was ignored. */
 const NUDGES = [
   {
-    lead: "Hey — I’m the front desk.",
+    lead: "Hey. I’m the site agent.",
     body: "Not a menu bot; the real thing, live. Ask me anything about getting your evenings back.",
   },
   {
@@ -259,7 +259,7 @@ export default function ChatWidget() {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Close chat" : "Chat with the Front Desk"}
+          aria-label={open ? "Close chat" : "Chat with the Site Agent"}
           className="group relative flex h-[58px] w-[58px] items-center justify-center rounded-full bg-gradient-to-br from-copper to-copper-deep text-cream-bright shadow-[0_16px_38px_-10px_rgba(212,88,42,0.7),inset_0_1px_0_rgba(255,255,255,0.25)] transition-transform duration-300 hover:scale-105 active:scale-95"
         >
           {!open && <span className="launcher-pulse absolute inset-0 rounded-full" aria-hidden />}
@@ -310,10 +310,10 @@ export default function ChatWidget() {
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
             className="fixed bottom-[5.5rem] right-4 z-[70] flex h-[min(600px,75dvh)] w-[min(390px,calc(100vw-2rem))] flex-col overflow-hidden rounded-[10px] border hairline bg-paper shadow-[0_30px_70px_-20px_rgba(14,14,12,0.45)]"
             role="dialog"
-            aria-label="Front Desk chat"
+            aria-label="Site Agent chat"
           >
             <div className="border-b hairline bg-ground px-4 py-3 text-paper">
-              <p className="display text-lg leading-none">The Front Desk<span className="text-copper">.</span></p>
+              <p className="display text-lg leading-none">The Site Agent<span className="text-copper">.</span></p>
               <p className="mt-1 text-[0.7rem] text-paper/60">
                 Live demo — this bot IS the product.{" "}
                 <a href="/book/" className="text-copper underline underline-offset-2">
@@ -329,7 +329,7 @@ export default function ChatWidget() {
                     NO SCRIPTS · NO MENUS · REAL AI
                   </p>
                   <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                    I&rsquo;m the front desk — trained on this business the way yours would be
+                    I&rsquo;m the site agent. Trained on this business the way yours would be
                     trained on yours. Poke at me, interrogate me, try to break me. That&rsquo;s
                     what I&rsquo;m here for.
                   </p>
@@ -348,7 +348,7 @@ export default function ChatWidget() {
                 </div>
               ))}
               {busy && (
-                <div className="flex items-center gap-[5px] self-start rounded-[12px] bg-paper-deep px-3.5 py-3" aria-label="The Front Desk is typing">
+                <div className="flex items-center gap-[5px] self-start rounded-[12px] bg-paper-deep px-3.5 py-3" aria-label="The Site Agent is typing">
                   <span className="typing-dot" />
                   <span className="typing-dot" />
                   <span className="typing-dot" />
@@ -364,7 +364,7 @@ export default function ChatWidget() {
                   onKeyDown={(e) => e.key === "Enter" && send(input)}
                   placeholder={msgs.length === 0 ? HINTS[hint] : "Type like you'd text…"}
                   className="flex-1 rounded-[3px] border hairline bg-cream-bright px-3 py-2 text-[0.88rem] focus:border-copper focus:outline-none"
-                  aria-label="Message the Front Desk"
+                  aria-label="Message the Site Agent"
                 />
                 <button type="button" onClick={() => send(input)} disabled={busy || !input.trim()} className="rounded-[3px] bg-ink px-4 text-paper transition-colors hover:bg-copper disabled:opacity-40">
                   →

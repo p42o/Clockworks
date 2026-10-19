@@ -1,5 +1,5 @@
 import { Link } from "next-view-transitions";
-import { asset, site } from "@/lib/site";
+import { asset } from "@/lib/site";
 
 /** Newspaper-style author bio — circular headshot, byline, short bio, links. */
 export default function AuthorBio() {
@@ -22,9 +22,7 @@ export default function AuthorBio() {
           <p className="eyebrow">Written by</p>
           <p className="display mt-1 text-2xl leading-none">Parker Swanson</p>
           <p className="mt-2 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
-            I build practical AI systems for Twin Cities trades businesses from my home in
-            {" "}{site.city}, MN. The quiet kind that catch missed calls, chase quotes, and hand
-            owners their evenings back. One guy, local, reachable.
+            I set up Chief of Staff AI teams for small businesses from my home in Maple Grove, MN.
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-start">
             <Link
