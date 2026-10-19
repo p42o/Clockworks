@@ -54,6 +54,9 @@
     .navbar.scrolled { background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(28,35,51,0.06); }
     .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 68px; }
     .logo-img { height: 64px; width: auto; }
+    .brand-lockup { display: flex; align-items: center; gap: 10px; color: var(--navy); }
+    .brand-mark { height: 40px; width: 40px; }
+    .brand-name { font-family: 'Instrument Serif', serif; font-size: 26px; line-height: 1; color: var(--navy); }
     .nav-links { display: flex; align-items: center; gap: 28px; }
     .nav-link { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: color 0.2s; }
     .nav-link:hover, .nav-link.active { color: var(--navy); }
@@ -200,6 +203,8 @@
 
     @media (max-width: 768px) {
       .logo-img { height: 44px; }
+      .brand-mark { height: 32px; width: 32px; }
+      .brand-name { font-size: 20px; }
       .nav-links, .nav-cta { display: none; }
       .hamburger { display: flex; }
       .form-grid-2 { grid-template-columns: 1fr; }
@@ -208,15 +213,16 @@
       .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
     }
   </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "MN Clockworks", "legalName": "PGS Ventures LLC", "url": "https://mnclockworks.com", "telephone": "+1-763-202-7778", "email": "parker@mnclockworks.com", "founder": {"@type": "Person", "name": "Parker Swanson"}, "description": "A ready AI team for your business, set up in person and working on day one. You own it, and you approve what goes out. MN Clockworks, Maple Grove, MN.", "image": "https://mnclockworks.com/og.png", "@id": "https://mnclockworks.com/#business", "address": {"@type": "PostalAddress", "addressLocality": "Maple Grove", "addressRegion": "MN", "addressCountry": "US"}, "areaServed": [{"@type": "City", "name": "Maple Grove"}, {"@type": "AdministrativeArea", "name": "Northwest Twin Cities metro (Minneapolis–St. Paul, MN)"}], "contactPoint": {"@type": "ContactPoint", "email": "parker@mnclockworks.com", "telephone": "+1-763-202-7778", "contactType": "customer service", "areaServed": "US", "availableLanguage": "English"}, "knowsAbout": ["AI automation", "missed-call text back", "quote follow-up automation", "review automation", "Jobber", "QuickBooks", "Housecall Pro"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "MN Clockworks", "legalName": "PGS Ventures LLC", "url": "https://mnclockworks.com", "telephone": "+1-763-202-7778", "email": "parker@mnclockworks.com", "founder": {"@type": "Person", "name": "Parker Swanson"}, "description": "A ready AI team for your business, in person in the Twin Cities, remote elsewhere and working on day one. You own it, and you approve what goes out. MN Clockworks, Maple Grove, MN.", "image": "https://mnclockworks.com/og.png", "@id": "https://mnclockworks.com/#business", "address": {"@type": "PostalAddress", "addressLocality": "Maple Grove", "addressRegion": "MN", "addressCountry": "US"}, "areaServed": [{"@type": "City", "name": "Maple Grove"}, {"@type": "AdministrativeArea", "name": "Northwest Twin Cities metro (Minneapolis–St. Paul, MN)"}], "contactPoint": {"@type": "ContactPoint", "email": "parker@mnclockworks.com", "telephone": "+1-763-202-7778", "contactType": "customer service", "areaServed": "US", "availableLanguage": "English"}, "knowsAbout": ["AI automation", "missed-call text back", "quote follow-up automation", "review automation", "Jobber", "QuickBooks", "Housecall Pro"]}</script>
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
   <div class="navbar-inner">
-    <a href="/" aria-label="MN Clockworks — Home">
-      <img src="../images/logo-full.svg" alt="MN Clockworks" class="logo-img" />
+    <a href="/" class="brand-lockup" aria-label="MN Clockworks — Home">
+      <img src="../images/logo-small.svg" alt="" class="brand-mark" />
+      <span class="brand-name">MN Clockworks</span>
     </a>
     <div class="nav-links">
       <a href="/#what-i-build" class="nav-link">What I Build</a>
@@ -352,8 +358,8 @@
       <a href="/#booking" class="alt-item">
         <span class="alt-icon"><i class="ti ti-calendar"></i></span>
         <div>
-          <span class="alt-label">Book a Free Session</span>
-          <span class="alt-sub">30-min strategy call</span>
+          <span class="alt-label">Get in touch</span>
+          <span class="alt-sub">Call or send a message</span>
         </div>
       </a>
     </div>

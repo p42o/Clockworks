@@ -8,12 +8,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const pages = [
     "",
-    "what-i-do/",
     "how-it-works/",
-    "results/",
     "about/",
     "book/",
-    "your-own-agent/",
     "blog/",
   ].map((p) => ({
     url: `${site.url}/${p}`,

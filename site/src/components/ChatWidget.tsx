@@ -315,7 +315,10 @@ export default function ChatWidget() {
             <div className="border-b hairline bg-ground px-4 py-3 text-paper">
               <p className="display text-lg leading-none">The Front Desk<span className="text-copper">.</span></p>
               <p className="mt-1 text-[0.7rem] text-paper/60">
-                Live demo — this bot IS the product.
+                Live demo — this bot IS the product.{" "}
+                <a href="/book/" className="text-copper underline underline-offset-2">
+                  Send a message →
+                </a>
               </p>
             </div>
 
