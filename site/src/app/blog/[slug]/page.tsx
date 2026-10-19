@@ -42,7 +42,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     headline: post.title,
     datePublished: post.date,
     author: { "@type": "Person", name: site.owner },
-    publisher: { "@type": "Organization", name: site.name },
+    publisher: { "@type": "Organization", name: site.name, url: site.url, "@id": `${site.url}/#business` },
     description: post.description,
     url: `${site.url}/blog/${post.slug}/`,
   };
