@@ -2,12 +2,12 @@
 :root {
   --bg:#EBEFF4; --surface:#FFFFFF; --surface-2:#F5F7FA; --surface-3:#EDF1F5;
   --line:#DCE2EA; --line-strong:#C5CEDA;
-  --ink:#131D2B; --ink-2:#44526A; --ink-3:#5F6E84;
+  --ink:#131D2B; --ink-2:#44526A; --ink-3:#5B697F;
   --rail:#152030; --rail-2:#1D2A3D; --rail-line:#26364C; --rail-ink:#D3DCE7; --rail-ink-2:#8E9DB2; --rail-active:#24344B;
   --accent:#BF4D1C; --accent-hover:#A84317; --on-accent:#FFFFFF; --accent-soft:#FBEAE1; --accent-ink:#9A3A10;
   --data:#2D62CF; --data-soft:#E3EBFA;
   --s1:#C3D4F4; --s2:#93B2EC; --s3:#628CDE; --s4:#3767C9; --s5:#234A9C;
-  --ok:#157F54; --ok-fill:#1B9464; --ok-soft:#DDF2E8;
+  --ok:#136B47; --ok-fill:#157A52; --ok-soft:#DDF2E8;
   --warn:#9A6206; --warn-fill:#D69A1E; --warn-soft:#FBF0D8;
   --bad:#B92D2D; --bad-fill:#D23B3B; --bad-soft:#FBE3E3;
   --muted:#6B7890; --muted-soft:#E9EDF2;
@@ -936,3 +936,17 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   .time-row .ns-acts { grid-column: 1 / -1; justify-content: flex-end; }
   .access-tile { flex: 1 1 100%; }
 }
+/* M2 admin console inside the CRM. */
+.client-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 4px 0 8px; }
+.client-tools .field { margin: 0; }
+.client-tools .input { min-width: min(100%, 200px); height: 36px; }
+.audit-h { margin: 16px 0 0; font: 700 14px/1.3 var(--ff); }
+.audit-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.audit-list li { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.privacy-wrap { overflow-x: auto; }
+.privacy-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.privacy-table caption { text-align: left; font: 700 14px/1.3 var(--ff); padding: 0 0 8px; }
+.privacy-table th, .privacy-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.privacy-table small { display: block; color: var(--ink-3); }
+.privacy-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+#fdErr { margin: 0; }

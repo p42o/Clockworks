@@ -8,15 +8,42 @@ import {
   collection, collectionGroup, doc, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, getDocs, query, orderBy, limit, serverTimestamp, Timestamp, writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, connectStorageEmulator, ref as sref, listAll, getMetadata, getDownloadURL, uploadBytesResumable, deleteObject, updateMetadata } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getFunctions, connectFunctionsEmulator, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 import { firebaseConfig } from "./config.js";
+import { SWAP } from "./client/swap-config.js";
 
 const LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
 const EMU = LOCAL && !new URLSearchParams(location.search).has("prod");
-const fb = initializeApp(firebaseConfig);
+// Emulator data, Auth, and Functions are project demo-clockworks-v3. The hosted config stays
+// clockworks-portal-pgs and is used only when this page is not on the local emulator.
+const fb = initializeApp(EMU ? { ...firebaseConfig, projectId: "demo-clockworks-v3" } : firebaseConfig);
 const auth = getAuth(fb);
 const db = EMU ? initializeFirestore(fb, {}) : initializeFirestore(fb, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
 const storage = getStorage(fb);
-if (EMU) { connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true }); connectFirestoreEmulator(db, "127.0.0.1", 8080); connectStorageEmulator(storage, "127.0.0.1", 9199); }
+const fns = getFunctions(fb, "us-central1");
+if (EMU) {
+  connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
+  connectFirestoreEmulator(db, "127.0.0.1", 8080);
+  connectStorageEmulator(storage, "127.0.0.1", 9199);
+  connectFunctionsEmulator(fns, "127.0.0.1", 5001);
+}
+function callError(err) {
+  return String(err?.message || "Something went wrong.")
+    .replace(/^FirebaseError:\s*/i, "")
+    .replace(/^Firebase:\s*/i, "")
+    .replace(/\s*\(functions\/[a-z0-9-]+\)\.?$/i, "");
+}
+async function callFn(name, data) {
+  if (!EMU) throw new Error("This action runs on the local emulator.");
+  try {
+    const res = await httpsCallable(fns, name)(data);
+    return res.data;
+  } catch (err) {
+    const e = new Error(callError(err));
+    e.code = err?.code || "";
+    throw e;
+  }
+}
 
 // ------------------------------------------------------------------ constants
 const STAGES = ["Lead", "Free scan sent", "Meeting", "Full assessment", "Proposal", "Pilot", "Active", "Paused", "Closed"];
@@ -35,7 +62,7 @@ const TECH_ST = { confirmed: "Confirmed", assumed: "Assumed", unknown: "Unknown"
 const INT_ST = { active: "On the path", asked: "Asked about", earlier: "Earlier idea" };
 const band = (s) => (s >= 80 ? "Strong" : s >= 60 ? "Good" : s >= 40 ? "Fair" : "Needs work");
 const bandCls = (s) => (s >= 60 ? "ok" : s >= 40 ? "warn" : "bad");
-const PALETTE = ["#2D62CF", "#1B9464", "#BF4D1C", "#7A4FD0", "#C68A1E", "#157F8A", "#B23A6B"];
+const PALETTE = ["#2D62CF", "#157A52", "#BF4D1C", "#7A4FD0", "#9A6A10", "#157F8A", "#B23A6B"];
 const DEAL_TYPES = [["audit", "Audit"], ["pilot", "Pilot"], ["managed", "Managed"], ["ai-team", "AI team"]];
 const PAY_ST = [["unpaid", "Unpaid"], ["paid", "Paid"], ["refunded", "Refunded"]];
 const INTAKE_ST = [["not-sent", "Not sent"], ["sent", "Sent"], ["returned", "Returned"], ["reviewed", "Reviewed"]];
@@ -238,6 +265,7 @@ const ICON = {
   box: '<path d="M3 8l9-4 9 4-9 4z"/><path d="M3 8v9l9 4 9-4V8"/><path d="M12 12v9M3 8l9 4 9-4"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 7 9-7"/>',
   more: '<path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3"/>',
+  shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/>',
 };
 const ic = (n, cls = "i") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n] || ""}</svg>`;
 const mark = (cls = "mark") => `<svg class="${cls}" viewBox="0 0 364 361" aria-hidden="true">${$("#cw-mark").innerHTML}</svg>`;
@@ -268,7 +296,7 @@ function countUp(root = document) {
 }
 
 // ------------------------------------------------------------------ data (live)
-const S = { clients: [], logs: {}, timeLogs: {}, reports: [], quotes: [], ready: false };
+const S = { clients: [], logs: {}, timeLogs: {}, reports: [], quotes: [], privacy: [], audit: {}, ready: false };
 let unsubs = [], logUnsubs = {}, timeLogUnsubs = {};
 function listen() {
   unsubs.push(onSnapshot(collection(db, "clients"), (snap) => {
@@ -287,6 +315,21 @@ function listen() {
   }, (e) => toast("Couldn't load clients: " + e.code)));
   unsubs.push(onSnapshot(collectionGroup(db, "reports"), (s) => { S.reports = s.docs.map((d) => ({ id: d.id, client: d.ref.parent.parent.id, ...d.data() })); refresh(); }));
   unsubs.push(onSnapshot(collectionGroup(db, "quotes"), (s) => { S.quotes = s.docs.map((d) => ({ id: d.id, client: d.ref.parent.parent.id, ...d.data() })); refresh(); }));
+  unsubs.push(onSnapshot(collection(db, "privacyRequests"), (s) => {
+    S.privacy = s.docs.map((d) => ({ id: d.id, ...d.data() }));
+    refresh();
+  }, () => { S.privacy = []; }));
+  unsubs.push(onSnapshot(collectionGroup(db, "adminAudit"), (s) => {
+    const by = {};
+    s.docs.forEach((d) => {
+      const cid = d.ref.parent.parent?.id;
+      if (!cid) return;
+      (by[cid] ||= []).push({ id: d.id, ...d.data() });
+    });
+    Object.values(by).forEach((rows) => rows.sort((a, b) => (toDate(b.at)?.getTime() || 0) - (toDate(a.at)?.getTime() || 0)));
+    S.audit = by;
+    refresh();
+  }, () => { S.audit = {}; }));
 }
 function stopAll() { unsubs.forEach((f) => f()); unsubs = []; Object.values(logUnsubs).forEach((f) => f()); logUnsubs = {}; Object.values(timeLogUnsubs).forEach((f) => f()); timeLogUnsubs = {}; }
 const client = (id) => S.clients.find((c) => c.id === id);
@@ -402,6 +445,7 @@ function renderShell() {
         <a href="#/quotes" data-r="quotes">${ic("file")}Quotes &amp; invoices</a>
         <a href="#/assets" data-r="assets">${ic("box")}Assets</a>
         <a href="#/due" data-r="due">${ic("cal")}Due</a>
+        <a href="#/privacy" data-r="privacy">${ic("shield")}Privacy</a>
       </nav>
       <div class="nav-lbl">Clients</div>
       <nav class="nav" id="navPins"></nav>
@@ -488,7 +532,7 @@ function route() {
   const h = location.hash.replace(/^#\/?/, "").split("?")[0], parts = h.split("/").map(decodeURIComponent);
   R = parts[0] === "c" && parts[1] ? { name: "client", args: [parts[1]] }
     : parts[0] === "q" && parts[2] ? { name: "quote", args: [parts[1], parts[2]] }
-    : ["clients", "assess", "quotes", "assets", "due"].includes(parts[0]) ? { name: parts[0], args: [] } : { name: "dash", args: [] };
+    : ["clients", "assess", "quotes", "assets", "due", "privacy"].includes(parts[0]) ? { name: parts[0], args: [] } : { name: "dash", args: [] };
   if (R.name !== "quote") qDraft = null;
   window.scrollTo(0, 0);
   refresh(true);
@@ -504,7 +548,7 @@ function refresh(force) {
 }
 function paint(first) {
   const railR = R.name === "client" ? "clients" : R.name === "quote" ? "quotes" : R.name;
-  const moreR = ["assets", "quotes", "quote", "due", "settings", "more"];
+  const moreR = ["assets", "quotes", "quote", "due", "privacy", "settings", "more"];
   const tabR = R.name === "client" ? "clients" : moreR.includes(R.name) ? "more" : R.name;
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === railR));
   $$("#tabs [data-r]").forEach((a) => a.classList.toggle("on", a.dataset.r === tabR));
@@ -520,7 +564,7 @@ function paint(first) {
   // the first data snapshots land within a few hundred ms of opening; let those repaints keep the entrance too
   entering = fresh || performance.now() - enterAt < 450;
   if (fresh) { enterAt = performance.now(); v.classList.remove("enter"); void v.offsetWidth; v.classList.add("enter"); clearTimeout(enterT); enterT = setTimeout(() => v.classList.remove("enter"), 1200); }
-  ({ dash: viewDash, clients: viewClients, client: viewClient, assess: viewAssess, quotes: viewQuotes, quote: viewQuote, assets: viewAssets, due: viewDue }[R.name])(v);
+  ({ dash: viewDash, clients: viewClients, client: viewClient, assess: viewAssess, quotes: viewQuotes, quote: viewQuote, assets: viewAssets, due: viewDue, privacy: viewPrivacy }[R.name])(v);
   if (!first) window.scrollTo(0, scroll);
   if (first) countUp(v); else $$("[data-count]", v).forEach((el) => (el.textContent = (el.dataset.pre || "") + Number(el.dataset.count).toLocaleString("en-US")));
 }
@@ -662,6 +706,7 @@ function openMore() {
       <a class="more-item" href="#/assets" data-go>${ic("box")}<span><b>Assets</b><small>Kit files &amp; intake forms</small></span></a>
       <a class="more-item" href="#/quotes" data-go>${ic("file")}<span><b>Quotes &amp; invoices</b><small>Drafts, sent, paid</small></span></a>
       <a class="more-item" href="#/due" data-go>${ic("cal")}<span><b>Due</b><small>Today &amp; overdue steps</small></span></a>
+      <a class="more-item" href="#/privacy" data-go>${ic("shield")}<span><b>Privacy requests</b><small>Due dates and extensions</small></span></a>
     </div>
     <div class="more-sec">Settings</div>
     <div class="more-list">
@@ -686,6 +731,12 @@ function openMore() {
 function openModal(html, onMount, dialogClass = "") {
   const cls = dialogClass ? `dialog ${dialogClass}` : "dialog";
   $("#modal").innerHTML = `<div class="scrim" id="scrim"><div class="${cls}" role="dialog" aria-modal="true">${html}</div></div>`;
+  const dlg = $("#modal .dialog");
+  const heading = dlg && $("h2", dlg);
+  if (heading && dlg) {
+    if (!heading.id) heading.id = "dlgTitle";
+    dlg.setAttribute("aria-labelledby", heading.id);
+  }
   $("#scrim").addEventListener("mousedown", (e) => { if (e.target.id === "scrim") closeModal(); });
   const f = $("#modal input, #modal textarea, #modal select"); if (f) setTimeout(() => f.focus(), 30);
   onMount && onMount($("#modal .dialog"));
@@ -701,7 +752,7 @@ function formDialog({ title, intro, fields, values = {}, submit = "Save", onSave
     } else if (x.type === "select") {
       inp = `<select class="input" name="${x.k}">${x.options.map((o) => { const [ov, ol] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(ov)}" ${ov === val ? "selected" : ""}>${esc(ol)}</option>`; }).join("")}</select>`;
     } else if (x.type === "textarea") {
-      inp = `<textarea class="input" name="${x.k}" placeholder="${esc(x.placeholder || "")}">${esc(val)}</textarea>`;
+      inp = `<textarea class="input" name="${x.k}" placeholder="${esc(x.placeholder || "")}" ${x.required ? "required" : ""}>${esc(val)}</textarea>`;
     } else {
       inp = `<input class="input" name="${x.k}" type="${x.type || "text"}" value="${esc(val)}" placeholder="${esc(x.placeholder || "")}" ${x.required ? "required" : ""} ${x.type === "tel" ? 'inputmode="tel"' : ""} autocomplete="off">`;
     }
@@ -711,7 +762,25 @@ function formDialog({ title, intro, fields, values = {}, submit = "Save", onSave
     <div class="foot">${onDelete ? `<button type="button" class="btn danger ghost" id="fdDel" style="margin-right:auto">${ic("trash")}Remove</button>` : ""}<button type="button" class="btn ghost" id="fdX">Cancel</button><button class="btn p">${esc(submit)}</button></div></div></form>`, (d) => {
     $("#fdX", d).onclick = closeModal;
     if (onDelete) $("#fdDel", d).onclick = async (e) => { const b = e.currentTarget; if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "Tap again to remove"; return; } await onDelete(); closeModal(); };
-    $("#fd", d).onsubmit = async (e) => { e.preventDefault(); const data = Object.fromEntries(new FormData(e.target)); Object.keys(data).forEach((k) => (data[k] = String(data[k]).trim())); try { await onSave(data); closeModal(); } catch (err) { console.error(err); } };
+    $("#fd", d).onsubmit = async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+      Object.keys(data).forEach((k) => (data[k] = String(data[k]).trim()));
+      try { await onSave(data); closeModal(); }
+      catch (err) {
+        console.error(err);
+        let box = $("#fdErr", d);
+        if (!box) {
+          box = document.createElement("p");
+          box.id = "fdErr";
+          box.setAttribute("role", "alert");
+          box.style.cssText = "margin:0;color:var(--bad);font:600 14px/1.4 var(--ff)";
+          const foot = $(".foot", d);
+          if (foot) foot.before(box); else d.appendChild(box);
+        }
+        box.textContent = err?.message || "Save failed.";
+      }
+    };
     onMount && onMount(d);
   });
 }
@@ -785,17 +854,115 @@ function editNext(id, fresh) {
 
 // ------------------------------------------------------------------ clients
 let clientFilter = "All";
+let portalFilter = "All";
+let clientQuery = "";
+const PORTAL_FILTERS = ["All", "none", "invited", "active", "SUSPENDED", "ARCHIVED"];
+function portalStatusOf(c) {
+  const p = c?.portal || {};
+  const state = String(p.accessState || "").toLowerCase();
+  if (state === "suspended") return "SUSPENDED";
+  if (state === "archived") return "ARCHIVED";
+  if (p.enabled === true) return "active";
+  if (p.inviteOpen === true) return "invited";
+  return "none";
+}
+function portalChip(st) {
+  if (st === "SUSPENDED") return "warn";
+  if (st === "ARCHIVED") return "bad";
+  if (st === "active") return "ok";
+  if (st === "invited") return "data";
+  return "dash";
+}
+function updatedAtMs(c) {
+  const d = toDate(c?.updatedAt);
+  return d ? d.getTime() : null;
+}
+function fmtUtc(ts) {
+  const d = toDate(ts);
+  return d ? d.toISOString().slice(0, 10) : "—";
+}
+function showFormError(root, message) {
+  let box = $("#fdErr", root);
+  if (!box) {
+    box = document.createElement("p");
+    box.id = "fdErr";
+    box.setAttribute("role", "alert");
+    box.style.cssText = "margin:0;color:var(--bad);font:600 14px/1.4 var(--ff)";
+    const foot = $(".foot", root);
+    if (foot) foot.before(box); else root.appendChild(box);
+  }
+  box.textContent = message || "Save failed.";
+}
 function viewClients(v) {
+  const q = clientQuery.trim().toLowerCase();
   const stages = ["All", ...STAGES.filter((s) => S.clients.some((c) => c.stage === s))];
-  const list = S.clients.filter((c) => clientFilter === "All" || c.stage === clientFilter).sort((a, b) => dueInfo(a.next).rank - dueInfo(b.next).rank || (toDate(b.lastTouch) || 0) - (toDate(a.lastTouch) || 0));
+  const list = S.clients.filter((c) => {
+    if (clientFilter !== "All" && c.stage !== clientFilter) return false;
+    if (portalFilter !== "All" && portalStatusOf(c) !== portalFilter) return false;
+    if (!q) return true;
+    return [c.name, c.trade, c.town, c.email, c.stage, portalStatusOf(c)].join(" ").toLowerCase().includes(q);
+  }).sort((a, b) => dueInfo(a.next).rank - dueInfo(b.next).rank || (toDate(b.lastTouch) || 0) - (toDate(a.lastTouch) || 0));
   v.innerHTML = `<section class="hello"><div><div class="date">Clients &amp; prospects</div><h1>Your people.</h1><p>${S.clients.length ? `${S.clients.length} so far. Every one of them started as a conversation.` : "No one yet. Your first prospect is the hardest and the best."}</p></div></section>
-    <div style="display:flex;flex-wrap:wrap;gap:6px">${stages.map((s) => `<button class="chip ${s === clientFilter ? "acc" : "dash"}" data-f="${esc(s)}" style="cursor:pointer;border:0;height:30px;padding:0 12px">${esc(s)} <span class="mono">${s === "All" ? S.clients.length : S.clients.filter((c) => c.stage === s).length}</span></button>`).join("")}</div>
-    <div class="clist">${list.map((c) => { const d = dueInfo(c.next), r = latestPresence(c.id); return `<a class="panel ccard" href="#/c/${esc(c.id)}"><div class="top"><span class="avatar" style="background:${colorOf(c)}">${esc(initials(c.name))}</span><div><div class="nm">${esc(c.name)}</div><div class="sub">${esc([c.trade, c.town].filter(Boolean).join(" · ") || "Details to come")}</div></div></div>
+    <div class="client-tools"><label class="field" style="flex:1;min-width:180px">Search<input id="clientSearch" class="input" type="search" value="${esc(clientQuery)}" autocomplete="off"></label></div>
+    <div class="client-tools" role="group" aria-label="Portal status">${PORTAL_FILTERS.map((s) => `<button type="button" class="chip ${s === portalFilter ? "acc" : "dash"}" data-pf="${esc(s)}">${esc(s === "All" ? "All access" : s)} <span class="mono">${s === "All" ? S.clients.length : S.clients.filter((c) => portalStatusOf(c) === s).length}</span></button>`).join("")}</div>
+    <div class="client-tools" role="group" aria-label="Stage">${stages.map((s) => `<button type="button" class="chip ${s === clientFilter ? "acc" : "dash"}" data-f="${esc(s)}">${esc(s)} <span class="mono">${s === "All" ? S.clients.length : S.clients.filter((c) => c.stage === s).length}</span></button>`).join("")}</div>
+    <div class="clist">${list.map((c) => { const d = dueInfo(c.next), r = latestPresence(c.id), st = portalStatusOf(c); return `<a class="panel ccard" href="#/c/${esc(c.id)}"><div class="top"><span class="avatar" style="background:${colorOf(c)}">${esc(initials(c.name))}</span><div><div class="nm">${esc(c.name)}</div><div class="sub">${esc([c.trade, c.town].filter(Boolean).join(" · ") || "Details to come")}</div></div></div>
       <div class="nx">${ic("flag")}<span>${esc(c.next?.what || "No next step yet")}</span></div>
-      <div class="meta"><span class="chip data">${esc(c.stage)}</span><span class="chip ${clientPath(c) === "personal" ? "acc" : "dash"}">${esc(pathLabel(clientPath(c)))}</span>${d.cls ? `<span class="chip ${d.cls === "over" ? "bad" : "warn"}">${esc(d.label)}</span>` : ""}${r && hasModule(c, "presence") ? `<span class="chip ${bandCls(r.score)}">Presence ${r.score}</span>` : ""}<span class="chip dash">Touched ${esc(ago(c.lastTouch))}</span></div></a>`; }).join("")}
+      <div class="meta"><span class="chip data">${esc(c.stage)}</span><span class="chip ${portalChip(st)}">${esc(st)}</span><span class="chip ${clientPath(c) === "personal" ? "acc" : "dash"}">${esc(pathLabel(clientPath(c)))}</span>${d.cls ? `<span class="chip ${d.cls === "over" ? "bad" : "warn"}">${esc(d.label)}</span>` : ""}${r && hasModule(c, "presence") ? `<span class="chip ${bandCls(r.score)}">Presence ${r.score}</span>` : ""}<span class="chip dash">${c.lastTouch ? `Last activity ${esc(ago(c.lastTouch))}` : "No activity yet"}</span></div></a>`; }).join("")}
       <button class="panel addcard" data-add><span class="plus">${ic("plus")}</span><b>Add a prospect</b><small>A shop you already know is the best place to start. <kbd>N</kbd> works anywhere.</small></button></div>`;
+  const box = $("#clientSearch", v);
+  if (box) box.oninput = () => {
+    clientQuery = box.value;
+    const pos = box.selectionStart;
+    viewClients(v);
+    const again = $("#clientSearch", v);
+    if (again) { again.focus(); try { again.setSelectionRange(pos, pos); } catch (e) {} }
+  };
   $$("[data-f]", v).forEach((b) => (b.onclick = () => { clientFilter = b.dataset.f; refresh(true); }));
+  $$("[data-pf]", v).forEach((b) => (b.onclick = () => { portalFilter = b.dataset.pf; refresh(true); }));
   wireCommon(v);
+}
+function viewPrivacy(v) {
+  const rows = S.privacy.slice().sort((a, b) => (toDate(a.dueAt)?.getTime() || 0) - (toDate(b.dueAt)?.getTime() || 0));
+  v.innerHTML = `<section class="hello"><div><div class="date">Privacy</div><h1>Privacy requests.</h1><p>Received date, a due date of 10 business days and never past 30 days, and one 30-day extension with a stated reason.</p></div>
+    <div class="acts"><button class="btn p" id="addPrivacy" type="button">Record a request</button></div></section>
+    <section class="panel" id="privacy-queue" aria-labelledby="privacy-q"><div class="ph"><h2 id="privacy-q">Queue</h2></div><div class="pb privacy-wrap">${rows.length ? `<table class="privacy-table"><caption>Privacy request queue</caption><thead><tr><th scope="col">Received</th><th scope="col">Due</th><th scope="col">Status</th><th scope="col">From</th><th scope="col">Actions</th></tr></thead><tbody>
+      ${rows.map((r) => `<tr><td>${esc(fmtUtc(r.receivedAt))}</td><td>${esc(fmtUtc(r.dueAt))}</td><td><span class="chip ${r.status === "completed" ? "ok" : r.status === "extended" ? "warn" : "data"}">${esc(r.status || "")}</span></td><td>${esc(r.requesterEmail || "")}${r.requesterName ? `<small>${esc(r.requesterName)}</small>` : ""}${r.extension?.reason ? `<small>Extension: ${esc(r.extension.reason)}</small>` : ""}</td><td class="privacy-acts">
+        ${r.extensionUsed ? "" : `<button type="button" class="btn sm" data-ext="${esc(r.id)}">Extend 30 days</button>`}
+        ${r.status === "completed" || r.status === "declined" ? "" : `<button type="button" class="btn sm" data-done="${esc(r.id)}">Mark completed</button>`}
+      </td></tr>`).join("")}
+    </tbody></table>` : `<div class="empty-note">No privacy requests yet.</div>`}</div></section>`;
+  $("#addPrivacy", v).onclick = () => formDialog({
+    title: "Record a privacy request",
+    fields: [
+      { k: "requesterEmail", label: "Email", type: "email", required: true, full: true },
+      { k: "requesterName", label: "Name", full: true },
+      { k: "kind", label: "Kind", type: "select", options: [["access", "Access"], ["delete", "Delete"], ["correct", "Correct"], ["export", "Export"]] },
+      { k: "receivedAt", label: "Received", type: "date", full: true },
+    ],
+    submit: "Save",
+    onSave: async (d) => {
+      await callFn("adminRecordPrivacyRequest", {
+        requesterEmail: d.requesterEmail, requesterName: d.requesterName, kind: d.kind, receivedAt: d.receivedAt || null,
+      });
+      toast("Request recorded");
+    },
+  });
+  $$("[data-ext]", v).forEach((b) => (b.onclick = () => formDialog({
+    title: "Extend 30 days",
+    intro: "One extension. A reason is required.",
+    fields: [{ k: "reason", label: "Reason", type: "textarea", required: true, full: true }],
+    submit: "Extend",
+    onSave: async (d) => {
+      if (!d.reason) throw new Error("A reason is required.");
+      await callFn("adminUpdatePrivacyRequest", { id: b.dataset.ext, reason: d.reason });
+      toast("Extended");
+    },
+  })));
+  $$("[data-done]", v).forEach((b) => (b.onclick = async () => {
+    try { await callFn("adminUpdatePrivacyRequest", { id: b.dataset.done, status: "completed" }); toast("Completed"); }
+    catch (err) { toast(err.message || "Could not update"); }
+  }));
 }
 
 // ------------------------------------------------------------------ files (Storage-only listing; no Firestore writes)
@@ -1267,6 +1434,10 @@ function viewClient(v) {
 
   ${scopeLockCard(c)}
 
+  ${portalAccessCard(c)}
+
+  ${clientFlowCard(c)}
+
   <section class="grid g3">
     <div class="panel"><div class="ph"><h2>Details</h2><button class="btn sm ghost" data-edit="details">${ic("pen")}Edit</button></div><div class="pb">
       <dl class="kv"><dt>${clientPath(c) === "personal" ? "Name" : "Business"}</dt><dd>${esc(c.name)}</dd>${c.trade ? `<dt>Trade</dt><dd>${esc(c.trade)}</dd>` : ""}${c.hq ? `<dt>HQ</dt><dd>${esc(c.hq)}</dd>` : c.town ? `<dt>Town</dt><dd>${esc(c.town)}</dd>` : ""}${c.phone ? `<dt>Phone</dt><dd class="mono">${esc(c.phone)}</dd>` : ""}${c.email ? `<dt>Email</dt><dd>${mailLink(c.email)}</dd>` : ""}${site ? `<dt>Website</dt><dd><a href="${esc(site)}" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:none">${esc(c.website)}</a></dd>` : ""}${(c.towns || []).length ? `<dt>Serves</dt><dd class="towns">${c.towns.map((t) => `<span>${esc(t)}</span>`).join("")}</dd>` : ""}<dt>Touched</dt><dd>Touched ${esc(ago(c.lastTouch))}${c.lastTouchMeta?.channel ? ` · ${esc(c.lastTouchMeta.channel)}` : ""}${c.lastTouchMeta?.note ? ` · ${esc(c.lastTouchMeta.note)}` : ""}</dd></dl>
@@ -1364,7 +1535,131 @@ function viewClient(v) {
   wireFilesPanel(v);
   wireCrm(c, v);
   wireScopeAccessHours(c, v);
+  wirePortal(c, v);
+  wireClientFlow(c, v);
   wireCommon(v);
+}
+function portalAccessCard(c) {
+  const st = portalStatusOf(c);
+  const audits = (S.audit[c.id] || []).slice(0, 10);
+  const canSuspend = st !== "SUSPENDED" && st !== "ARCHIVED";
+  const canArchive = st !== "ARCHIVED";
+  const canReact = st === "SUSPENDED" || st === "ARCHIVED";
+  const blurb = st === "SUSPENDED"
+    ? "SUSPENDED means an active SOW or Care Plan still exists (MSA v2.3, Privacy Notice v1.4, Starter Terms v3.3). Portal access is off. Data is kept under its existing category deadlines. Close is not triggered. Suspension does not extend a deletion deadline."
+    : st === "ARCHIVED"
+      ? "ARCHIVED means no active SOW or Clockworks subscription remains and Close is triggered (MSA v2.3, Privacy Notice v1.4, Starter Terms v3.3). The 90-day read-only window allows export and receipt downloads only."
+      : "Suspend only while an active SOW or Care Plan exists. With no active engagement, suspend or archive becomes ARCHIVED and sets Close.";
+  return `<section class="panel" id="portal-access" aria-labelledby="portal-h"><div class="ph"><h2 id="portal-h">Portal access</h2><span class="chip ${portalChip(st)}">${esc(st)}</span></div><div class="pb">
+    <p style="margin:0 0 10px;color:var(--ink-2)">${blurb} CRM stage ${esc(c.stage || "—")}. ${c.lastTouch ? `Last activity ${esc(ago(c.lastTouch))}.` : "No activity yet."}</p>
+    <div class="acts" style="display:flex;flex-wrap:wrap;gap:8px">
+      ${canSuspend ? `<button type="button" class="btn sm" data-access="suspended">Suspend</button>` : ""}
+      ${canArchive ? `<button type="button" class="btn sm" data-access="archived">Archive</button>` : ""}
+      ${canReact ? `<button type="button" class="btn sm p" data-access="active">Reactivate</button>` : ""}
+    </div>
+    <h3 class="audit-h">Admin audit</h3>
+    ${audits.length ? `<ul class="audit-list" aria-label="Admin audit">${audits.map((row) => `<li><b>${esc(row.action || "action")}</b><span>${esc(row.atUtc || fmtUtc(row.at))} · ${esc(row.actor?.email || row.by || "—")}</span></li>`).join("")}</ul>` : `<p class="empty-note">No admin audit yet.</p>`}
+  </div></section>`;
+}
+const flowNotes = {};
+function clientFlowCard(c) {
+  const email = c.email || (c.contacts || []).map((p) => p.email).find(Boolean) || "";
+  const contact = (c.contacts || []).find((p) => p.name && (!email || p.email === email))?.name || "";
+  const fx = c.fixture === true;
+  const note = flowNotes[c.id] || "";
+  return `<section class="panel" id="client-flow" aria-labelledby="flow-h"><div class="ph"><h2 id="flow-h">Client flow</h2></div><div class="pb">
+    <p style="margin:0 0 10px;color:var(--ink-2)">Invite links expire after ${SWAP.inviteExpiryDays} days. Resend cancels the prior link. Scheduling and email-code marks stay on local fixtures.</p>
+    <label for="flow-contact">Contact name (goes on their agreement)</label>
+    <input id="flow-contact" type="text" value="${esc(contact)}" autocomplete="off" maxlength="120" placeholder="First and last name">
+    <label for="flow-email" style="margin-top:8px;display:block">Invite email</label>
+    <input id="flow-email" type="email" value="${esc(email)}" autocomplete="off">
+    <p style="margin:6px 0 0;color:var(--ink-2);font-size:13px">Business name on the agreement: <b>${esc(c.name || "")}</b> (edit the client name to change it).</p>
+    <div class="acts" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+      <button type="button" class="btn sm" data-flow="invite">Issue invite</button>
+      <button type="button" class="btn sm" data-flow="resend">Resend invite</button>
+      <button type="button" class="btn sm" data-flow="intake">Issue intake</button>
+    </div>
+    ${fx ? `<div class="acts" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+      <button type="button" class="btn sm" data-flow="msa">Mark MSA email-signed</button>
+      <button type="button" class="btn sm" data-flow="sow">Mark SOW email-signed</button>
+    </div>
+    <label for="flow-when">Proposed time</label>
+    <input id="flow-when" type="text" maxlength="160" autocomplete="off">
+    <div class="acts" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+      <button type="button" class="btn sm" data-flow="set-time">Set time</button>
+      <button type="button" class="btn sm" data-flow="confirm-time">Confirm time</button>
+      <button type="button" class="btn sm" data-flow="declined">Decline</button>
+      <button type="button" class="btn sm" data-flow="withdrawn">Record withdrawal</button>
+    </div>` : `<p class="empty-note">Email-code signing and scheduling stay off unless this client is a local fixture.</p>`}
+    <p role="status" id="flow-status">${esc(note)}</p>
+  </div></section>`;
+}
+/** No email is sent from the portal: show the one-time link so Parker can text or email it himself. */
+function showInviteLink(v, link) {
+  if (!link) return;
+  let box = $("#flow-link", v);
+  if (!box) { box = document.createElement("div"); box.id = "flow-link"; box.style.cssText = "margin-top:10px;display:flex;gap:8px;align-items:center"; $("#flow-status", v)?.after(box); }
+  box.innerHTML = `<input type="text" readonly value="${esc(link)}" aria-label="Invite link" style="flex:1;min-width:0;font-family:var(--fm, monospace);font-size:12px"><button type="button" class="btn sm" data-copy-link>Copy</button>`;
+  box.querySelector("[data-copy-link]").onclick = async (ev) => {
+    try { await navigator.clipboard.writeText(link); ev.currentTarget.textContent = "Copied"; } catch { box.querySelector("input").select(); }
+  };
+}
+function wireClientFlow(c, v) {
+  const say = (t) => {
+    flowNotes[c.id] = t;
+    const live = document.getElementById("flow-status");
+    if (live) live.textContent = t;
+  };
+  const emailOf = () => ($("#flow-email", v)?.value || "").trim();
+  $$("[data-flow]", v).forEach((b) => (b.onclick = async () => {
+    const k = b.dataset.flow;
+    try {
+      if (k === "invite" || k === "resend") {
+        const contactName = ($("#flow-contact", v)?.value || "").trim();
+        if (!contactName) { say("Add the contact's name first. It goes on their agreement."); $("#flow-contact", v)?.focus(); return; }
+        const r = await callFn(k === "invite" ? "adminCreateInvite" : "adminResendInvite", { cid: c.id, email: emailOf(), contactName, role: "owner" });
+        say(k === "resend" ? `Resent. Prior open links cancelled (${r.invalidated || 0}).` : "Invite issued. Copy the link below and send it yourself.");
+        showInviteLink(v, r.link);
+      } else if (k === "intake") {
+        const r = await callFn("adminIssueIntake", { cid: c.id });
+        say(r.already ? "An intake is already open." : "Intake issued.");
+      } else if (k === "msa" || k === "sow") {
+        await callFn("adminMarkEmailSigned", { cid: c.id, which: k });
+        say(k === "msa" ? "MSA marked email-signed." : "SOW marked email-signed.");
+      } else if (k === "set-time") {
+        const whenLabel = ($("#flow-when", v)?.value || "").trim();
+        await callFn("adminSetSchedule", { cid: c.id, whenLabel });
+        say("Time set. The client can see it in the portal.");
+      } else if (k === "confirm-time") {
+        await callFn("adminConfirmSchedule", { cid: c.id });
+        say("Time confirmed.");
+      } else if (k === "declined" || k === "withdrawn") {
+        await callFn("adminSetEngagementOutcome", { cid: c.id, outcome: k });
+        say(k === "declined" ? "Marked declined." : "Marked withdrawn.");
+      }
+    } catch (e) { say(e.message || "That did not work."); }
+  }));
+}
+function wirePortal(c, v) {
+  $$("[data-access]", v).forEach((b) => (b.onclick = () => {
+    const state = b.dataset.access;
+    const title = state === "active" ? "Reactivate portal" : state === "suspended" ? "Suspend portal" : "Archive portal";
+    const intro = state === "suspended"
+      ? "Suspend only while an active SOW or Care Plan exists (MSA v2.3, Privacy Notice v1.4, Starter Terms v3.3). Portal access turns off and every session ends. Data stays and Close is not triggered. With no active engagement this action becomes ARCHIVED and sets Close."
+      : state === "archived"
+        ? "ARCHIVED means no active SOW or Clockworks subscription remains and Close is triggered (MSA v2.3, Privacy Notice v1.4, Starter Terms v3.3). Access turns off, every session ends, and the 90-day read-only export window starts."
+        : "Access turns back on. Previous sessions stay revoked.";
+    formDialog({
+      title, intro,
+      fields: [{ k: "reason", label: "Reason", type: "textarea", full: true, required: true }],
+      submit: "Confirm",
+      onSave: async (d) => {
+        if (!d.reason) throw new Error("A reason is required.");
+        await callFn("adminSetPortalAccess", { cid: c.id, state, reason: d.reason });
+        toast(title);
+      },
+    });
+  }));
 }
 
 // ------------------------------------------------------------------ CRM cards (additive fields; missing = fine)
@@ -1816,17 +2111,34 @@ function editDetails(c) {
       const path = data.path === "personal" ? "personal" : "business";
       const engagement = path === "personal" ? "household" : (data.engagement || "teams");
       const pathChanged = path !== clientPath(c) || engagement !== (c.engagement || clientEngagement(c));
-      const patch = {
-        name: data.name, trade: data.trade, town: data.town, hq: data.hq, phone: data.phone, email: data.email || "", website: data.website,
-        towns: data.towns.split(",").map((s) => s.trim()).filter(Boolean),
-        tags: data.tags.split(",").map((s) => s.trim()).filter(Boolean),
-        brand: { ...(c.brand || {}), color1: /^#[0-9a-f]{3,8}$/i.test(data.color1) ? data.color1 : c.brand?.color1 || "" },
-        path, engagement,
-      };
-      if (pathChanged) patch.modules = mergeModules(c.modules, path, engagement);
-      await save(c.id, patch);
-      toast("Saved");
-      closeModal();
+      const brand = { ...(c.brand || {}), color1: /^#[0-9a-f]{3,8}$/i.test(data.color1) ? data.color1 : c.brand?.color1 || "" };
+      const towns = data.towns.split(",").map((s) => s.trim()).filter(Boolean);
+      const tags = data.tags.split(",").map((s) => s.trim()).filter(Boolean);
+      try {
+        if (EMU) {
+          // COUNSEL-DRAFT-2026-10-19. Allowlisted profile fields go through the callable.
+          await callFn("adminUpdateClientProfile", {
+            cid: c.id,
+            fields: { name: data.name, trade: data.trade, town: data.town, hq: data.hq, phone: data.phone, email: data.email || "", website: data.website, tags },
+            expectedUpdatedAt: updatedAtMs(c),
+          });
+          const patch = { towns, brand, path, engagement };
+          if (pathChanged) patch.modules = mergeModules(c.modules, path, engagement);
+          await save(c.id, patch);
+        } else {
+          const patch = {
+            name: data.name, trade: data.trade, town: data.town, hq: data.hq, phone: data.phone, email: data.email || "", website: data.website,
+            towns, tags, brand, path, engagement,
+          };
+          if (pathChanged) patch.modules = mergeModules(c.modules, path, engagement);
+          await save(c.id, patch);
+        }
+        toast("Saved");
+        closeModal();
+      } catch (err) {
+        console.error(err);
+        showFormError(d, err?.message || "Save failed.");
+      }
     };
   });
 }
