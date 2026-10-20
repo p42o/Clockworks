@@ -143,7 +143,7 @@ export const SWAP = Object.freeze({
   }),
 
   // ---- HARD flags (server-enforced, fail closed) ----
-  portal: Object.freeze({ pilotGoLive: false }),   // HARD: non-fixture clients cannot use the portal at all while false
+  portal: Object.freeze({ pilotGoLive: true }),    // HARD: non-fixture clients cannot use the portal at all while false. ON: go-live 2026-10-20 (Parker)
   billing: Object.freeze({
     enabled: false,       // HARD: nothing is ever charged
     disclosures: false,   // HARD: Care Plan offer terms + cancel button (Minn. Stat. 325G). Off until counsel approves.

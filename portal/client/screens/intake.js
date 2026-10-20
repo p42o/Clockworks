@@ -97,6 +97,8 @@ function wizard(el, intake) {
     const hint = html`<span class="hint" id="why-${q.id}">${q.why}${q.required ? ' Required.' : ' Optional.'}</span>`;
     const attrs = raw(`id="${q.id}" aria-describedby="why-${q.id}" data-q="${q.id}"`);
     if (q.type === 'choice' || q.type === 'multi') return html`<fieldset class="field"><legend>${q.label}</legend>${hint}${q.options.map(option => html`<label class="check"><input type="${q.type === 'multi' ? 'checkbox' : 'radio'}" name="${q.id}" data-q="${q.id}" value="${option}"${(q.type === 'multi' ? (v || []).includes(option) : v === option) ? raw(' checked') : ''}><span>${option}</span></label>`)}</fieldset>`;
+    // Nothing pre-filled from research: a plain field. Typing an answer counts as "corrected" in read().
+    if (q.type === 'confirm' && !pf && !v?.value) return html`<div class="field"><label for="${q.id}">${q.label}</label>${hint}<input type="text" ${attrs} value="" maxlength="300"></div>`;
     if (q.type === 'confirm') return html`<div class="field"><label for="${q.id}">${q.label}</label>${hint}
       ${pf ? html`<p class="provenance">${pf.source}, ${fmtDateY(pf.asOf)} · Please confirm or correct</p>` : ''}
       <input type="text" ${attrs} value="${v?.value ?? pf?.value ?? ''}" maxlength="300"><div class="actions"><button class="btn" type="button" data-confirm="${q.id}">That's right</button><button class="btn quiet" type="button" data-change="${q.id}">Change it</button><button class="btn quiet" type="button" data-unsure="${q.id}">Not sure</button></div><span class="hint" data-confirmed="${q.id}">${v?.action === 'confirmed' ? 'Confirmed' : v?.action === 'corrected' ? 'Corrected' : v?.action === 'not-sure' ? 'Not sure — you can revisit this' : 'Please confirm or correct.'}</span></div>`;
@@ -153,7 +155,7 @@ function wizard(el, intake) {
       const v = values[q.id];
       return !v || (Array.isArray(v) && !v.length) || (q.type === 'confirm' && !['confirmed','corrected'].includes(v.action));
     });
-    showErrors(el, missing.map(q => ({ id: q.type === 'choice' || q.type === 'multi' || q.type === 'table-confirm' ? undefined : q.id, msg:`Please ${q.type === 'confirm' ? 'confirm or correct' : 'answer'} “${q.label}”.` })));
+    showErrors(el, missing.map(q => ({ id: q.type === 'choice' || q.type === 'multi' || q.type === 'table-confirm' ? undefined : q.id, msg:`Please ${q.type === 'confirm' && r.prefill[q.prefillKey] ? 'confirm or correct' : 'answer'} “${q.label}”.` })));
     return !missing.length;
   }
   const display = value => Array.isArray(value) ? value.map(x => typeof x === 'object' ? Object.values(x).join(' · ') : x).join(', ') : typeof value === 'object' ? value?.value || value?.action : value || 'Not answered';

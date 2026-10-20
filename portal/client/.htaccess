@@ -1,0 +1,6 @@
+# Client portal: always revalidate app files so fixes reach clients right away (304 when unchanged).
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|md|html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
