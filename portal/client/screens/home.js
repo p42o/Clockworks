@@ -91,8 +91,10 @@ export function render(ctx) {
     const doneItems = h.doneItems || [];
     const shownDone = showDone || doneItems.length <= DONE_WINDOW ? doneItems : doneItems.slice(0, DONE_WINDOW);
 
-    const top = ro ? null : ranked.find((n) => n.state !== "done" && !marked.has(n.id) && !n.clientDoneAt);
-    const rest = ranked.filter((n) => n !== top);
+    const intakeIn = ["submitted", "reviewed"].includes(h.intake?.status);
+    // Once the intake is in, its to-do waits on Parker, not the client: never offer it as the next step.
+    const top = ro ? null : ranked.find((n) => n.state !== "done" && !marked.has(n.id) && !n.clientDoneAt && !(intakeIn && /^#\/intake/.test(n.link || "")));
+    const rest = ranked.filter((n) => n !== top && !(intakeIn && n.state !== "done" && /^#\/intake/.test(n.link || "")));
     const shownRest = showNeeds || rest.length <= NEED_WINDOW ? rest : rest.slice(0, NEED_WINDOW);
     const prog = h.intake?.progress;
     const pct = prog && prog.total ? Math.round((prog.answered / prog.total) * 100) : null;
@@ -101,7 +103,7 @@ export function render(ctx) {
     const goLabel = (n) => isIntake(n) ? (pct ? "Continue your intake" : "Start your intake") : "Open";
     const cur = steps.find((s) => s.state === "current");
     const curIdx = steps.indexOf(cur);
-    const name = state.me?.firstName;
+    const name = state.me?.firstName || String(state.me?.contactName || "").trim().split(/\s+/)[0] || "";
     const f = h.features || {};
     const unread = h.unread || {};
     const showLocks = !ro;
@@ -137,6 +139,7 @@ export function render(ctx) {
                 ${top.link ? html`<a class="btn primary" href="${top.link}">${goLabel(top)} <span class="arrow">${ic("arrow-right")}</span></a>` : ""}
                 ${isIntake(top) ? "" : html`<button type="button" class="btn" data-done="${top.id}">I've done this</button>`}
               </div>`
+            : intakeIn ? html`<h2 id="next-step-h">Your intake is <em>in</em>.</h2><p>Parker is reviewing it now. You'll see the next step here, and you can message him any time.</p><div class="row-actions"><a class="btn primary" href="#/messages">Message Parker <span class="arrow">${ic("arrow-right")}</span></a></div>`
             : html`<h2 id="next-step-h">You're all set <em>for now</em>.</h2><p>Parker will add anything he needs here.</p>${h.nextText ? html`<p style="margin-top:8px">${h.nextText}</p>` : ""}`}
           </section>` : ""}
 
