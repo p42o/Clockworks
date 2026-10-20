@@ -29,7 +29,7 @@ export function render(ctx) {
           ${idea.effortNote ? html`<p style="margin-top:12px"><b>Effort:</b> ${idea.effortNote}</p>` : ""}
           ${(idea.links || []).length ? html`<ul style="margin:12px 0 0;padding-left:20px">${idea.links.map((l) => {
             const url = typeof l === "string" ? l : l.url, label = typeof l === "string" ? l : (l.label || l.url);
-            return /^https?:\/\//.test(url || "") ? html`<li><a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></li>` : "";
+            return /^https?:\/\//.test(url || "") ? html`<li><a class="idea-link" href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></li>` : "";
           })}</ul>` : ""}</section>
         ${ro ? html`<div class="banner">${ic("info")}<div>Parker withdrew this idea.</div></div>` : html`
         <section class="card stack" aria-labelledby="resp-h"><h2 id="resp-h">What do you think?</h2>
