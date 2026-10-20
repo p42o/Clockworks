@@ -29,6 +29,9 @@ lab/*.bak
 # Eicher gate: generated at deploy / by the server
 eicher/_config.php
 eicher/_state/
+# Timely gate: generated at deploy / by the server
+timely/_config.php
+timely/_state/
 
 # local preview screenshots
 site/.preview-*.png
