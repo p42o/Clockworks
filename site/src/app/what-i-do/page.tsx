@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "What I do",
   description:
     "Four AI systems for trades businesses: missed-call capture, quote follow-up, review automation, and back-office paperwork — built on Jobber, QuickBooks, and the tools you already use.",
+  // Retired: .htaccess 301s this path to "/" (checklist #7); never index the export copy.
+  alternates: { canonical: "/" },
+  robots: { index: false, follow: true },
 };
 
 const SPECS = [

@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "About",
   description:
     "Parker Swanson, Maple Grove, MN. I set up Chief of Staff AI teams so small business owners can be home for dinner.",
+  alternates: { canonical: "/about/" },
 };
 
 const VALUES = [

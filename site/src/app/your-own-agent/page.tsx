@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Your own agent",
   description:
     "A trained AI front desk that lives on YOUR site and text line — answers, books, logs every conversation, and learns. You own it: the cost, control, and visibility story explained plainly.",
+  // Retired: .htaccess 301s this path to "/" (checklist #7); never index the export copy.
+  alternates: { canonical: "/" },
+  robots: { index: false, follow: true },
 };
 
 const CHANNELS = ["Your website", "Text messages (SMS)", "Telegram", "Discord", "More as you need them"];

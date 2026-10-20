@@ -6,6 +6,15 @@
 
 DirectoryIndex index.html
 
+# --- Canonical host (presence checklist #7, 2026-10-20) ----------------------
+# www -> bare domain, one 301 straight to https (path + query kept). HTTPS itself
+# is not forced in this file (never was); the host's own HTTPS redirect stays as is.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.mnclockworks\.com$ [NC]
+  RewriteRule ^ https://mnclockworks.com%{REQUEST_URI} [R=301,L]
+</IfModule>
+
 # --- Cache policy -----------------------------------------------------------
 # Fixes "Application error: a client-side exception" after a redeploy: without
 # this, browsers heuristically cache the HTML, and stale HTML then points at

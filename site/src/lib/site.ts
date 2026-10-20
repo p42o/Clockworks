@@ -5,6 +5,13 @@ export const site = {
   areaServed: "Maple Grove and the northwest Twin Cities metro",
   url: "https://mnclockworks.com",
   email: "parker@mnclockworks.com",
+  /** Absolute logo URL for schema (current clock mark, same file as the favicon). */
+  logo: "https://mnclockworks.com/icon.svg",
+  /** Profiles the site already linked (legacy /contact/). Never add unverified URLs. */
+  sameAs: [
+    "https://www.facebook.com/profile.php?id=61580475420690",
+    "https://x.com/ClockworksMN",
+  ],
   owner: "Parker Swanson",
   city: "Maple Grove",
   region: "MN",

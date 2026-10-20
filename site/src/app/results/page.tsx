@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "Results — working demos you can poke",
   description:
     "Six working demos with sample data: missed-call capture, quote follow-up, review automation, an owner's dashboard, a market intel desk, and an inbox autopilot. Not screenshots — machines.",
+  // Retired: .htaccess 301s this path to "/" (checklist #7); never index the export copy.
+  alternates: { canonical: "/" },
+  robots: { index: false, follow: true },
 };
 
 export default function Results() {

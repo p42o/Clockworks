@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
-import { getPublishedPosts } from "@/lib/blog";
+import { getListedPosts } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
@@ -18,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
     priority: p === "" ? 1 : 0.8,
   }));
-  const posts = getPublishedPosts().map((p) => ({
+  const posts = getListedPosts().map((p) => ({
     url: `${site.url}/blog/${p.slug}/`,
     lastModified: new Date(p.date + "T12:00:00"),
     changeFrequency: "yearly" as const,

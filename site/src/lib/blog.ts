@@ -17,6 +17,8 @@ export type Post = {
   description: string;
   tags: string[];
   legacyPath?: string;
+  /** Old-price posts (presence checklist #5): page still builds, but noindex and kept out of the index, sitemap and manifest. */
+  unlisted: boolean;
   html: string;
   words: number;
 };
@@ -39,6 +41,7 @@ function loadAll(): Post[] {
         description: String(data.description ?? ""),
         tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
         legacyPath: data.legacyPath ? String(data.legacyPath) : undefined,
+        unlisted: data.unlisted === true,
         html: marked.parse(content, { async: false }) as string,
         words: content.split(/\s+/).length,
       };
@@ -54,6 +57,11 @@ const today = () => new Date().toISOString().slice(0, 10);
 export function getPublishedPosts(): Post[] {
   const t = today();
   return loadAll().filter((p) => p.date <= t);
+}
+
+/** Published and listed: what the blog index, sitemap and manifest show. */
+export function getListedPosts(): Post[] {
+  return getPublishedPosts().filter((p) => !p.unlisted);
 }
 
 export function getPost(slug: string): Post | undefined {

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "How it works",
   description:
     "How a Chief of Staff AI team gets set up. In person in the Twin Cities, remote elsewhere. You approve what goes out.",
+  alternates: { canonical: "/how-it-works/" },
 };
 
 const AUDIT_AGENDA = [

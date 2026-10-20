@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import GoogleReviews from "@/components/GoogleReviews";
 import { Link } from "next-view-transitions";
 import Escapement from "@/components/Escapement";
@@ -7,6 +8,8 @@ import Reveal from "@/components/Reveal";
 import AuditCTA from "@/components/AuditCTA";
 import DemoGallery from "@/components/demos/DemoGallery";
 import { asset, site } from "@/lib/site";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const TOOLS = ["Jobber", "QuickBooks", "Housecall Pro", "Google", "Your phone #"];
 const TRUST = ["Working on day one", "You own everything", "No contracts"];

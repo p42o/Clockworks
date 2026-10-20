@@ -25,6 +25,7 @@ export const metadata: Metadata = {
     template: "%s · MN Clockworks",
   },
   description: site.description,
+  // Canonicals are set per page (bare https domain); none here so 404 gets none.
   keywords: [
     "AI automation Minnesota",
     "AI team setup",
@@ -65,6 +66,8 @@ const jsonLd = {
   telephone: site.phone.schema,
   email: site.email,
   image: `${site.url}/og.png`,
+  logo: site.logo,
+  sameAs: site.sameAs,
   "@id": `${site.url}/#business`,
   contactPoint: { "@type": "ContactPoint", email: site.email, telephone: site.phone.schema, contactType: "customer service", areaServed: "US", availableLanguage: "English" },
   url: site.url,

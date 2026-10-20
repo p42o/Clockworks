@@ -2,19 +2,20 @@ import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
 import Reveal from "@/components/Reveal";
 import AuditCTA from "@/components/AuditCTA";
-import { getPublishedPosts } from "@/lib/blog";
+import { getListedPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "Field notes",
   description:
     "Plain-English notes on AI for small businesses, from Maple Grove, MN.",
+  alternates: { canonical: "/blog/" },
 };
 
 const fmt = (d: string) =>
   new Date(d + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
 export default function BlogIndex() {
-  const posts = getPublishedPosts();
+  const posts = getListedPosts();
   const [latest, ...rest] = posts;
 
   return (

@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "What a Pilot Actually Buys"
 date: "2026-09-01"
 description: "The two-week pilot, walked day by day: fixed quote, a working demo at hour 48, a shadow week, and a handover where you own everything."

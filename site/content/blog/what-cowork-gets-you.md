@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "What an AI Session Actually Gets You (The Inside Story)"
 date: "2026-06-15"
 description: "A minute-by-minute look at what happens in a MN Clockworks Cowork session, and what you walk away with."

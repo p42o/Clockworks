@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Get in touch",
   description:
     "Get in touch with MN Clockworks in Maple Grove. In person in the Twin Cities, remote elsewhere. You approve what goes out.",
+  alternates: { canonical: "/book/" },
 };
 
 export default function Book() {
