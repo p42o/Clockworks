@@ -26,6 +26,7 @@ export const ROUTES = {
   "privacy-notice": { title: "Privacy Notice", mod: "privacy-notice", auth: "any", ro: true },
   "privacy-request": { title: "Privacy request", mod: "privacy-request", auth: "any", ro: true },
   reset:    { title: "Reset password", mod: "reset", auth: "any", ro: true },
+  "reset-confirm": { title: "Choose a new password", mod: "reset-confirm", auth: "any", ro: true },
   locked:   { title: "Portal closed",   mod: "locked",   auth: "any", ro: true },
 };
 
@@ -33,6 +34,10 @@ let inviteToken = (typeof window !== "undefined" && window.__cwInviteToken) || n
 if (typeof window !== "undefined") delete window.__cwInviteToken;
 /** Hand the in-memory invite token to the invite screen (one read, then it is gone). */
 export function takeInviteToken() { const t = inviteToken; inviteToken = null; return t; }
+let resetCode = (typeof window !== "undefined" && window.__cwResetCode) || null; // set by the inline scrub in index.html
+if (typeof window !== "undefined") delete window.__cwResetCode;
+/** Hand the in-memory password-reset code to the reset-confirm screen (one read, then it is gone). */
+export function takeResetCode() { const c = resetCode; resetCode = null; return c; }
 
 let flash = null;
 export function takeFlash() { const f = flash; flash = null; return f; }
@@ -108,7 +113,7 @@ async function resolve() {
   const name = p.name || "home";
   const route = ROUTES[name];
   let redirect = guard(name, route);
-  const legalOpen = ['privacy', 'terms', 'accept', 'starter-terms', 'privacy-notice', 'privacy-request', 'reset'];
+  const legalOpen = ['privacy', 'terms', 'accept', 'starter-terms', 'privacy-notice', 'privacy-request', 'reset', 'reset-confirm'];
   if (!redirect && ['active', 'readonly'].includes(session.state.status) && !legalOpen.includes(name)) {
     try {
       const api = await import('./api.js');
@@ -132,7 +137,7 @@ async function resolve() {
   try {
     const mod = await import(`../screens/${route.mod}.js`);
     if (id !== navId) return;
-    const ctx = { el, params: p.params, name, session, state: session.state, router: { go, takeInviteToken, takeFlash, takeRememberedTarget } };
+    const ctx = { el, params: p.params, name, session, state: session.state, router: { go, takeInviteToken, takeResetCode, takeFlash, takeRememberedTarget } };
     const td = await mod.render(ctx);
     if (id !== navId) { if (typeof td === "function") td(); return; }
     teardown = typeof td === "function" ? td : null;

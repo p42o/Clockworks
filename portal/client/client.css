@@ -575,3 +575,5 @@ input[type=file]::file-selector-button { min-height: 44px; border: 1px solid var
 a.idea-link { display: inline-flex; align-items: center; min-height: 44px; overflow-wrap: anywhere; }
 a[href^="mailto:"] { min-height: 44px; display: inline-flex; align-items: center; overflow-wrap: anywhere; max-width: 100%; }
 .gate .sheet a.btn[href^="mailto:"], .btn[href^="mailto:"] { display: inline-flex; }
+.row span.title, .row span.sub { display: block; }
+.changes { margin: 0; padding-left: 20px; display: grid; gap: 8px; color: var(--ink-2); }

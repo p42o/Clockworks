@@ -71,6 +71,8 @@ export const SWAP = Object.freeze({
       linkText: "Starter Terms",
       href: "#/starter-terms",
     }),
+    // Plain-English "what changed" bullets for the current versions, shown on the terms-updated screen.
+    changes: Object.freeze([]),
     notice: Object.freeze({
       version: "v2.0",
       file: "legal/privacy-notice-v2.0.md",
@@ -160,6 +162,13 @@ export const SWAP = Object.freeze({
   // When false, the real "Sign and agree" is refused server-side for any client not marked fixture:true,
   // and the UI shows "Preview — signing isn't live yet".
   eSign: Object.freeze({ realClients: false }),
+  // Password reset. "firebase" = Firebase Auth's built-in reset email (free, sent from
+  // noreply@clockworks-portal-pgs.firebaseapp.com); its link opens #/reset-confirm, which enforces the portal
+  // password rules. "outbox" = the older code-in-outbox flow (nothing reaches the client).
+  passwordReset: "firebase",
+  // "Terms updated, please review and accept" screen for a version change. OFF in production: while off, a version
+  // change shows the plain must-accept gate (#/accept) instead. The server enforces re-acceptance either way.
+  termsUpdateScreen: false,
 
   // Kept for older readers; same value as retention.closedReadOnlyDays.
   closedReadOnlyDays: 90,
