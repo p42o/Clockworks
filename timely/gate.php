@@ -2,7 +2,7 @@
 /**
  * PIN gate for the Timely Drywall assessment.
  *
- * Two scopes: the client PIN opens the assessment only; the admin PIN opens
+ * Client and viewer PINs open the assessment only; the admin PIN opens
  * Parker's internal playbook under /timely/admin/ (and the assessment).
  *
  * The report is committed to this (public) repo only as AES-256-GCM
@@ -13,6 +13,8 @@
  */
 
 declare(strict_types=1);
+
+const IP_MODE = 'full'; // 'full' or 'hashed'
 
 const COOKIE      = 'timely_auth';
 const PIN_LEN     = 4;      // client PIN digits
@@ -36,6 +38,7 @@ $cfg = require $cfgFile;
 $key = base64_decode($cfg['key'], true);
 $pinMac = $cfg['pin'];
 $adminMac = $cfg['admin'] ?? '';
+$viewerMac = $cfg['viewer'] ?? '';
 if ($key === false || strlen($key) !== 32) {
     http_response_code(503);
     exit('Not configured.');
@@ -45,10 +48,10 @@ if ($key === false || strlen($key) !== 32) {
 function sign(string $key, string $msg): string {
     return hash_hmac('sha256', $msg, $key);
 }
-// Cookie = "<scope>.<expiry>.<hmac>", scope c (client) or a (admin). Admin also opens the client report.
+// Cookie = "<scope>.<expiry>.<hmac>", scope c (client), v (viewer), or a (admin). Admin also opens the client report.
 function auth_scope(string $key): string {
     $c = $_COOKIE[COOKIE] ?? '';
-    if (!preg_match('/^([ca])\.(\d{10})\.([a-f0-9]{64})$/', $c, $m)) return '';
+    if (!preg_match('/^([cav])\.(\d{10})\.([a-f0-9]{64})$/', $c, $m)) return '';
     if ((int)$m[2] < time()) return '';
     return hash_equals(sign($key, 'auth|' . $m[1] . '|' . $m[2]), $m[3]) ? $m[1] : '';
 }
@@ -77,13 +80,103 @@ function add_fail(string $file): void {
     @file_put_contents($file, json_encode($list), LOCK_EX);
 }
 
+// Visit storage is best effort and contains only the approved fields.
+function device_class(): string {
+    $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    if (preg_match('/bot|curl|wget|python|crawler|spider|preview|facebookexternalhit|whatsapp/i', $ua)) return 'bot';
+    foreach (['iPhone', 'iPad', 'Android', 'Mac', 'Windows', 'Linux'] as $class) {
+        if (stripos($ua, $class) !== false) return $class;
+    }
+    return 'other';
+}
+function visit(string $ev, string $scope = ''): ?array {
+    global $key, $isPlaybook;
+    try {
+        $now = new DateTimeImmutable('now', new DateTimeZone('America/Chicago'));
+        $day = $now->format('Y-m-d');
+        $dir = state_dir() . '/visits';
+        if (!@is_dir($dir) && !@mkdir($dir, 0700)) return null;
+        $marker = $dir . '/prune-' . $day . '.marker';
+        if ($h = @fopen($marker, 'x')) {
+            @fclose($h);
+            $cutoff = $now->modify('-90 days')->format('Y-m-d');
+            foreach (@glob($dir . '/*') ?: [] as $file) {
+                if (preg_match('/(?:client-|parker-|prune-|notify-)(\d{4}-\d{2}-\d{2})\.(?:jsonl|marker)$/', basename($file), $m) && $m[1] < $cutoff) @unlink($file);
+            }
+        }
+        $who = ['c' => 'client', 'v' => 'viewer', 'a' => 'admin'][$scope] ?? 'unknown';
+        $stream = $scope !== '' ? ($scope === 'c' ? 'client' : 'parker') : ($isPlaybook ? 'parker' : 'client');
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        if (IP_MODE === 'hashed') $ip = substr(hash_hmac('sha256', 'ip|' . $ip . '|' . $now->format('Y-m'), $key), 0, 16);
+        $row = ['t' => $now->format(DateTimeInterface::ATOM), 'ev' => $ev, 'gate' => $isPlaybook ? 'admin' : 'client', 'who' => $who, 'path' => $isPlaybook ? 'admin/index.html' : 'index.html', 'ip' => $ip, 'ua' => device_class()];
+        $file = $dir . '/' . $stream . '-' . $day . '.jsonl';
+        if ($h = @fopen($file, 'a')) {
+            if (@flock($h, LOCK_EX)) {
+                $stat = @fstat($h);
+                if ($stat !== false && $stat['size'] <= 2 * 1024 * 1024) @fwrite($h, json_encode($row) . "\n");
+                @flock($h, LOCK_UN);
+            }
+            @fclose($h);
+        }
+        return $row;
+    } catch (Throwable $e) { return null; }
+}
+function notify_open(array $row): void {
+    global $cfg;
+    if (($cfg['notify'] ?? '') !== '1' || empty($cfg['resend']) || empty($cfg['notify_to'])) return;
+    $day = substr($row['t'], 0, 10);
+    $h = @fopen(state_dir() . '/visits/notify-' . $day . '.marker', 'x');
+    if (!$h) return;
+    @fclose($h);
+    if (function_exists('fastcgi_finish_request')) @fastcgi_finish_request();
+    elseif (function_exists('litespeed_finish_request')) @litespeed_finish_request();
+    if (!function_exists('curl_init')) return;
+    $ch = @curl_init($cfg['resend_url'] ?? 'https://api.resend.com/emails');
+    if (!$ch) return;
+    @curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 3,
+        CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $cfg['resend'], 'Content-Type: application/json'],
+        CURLOPT_POSTFIELDS => json_encode(['from' => $cfg['notify_from'] ?? 'MN Clockworks <visits@mnclockworks.com>', 'to' => [$cfg['notify_to']], 'subject' => 'Timely report opened',
+            'text' => 'Time (CT): ' . $row['t'] . "\nPage: " . $row['path'] . "\nDevice: " . $row['ua'] . "\nIP: " . $row['ip']])]);
+    @curl_exec($ch);
+    @curl_close($ch);
+}
+function render_visits(): void {
+    $tab = ($_GET['tab'] ?? '') === 'parker' ? 'parker' : 'client';
+    $now = new DateTimeImmutable('now', new DateTimeZone('America/Chicago'));
+    $rows = []; $counts = [];
+    foreach (@glob(state_dir() . '/visits/' . $tab . '-*.jsonl') ?: [] as $file) {
+        $day = substr(basename($file), strlen($tab) + 1, 10);
+        if ($day < $now->modify('-90 days')->format('Y-m-d') || $day > $now->format('Y-m-d')) continue;
+        foreach (@file($file, FILE_IGNORE_NEW_LINES) ?: [] as $line) {
+            $row = json_decode($line, true);
+            if (!is_array($row)) continue;
+            $rows[] = $row; $counts[$day] = ($counts[$day] ?? 0) + 1;
+        }
+    }
+    usort($rows, fn($a, $b) => strcmp($b['t'], $a['t'])); krsort($counts);
+    $esc = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    header('Cache-Control: no-store');
+    header('Content-Type: text/html; charset=utf-8');
+    echo '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Timely visits</title><style>body{background:#F5F1E8;color:#1A1916;font:15px system-ui;margin:32px}a{color:#A8401A;margin-right:24px}table{border-collapse:collapse;background:#FBF8F1}td,th{padding:10px;border:1px solid #E3DACB;text-align:left}</style><h1>Timely visits</h1><nav><a href="?tab=client">Client</a><a href="?tab=parker">Parker</a></nav><h2>' . ucfirst($tab) . '</h2>';
+    foreach ($counts as $day => $count) echo '<p>' . $esc($day) . ': ' . $esc($count) . ' events</p>';
+    echo '<table><tr><th>Time</th><th>Event</th><th>Gate</th><th>Who</th><th>IP</th><th>Device</th><th>Page</th></tr>';
+    foreach ($rows as $row) {
+        echo '<tr>';
+        foreach (['t', 'ev', 'gate', 'who', 'ip', 'ua', 'path'] as $field) echo '<td>' . $esc($row[$field] ?? '') . '</td>';
+        echo '</tr>';
+    }
+    echo '</table></html>';
+}
+
 $path = $_GET['p'] ?? '';
 $path = ltrim(str_replace('\\', '/', $path), '/');
+if (preg_match('#(^|/)_#', $path)) { http_response_code(404); exit; }
+$isVisits = $path === 'admin/visits' || $path === 'admin/visits/';
 if ($path === 'admin') { header('Location: /timely/admin/', true, 301); exit; }  // keep relative asset URLs right
 if ($path === '' || substr($path, -1) === '/') $path .= 'index.html';
 // /timely/admin/ is Parker's internal playbook; everything else is the assessment.
 $isPlaybook = strpos($path, 'admin/') === 0;
-$isPage = $path === 'index.html' || $path === 'admin/index.html';
+$isPage = $isVisits || $path === 'index.html' || $path === 'admin/index.html';
 if (strpos($path, '..') !== false || strpos($path, "\0") !== false) {
     http_response_code(400);
     exit;
@@ -102,19 +195,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pin'])) {
     $allFile = $dir . '/global.json';
     if (count(fails($ipFile)) >= IP_MAX_FAIL || count(fails($allFile)) >= GLOBAL_MAX) {
         http_response_code(429);
+        visit('pin_locked');
         $error = 'Too many tries. Please wait 15 minutes and try again.';
     } else {
         $pin = preg_replace('/\D/', '', (string)$_POST['pin']);
         $mac = sign($key, 'pin:' . $pin);
-        $scope = ($adminMac !== '' && hash_equals($adminMac, $mac)) ? 'a' : (hash_equals($pinMac, $mac) ? 'c' : '');
-        // The client PIN never opens the playbook, even when typed on the playbook's gate.
-        if ($scope === 'c' && $isPlaybook) $scope = '';
+        $scope = ($adminMac !== '' && hash_equals($adminMac, $mac)) ? 'a' : (hash_equals($pinMac, $mac) ? 'c' : (($viewerMac !== '' && hash_equals($viewerMac, $mac)) ? 'v' : ''));
+        // Client and viewer PINs never open the playbook.
+        if (($scope === 'c' || $scope === 'v') && $isPlaybook) $scope = '';
         if ($scope !== '') {
+            visit('pin_ok', $scope);
             set_auth($key, $scope);
             $back = '/timely/' . preg_replace('#(^|/)index\.html$#', '$1', $path);
             header('Location: ' . $back, true, 303);
             exit;
         }
+        visit('pin_wrong');
         add_fail($ipFile);
         add_fail($allFile);
         usleep(400000);
@@ -131,9 +227,12 @@ if ($scope === '' || ($isPlaybook && $scope !== 'a')) {
     }
     header('Cache-Control: no-store');
     if (!$error) http_response_code(401);
+    if (!$error) visit('gate_shown');
     render_gate($error, $isPlaybook);
     exit;
 }
+
+if ($isVisits) { render_visits(); exit; }
 
 // ---------------------------------------------------------------- serve file
 $blob = __DIR__ . '/blob/' . substr(sign($key, 'path:' . $path), 0, 40) . '.bin';
@@ -169,6 +268,10 @@ if (strpos($type, 'text/') === 0 || strpos($type, 'json') !== false || $ext === 
     if (!ini_get('zlib.output_compression') && function_exists('ob_gzhandler')) ob_start('ob_gzhandler');
 }
 echo $plain;
+if ($isPage) {
+    $row = visit('open', $scope);
+    if ($scope === 'c' && $row !== null) notify_open($row);
+}
 
 // ---------------------------------------------------------------- PIN screen
 function render_gate(string $error, bool $playbook): void {

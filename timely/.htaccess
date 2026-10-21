@@ -8,11 +8,12 @@ DirectoryIndex gate.php
   Header set X-Robots-Tag "noindex, nofollow, noarchive"
 </IfModule>
 
-<FilesMatch "^(_config\.php|.*\.bin|.*\.json)$">
+<FilesMatch "^(_config\.php|.*\.bin|.*\.json|.*\.jsonl|.*\.marker)$">
   Require all denied
 </FilesMatch>
 
 RewriteEngine On
 RewriteBase /timely/
+RewriteRule ^_state(/|$) - [F,L]
 RewriteRule ^gate\.php$ - [L]
 RewriteRule ^(.*)$ gate.php?p=$1 [L,QSA]

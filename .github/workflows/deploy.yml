@@ -21,8 +21,12 @@ jobs:
           TIMELY_KEY: ${{ secrets.TIMELY_KEY }}
           TIMELY_PIN_HMAC: ${{ secrets.TIMELY_PIN_HMAC }}
           TIMELY_ADMIN_HMAC: ${{ secrets.TIMELY_ADMIN_HMAC }}
+          TIMELY_VIEWER_HMAC: ${{ secrets.TIMELY_VIEWER_HMAC }}
+          TIMELY_NOTIFY: ${{ secrets.TIMELY_NOTIFY }}
+          TIMELY_RESEND_KEY: ${{ secrets.TIMELY_RESEND_KEY }}
+          TIMELY_NOTIFY_TO: ${{ secrets.TIMELY_NOTIFY_TO }}
         run: |
-          printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s'];\n" "$TIMELY_KEY" "$TIMELY_PIN_HMAC" "$TIMELY_ADMIN_HMAC" > timely/_config.php
+          printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s', 'viewer' => '%s', 'notify' => '%s', 'resend' => '%s', 'notify_to' => '%s'];\n" "$TIMELY_KEY" "$TIMELY_PIN_HMAC" "$TIMELY_ADMIN_HMAC" "$TIMELY_VIEWER_HMAC" "$TIMELY_NOTIFY" "$TIMELY_RESEND_KEY" "$TIMELY_NOTIFY_TO" > timely/_config.php
 
       - name: Write Nickel gate config (from secrets, never committed)
         env:
