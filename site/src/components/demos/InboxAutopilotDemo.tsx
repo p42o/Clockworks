@@ -15,11 +15,11 @@ type Mail = {
 };
 
 const MAIL: Mail[] = [
-  { from: "k.hendricks@…", subject: "Do you guys do sump pumps?", tag: "LEAD", action: "Drafted reply + added to Jobber as lead", draft: "Hi Kara — we do, all the time. Are you seeing water now, or planning ahead? If you send your address I can get you a time this week." },
-  { from: "billing@ferguson…", subject: "Invoice 88213 — due Jul 10", tag: "INVOICE", action: "Filed to QuickBooks · due-date reminder set" },
-  { from: "dana.r@…", subject: "Re: water heater — one more question", tag: "SUPPORT", action: "Drafted answer from your past jobs + manuals", draft: "Good question — the pilot light staying blue is exactly what you want. The faint rumble the first week is sediment settling; if it's still there in two weeks, text us and we'll swing by." },
+  { from: "k.hendricks@…", subject: "Do you guys do sump pumps?", tag: "LEAD", action: "Drafted reply + added to Jobber as lead", draft: "Hi Kara, we do, all the time. Are you seeing water now, or planning ahead? If you send your address I can get you a time this week." },
+  { from: "billing@ferguson…", subject: "Invoice 88213: due Jul 10", tag: "INVOICE", action: "Filed to QuickBooks · due-date reminder set" },
+  { from: "dana.r@…", subject: "Re: water heater · one more question", tag: "SUPPORT", action: "Drafted answer from your past jobs + manuals", draft: "Good question: the pilot light staying blue is exactly what you want. The faint rumble the first week is sediment settling; if it's still there in two weeks, text us and we'll swing by." },
   { from: "winner-alert@prizes…", subject: "🎁 You've been selected!!", tag: "JUNK", action: "Archived. You never saw it. You're welcome" },
-  { from: "m.okafor@…", subject: "Quote for panel upgrade?", tag: "LEAD", action: "Drafted reply + flagged: mentions '2 other bids' → priority", draft: "Hi Marcus — happy to quote it. Since you're comparing bids: ours will itemize everything, no surprise line items. Any afternoon this week work for a 20-minute look?" },
+  { from: "m.okafor@…", subject: "Quote for panel upgrade?", tag: "LEAD", action: "Drafted reply + flagged: mentions '2 other bids' → priority", draft: "Hi Marcus, happy to quote it. Since you're comparing bids: ours will itemize everything, no surprise line items. Any afternoon this week work for a 20-minute look?" },
 ];
 
 const TAG_COLOR: Record<Mail["tag"], string> = {
@@ -100,7 +100,7 @@ export default function InboxAutopilotDemo() {
               <p className="mt-1.5 text-[0.78rem] text-ink-soft">→ {m.action}</p>
               {m.draft && (
                 <div className="mt-2 rounded-[2px] border-l-2 border-line bg-paper-deep/60 px-3 py-2">
-                  <p className="font-mono text-[0.6rem] tracking-wider text-ink-faint">DRAFT — WAITING FOR YOUR THUMB</p>
+                  <p className="font-mono text-[0.6rem] tracking-wider text-ink-faint">DRAFT · WAITING FOR YOUR THUMB</p>
                   <p className="mt-1 text-[0.8rem] italic leading-snug text-ink-soft">&ldquo;{m.draft}&rdquo;</p>
                   <button
                     type="button"

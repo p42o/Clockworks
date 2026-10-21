@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 const PRESETS = {
-  "Warm & neighborly": "Hi there! You've reached Nelson Plumbing — I'm the office assistant. Sorry about the water heater, that's no fun at all. Let's get someone out to you: is tomorrow morning too late, or is this a tonight situation?",
-  "Brisk & professional": "Nelson Plumbing. I can schedule that water heater repair — first opening is tomorrow 8:30 AM. Shall I book it, and is the unit gas or electric?",
-  "Bilingual (ES)": "¡Hola! Gracias por contactar a Nelson Plumbing. Lamento lo del calentador de agua — ¿es una emergencia ahora mismo, o le sirve una cita mañana por la mañana?",
+  "Warm & neighborly": "Hi there! You've reached Nelson Plumbing. I'm the office assistant. Sorry about the water heater, that's no fun at all. Let's get someone out to you: is tomorrow morning too late, or is this a tonight situation?",
+  "Brisk & professional": "Nelson Plumbing. I can schedule that water heater repair: first opening is tomorrow 8:30 AM. Shall I book it, and is the unit gas or electric?",
+  "Bilingual (ES)": "¡Hola! Gracias por contactar a Nelson Plumbing. Lamento lo del calentador de agua: ¿es una emergencia ahora mismo, o le sirve una cita mañana por la mañana?",
 } as const;
 
 export default function SteerDemo() {
@@ -13,7 +13,7 @@ export default function SteerDemo() {
   return (
     <div className="max-w-2xl rounded-[4px] border hairline bg-cream-bright/70 p-5">
       <p className="font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">
-        PERSONALITY DIAL — SAME QUESTION: &ldquo;my water heater died, can someone come?&rdquo;
+        PERSONALITY DIAL · SAME QUESTION: &ldquo;my water heater died, can someone come?&rdquo;
       </p>
       <div className="mt-3 flex flex-wrap gap-2" role="tablist" aria-label="Agent tone">
         {(Object.keys(PRESETS) as (keyof typeof PRESETS)[]).map((k) => (
@@ -34,7 +34,7 @@ export default function SteerDemo() {
         {PRESETS[tone]}
       </div>
       <p className="mt-3 text-[0.75rem] text-ink-faint">
-        Sample replies for a fictional shop. One plain-English setting changed — nothing rebuilt.
+        Sample replies for a fictional shop. One plain-English setting changed: nothing rebuilt.
       </p>
     </div>
   );

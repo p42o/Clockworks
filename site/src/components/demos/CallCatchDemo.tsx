@@ -12,17 +12,17 @@ import { useReducedMotion } from "motion/react";
 type Msg = { from: "ai" | "you" | "sys"; text: string };
 
 const SCENARIOS = {
-  "Water heater leaking — 7:58pm": [
+  "Water heater leaking · 7:58pm": [
     { from: "sys", text: "☎ Missed call → text-back in 9 seconds" },
-    { from: "ai", text: "Hi, this is Nelson Plumbing — sorry we missed you, we're on a job. This is the office assistant. What's going on?" },
+    { from: "ai", text: "Hi, this is Nelson Plumbing, sorry we missed you, we're on a job. This is the office assistant. What's going on?" },
   ],
-  "No AC — Saturday, 91°": [
+  "No AC · Saturday, 91°": [
     { from: "sys", text: "☎ Missed call → text-back in 9 seconds" },
-    { from: "ai", text: "Hi, you've reached Ridgeline Heating & Air — we missed your call but we're still on deck this weekend. What's happening with your system?" },
+    { from: "ai", text: "Hi, you've reached Ridgeline Heating & Air: we missed your call but we're still on deck this weekend. What's happening with your system?" },
   ],
-  "Sparking outlet — 10:40pm": [
+  "Sparking outlet · 10:40pm": [
     { from: "sys", text: "☎ Missed call → text-back in 9 seconds" },
-    { from: "ai", text: "This is Anchor Electric's after-hours line. We missed your call — is everything safe right now? Tell me what you're seeing." },
+    { from: "ai", text: "This is Anchor Electric's after-hours line. We missed your call: is everything safe right now? Tell me what you're seeing." },
   ],
 } as const;
 
@@ -31,31 +31,31 @@ type ScenarioKey = keyof typeof SCENARIOS;
 const FLOW: Record<string, { reply: Msg[]; options?: string[] }> = {
   "Water heater's leaking all over the basement!": {
     reply: [
-      { from: "ai", text: "That's no fun — let's move fast. First: the shutoff valve is usually on top of the heater (cold line). Turning it clockwise stops the feed." },
+      { from: "ai", text: "That's no fun, let's move fast. First: the shutoff valve is usually on top of the heater (cold line). Turning it clockwise stops the feed." },
       { from: "ai", text: "We can get someone there tomorrow at 8:30am, or I can flag this as an emergency and wake the on-call tech now. Which works?" },
     ],
     options: ["Tomorrow 8:30 works", "This is an emergency"],
   },
   "Tomorrow 8:30 works": {
     reply: [
-      { from: "ai", text: "Done — you're on the schedule for 8:30am tomorrow. You'll get a confirmation text and an on-my-way text when the tech heads over. Anything else tonight?" },
-      { from: "sys", text: "📅 Booked: Water heater repair — tomorrow 8:30 AM · added to Jobber" },
+      { from: "ai", text: "Done: you're on the schedule for 8:30am tomorrow. You'll get a confirmation text and an on-my-way text when the tech heads over. Anything else tonight?" },
+      { from: "sys", text: "📅 Booked: Water heater repair · tomorrow 8:30 AM · added to Jobber" },
       { from: "sys", text: "👤 Owner sees: transcript + booking in the morning summary. Total owner effort: zero." },
     ],
   },
   "This is an emergency": {
     reply: [
-      { from: "ai", text: "On it. I'm paging the on-call tech with your address and this conversation — expect a call inside 10 minutes. Keep that valve closed if you found it." },
+      { from: "ai", text: "On it. I'm paging the on-call tech with your address and this conversation: expect a call inside 10 minutes. Keep that valve closed if you found it." },
       { from: "sys", text: "🔔 On-call tech paged (SMS + call) · transcript attached" },
-      { from: "sys", text: "👤 A real human takes over from here — the machine's job was the first 60 seconds." },
+      { from: "sys", text: "👤 A real human takes over from here (the machine's job was the first 60 seconds)." },
     ],
   },
 } as const;
 
 const OPENERS: Record<ScenarioKey, string> = {
-  "Water heater leaking — 7:58pm": "Water heater's leaking all over the basement!",
-  "No AC — Saturday, 91°": "Water heater's leaking all over the basement!",
-  "Sparking outlet — 10:40pm": "Water heater's leaking all over the basement!",
+  "Water heater leaking · 7:58pm": "Water heater's leaking all over the basement!",
+  "No AC · Saturday, 91°": "Water heater's leaking all over the basement!",
+  "Sparking outlet · 10:40pm": "Water heater's leaking all over the basement!",
 };
 
 export default function CallCatchDemo() {
@@ -126,7 +126,7 @@ export default function CallCatchDemo() {
           <div ref={scroller} className="flex h-[300px] flex-col gap-2 overflow-y-auto px-3 py-3">
             {!scenario && (
               <p className="m-auto max-w-[22ch] text-center text-sm text-ink-faint">
-                Pick a scenario above — you play the customer.
+                Pick a scenario above: you play the customer.
               </p>
             )}
             {msgs.map((m, i) =>
@@ -172,7 +172,7 @@ export default function CallCatchDemo() {
       </div>
 
       <p className="mx-auto mt-4 max-w-md text-center text-[0.8rem] leading-relaxed text-ink-faint">
-        The words, the tone, the booking rules, the emergency triggers — all yours to set.
+        The words, the tone, the booking rules, the emergency triggers: all yours to set.
         Runs on your existing number.
       </p>
     </div>

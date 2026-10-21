@@ -20,7 +20,7 @@ export function SampleTag({ note }: { note?: string }) {
       style={{ borderColor: "rgba(148,106,0,0.35)" }}
       title={note ?? "Every number in this demo is made-up sample data."}
     >
-      <span aria-hidden>⚠</span> SAMPLE DATA — ILLUSTRATIVE
+      <span aria-hidden>⚠</span> SAMPLE DATA · ILLUSTRATIVE
     </span>
   );
 }

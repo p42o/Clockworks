@@ -78,7 +78,7 @@ export default function IntelDeskDemo() {
                           background: c.dir === "up" ? "rgba(212,88,42,0.1)" : c.dir === "new" ? "rgba(61,107,168,0.1)" : "rgba(110,106,95,0.1)",
                         }}
                       >
-                        {c.dir === "up" ? "▲ " : c.dir === "new" ? "★ " : "— "}
+                        {c.dir === "up" ? "▲ " : c.dir === "new" ? "★ " : "· "}
                         {c.change}
                       </span>
                     </td>
@@ -89,7 +89,7 @@ export default function IntelDeskDemo() {
           </div>
           <p className="mt-3 text-[0.8rem] leading-relaxed text-ink-soft">
             Checked automatically from public pages, weekly. When the guy across town raises his
-            water-heater price $100, you find out that week — not from a customer six months later.
+            water-heater price $100, you find out that week, not from a customer six months later.
           </p>
         </div>
       )}
@@ -98,14 +98,14 @@ export default function IntelDeskDemo() {
         <div>
           <div className="rounded-[3px] border hairline bg-cream-bright/60 p-4">
             <p className="mb-2 font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">
-              LOCAL SEARCH INTEREST — &ldquo;AC REPAIR NEAR ME&rdquo; (NW METRO, INDEXED)
+              LOCAL SEARCH INTEREST · &ldquo;AC REPAIR NEAR ME&rdquo; (NW METRO, INDEXED)
             </p>
             <LineChart labels={WEEKS} series={[{ name: "Search interest", color: CHART.copper, values: DEMAND }]} />
           </div>
           <div className="mt-3 rounded-[3px] border-l-2 border-copper bg-ember/30 px-4 py-3">
             <p className="text-[0.82rem] leading-relaxed">
               <strong>What the desk would tell you:</strong> demand has nearly tripled in six weeks
-              with the heat — this is the fortnight to push AC tune-up offers and staff the phones
+              with the heat: this is the fortnight to push AC tune-up offers and staff the phones
               (or let Call Catch hold the overflow). Big outfits have an analyst for this. You&rsquo;d have a Tuesday email.
             </p>
           </div>

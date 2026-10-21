@@ -14,11 +14,11 @@ const CAUGHT = [6, 4, 7, 5, 9, 11, 3, 6, 8, 7, 10, 12, 9, 8];
 const MISSED_BEFORE = [4, 3, 5, 4, 6, 8, 2, 4, 5, 5, 7, 8, 6, 5];
 
 const FEED = [
-  "7:58a — Missed call caught → booked Thu 9:00 (Maple Grove)",
-  "9:15a — Quote #241 follow-up #2 sent (day-7 rule)",
-  "9:40a — Review posted ★★★★★ — job #1141",
-  "11:02a — Invoice #1108 reminder sent · pay link opened",
-  "12:15p — After-hours transcript from last night filed",
+  "7:58a · Missed call caught → booked Thu 9:00 (Maple Grove)",
+  "9:15a · Quote #241 follow-up #2 sent (day-7 rule)",
+  "9:40a · Review posted ★★★★★ · job #1141",
+  "11:02a · Invoice #1108 reminder sent · pay link opened",
+  "12:15p · After-hours transcript from last night filed",
 ];
 
 export default function CommandDashboardDemo() {
@@ -31,7 +31,7 @@ export default function CommandDashboardDemo() {
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <p className="text-[0.85rem] text-ink-soft">Your whole week, at a glance — the two-minute morning read.</p>
+        <p className="text-[0.85rem] text-ink-soft">Your whole week, at a glance: the two-minute morning read.</p>
         <div className="flex rounded-[3px] border hairline p-0.5" role="tablist" aria-label="Date range">
           {([7, 14] as const).map((r) => (
             <button
@@ -56,7 +56,7 @@ export default function CommandDashboardDemo() {
 
       <div className="mt-6 rounded-[3px] border hairline bg-cream-bright/60 p-4">
         <p className="mb-2 font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">
-          CALLS — CAUGHT BY THE SYSTEM VS. WOULD-HAVE-MISSED
+          CALLS · CAUGHT BY THE SYSTEM VS. WOULD-HAVE-MISSED
         </p>
         <LineChart
           labels={days}
@@ -69,7 +69,7 @@ export default function CommandDashboardDemo() {
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div className="rounded-[3px] border hairline bg-cream-bright/60 p-4">
-          <p className="mb-3 font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">REVENUE BY SERVICE — THIS WEEK</p>
+          <p className="mb-3 font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">REVENUE BY SERVICE · THIS WEEK</p>
           <BarRows
             rows={[
               { label: "Water heaters", value: 9200 },

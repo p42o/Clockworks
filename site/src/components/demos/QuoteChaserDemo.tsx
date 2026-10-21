@@ -16,11 +16,11 @@ type Quote = {
 };
 
 const START: Quote[] = [
-  { id: "Q-241", who: "Deck rebuild — Hoffman", amount: 8400, ageStart: 6, status: "waiting", events: { 1: { note: "Nudge #2 sent", status: "nudged" }, 3: { note: "“Let's do it.” → WON", status: "won" } } },
-  { id: "Q-244", who: "Furnace replace — Ostrander", amount: 6200, ageStart: 3, status: "waiting", events: { 1: { note: "Nudge #1 sent", status: "nudged" }, 5: { note: "Reply: “going another way” → closed", status: "declined" } } },
-  { id: "Q-246", who: "Panel upgrade — Vang", amount: 3100, ageStart: 2, status: "waiting", events: { 2: { note: "Nudge #1 sent", status: "nudged" }, 4: { note: "Reply: “call me Monday”", status: "replied" } } },
-  { id: "Q-249", who: "Irrigation startup — Berg", amount: 640, ageStart: 1, status: "waiting", events: { 4: { note: "Nudge #1 sent", status: "nudged" }, 6: { note: "“Yes — book it.” → WON", status: "won" } } },
-  { id: "Q-250", who: "Water softener — Lindqvist", amount: 1850, ageStart: 0, status: "waiting", events: { 3: { note: "Nudge #1 sent", status: "nudged" } } },
+  { id: "Q-241", who: "Deck rebuild · Hoffman", amount: 8400, ageStart: 6, status: "waiting", events: { 1: { note: "Nudge #2 sent", status: "nudged" }, 3: { note: "“Let's do it.” → WON", status: "won" } } },
+  { id: "Q-244", who: "Furnace replace · Ostrander", amount: 6200, ageStart: 3, status: "waiting", events: { 1: { note: "Nudge #1 sent", status: "nudged" }, 5: { note: "Reply: “going another way” → closed", status: "declined" } } },
+  { id: "Q-246", who: "Panel upgrade · Vang", amount: 3100, ageStart: 2, status: "waiting", events: { 2: { note: "Nudge #1 sent", status: "nudged" }, 4: { note: "Reply: “call me Monday”", status: "replied" } } },
+  { id: "Q-249", who: "Irrigation startup · Berg", amount: 640, ageStart: 1, status: "waiting", events: { 4: { note: "Nudge #1 sent", status: "nudged" }, 6: { note: "“Yes, book it.” → WON", status: "won" } } },
+  { id: "Q-250", who: "Water softener · Lindqvist", amount: 1850, ageStart: 0, status: "waiting", events: { 3: { note: "Nudge #1 sent", status: "nudged" } } },
 ];
 
 const STATUS_STYLE: Record<Quote["status"], { label: string; color: string }> = {
@@ -44,7 +44,7 @@ export default function QuoteChaserDemo() {
     const next = qs.map((q) => {
       const ev = q.events[d];
       if (!ev) return q;
-      notes.push(`Day ${d} · ${q.id} — ${ev.note}`);
+      notes.push(`Day ${d} · ${q.id}: ${ev.note}`);
       return { ...q, status: ev.status ?? q.status };
     });
     return [next, notes];
@@ -125,7 +125,7 @@ export default function QuoteChaserDemo() {
       <div className="mt-4 min-h-[72px] rounded-[3px] border hairline bg-paper-deep/50 p-3">
         <p className="font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">WHAT FIRED (NEWEST FIRST)</p>
         <ul className="mt-1.5 space-y-1">
-          {log.length === 0 && <li className="text-[0.78rem] text-ink-faint">Press play — the nudges do the rest.</li>}
+          {log.length === 0 && <li className="text-[0.78rem] text-ink-faint">Press play: the nudges do the rest.</li>}
           {log.slice(0, 5).map((l) => (
             <li key={l} className="text-[0.78rem] text-ink-soft">{l}</li>
           ))}
@@ -133,7 +133,7 @@ export default function QuoteChaserDemo() {
       </div>
 
       <p className="mt-4 text-center text-[0.8rem] text-ink-faint">
-        Nobody wrote a follow-up. A reply always stops the sequence — no customer ever gets nagged mid-conversation.
+        Nobody wrote a follow-up. A reply always stops the sequence: no customer ever gets nagged mid-conversation.
       </p>
     </div>
   );

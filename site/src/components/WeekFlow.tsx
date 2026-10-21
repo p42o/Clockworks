@@ -24,11 +24,11 @@ type Moment = {
 };
 
 const MOMENTS: Moment[] = [
-  { time: "7:58a", before: "Missed a call — you were under a sink", after: "Answered by text in 9 seconds. Booked for Thursday 9am", scatter: { x: -38, y: -32, r: -9 } },
+  { time: "7:58a", before: "Missed a call: you were under a sink", after: "Answered by text in 9 seconds. Booked for Thursday 9am", scatter: { x: -38, y: -32, r: -9 } },
   { time: "9:15a", before: "Quote #241 has sat in “Sent” for 6 days", after: "Follow-up #2 went out. Customer replied: “let’s do it”", scatter: { x: 30, y: -38, r: 7 } },
-  { time: "11:30a", before: "“Are you still coming today?” — unanswered", after: "On-my-way text sent itself when you left the shop", scatter: { x: -27, y: -6, r: -5 } },
-  { time: "1:45p", before: "Invoice #1108 — 31 days unpaid", after: "Friendly nudge sent. Paid by card at 2:12p", scatter: { x: 36, y: -4, r: 10 } },
-  { time: "3:20p", before: "Forgot to ask for the review. Again", after: "Review request texted when the job closed — ★★★★★", scatter: { x: -34, y: 24, r: 8 } },
+  { time: "11:30a", before: "“Are you still coming today?” (unanswered)", after: "On-my-way text sent itself when you left the shop", scatter: { x: -27, y: -6, r: -5 } },
+  { time: "1:45p", before: "Invoice #1108: 31 days unpaid", after: "Friendly nudge sent. Paid by card at 2:12p", scatter: { x: 36, y: -4, r: 10 } },
+  { time: "3:20p", before: "Forgot to ask for the review. Again", after: "Review request texted when the job closed: ★★★★★", scatter: { x: -34, y: 24, r: 8 } },
   { time: "4:40p", before: "Voicemail full. Two leads gone for good", after: "Every call caught, transcribed, and in your inbox", scatter: { x: 28, y: 28, r: -7 } },
   { time: "6:30p", before: "Quoting at the kitchen table. Again", after: "Home. Phone quiet. It’s all handled", scatter: { x: 2, y: 44, r: -4 } },
 ];
@@ -176,7 +176,7 @@ export default function WeekFlow() {
             style={{ opacity: hintOpacity }}
             className="mt-10 text-center text-sm text-ink-faint"
           >
-            Keep scrolling — watch the day sort itself out.
+            Keep scrolling: watch the day sort itself out.
           </motion.p>
         </div>
       </div>

@@ -31,8 +31,8 @@ export default function ReviewEngineDemo() {
       <div className="mb-5 rounded-[3px] border hairline bg-cream-bright/70 px-4 py-3">
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">JOB #1147 — CLOSED 3:20 PM</p>
-            <p className="text-[0.9rem]">Sump pump replacement — Fridley</p>
+            <p className="font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">JOB #1147 · CLOSED 3:20 PM</p>
+            <p className="text-[0.9rem]">Sump pump replacement · Fridley</p>
           </div>
           <div className="text-right">
             <p className="font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">YOUR GOOGLE RATING</p>
@@ -51,7 +51,7 @@ export default function ReviewEngineDemo() {
         </div>
       </div>
 
-      <p className="mb-3 text-center text-sm text-ink-soft">How did the job actually go? (You decide — the system handles both.)</p>
+      <p className="mb-3 text-center text-sm text-ink-soft">How did the job actually go? (You decide: the system handles both.)</p>
       <div className="mb-6 flex justify-center gap-3">
         <button
           type="button"
@@ -87,13 +87,13 @@ export default function ReviewEngineDemo() {
                 <motion.div initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-md rounded-[12px] bg-paper-deep px-4 py-3">
                   <p className="font-mono text-[0.6rem] tracking-wider text-ink-faint">TEXT → CUSTOMER, 6 MIN AFTER CLOSE</p>
                   <p className="mt-1 text-[0.85rem] leading-snug">
-                    Hi Dana — thanks for having us out today. Quick favor: how&rsquo;d we do, 1–5?
+                    Hi Dana, thanks for having us out today. Quick favor: how&rsquo;d we do, 1 to 5?
                   </p>
                 </motion.div>
               )}
               {stage >= 2 && (
                 <motion.div initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-md rounded-[12px] bg-copper px-4 py-3 text-cream-bright">
-                  <p className="text-[0.85rem]">{mood === "happy" ? "5! Tech was great, basement's dry." : "2 — the crew left mud on the carpet and I'm pretty frustrated."}</p>
+                  <p className="text-[0.85rem]">{mood === "happy" ? "5! Tech was great, basement's dry." : "2: the crew left mud on the carpet and I'm pretty frustrated."}</p>
                 </motion.div>
               )}
               {stage >= 3 && mood === "happy" && (
@@ -104,8 +104,8 @@ export default function ReviewEngineDemo() {
                     </p>
                   </div>
                   <div className="rounded-[3px] border-2 p-4" style={{ borderColor: CHART.pine, background: "rgba(213,219,213,0.4)" }}>
-                    <p className="font-mono text-[0.6rem] tracking-wider" style={{ color: CHART.pine }}>NEW PUBLIC REVIEW — 22 MIN LATER</p>
-                    <p className="mt-1 text-[0.9rem]">★★★★★ &ldquo;Fast, tidy, explained everything. Basement is bone dry.&rdquo; — Dana R.</p>
+                    <p className="font-mono text-[0.6rem] tracking-wider" style={{ color: CHART.pine }}>NEW PUBLIC REVIEW · 22 MIN LATER</p>
+                    <p className="mt-1 text-[0.9rem]">★★★★★ &ldquo;Fast, tidy, explained everything. Basement is bone dry.&rdquo; · Dana R.</p>
                   </div>
                 </motion.div>
               )}
@@ -113,13 +113,13 @@ export default function ReviewEngineDemo() {
                 <motion.div initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-md space-y-3">
                   <div className="rounded-[12px] bg-paper-deep px-4 py-3">
                     <p className="text-[0.85rem] leading-snug">
-                      I&rsquo;m really sorry about that — that&rsquo;s not how we like to leave a home. I&rsquo;m flagging this straight to the owner right now; expect a personal call today.
+                      I&rsquo;m really sorry about that: that&rsquo;s not how we like to leave a home. I&rsquo;m flagging this straight to the owner right now; expect a personal call today.
                     </p>
                   </div>
                   <div className="rounded-[3px] border-2 border-copper bg-ember/40 p-4">
-                    <p className="font-mono text-[0.6rem] tracking-wider text-copper">→ YOUR PHONE, PRIVATELY — NOT GOOGLE</p>
+                    <p className="font-mono text-[0.6rem] tracking-wider text-copper">→ YOUR PHONE, PRIVATELY · NOT GOOGLE</p>
                     <p className="mt-1 text-[0.9rem] leading-snug">
-                      ⚠ Dana R. rated job #1147 a 2/5 — &ldquo;mud on the carpet.&rdquo; Full transcript attached. No public review was requested.
+                      ⚠ Dana R. rated job #1147 a 2/5: &ldquo;mud on the carpet.&rdquo; Full transcript attached. No public review was requested.
                     </p>
                   </div>
                   <p className="text-center text-[0.8rem] text-ink-faint">
