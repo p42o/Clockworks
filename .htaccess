@@ -13,6 +13,9 @@ DirectoryIndex index.html
 RedirectMatch 301 ^/(learn|sites|sitesniper|sniper|lab|v3|cowork|office)(/.*)?$ /
 # Retired admin pages -> home
 RedirectMatch 301 ^/(admin|admin-bot)\.html$ /
+# Root-level Markdown (SETUP.md and any other *.md at the web root) is internal:
+# 404 like /docs. Subfolder .md files (portal/client/legal/*.md) are still served.
+RedirectMatch 404 ^/[^/]+\.md$
 # Contact -> the git booking page (live sent it to the server-only /book.html)
 RedirectMatch 301 ^/contact(/.*)?$ /book/
 # Server-only Front Desk era pages (not in git, old $247 prices) -> fixed git pages
