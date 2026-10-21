@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "How to Use Claude to Write All Your Business Emails in Half the Time"
 date: "2026-05-11"
 description: "The setup takes 15 minutes. After that, you'll wonder how you wrote emails without it."

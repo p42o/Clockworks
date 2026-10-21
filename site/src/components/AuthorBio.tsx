@@ -22,17 +22,15 @@ export default function AuthorBio() {
           <p className="eyebrow">Written by</p>
           <p className="display mt-1 text-2xl leading-none">Parker Swanson</p>
           <p className="mt-2 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
-            I build practical AI systems for Twin Cities trades businesses from my home in
-            {" "}{site.city}, MN. The quiet kind that catch missed calls, chase quotes, and hand
-            owners their evenings back. One guy, local, reachable.
+            I set up AI teams for Minnesota businesses from my home in {site.city}. I do the work myself.
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-start">
-            <Link
-              href="/book/"
-              className="inline-flex items-center gap-2 rounded-[3px] bg-ink px-4 py-2 text-[0.85rem] font-medium text-paper transition-colors hover:bg-copper"
+            <a
+              href="tel:+17632969777"
+              className="inline-flex min-h-11 items-center gap-2 rounded-[3px] bg-ink px-4 py-2 text-[0.85rem] font-medium text-paper transition-colors hover:bg-copper-deep"
             >
-              Book a free audit →
-            </Link>
+              Call (763) 296-9777
+            </a>
             <Link href="/about/" className="link-draw text-[0.85rem] text-ink-soft hover:text-ink">
               More about Parker
             </Link>

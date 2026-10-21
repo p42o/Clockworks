@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "90 Days of AI Content: What I Learned About What Clicks and What Doesn't"
 date: "2026-06-29"
 description: "An honest look back at three months of writing, posting, and figuring this out in public."

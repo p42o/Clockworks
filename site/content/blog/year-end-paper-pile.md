@@ -1,4 +1,6 @@
 ---
+hold: true
+unlisted: true
 title: "The Paper Pile Doesn't Care That It's the Busy Season"
 date: "2026-11-03"
 description: "Unpaid invoices age into the new year while you're running calls. A close-the-year-clean sequence you can run yourself, and what the built version does."

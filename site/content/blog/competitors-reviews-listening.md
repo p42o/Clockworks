@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "What Your Competitors' Reviews Are Telling You (And How to Listen Automatically)"
 date: "2026-04-23"
 description: "Every bad review your competitor gets is a gift. Most business owners are too busy to notice."

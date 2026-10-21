@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "The 5-Minute Email Triage Setup That Buys Back Your Mornings"
 date: "2026-02-12"
 description: "A no-code AI inbox setup that flags the three emails that actually matter and silences the rest. Twenty minutes to install. In this example, 5 to 7 hours a week."

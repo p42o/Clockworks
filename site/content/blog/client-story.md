@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "A Weekly Report and Email Workflow: An Illustrative Example"
 date: "2026-05-25"
 description: "How I would approach recurring reports and email drafts for a hypothetical HVAC owner."

@@ -25,7 +25,7 @@ export async function generateMetadata({
     description: post.description,
     openGraph: { title: post.title, description: post.description, type: "article" },
     alternates: { canonical: `/blog/${post.slug}/` },
-    ...(post.unlisted ? { robots: { index: false, follow: true } } : {}),
+    robots: { index: false, follow: true },
   };
 }
 

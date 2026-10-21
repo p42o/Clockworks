@@ -17,8 +17,13 @@ export type Post = {
   description: string;
   tags: string[];
   legacyPath?: string;
-  /** Old-price posts (presence checklist #5): page still builds, but noindex and kept out of the index, sitemap and manifest. */
+  /** Hidden from the index, sitemap, and manifest. The page can still build. */
   unlisted: boolean;
+  /**
+   * Never auto-publish. A held post stays out of the build, the index, the
+   * sitemap, and the manifest even after its date. The file stays in the repo.
+   */
+  hold: boolean;
   html: string;
   words: number;
 };
@@ -41,7 +46,8 @@ function loadAll(): Post[] {
         description: String(data.description ?? ""),
         tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
         legacyPath: data.legacyPath ? String(data.legacyPath) : undefined,
-        unlisted: data.unlisted === true,
+        hold: data.hold === true,
+        unlisted: data.unlisted === true || data.hold === true,
         html: marked.parse(content, { async: false }) as string,
         words: content.split(/\s+/).length,
       };
@@ -53,15 +59,18 @@ function loadAll(): Post[] {
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-/** Published = dated today or earlier at build time. */
+/**
+ * Dated today or earlier, and not held. Held posts never join this list,
+ * so a later monthly rebuild will not start serving them.
+ */
 export function getPublishedPosts(): Post[] {
   const t = today();
-  return loadAll().filter((p) => p.date <= t);
+  return loadAll().filter((p) => p.date <= t && !p.hold);
 }
 
-/** Published and listed: what the blog index, sitemap and manifest show. */
+/** What the blog index, sitemap, and manifest may show. V2 lists nothing. */
 export function getListedPosts(): Post[] {
-  return getPublishedPosts().filter((p) => !p.unlisted);
+  return getPublishedPosts().filter((p) => !p.unlisted && !p.hold);
 }
 
 export function getPost(slug: string): Post | undefined {
@@ -72,10 +81,10 @@ export function getPost(slug: string): Post | undefined {
 export function getScheduleSummary() {
   const t = today();
   const future = loadAll()
-    .filter((p) => p.date > t)
+    .filter((p) => p.date > t && !p.hold && !p.unlisted)
     .sort((a, b) => (a.date > b.date ? 1 : -1));
   return {
-    publishedCount: getPublishedPosts().length,
+    publishedCount: getListedPosts().length,
     scheduled: future.map((p) => ({ date: p.date, title: p.title })),
   };
 }

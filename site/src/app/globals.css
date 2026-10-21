@@ -441,3 +441,118 @@ details.faq-item[open] > p {
   margin: 1.8em 0;
   padding-left: 1.4rem;
 }
+
+/* Skip link: visible on focus, above the fixed header. */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 0.75rem;
+  z-index: 80;
+  transform: translateY(-200%);
+  border-radius: 3px;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  padding: 0.65rem 1rem;
+  font-weight: 500;
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* Agent clock. The hand and gears loop, so they can be paused. */
+.orbit-stage {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(212, 88, 42, 0.08), transparent 58%),
+    var(--color-paper-deep);
+  border: 1px solid var(--color-line);
+}
+.orbit-rotor {
+  position: absolute;
+  inset: 16%;
+  border-radius: 9999px;
+  border: 1px dashed color-mix(in srgb, var(--color-copper) 55%, var(--color-line));
+  animation: orbit-spin 28s linear infinite;
+}
+.orbit-hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 2px;
+  height: 46%;
+  background: var(--color-copper-deep);
+  transform-origin: bottom center;
+  transform: translateX(-50%);
+}
+.orbit-gear {
+  position: absolute;
+  border-radius: 9999px;
+  border: 2px solid var(--color-copper);
+  opacity: 0.55;
+}
+.orbit-gear-a {
+  width: 34%;
+  height: 34%;
+  left: 12%;
+  top: 18%;
+  animation: orbit-spin 12s linear infinite reverse;
+}
+.orbit-gear-b {
+  width: 22%;
+  height: 22%;
+  right: 14%;
+  bottom: 16%;
+  animation: orbit-spin 9s linear infinite;
+}
+.orbit-stage.is-paused .orbit-rotor,
+.orbit-stage.is-paused .orbit-gear-a,
+.orbit-stage.is-paused .orbit-gear-b {
+  animation-play-state: paused;
+}
+.orbit-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: var(--color-ground);
+  color: var(--color-paper);
+  font-size: 1.8rem;
+}
+.orbit-name {
+  position: absolute;
+  z-index: 1;
+  max-width: 7.5rem;
+  transform: translate(-50%, -50%);
+  border-radius: 3px;
+  border: 1px solid var(--color-line);
+  background: var(--color-cream-bright);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.72rem;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--color-ink-soft);
+}
+.orbit-name.is-on {
+  border-color: var(--color-copper-deep);
+  color: var(--color-ink);
+  box-shadow: 0 0 0 3px rgba(168, 68, 31, 0.15);
+}
+@keyframes orbit-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit-rotor,
+  .orbit-gear-a,
+  .orbit-gear-b {
+    animation: none;
+  }
+}

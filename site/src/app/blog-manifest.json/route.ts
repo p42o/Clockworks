@@ -15,6 +15,6 @@ export function GET() {
       url: `/blog/${p.slug}/`,
     })),
     scheduled,
-    note: "Posts are files in site/content/blog; future-dated posts auto-publish via the monthly-publish GitHub Action.",
+    note: "V2 lists no posts. Unlisted and held files stay out of this manifest, including after their dates.",
   });
 }

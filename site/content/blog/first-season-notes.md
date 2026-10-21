@@ -1,4 +1,6 @@
 ---
+hold: true
+unlisted: true
 title: "Notes From My First Season Building for the Trades"
 date: "2026-12-01"
 description: "What owners actually asked for, the three objections I heard most, what I changed, and what 2027 looks like for a one-man shop in Maple Grove."

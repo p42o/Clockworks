@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "The 2 a.m. Test"
 date: "2026-08-04"
 description: "A minute-by-minute anatomy of one after-hours emergency call at two plumbing companies, one with a catch system and one without, and the honest truth about voicemail."

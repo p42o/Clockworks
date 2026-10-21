@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "A Missed-Call Lead-Response Workflow"
 date: "2026-03-18"
 description: "A proposed lead-response workflow: the trigger, the AI, the SMS, and the human handoff."

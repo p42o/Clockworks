@@ -1,446 +1,278 @@
+import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
-import Escapement from "@/components/Escapement";
-import WeekFlow from "@/components/WeekFlow";
-import MagneticButton from "@/components/MagneticButton";
 import Reveal from "@/components/Reveal";
-import AuditCTA from "@/components/AuditCTA";
-import DemoGallery from "@/components/demos/DemoGallery";
-import { asset, site } from "@/lib/site";
+import AgentOrbit from "@/components/v2/AgentOrbit";
+import AgentCards from "@/components/v2/AgentCards";
+import JobWalk from "@/components/v2/JobWalk";
+import IndustryTabs from "@/components/v2/IndustryTabs";
+import HowTimeline from "@/components/v2/HowTimeline";
+import PricingBlock from "@/components/v2/PricingBlock";
+import FaqList from "@/components/v2/FaqList";
+import FinalBand from "@/components/v2/FinalBand";
+import { asset } from "@/lib/site";
+import {
+  chatCta,
+  easyPoints,
+  faqJsonLd,
+  hero,
+  ownershipLine,
+  phone,
+  primaryCta,
+} from "@/lib/copy";
 
-const TOOLS = ["Jobber", "QuickBooks", "Housecall Pro", "Google", "Your phone #"];
-const TRUST = [
-  "Free 15-minute phone audit",
-  "$50 online presence assessment",
-  "$500 one-time deployment",
-];
+export const metadata: Metadata = {
+  title: hero.h1,
+  description: hero.sub,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: hero.h1,
+    description: hero.sub,
+    url: "/",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: hero.h1,
+    description: hero.sub,
+    images: ["/og.png"],
+  },
+};
 
-/*
- * H1 candidates considered:
- *   "Get your evenings back."            ← chosen: the outcome, four words, zero jargon
- *   "Win more jobs without more admin."  (kept as section copy below)
- *   "The office work runs itself now."
- *   "Built for the trades. Runs like clockwork."
- */
-
-const SYSTEMS = [
-  {
-    n: "01",
-    code: "CALL CATCH",
-    title: "Never miss another job call",
-    body: "You're under a sink; the phone rings twice and quits. Call Catch texts the caller back in seconds, in your words, from your number, and books them before they dial the next guy.",
-    runs: "Your existing number · Jobber · Housecall Pro",
-  },
-  {
-    n: "02",
-    code: "QUOTE CHASER",
-    title: "Quotes that follow up themselves",
-    body: "Most quotes don't lose. They just go quiet. Quote Chaser sends the friendly nudge you never have time to write, on a schedule you set, until you get a yes or a no.",
-    runs: "Jobber · QuickBooks · Email + SMS",
-  },
-  {
-    n: "03",
-    code: "REVIEW ENGINE",
-    title: "Five-star reviews on autopilot",
-    body: "Job closes, customer gets a short text with your review link. Happy customers talk you up in public. Unhappy ones reach you privately first, before they reach Google.",
-    runs: "Google Business Profile · Jobber",
-  },
-  {
-    n: "04",
-    code: "PAPER MOVER",
-    title: "The office pile, handled",
-    body: "Invoices chased politely until they're paid. Job notes turned into clean records. A Friday summary of what moved and what's stuck. Read it in two minutes, done.",
-    runs: "QuickBooks · Your inbox",
-  },
-  {
-    n: "05",
-    code: "INTEL DESK",
-    title: "Know what the big guys know",
-    body: "Live dashboards on your numbers, plus competitor price moves, local demand spikes, and material costs, read automatically from the public web. The analyst desk, scaled to one truck.",
-    runs: "Public data · QuickBooks · a weekly digest",
-  },
-  {
-    n: "06",
-    code: "FRONT DESK",
-    title: "A website that answers back",
-    body: "A trained agent on your site and your text line: answers questions your way, books jobs at 2am, and shows you what customers keep asking for.",
-    runs: "Your site · SMS · your knowledge",
-    action: "Talk to mine right now →",
-  },
-] as const;
-
-const FAQS = [
-  {
-    q: "Do I need to buy new software?",
-    a: "No. I build on what you already run: Jobber, Housecall Pro, QuickBooks, your Google profile, your existing phone number. If you run your business from a notebook and a cell phone, that works too; we start simpler.",
-  },
-  {
-    q: "I'm not technical. How much do I have to learn?",
-    a: "Nothing, if you don't want to. No new dashboards, no logins to remember. The systems work inside the tools and the phone you already use, and I set every word they say before anything goes live.",
-  },
-  {
-    q: "What does it actually cost?",
-    a: "A free 15-minute phone audit. An online presence assessment for $50. A one-time deployment for $500. We set up your AI team with you on a screen-share call, test it together, and walk you through how to use it. Optional ongoing maintenance is available. Parker can walk you through it. Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.",
-  },
-  {
-    q: "Am I locked in?",
-    a: "No. Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform accounts.",
-  },
-  {
-    q: "Couldn't I just do this myself with ChatGPT?",
-    a: "You could, and for some owners that's the honest answer. Here's the real math, though: the paid tiers add up. ChatGPT, Claude, or Gemini run about $20+ a month each, an automation platform like n8n is roughly $25+ a month hosted (or a $10 to $20 a month server you maintain yourself), and none of it arrives assembled. The tools are maybe $50 to $100 a month. The hundred hours of wiring them into Jobber and QuickBooks, and keeping it running when something updates, is the actual product. If you enjoy the duct tape, I'll cheer you on.",
-  },
-  {
-    q: "Will customers know it's AI?",
-    a: "The texts sound like you because you approve the wording. When a conversation needs a human, it hands off to you fast. The goal is never to fool anyone, it's to answer in seconds instead of never.",
-  },
-] as const;
-
-export default function Home() {
+export default function HomePage() {
   return (
     <>
-      {/* ---------- HERO ---------- */}
-      <section className="relative flex min-h-dvh flex-col justify-center overflow-clip">
-        <div className="absolute inset-y-0 right-0 w-full lg:w-[58%]" aria-hidden>
-          <Escapement className="h-full w-full opacity-25 lg:opacity-90" />
-          <div className="absolute inset-0 bg-gradient-to-r from-paper via-paper/70 to-transparent lg:via-paper/20" />
-        </div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }} />
+
+      <section id="top" className="relative overflow-hidden">
         <div className="hero-glow" aria-hidden />
         <div className="hero-glow hero-glow-b" aria-hidden />
-
-        <div className="relative mx-auto w-full max-w-6xl px-5 pb-20 pt-32 sm:px-8">
-          <Reveal immediate>
-            <p className="eyebrow section-rule">
-              AI systems for trades businesses · {site.city}, MN
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-32 sm:px-8 sm:pb-24 sm:pt-40 lg:grid-cols-[1.15fr_0.85fr]">
+          <div>
+            <p className="eyebrow section-rule">MN Clockworks · Maple Grove</p>
+            <h1 className="display mt-5 max-w-xl text-5xl sm:text-7xl">{hero.h1}</h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">{hero.sub}</p>
+            <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap">
+              <a
+                href={phone.tel}
+                className="btn-press inline-flex min-h-11 items-center justify-center rounded-[3px] bg-copper-deep px-5 py-3 font-medium text-cream-bright hover:bg-ink"
+              >
+                {primaryCta}
+              </a>
+              <button
+                type="button"
+                data-open-chat
+                className="btn-press inline-flex min-h-11 items-center justify-center rounded-[3px] border hairline bg-cream-bright px-5 py-3 font-medium text-ink hover:border-copper-deep"
+              >
+                {chatCta}
+              </button>
+            </div>
+            <p className="mt-4 text-ink-soft">
+              Call{" "}
+              <a href={phone.tel} className="font-medium text-ink underline decoration-copper underline-offset-4">
+                {phone.display}
+              </a>
             </p>
-          </Reveal>
-          <Reveal immediate delay={0.08}>
-            <h1 className="display mt-5 max-w-3xl text-[17vw] leading-[0.95] sm:text-8xl lg:text-[6.5rem]">
-              Get your <em className="text-copper">evenings</em> back<span className="text-copper">.</span>
-            </h1>
-          </Reveal>
-          <Reveal immediate delay={0.16}>
-            <p className="mt-7 max-w-xl text-[1.1rem] leading-relaxed text-ink-soft">
-              I build quiet, reliable systems for Twin Cities plumbing, HVAC, electrical, and
-              landscaping companies. They catch the calls you miss, chase the quotes you sent,
-              and keep the paperwork moving while you&rsquo;re on the job.
-            </p>
-          </Reveal>
-          <Reveal immediate delay={0.24}>
-            <div className="mt-9 flex flex-wrap items-center gap-5">
-              <MagneticButton href="/book/">{site.cta.label} →</MagneticButton>
-              <Link href="/how-it-works/" className="link-draw text-[0.95rem] text-ink-soft hover:text-ink">
-                See how it works
-              </Link>
-            </div>
-            <p className="mt-4 text-sm text-ink-faint">{site.cta.sub}</p>
-          </Reveal>
-          <Reveal immediate delay={0.32}>
-            <div className="mt-8 flex flex-wrap gap-2">
-              {TRUST.map((t) => (
-                <span
-                  key={t}
-                  className="trust-chip rounded-full border hairline bg-cream-bright/60 px-3 py-1.5 font-mono text-[0.68rem] tracking-wide text-ink-soft"
-                >
-                  <span className="text-copper">✓</span> {t}
-                </span>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-
-        <div className="relative border-t hairline bg-cream-bright/30">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4 sm:px-8">
-            <span className="eyebrow shrink-0">Built on the tools you already use</span>
-            <span className="hidden h-3 w-px bg-line sm:inline-block" aria-hidden />
-            <div className="flex flex-wrap gap-1.5">
-              {TOOLS.map((t) => (
-                <span
-                  key={t}
-                  className="rounded-[3px] border hairline-soft bg-paper px-2.5 py-1 font-mono text-[0.68rem] text-ink-soft"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
           </div>
+          <AgentOrbit />
         </div>
       </section>
 
-      {/* ---------- THE WEEK, BEFORE & AFTER ---------- */}
-      <section id="week" className="border-t hairline bg-cream-bright/40">
-        <div className="mx-auto max-w-6xl px-5 pt-20 sm:px-8 sm:pt-28">
+      <section id="why" className="border-t hairline bg-paper-deep">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
           <Reveal>
-            <p className="eyebrow section-rule">01 · The problem</p>
-            <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
-              The work isn&rsquo;t the problem. <em>The pile</em> is.
-            </h2>
-            <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
-              Missed calls, quiet quotes, unpaid invoices, reviews you meant to ask for. None of
-              it is hard. There&rsquo;s just no hour left in the day to do it. Here&rsquo;s what
-              one ordinary Tuesday looks like when the machine handles it instead.
-            </p>
-          </Reveal>
-        </div>
-        <WeekFlow />
-      </section>
-
-      {/* ---------- WHAT I DO ---------- */}
-      <section className="relative overflow-clip border-t hairline">
-        <span
-          className="pointer-events-none absolute -left-3 top-6 select-none font-display text-[9rem] leading-none text-ink/[0.04] sm:text-[13rem]"
-          aria-hidden
-        >
-          02
-        </span>
-        <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
-          <Reveal>
-            <p className="eyebrow section-rule">02 · What I do</p>
-            <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
-              Six systems. One quiet machine<span className="text-copper">.</span>
+            <p className="eyebrow section-rule">The work around the real job</p>
+            <h2 className="display mt-4 max-w-3xl text-4xl sm:text-6xl">
+              What I build handles the part that follows you home.
             </h2>
           </Reveal>
-          <div className="mt-12 grid gap-px overflow-hidden rounded-[4px] border hairline bg-line sm:grid-cols-2">
-            {SYSTEMS.map((s, i) => (
-              <Reveal key={s.n} delay={i * 0.055} variant="rise" className="card-lift group bg-paper p-7 hover:bg-cream-bright sm:p-9">
-                <div className="flex items-baseline justify-between">
-                  <span className="font-mono text-[0.7rem] tracking-[0.2em] text-copper">{s.code}</span>
-                  <span className="font-mono text-[0.7rem] text-ink-faint">{s.n}</span>
-                </div>
-                <h3 className="display mt-4 text-[1.7rem] leading-tight">{s.title}</h3>
-                <p className="mt-3 leading-relaxed text-ink-soft">{s.body}</p>
-                {"action" in s && (
-                  <button
-                    type="button"
-                    data-open-chat
-                    className="link-draw mt-4 text-[0.95rem] font-medium text-copper"
-                  >
-                    {s.action}
-                  </button>
-                )}
-                <p className="mt-6 border-t hairline-soft pt-4 font-mono text-[0.72rem] tracking-wide text-ink-faint">
-                  RUNS ON · {s.runs}
+          <div className="mt-10 grid gap-6 md:grid-cols-2">
+            <Reveal>
+              <div className="max-w-xl space-y-4 text-[1.08rem] leading-relaxed text-ink-soft">
+                <p>
+                  You are on a job, with a client, or under a house. The phone rings and stops. A quote sits there. An invoice stays open. The review ask slips your mind. Then the same questions come in again.
                 </p>
-              </Reveal>
-            ))}
+                <p>That pile is not the trade. It is the work around the trade. It still follows you home.</p>
+              </div>
+            </Reveal>
+            <Reveal delay={0.08}>
+              <ul className="grid gap-3">
+                {[
+                  "Callers you missed",
+                  "Quotes that went quiet",
+                  "Invoices still open",
+                  "Review asks you meant to send",
+                  "The same questions, again",
+                ].map((item) => (
+                  <li key={item} className="rounded-[3px] border hairline bg-cream-bright px-4 py-3 text-ink">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </div>
-          <Reveal className="mt-8">
-            <Link href="/what-i-do/" className="link-draw text-ink-soft hover:text-ink">
-              The full spec sheet →
-            </Link>
-          </Reveal>
+          <p className="mt-8 max-w-2xl text-lg text-ink">You talk, I listen.</p>
         </div>
       </section>
 
-      {/* ---------- TRY IT — interactive demos on the homepage ---------- */}
-      <section className="relative overflow-clip border-t hairline bg-paper-deep/60">
-        <span
-          className="pointer-events-none absolute -right-4 top-4 select-none font-display text-[10rem] leading-none text-copper/[0.06] sm:text-[14rem]"
-          aria-hidden
-        >
-          ▶
-        </span>
-        <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
+      <section id="team" className="border-t hairline">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
           <Reveal>
-            <p className="eyebrow">Go ahead. Poke it</p>
-            <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
-              Don&rsquo;t take my word for it. <em>Play with it</em><span className="text-copper">.</span>
+            <p className="eyebrow section-rule">Meet your AI team</p>
+            <h2 className="display mt-4 max-w-3xl text-4xl sm:text-6xl">
+              Each agent has one job. You approve what goes out.
             </h2>
-            <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
-              Every card below is a working demo running right here in your browser, on clearly-labeled
-              sample data. Text the missed-call bot back, run a week of quote follow-ups, poke the
-              dashboards. This is the actual stuff I build, rebuilt around your shop when it&rsquo;s yours.
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
+              The team drafts. You approve. Nothing goes out until you say so. Open a card for an example task and an example draft.
+            </p>
+          </Reveal>
+          <div className="mt-10">
+            <AgentCards />
+          </div>
+          <div className="mt-12">
+            <JobWalk />
+          </div>
+        </div>
+      </section>
+
+      <section id="industries" className="border-t hairline bg-paper-deep">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
+          <Reveal>
+            <p className="eyebrow section-rule">Where it fits</p>
+            <h2 className="display mt-4 max-w-3xl text-4xl sm:text-6xl">
+              Plumbing, HVAC, and electrical first. Real estate sits with them.
+            </h2>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
+              Landscaping is next. Property management, cleaning, and professional services are a fit too. These are examples of the work, not a client list, and not a market claim.
+            </p>
+          </Reveal>
+          <div className="mt-10">
+            <IndustryTabs />
+          </div>
+        </div>
+      </section>
+
+      <section id="how" className="border-t hairline">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
+          <Reveal>
+            <p className="eyebrow section-rule">How it works</p>
+            <h2 className="display mt-4 max-w-3xl text-4xl sm:text-6xl">
+              Visible steps. One screen-share setup.
+            </h2>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
+              Audit, optional assessment, setup together, test together, then a walkthrough. You watch it get built.
             </p>
           </Reveal>
           <div className="mt-12">
-            <DemoGallery />
+            <HowTimeline />
           </div>
-          <Reveal className="mt-8">
-            <Link href="/results/" className="link-draw text-ink-soft hover:text-ink">
-              More proof, and the honest &ldquo;early days&rdquo; part →
-            </Link>
-          </Reveal>
         </div>
       </section>
 
-      {/* ---------- VOICEMAIL ---------- */}
-      <section className="relative overflow-clip bg-ground text-paper">
-        {/* faint drafting tick-ring ornament */}
-        <svg
-          className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 opacity-[0.07] sm:opacity-[0.1]"
-          viewBox="-1.1 -1.1 2.2 2.2"
-          fill="none"
-          aria-hidden
-        >
-          {Array.from({ length: 60 }, (_, i) => {
-            const a = (i / 60) * Math.PI * 2;
-            const major = i % 5 === 0;
-            const r0 = 0.9;
-            const r1 = 0.9 + (major ? 0.08 : 0.04);
-            return (
-              <line
-                key={i}
-                x1={Math.cos(a) * r0}
-                y1={Math.sin(a) * r0}
-                x2={Math.cos(a) * r1}
-                y2={Math.sin(a) * r1}
-                stroke="#F5F1E8"
-                strokeWidth={major ? 0.012 : 0.007}
-              />
-            );
-          })}
-          <circle r="0.55" stroke="#D4582A" strokeWidth="0.014" />
-          <line x1="0" y1="0" x2="0" y2="-0.5" stroke="#D4582A" strokeWidth="0.016" />
-          <line x1="0" y1="0" x2="0.34" y2="0.2" stroke="#F5F1E8" strokeWidth="0.012" />
-        </svg>
-        <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
-          <Reveal>
-            <p className="max-w-2xl text-lg leading-relaxed text-paper/80">
-              Most callers who hit voicemail don&rsquo;t leave one. They call the next name on
-              the list. The first company to answer usually wins the job.{" "}
-              <span className="text-paper/50">
-                That&rsquo;s the whole pitch. Everything I build exists to make you first.
-              </span>
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ---------- HOW IT WORKS ---------- */}
-      <section className="border-t hairline">
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
-          <Reveal>
-            <p className="eyebrow section-rule">04 · How it works</p>
-            <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
-              Three steps. No mystery<span className="text-copper">.</span>
-            </h2>
-          </Reveal>
-          <div className="mt-12 grid gap-10 md:grid-cols-3">
-            {[
-              {
-                step: "STEP 1 · FREE",
-                title: "Phone audit",
-                body: "A free 15-minute phone audit. Call (763) 296-9777.",
-              },
-              {
-                step: "STEP 2 · $50",
-                title: "Online presence assessment",
-                body: "We check how your business shows up across search, AI assistants, and ratings and review sites.",
-              },
-              {
-                step: "STEP 3 · $500 ONE TIME",
-                title: "The deployment",
-                body: "We set up your AI team with you on a screen-share call, test it together, and walk you through how to use it.",
-              },
-            ].map((s, i) => (
-              <Reveal key={s.title} delay={i * 0.08} variant="rise" className="border-t-2 border-copper/70 pt-6">
-                <p className="font-mono text-[0.7rem] tracking-[0.18em] text-copper">{s.step}</p>
-                <h3 className="display mt-3 text-3xl">{s.title}</h3>
-                <p className="mt-3 leading-relaxed text-ink-soft">{s.body}</p>
-              </Reveal>
+      <section id="easy" className="border-t hairline bg-ground text-paper">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
+          <p className="eyebrow !text-copper section-rule">Why it is easy</p>
+          <h2 className="display mt-4 max-w-3xl text-4xl text-paper sm:text-6xl">
+            No IT project. No new app to learn.
+          </h2>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {easyPoints.map((point) => (
+              <article key={point.t} className="rounded-[4px] border border-white/15 bg-ground-soft p-5">
+                <h3 className="display text-2xl text-paper">{point.t}</h3>
+                <p className="mt-3 leading-relaxed text-paper/80">{point.d}</p>
+              </article>
             ))}
           </div>
-          <Reveal className="mt-10 max-w-2xl space-y-3 leading-relaxed text-ink-soft">
-            <p>Optional ongoing maintenance is available. Parker can walk you through it.</p>
-            <p>Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.</p>
-          </Reveal>
-          <Reveal className="mt-10">
-            <Link href="/how-it-works/" className="link-draw text-ink-soft hover:text-ink">
-              Exactly what happens in the audit →
-            </Link>
-          </Reveal>
         </div>
       </section>
 
-      {/* ---------- PROOF ---------- */}
-      <section className="border-t hairline bg-paper-deep">
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
-          <Reveal>
-            <p className="eyebrow">05 · Proof</p>
-            <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
-              I run these systems <em>every day</em><span className="text-copper">.</span>
-            </h2>
-            <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
-              Before I ever sold one, I built them for myself. Thirty-plus automations run my own
-              family&rsquo;s life and businesses right now: answering, scheduling, logging,
-              chasing. When I say &ldquo;it just runs,&rdquo; I&rsquo;m describing my Tuesday.
+      <section id="demo" className="border-t hairline">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-2">
+          <div>
+            <p className="eyebrow section-rule">Live demo</p>
+            <h2 className="display mt-4 text-4xl sm:text-6xl">The chat on this page is the product.</h2>
+            <p className="mt-5 text-lg leading-relaxed text-ink-soft">
+              Talk to the Front Desk right here. It is a working sample of the agent I set up with you. Yours answers from information you approve.
             </p>
-          </Reveal>
-          <Reveal className="mt-8" delay={0.1}>
-            <Link href="/results/" className="link-draw text-ink-soft hover:text-ink">
-              See the receipts →
-            </Link>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ---------- ABOUT TEASER ---------- */}
-      <section className="border-t hairline">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-20 sm:px-8 sm:py-28 md:grid-cols-[1fr_1.4fr]">
-          <Reveal className="mx-auto w-full max-w-xs">
-            <div className="rounded-[4px] border hairline bg-cream-bright p-2 shadow-[0_20px_50px_-30px_rgba(26,25,22,0.4)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={asset("/media/parker.jpg")}
-                alt="Parker Swanson, founder of MN Clockworks"
-                className="aspect-[4/5] w-full rounded-[2px] object-cover"
-                loading="lazy"
-              />
-              <p className="px-2 py-3 font-mono text-[0.7rem] tracking-wider text-ink-faint">
-                PARKER SWANSON · MAPLE GROVE, MN
+            <button
+              type="button"
+              data-open-chat
+              className="btn-press mt-8 inline-flex min-h-11 items-center justify-center rounded-[3px] bg-ink px-5 py-3 font-medium text-paper hover:bg-copper-deep"
+            >
+              {chatCta}
+            </button>
+          </div>
+          <div className="rounded-[4px] border hairline bg-cream-bright p-6">
+            <p className="font-mono text-[0.7rem] tracking-[0.16em] text-copper-deep">EXAMPLE</p>
+            <p className="mt-3 text-sm text-ink-faint">A sample exchange. Not a customer. Not a result.</p>
+            <div className="mt-5 space-y-3">
+              <p className="max-w-[90%] rounded-[12px] bg-paper-deep px-4 py-3 text-[0.95rem] leading-relaxed">
+                Do you handle water heaters, and can someone call me back?
+              </p>
+              <p className="ml-auto max-w-[90%] rounded-[12px] bg-copper-deep px-4 py-3 text-[0.95rem] leading-relaxed text-cream-bright">
+                We do. I can draft a reply that asks for the address and a good time for a call back. You approve it before it sends.
               </p>
             </div>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="eyebrow">06 · Who you&rsquo;re dealing with</p>
-            <h2 className="display mt-4 text-4xl sm:text-5xl">
-              One guy. Local. Reachable<span className="text-copper">.</span>
-            </h2>
-            <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
-              I&rsquo;m Parker. I&rsquo;ve spent a decade-plus running technical operations for a
-              national smart-home company by day, and I live in Maple Grove with my wife and two
-              kids. I built this business for one reason: owners around here work too hard to
-              lose jobs to a full voicemail box. When you call, you get me, not a sales team.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-5">
-              <Link href="/about/" className="link-draw text-ink-soft hover:text-ink">
-                The longer story →
-              </Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ---------- FAQ ---------- */}
-      <section className="border-t hairline">
-        <div className="mx-auto max-w-3xl px-5 py-20 sm:px-8 sm:py-28">
-          <Reveal>
-            <p className="eyebrow section-rule">07 · Straight answers</p>
-            <h2 className="display mt-4 text-4xl sm:text-5xl">
-              The stuff you&rsquo;d actually ask<span className="text-copper">.</span>
-            </h2>
-          </Reveal>
-          <div className="mt-10 divide-y divide-line-soft border-y hairline-soft">
-            {FAQS.map((f, i) => (
-              <Reveal key={f.q} as="div" delay={i * 0.045} variant="rise">
-                <details className="faq-item group py-5 marker:content-none">
-                  <summary className="flex cursor-pointer list-none items-baseline justify-between gap-6 text-lg font-medium [&::-webkit-details-marker]:hidden">
-                    {f.q}
-                    <span
-                      aria-hidden
-                      className="font-mono text-copper transition-transform duration-300 group-open:rotate-45"
-                    >
-                      +
-                    </span>
-                  </summary>
-                  <p className="mt-3 max-w-xl leading-relaxed text-ink-soft">{f.a}</p>
-                </details>
-              </Reveal>
-            ))}
+            <p className="mt-5 text-sm text-ink-soft">The team drafts. You approve. Nothing goes out until you say so.</p>
           </div>
         </div>
       </section>
 
-      <AuditCTA />
+      <section id="pricing" className="border-t hairline bg-paper-deep">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
+          <Reveal>
+            <p className="eyebrow section-rule">Pricing</p>
+            <h2 className="display mt-4 max-w-3xl text-4xl sm:text-6xl">Plain prices. Three of them.</h2>
+          </Reveal>
+          <div className="mt-10">
+            <PricingBlock />
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="border-t hairline">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 sm:px-8 sm:py-24 md:grid-cols-[0.8fr_1.2fr]">
+          <div className="mx-auto w-full max-w-sm rounded-[4px] border hairline bg-cream-bright p-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={asset("/media/parker.jpg")}
+              alt="Parker Swanson"
+              width={640}
+              height={800}
+              loading="lazy"
+              className="aspect-[4/5] w-full rounded-[2px] object-cover"
+            />
+            <p className="px-2 py-3 font-mono text-[0.7rem] tracking-wider text-ink-faint">PARKER SWANSON · MAPLE GROVE</p>
+          </div>
+          <div>
+            <p className="eyebrow section-rule">About Parker</p>
+            <h2 className="display mt-4 text-4xl sm:text-6xl">I live in Maple Grove. I do this work myself.</h2>
+            <div className="mt-6 max-w-xl space-y-4 text-[1.05rem] leading-relaxed text-ink-soft">
+              <p>
+                I&rsquo;m Parker Swanson. I live in Maple Grove, Minnesota, with my wife Melissa and our two kids. I spent more than a decade running technical operations and account teams for a national smart-home security company.
+              </p>
+              <p>
+                MN Clockworks is me. I set the team up with you on a screen-share call, and I answer my own phone. Faith and family come first, which is why I care about the work that follows you home.
+              </p>
+              <p>{ownershipLine}</p>
+            </div>
+            <Link href="/about/" className="link-draw mt-6 inline-block text-ink">
+              More about Parker
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" className="border-t hairline bg-paper-deep">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
+          <p className="eyebrow section-rule">FAQ</p>
+          <h2 className="display mt-4 text-4xl sm:text-6xl">Straight answers.</h2>
+          <div className="mt-10">
+            <FaqList />
+          </div>
+        </div>
+      </section>
+
+      <FinalBand />
     </>
   );
 }

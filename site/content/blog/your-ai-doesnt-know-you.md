@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "Your AI doesn’t know you. That’s why every answer feels generic."
 date: "2026-05-22"
 description: "The Clockworks pivot, explained. Why I’m moving from workflow automation to AI integration, what a Context Vault is, and why your AI keeps giving generic answers."

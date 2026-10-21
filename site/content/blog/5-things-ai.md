@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "5 Things AI Can Do For Your Business This Week (Real, Specific, Free)"
 date: "2026-04-20"
 description: "No subscriptions required. No tech skills needed. Just five things you can try before Friday."

@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "The AI Myths Costing Small Businesses Real Money"
 date: "2026-04-27"
 description: "Five beliefs about AI that keep business owners stuck, and the honest truth behind each one."

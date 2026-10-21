@@ -1,87 +1,105 @@
 import { Link } from "next-view-transitions";
-import { legacy, nav, site } from "@/lib/site";
 import LogoMark from "@/components/LogoMark";
+import { nav, site } from "@/lib/site";
+import { agreementLine, phone } from "@/lib/copy";
+
+const pages = [
+  { href: "/how-it-works/", label: "How it works" },
+  { href: "/what-i-do/", label: "The agent team" },
+  { href: "/your-own-agent/", label: "Front Desk" },
+  { href: "/about/", label: "About Parker" },
+  { href: "/book/", label: "Send a note" },
+] as const;
 
 export default function Footer() {
+  const beforeTerms = agreementLine.split("Starter Terms")[0];
   return (
     <footer className="bg-ground text-paper">
-      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
-        <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="eyebrow !text-copper">The hidden mechanism behind small business</p>
-            <p className="display mt-4 max-w-md text-4xl sm:text-5xl">
-              Get your evenings <span className="italic">back</span>
-              <span className="text-copper">.</span>
-            </p>
-          </div>
-          <Link
-            href="/book/"
-            className="btn-press inline-flex w-fit items-center gap-3 rounded-[3px] bg-copper px-7 py-3.5 font-medium text-cream-bright hover:bg-copper-deep"
-          >
-            {site.cta.label}
-            <span aria-hidden>→</span>
-          </Link>
+      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
+        <div className="flex items-center gap-3">
+          <LogoMark tone="paper" className="h-9 w-9" />
+          <p className="display text-3xl">
+            Clockworks<span className="text-copper">.</span>
+          </p>
         </div>
+        <p className="mt-4 max-w-md text-[1.02rem] leading-relaxed text-paper/80">
+          A real team of AI agents for your business, each with its own job, set up with you on one screen-share call.
+        </p>
 
-        <div className="mt-16 grid grid-cols-2 gap-10 border-t border-white/10 pt-10 text-[0.9rem] sm:grid-cols-4">
+        <div className="mt-12 grid gap-10 border-t border-white/15 pt-10 sm:grid-cols-3">
           <div>
-            <p className="eyebrow mb-4">Pages</p>
+            <p className="eyebrow mb-4 !text-paper/70">On this page</p>
             <ul className="space-y-2.5">
               {nav.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className="text-paper/70 transition-colors hover:text-paper">
+                  <a href={item.href} className="text-paper/80 hover:text-paper">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="eyebrow mb-4 !text-paper/70">Pages</p>
+            <ul className="space-y-2.5">
+              {pages.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="text-paper/80 hover:text-paper">
                     {item.label}
                   </Link>
                 </li>
               ))}
               <li>
-                <Link href="/book/" className="text-paper/70 transition-colors hover:text-paper">
-                  Book your audit
+                <a href="/portal/client/" className="text-paper/80 hover:text-paper">
+                  Client login
+                </a>
+              </li>
+              <li>
+                <Link href="/terms/" className="text-paper/80 hover:text-paper">
+                  Starter Terms
                 </Link>
+              </li>
+              <li>
+                <a href="/privacy/" className="text-paper/80 hover:text-paper">
+                  Privacy Notice
+                </a>
               </li>
             </ul>
           </div>
           <div>
-            <p className="eyebrow mb-4">More</p>
+            <p className="eyebrow mb-4 !text-paper/70">Contact</p>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/your-own-agent/" className="text-paper/70 transition-colors hover:text-paper">
-                  Your own agent
-                </Link>
-              </li>
-              <li>
-                <a href={legacy.privacy} className="text-paper/70 transition-colors hover:text-paper">
-                  Privacy
+                <a href={phone.tel} className="font-medium text-paper underline decoration-copper underline-offset-4">
+                  {phone.display}
                 </a>
               </li>
               <li>
-                <a href={legacy.terms} className="text-paper/70 transition-colors hover:text-paper">
-                  Terms
+                <a href={`mailto:${site.email}`} className="text-paper/80 underline decoration-white/30 underline-offset-4 hover:text-paper">
+                  {site.email}
                 </a>
               </li>
             </ul>
           </div>
-          <div className="col-span-2">
-            <p className="eyebrow mb-4">Contact</p>
-            <Link
-              href="/book/"
-              className="font-medium text-paper underline decoration-copper/60 underline-offset-4 hover:decoration-copper"
-            >
-              Send a message →
-            </Link>
-            <p className="mt-3 max-w-xs text-paper/55">
-              Serving Minnesota businesses remotely by phone and screen share.
-            </p>
-          </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-[0.8rem] text-paper/40 sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex items-center gap-2">
-            <LogoMark tone="paper" className="h-4 w-4 opacity-60" />
-            © {new Date().getFullYear()} MN Clockworks · PGS Ventures LLC
-          </p>
-          <p className="font-mono tracking-wide">Built in Minnesota. Runs like clockwork.</p>
-        </div>
+        <p className="mt-10 max-w-2xl leading-relaxed text-paper/80">
+          {beforeTerms}
+          <Link href="/terms/" className="underline decoration-copper underline-offset-4">
+            Starter Terms
+          </Link>{" "}
+          and{" "}
+          <a href="/privacy/" className="underline decoration-copper underline-offset-4">
+            Privacy Notice
+          </a>{" "}
+          before you buy.
+        </p>
+        <p className="mt-4 text-paper/80">Serving Minnesota businesses by phone and screen share.</p>
+
+        <p className="mt-10 flex items-center gap-2 border-t border-white/15 pt-6 text-[0.85rem] text-paper/70">
+          <LogoMark tone="paper" className="h-4 w-4 opacity-70" />
+          © {new Date().getFullYear()} MN Clockworks · PGS Ventures LLC
+        </p>
       </div>
     </footer>
   );

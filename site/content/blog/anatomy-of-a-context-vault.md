@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "Anatomy of a Context Vault"
 date: "2026-06-01"
 description: "The seven sections that make up the “memory” your AI is missing, and why one document changes the quality of every answer you get out of it."

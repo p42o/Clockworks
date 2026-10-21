@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "Heating Season Is (Partly) a Software Problem Now"
 date: "2026-10-06"
 description: "The first cold snap turns every HVAC phone into a queue. A DIY prep checklist any owner can run this week, and where a built system takes over."

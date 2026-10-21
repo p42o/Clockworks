@@ -40,8 +40,8 @@ function Chip({
       aria-pressed={selected}
       className={`rounded-[3px] border px-4 py-2.5 text-[0.95rem] transition-all duration-200 ${
         selected
-          ? "border-copper bg-copper text-cream-bright shadow-[0_8px_20px_-10px_rgba(212,88,42,0.6)]"
-          : "hairline bg-cream-bright/70 text-ink-soft hover:border-copper/60 hover:text-ink"
+          ? "border-copper-deep bg-copper-deep text-cream-bright"
+          : "hairline bg-cream-bright/70 text-ink-soft hover:border-copper-deep hover:text-ink"
       }`}
     >
       {label}
@@ -171,20 +171,22 @@ export default function AuditFlow() {
         transition={spring}
         className="rounded-[4px] border-2 border-patina/50 bg-patina-soft/40 p-8 sm:p-12"
       >
-        <p className="font-mono text-[0.7rem] tracking-[0.2em] text-patina">ON THE BOOKS</p>
+        <p className="font-mono text-[0.7rem] tracking-[0.2em] text-patina">REQUEST RECEIVED</p>
         <h2 className="display mt-3 text-4xl sm:text-5xl">
-          Done. That was the whole form<span className="text-patina">.</span>
+          Got it. This form does not book a time<span className="text-patina">.</span>
         </h2>
         <div className="mt-5 max-w-xl space-y-4 text-[1.05rem] leading-relaxed text-ink-soft">
           <p>
-            Your request just landed on my phone. Parker will follow up at{" "}
-            <span className="font-medium text-ink">{form.email}</span>.
-            A real reply from a real person, which is a little ironic given what I sell.
+            I can&rsquo;t book a time from this form. Parker will reach out at{" "}
+            <span className="font-medium text-ink">{form.email}</span>
+            {form.preferred ? ` (you said ${form.preferred.toLowerCase()} works best)` : ""}.
           </p>
           <p>
-            We&rsquo;ll pick a time that fits around your jobs
-            {form.preferred ? ` (you said ${form.preferred.toLowerCase()} works best)` : ""}, and
-            we&rsquo;ll talk for 15 minutes on the phone. No pitch, no pressure.
+            If you would rather talk now, call{" "}
+            <a href="tel:+17632969777" className="font-medium text-ink underline underline-offset-2">
+              (763) 296-9777
+            </a>{" "}
+            for the free 15-minute phone audit.
           </p>
         </div>
         <p className="mt-6 font-mono text-[0.75rem] text-ink-faint">
@@ -394,9 +396,9 @@ export default function AuditFlow() {
             type="button"
             onClick={onSubmit}
             disabled={state === "sending"}
-            className="rounded-[3px] bg-copper px-7 py-3 font-medium text-cream-bright shadow-[0_12px_32px_-14px_rgba(212,88,42,0.6)] transition-colors duration-300 hover:bg-copper-deep disabled:opacity-60"
+            className="min-h-11 rounded-[3px] bg-copper-deep px-7 py-3 font-medium text-cream-bright transition-colors duration-300 hover:bg-ink disabled:opacity-60"
           >
-            {state === "sending" ? "Winding it up…" : "Book my free audit"}
+            {state === "sending" ? "Sending…" : "Send my request"}
           </button>
         )}
       </div>

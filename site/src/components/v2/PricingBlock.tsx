@@ -1,0 +1,70 @@
+import { Link } from "next-view-transitions";
+import {
+  agreementLine,
+  assessmentCta,
+  assessmentLine,
+  deploymentLine,
+  maintenanceLine,
+  phone,
+  primaryCta,
+  quoteLine,
+} from "@/lib/copy";
+
+const cards = [
+  {
+    kicker: "Start here",
+    title: "Free 15-minute phone audit",
+    body: "A phone call. You talk, I listen. Call (763) 296-9777.",
+    action: primaryCta,
+    href: phone.tel,
+  },
+  {
+    kicker: "Optional",
+    title: "$50 online presence assessment",
+    body: assessmentLine,
+    action: assessmentCta,
+    href: phone.tel,
+  },
+  {
+    kicker: "The setup",
+    title: "$500 one-time deployment",
+    body: deploymentLine,
+    action: "Call about the deployment",
+    href: phone.tel,
+  },
+] as const;
+
+export default function PricingBlock() {
+  return (
+    <div>
+      <div className="grid gap-4 lg:grid-cols-3">
+        {cards.map((card) => (
+          <article key={card.title} className="flex flex-col rounded-[4px] border hairline bg-cream-bright p-6">
+            <p className="eyebrow">{card.kicker}</p>
+            <h3 className="display mt-3 text-3xl">{card.title}</h3>
+            <p className="mt-4 flex-1 leading-relaxed text-ink-soft">{card.body}</p>
+            <a
+              href={card.href}
+              className="btn-press mt-6 inline-flex min-h-11 items-center justify-center rounded-[3px] bg-copper-deep px-4 py-3 text-center text-[0.95rem] font-medium text-cream-bright hover:bg-ink"
+            >
+              {card.action}
+            </a>
+          </article>
+        ))}
+      </div>
+      <p className="mt-8 max-w-3xl text-[1.05rem] leading-relaxed text-ink">{maintenanceLine}</p>
+      <p className="mt-4 max-w-3xl leading-relaxed text-ink-soft">
+        {agreementLine.split("Starter Terms")[0]}
+        <Link href="/terms/" className="text-copper-deep underline underline-offset-2">
+          Starter Terms
+        </Link>{" "}
+        and{" "}
+        <a href="/privacy/" className="text-copper-deep underline underline-offset-2">
+          Privacy Notice
+        </a>{" "}
+        before you buy.
+      </p>
+      <p className="mt-4 max-w-3xl text-ink-soft">{quoteLine}</p>
+    </div>
+  );
+}

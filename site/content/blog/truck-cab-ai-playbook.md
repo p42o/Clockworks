@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "A Truck-Cab AI Playbook: An Illustrative Example"
 date: "2026-05-05"
 description: "Five automation ideas I would consider for a hypothetical Twin Cities trade business."

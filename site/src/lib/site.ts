@@ -4,23 +4,23 @@ export const site = {
   email: "parker@mnclockworks.com",
   owner: "Parker Swanson",
   city: "Maple Grove",
-  region: "MN",
-  area: "Twin Cities, Minnesota",
+  region: "Minnesota",
+  area: "Minnesota (Twin Cities)",
   description:
-    "Practical AI systems for Twin Cities trades businesses: plumbing, HVAC, electrical, landscaping. Never miss a call, chase every quote, get your evenings back.",
+    "I'm Parker, in Maple Grove. I set up an AI team of agents for the messages, quotes, and paperwork that pile up while you're working. You share your screen. I do the setup and explain what I'm doing.",
   cta: {
-    label: "Book your free audit",
-    sub: "15 minutes on the phone, no pitch.",
+    label: "Get my free 15-minute phone audit",
+    sub: "Call (763) 296-9777",
   },
 } as const;
 
+/** Homepage anchors. Other pages prefix these with the site root. */
 export const nav = [
-  { href: "/what-i-do/", label: "What I do" },
-  { href: "/your-own-agent/", label: "Your own agent" },
-  { href: "/how-it-works/", label: "How it works" },
-  { href: "/results/", label: "Results" },
-  { href: "/blog/", label: "Field notes" },
-  { href: "/about/", label: "About" },
+  { href: "/#team", label: "Team" },
+  { href: "/#how", label: "How it works" },
+  { href: "/#industries", label: "Industries" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/#faq", label: "FAQ" },
 ] as const;
 
 /** Legacy pages that live outside the Next app — always plain <a>, never Link. */

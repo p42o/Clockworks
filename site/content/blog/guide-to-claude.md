@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "The Small Business Owner's Guide to Claude: No Tech Background Needed"
 date: "2026-04-13"
 description: "Claude is one of the most useful AI tools available right now. Here's how to actually use it."

@@ -2,36 +2,32 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import DemoShell, { CHART } from "@/components/demos/DemoShell";
-import { BarRows, StatTile } from "@/components/demos/ChartBits";
 
 const API = "https://clockworks-bot.vercel.app/api/chat";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const STARTERS = [
   "What do you actually do?",
-  "I miss calls all the time",
-  "What does this cost?",
+  "I miss calls while I'm on a job",
+  "How does setup work?",
   "Prove you're not a dumb chatbot",
 ];
 
-/* Rotating input hints while the chat is empty — lowers the "what do I even ask" barrier. */
 const HINTS = [
-  "Type like you'd text…",
-  "Try: “What does this actually cost?”",
-  "Try: “I miss calls all the time”",
-  "Try: “Would this work for a two-truck shop?”",
+  "Ask a question",
+  "Try: what does the team do?",
+  "Try: I miss calls while I'm on a job",
+  "Try: would this fit a small shop?",
 ];
 
-/* Two-beat invitation: a friendly hello, then one gentle re-invite if it was ignored. */
 const NUDGES = [
   {
-    lead: "Hey, I’m the front desk.",
-    body: "Not a menu bot; the real thing, live. Ask me anything about getting your evenings back.",
+    lead: "Hey, I'm the Front Desk.",
+    body: "Ask me what the team does. The chat on this page is the product.",
   },
   {
-    lead: "Still browsing? I can shortcut it.",
-    body: "Pricing, timelines, whether this fits your shop: asking me is faster than scrolling.",
+    lead: "Still looking?",
+    body: "Ask what the team does, or whether it fits your shop.",
   },
 ] as const;
 
@@ -50,52 +46,12 @@ function track(name: string) {
   }
 }
 
-function InsightsSample({ open, onClose }: { open: boolean; onClose: () => void }) {
-  return (
-    <DemoShell
-      open={open}
-      onClose={onClose}
-      title="What an owner learns from a chat like this"
-      code="SAMPLE · HVAC SHOP"
-      assumptions="A fictional HVAC company's month of website-agent conversations. Yours would be your real customers."
-    >
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatTile label="Conversations" value="214" delta="+38 vs prior month" good />
-        <StatTile label="Became leads" value="41" delta="19% of chats" good />
-        <StatTile label="Booked jobs" value="17" delta="via calendar link" good />
-        <StatTile label="After-hours chats" value="46%" delta="you were asleep" />
-      </div>
-      <div className="mt-4 rounded-[3px] border hairline bg-cream-bright/60 p-4">
-        <p className="mb-3 font-mono text-[0.62rem] tracking-[0.16em] text-ink-faint">WHAT CUSTOMERS KEPT ASKING (TOP 5)</p>
-        <BarRows unit="" color={CHART.copper} rows={[
-          { label: "“How much is an AC tune-up?”", value: 48 },
-          { label: "“Do you service my area?”", value: 39 },
-          { label: "“Financing available?”", value: 27 },
-          { label: "“How fast can someone come?”", value: 24 },
-          { label: "“Furnace making a noise…”", value: 19 },
-        ]} />
-      </div>
-      <div className="mt-3 rounded-[3px] border-l-2 border-copper bg-ember/30 px-4 py-3 text-[0.82rem] leading-relaxed">
-        <strong>What the desk would tell this owner:</strong> price questions dominate. Publishing
-        a tune-up price would convert more chats; 46% of conversations happen after hours, so the
-        agent is your night shift; “financing” came up 27 times and isn&rsquo;t on the website.
-        Demand signals from real conversations, not guesses.
-      </div>
-      <p className="mt-4 text-center text-[0.8rem] text-ink-faint">
-        The bubble you just used logs and learns exactly like this, for Parker.{" "}
-        <a href="/your-own-agent/" className="text-copper underline underline-offset-2">Your own agent →</a>
-      </p>
-    </DemoShell>
-  );
-}
-
 export default function ChatWidget() {
   const reduced = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
-  const [insights, setInsights] = useState(false);
   const [nudge, setNudge] = useState<0 | 1 | 2>(0);
   const [hint, setHint] = useState(0);
   const scroller = useRef<HTMLDivElement>(null);
@@ -207,7 +163,7 @@ export default function ChatWidget() {
       const j = await r.json();
       setMsgs([...next, { role: "assistant", content: j.reply ?? "…" }]);
     } catch {
-      setMsgs([...next, { role: "assistant", content: "Connection hiccup. Try that again in a second." }]);
+      setMsgs([...next, { role: "assistant", content: "Connection hiccup. Try that again." }]);
     } finally {
       setBusy(false);
     }
@@ -215,8 +171,6 @@ export default function ChatWidget() {
 
   return (
     <>
-      <InsightsSample open={insights} onClose={() => setInsights(false)} />
-
       {/* ---- launcher ---- */}
       <div className="fixed bottom-5 right-5 z-[70] flex flex-col items-end gap-3">
         {/* peek nudge — a hello on arrival, one gentle re-invite for deep scrollers */}
@@ -248,7 +202,7 @@ export default function ChatWidget() {
                   setNudge(0);
                 }}
                 aria-label="Dismiss"
-                className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border hairline bg-paper text-[0.62rem] text-ink-faint transition-colors hover:text-copper"
+                className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full border hairline bg-paper text-[0.75rem] text-ink-faint transition-colors hover:text-copper-deep"
               >
                 ✕
               </button>
@@ -295,7 +249,7 @@ export default function ChatWidget() {
           {!open && (
             <span
               className="absolute right-0.5 top-0.5 h-3.5 w-3.5 rounded-full border-[2.5px] border-paper"
-              style={{ background: CHART.pine }}
+              style={{ background: "#3c5a4a" }}
               aria-hidden
             />
           )}
@@ -315,10 +269,10 @@ export default function ChatWidget() {
           >
             <div className="border-b hairline bg-ground px-4 py-3 text-paper">
               <p className="display text-lg leading-none">The Front Desk<span className="text-copper">.</span></p>
-              <p className="mt-1 text-[0.7rem] text-paper/60">
-                Live demo. This bot IS the product.{" "}
-                <a href="/your-own-agent/" className="text-copper underline underline-offset-2" title="Learn more about having your own agent">
-                  Get one for your shop →
+              <p className="mt-1 text-[0.75rem] text-paper/75">
+                The chat on this page is the product.{" "}
+                <a href="/your-own-agent/" className="text-copper underline underline-offset-2">
+                  About the Front Desk
                 </a>
               </p>
             </div>
@@ -326,17 +280,16 @@ export default function ChatWidget() {
             <div ref={scroller} aria-live="polite" className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-3.5 py-4">
               {msgs.length === 0 && (
                 <div className="m-auto text-center">
-                  <p className="font-mono text-[0.6rem] tracking-[0.18em] text-ink-faint">
-                    NO SCRIPTS · NO MENUS · REAL AI
+                  <p className="font-mono text-[0.68rem] tracking-[0.16em] text-ink-faint">
+                    FRONT DESK · EXAMPLE ON THIS SITE
                   </p>
                   <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                    I&rsquo;m the front desk, trained on this business the way yours would be
-                    trained on yours. Poke at me, interrogate me, try to break me. That&rsquo;s
-                    what I&rsquo;m here for.
+                    I&rsquo;m the Front Desk, trained on this business the way yours would be
+                    trained on yours. Ask what the team does. You approve what goes out on your own.
                   </p>
                   <div className="mt-4 flex flex-wrap justify-center gap-2">
                     {STARTERS.map((s) => (
-                      <button key={s} type="button" onClick={() => send(s)} className="rounded-full border border-copper/50 px-3 py-1.5 text-[0.78rem] text-copper transition-colors hover:bg-copper hover:text-cream-bright">
+                      <button key={s} type="button" onClick={() => send(s)} className="min-h-8 rounded-full border border-copper-deep/50 px-3 py-1.5 text-[0.78rem] text-copper-deep transition-colors hover:bg-copper-deep hover:text-cream-bright">
                         {s}
                       </button>
                     ))}
@@ -344,7 +297,7 @@ export default function ChatWidget() {
                 </div>
               )}
               {msgs.map((m, i) => (
-                <div key={i} className={`max-w-[86%] whitespace-pre-wrap rounded-[12px] px-3.5 py-2.5 text-[0.86rem] leading-snug ${m.role === "assistant" ? "self-start bg-paper-deep text-ink" : "self-end bg-copper text-cream-bright"}`}>
+                <div key={i} className={`max-w-[86%] whitespace-pre-wrap rounded-[12px] px-3.5 py-2.5 text-[0.86rem] leading-snug ${m.role === "assistant" ? "self-start bg-paper-deep text-ink" : "self-end bg-copper-deep text-cream-bright"}`}>
                   {m.content}
                 </div>
               ))}
@@ -363,17 +316,14 @@ export default function ChatWidget() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && send(input)}
-                  placeholder={msgs.length === 0 ? HINTS[hint] : "Type like you'd text…"}
+                  placeholder={msgs.length === 0 ? HINTS[hint] : "Ask a question"}
                   className="flex-1 rounded-[3px] border hairline bg-cream-bright px-3 py-2 text-[0.88rem] focus:border-copper focus:outline-none"
                   aria-label="Message the Front Desk"
                 />
-                <button type="button" onClick={() => send(input)} disabled={busy || !input.trim()} className="rounded-[3px] bg-ink px-4 text-paper transition-colors hover:bg-copper disabled:opacity-40">
-                  →
+                <button type="button" onClick={() => send(input)} disabled={busy || !input.trim()} className="min-h-11 min-w-11 rounded-[3px] bg-ink px-4 text-paper transition-colors hover:bg-copper-deep disabled:opacity-40">
+                  Send
                 </button>
               </div>
-              <button type="button" onClick={() => setInsights(true)} className="mt-2 w-full text-center font-mono text-[0.65rem] tracking-[0.12em] text-ink-faint underline-offset-2 hover:text-copper hover:underline">
-                ⚙ SEE WHAT AN OWNER LEARNS FROM CHATS LIKE THIS
-              </button>
             </div>
           </motion.div>
         )}

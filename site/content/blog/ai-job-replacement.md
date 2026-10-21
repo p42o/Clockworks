@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "Should You Be Worried About AI Replacing Your Job? My Honest Answer."
 date: "2026-06-08"
 description: "Not a hot take. Not reassurance. Just what I actually think, and what you can do about it."

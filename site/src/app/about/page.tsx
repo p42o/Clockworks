@@ -1,30 +1,34 @@
 import type { Metadata } from "next";
+import { Link } from "next-view-transitions";
 import Reveal from "@/components/Reveal";
-import AuditCTA from "@/components/AuditCTA";
-import { asset, site } from "@/lib/site";
+import FinalBand from "@/components/v2/FinalBand";
+import { asset } from "@/lib/site";
+import { ownershipLine, phone, quoteLine } from "@/lib/copy";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About Parker",
   description:
-    "Parker Swanson, Maple Grove, MN. A decade-plus of technical operations, now building practical AI systems so Twin Cities trades owners can be home for dinner.",
+    "Parker Swanson, Maple Grove, Minnesota. I set up AI teams myself, on a screen-share call, for Minnesota businesses.",
+  alternates: { canonical: "/about/" },
+  openGraph: {
+    title: "About Parker",
+    description:
+      "Parker Swanson, Maple Grove, Minnesota. I set up AI teams myself, on a screen-share call, for Minnesota businesses.",
+    url: "/about/",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+  },
 };
 
-const VALUES = [
-  {
-    t: "Confirmed in writing",
-    d: "Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.",
-  },
-  {
-    t: "Your accounts",
-    d: "Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform accounts.",
-  },
+const values = [
+  { t: "Confirmed in writing", d: quoteLine },
+  { t: "Your account", d: ownershipLine },
   {
     t: "Small on purpose",
-    d: "I take a few clients at a time and do the work myself. You will never be handed to an account manager, because there isn't one.",
+    d: "I do the work myself. You will not be handed to an account manager, because there isn't one.",
   },
   {
-    t: "No robots pretending",
-    d: "The systems answer fast and sound human because you approved the words, but the moment a conversation needs a person, it hands off to one. That's a feature, not an apology.",
+    t: "You approve the words",
+    d: "The team drafts. You approve. Nothing goes out until you say so. When a conversation needs a person, it comes to one.",
   },
 ] as const;
 
@@ -35,62 +39,38 @@ export default function About() {
         <div className="grid items-start gap-12 md:grid-cols-[1.4fr_1fr]">
           <div>
             <Reveal>
-              <p className="eyebrow">The person behind the machine</p>
-              <h1 className="display mt-4 text-5xl sm:text-7xl">
-                Hi, I&rsquo;m Parker<span className="text-copper">.</span>
-              </h1>
+              <p className="eyebrow section-rule">The person who does the work</p>
+              <h1 className="display mt-4 text-5xl sm:text-7xl">Hi, I&rsquo;m Parker.</h1>
             </Reveal>
             <Reveal delay={0.08}>
               <div className="mt-7 max-w-xl space-y-5 text-[1.08rem] leading-relaxed text-ink-soft">
                 <p>
-                  I live in Maple Grove with my wife Melissa and our two kids. By day I&rsquo;ve
-                  spent over a decade running technical operations and account teams for a
-                  national smart-home security company, the kind of job where things have to
-                  work at 2am, for real customers, or somebody&rsquo;s phone rings.
+                  I live in Maple Grove, Minnesota, with my wife Melissa and our two kids. I spent more than a decade running technical operations and account teams for a national smart-home security company, the kind of job where the system has to work for a real customer.
                 </p>
                 <p>
-                  A few years ago I started building AI systems for my own life: assistants
-                  that answer, schedulers that schedule, paperwork that files itself. It got a
-                  little out of hand, in the best way. More than thirty of them run my
-                  household and side projects today.
+                  I started building AI systems for my own life first: assistants that answer, schedulers that schedule, paperwork that moves. Then I watched owners around me quoting jobs at the kitchen table and losing calls to a full voicemail box.
                 </p>
                 <p>
-                  Then I watched the owners around me, the people who fix our sinks and
-                  furnaces and yards, quoting jobs at their kitchen tables at 9pm, losing
-                  weekend calls to a full voicemail box. The gap was obvious: this technology
-                  is ready for the trades, but the people selling it are agencies with sales
-                  scripts, or faceless apps from three time zones away.
+                  MN Clockworks is my answer. One local person sets up the team with you, shows you the price, and answers his own phone. The name is the idea: a good system should be like a good clock. You don&rsquo;t have to think about it.
                 </p>
                 <p>
-                  MN Clockworks is my answer: one local person who builds the machine, shows
-                  you the price, and answers his own phone. The name is the promise: a good
-                  system should be like a good clock. You don&rsquo;t think about it.
-                  It just keeps your time.
-                </p>
-                <p className="italic text-ink-faint">
-                  Faith and family first here, which is exactly why I build things that give
-                  evenings back. I want your Tuesday dinner table to get you back, too.
+                  Faith and family come first, which is why I build things that take the after-hours pile off the table. Setup is a screen-share call. Call {phone.display}.
                 </p>
               </div>
             </Reveal>
           </div>
-          <Reveal delay={0.15} className="md:sticky md:top-28">
-            <div className="mx-auto w-full max-w-sm rounded-[4px] border hairline bg-cream-bright p-2 shadow-[0_20px_50px_-30px_rgba(26,25,22,0.4)]">
+          <Reveal delay={0.12} className="md:sticky md:top-28">
+            <div className="mx-auto w-full max-w-sm rounded-[4px] border hairline bg-cream-bright p-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={asset("/media/parker.jpg")}
-                alt="Parker Swanson"
+                alt="Parker Swanson in Maple Grove, Minnesota"
                 className="aspect-[4/5] w-full rounded-[2px] object-cover"
               />
               <div className="flex items-baseline justify-between px-2 py-3">
-                <p className="font-mono text-[0.7rem] tracking-wider text-ink-faint">
-                  PARKER SWANSON
-                </p>
-                <a
-                  href="/book/"
-                  className="font-mono text-[0.7rem] tracking-wider text-copper hover:underline"
-                >
-                  SEND A MESSAGE →
+                <p className="font-mono text-[0.7rem] tracking-wider text-ink-faint">PARKER SWANSON</p>
+                <a href={phone.tel} className="font-mono text-[0.7rem] tracking-wider text-copper-deep">
+                  {phone.display}
                 </a>
               </div>
             </div>
@@ -99,28 +79,24 @@ export default function About() {
       </section>
 
       <section className="border-t hairline bg-paper-deep">
-        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
-          <Reveal>
-            <p className="eyebrow">How I do business</p>
-            <h2 className="display mt-4 text-4xl sm:text-5xl">
-              Four things I won&rsquo;t bend on<span className="text-copper">.</span>
-            </h2>
-          </Reveal>
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
+          <h2 className="display text-4xl sm:text-5xl">How I do business.</h2>
           <div className="mt-10 grid gap-8 sm:grid-cols-2">
-            {VALUES.map((v, i) => (
-              <Reveal key={v.t} delay={i * 0.05} variant="rise" className="border-t-2 border-copper/60 pt-5">
-                <h3 className="display text-2xl">{v.t}</h3>
-                <p className="mt-2 leading-relaxed text-ink-soft">{v.d}</p>
-              </Reveal>
+            {values.map((value) => (
+              <article key={value.t} className="border-t-2 border-copper/60 pt-5">
+                <h3 className="display text-2xl">{value.t}</h3>
+                <p className="mt-2 leading-relaxed text-ink-soft">{value.d}</p>
+              </article>
             ))}
           </div>
+          <p className="mt-10">
+            <Link href="/how-it-works/" className="link-draw text-ink">
+              See how a setup goes
+            </Link>
+          </p>
         </div>
       </section>
-
-      <AuditCTA
-        title="Let's talk about your week."
-        context="A free 15-minute phone audit. No pitch."
-      />
+      <FinalBand />
     </>
   );
 }

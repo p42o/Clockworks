@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "The 9:40 p.m. Estimate"
 date: "2026-07-07"
 description: "MN Clockworks now builds AI systems for Twin Cities trades businesses: plumbing, HVAC, electrical, landscaping. Here's the why, and the four systems I build."

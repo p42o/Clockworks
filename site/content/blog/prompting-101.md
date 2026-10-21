@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "Prompting 101: The Only Guide You Need If You're Not a Tech Person"
 date: "2026-06-01"
 description: "No jargon. No theory. Just what actually works, plus ten prompts you can use today."

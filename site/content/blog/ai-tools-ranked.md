@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "I Tested 8 AI Tools So You Don't Have To: My Honest Ranking"
 date: "2026-05-04"
 description: "Same tasks on every tool. No affiliate deals. Just what actually worked."

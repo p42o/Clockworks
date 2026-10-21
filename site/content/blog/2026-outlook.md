@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "The 2026 Small-Business AI Outlook"
 date: "2026-01-08"
 description: "What's actually changing for small businesses this year: the three shifts that matter, the hype to ignore, and where Twin Cities owners should pay attention."

@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "AI vs. Automation: What's the Difference, and Why It Matters"
 date: "2026-04-01"
 description: "Most people use these words interchangeably. That's a mistake and it's costing them."

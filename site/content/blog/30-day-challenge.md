@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "The 30-Day AI Challenge: Small Steps That Actually Change How You Work"
 date: "2026-06-22"
 description: "Four weeks. One task at a time. By the end you'll have built something that sticks."

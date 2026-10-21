@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "Why Your ChatGPT Prompts Aren't Working (And the Simple Fix)"
 date: "2026-04-06"
 description: "Vague questions get vague answers. Here's the formula that changes everything."

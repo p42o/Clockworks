@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "5 AI Tools That Actually Matter for Small Business in 2026"
 date: "2026-04-14"
 description: "Most people have tried ChatGPT. Got a weird answer. Gave up. That's about 5% of what's possible."

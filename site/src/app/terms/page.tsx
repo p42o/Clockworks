@@ -2,14 +2,22 @@ import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
 
 export const metadata: Metadata = {
-  title: "Terms",
+  title: "Starter Terms",
   description: "Terms for MN Clockworks, a business of PGS Ventures LLC.",
+  alternates: { canonical: "/terms/" },
+  openGraph: {
+    title: "Starter Terms",
+    description: "Terms for MN Clockworks, a business of PGS Ventures LLC.",
+    url: "/terms/",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+  },
 };
 
 export default function Terms() {
   return (
     <section className="mx-auto max-w-6xl px-5 pb-24 pt-36 sm:px-8">
-      <h1 className="display text-5xl sm:text-7xl">Terms</h1>
+      <p className="eyebrow">Starter Terms</p>
+      <h1 className="display mt-4 text-5xl sm:text-7xl">Terms</h1>
       <div className="mt-8 max-w-xl space-y-5 text-[1.05rem] leading-relaxed text-ink-soft">
         <p>
           Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.

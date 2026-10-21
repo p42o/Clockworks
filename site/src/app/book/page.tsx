@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import AuditFlow from "@/components/AuditFlow";
-import { site } from "@/lib/site";
+import { formHonestLine, phone, primaryCta } from "@/lib/copy";
 
 export const metadata: Metadata = {
-  title: "Book your free audit",
+  title: "Free 15-minute phone audit",
   description:
-    "Book a free 15-minute phone audit for your trades business. No pitch.",
+    "Ask for a free 15-minute phone audit. This form does not book a time. Parker will reach out. Or call (763) 296-9777.",
+  alternates: { canonical: "/book/" },
+  openGraph: {
+    title: "Free 15-minute phone audit",
+    description:
+      "Ask for a free 15-minute phone audit. This form does not book a time. Parker will reach out. Or call (763) 296-9777.",
+    url: "/book/",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+  },
 };
 
 export default function Book() {
@@ -15,32 +23,24 @@ export default function Book() {
       <div className="grid gap-14 lg:grid-cols-[1fr_1.5fr]">
         <div>
           <Reveal>
-            <p className="eyebrow">The free audit</p>
-            <h1 className="display mt-4 text-5xl sm:text-6xl">
-              Fifteen minutes on the phone. Zero pitch
-              <span className="text-copper">.</span>
-            </h1>
+            <p className="eyebrow section-rule">A note, not a calendar</p>
+            <h1 className="display mt-4 text-5xl sm:text-6xl">Free 15-minute phone audit.</h1>
           </Reveal>
-          <Reveal delay={0.1}>
-            <ul className="mt-8 space-y-5 text-[0.98rem] leading-relaxed text-ink-soft">
-              {[
-                ["What this is", "A phone call about your actual week: where calls, quotes, and hours leak."],
-                ["What this isn't", "A demo call with a sales deck and a countdown timer. If automation doesn't make sense for you, I'll say so."],
-                ["What happens next", "Parker will follow up. We pick a time around your jobs, and we talk on the phone."],
-              ].map(([t, d]) => (
-                <li key={t} className="border-l-2 border-copper/50 pl-4">
-                  <p className="font-mono text-[0.7rem] tracking-[0.18em] text-copper">{t.toUpperCase()}</p>
-                  <p className="mt-1.5">{d}</p>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-8 text-sm text-ink-faint">
-              This form is the whole front door. It lands on my phone in seconds, and a
-              human answers it.
-            </p>
+          <Reveal delay={0.08}>
+            <div className="mt-6 max-w-md space-y-4 text-[1.05rem] leading-relaxed text-ink-soft">
+              <p>
+                Call{" "}
+                <a href={phone.tel} className="font-medium text-ink underline decoration-copper underline-offset-4">
+                  {phone.display}
+                </a>{" "}
+                if you want to talk now. {primaryCta}.
+              </p>
+              <p>{formHonestLine}</p>
+              <p>Tell me the trade, what is piling up, and how to reach you. I read it myself.</p>
+            </div>
           </Reveal>
         </div>
-        <Reveal delay={0.15} className="rounded-[4px] border hairline bg-paper-deep/60 p-6 shadow-[0_20px_50px_-36px_rgba(26,25,22,0.35)] sm:p-10">
+        <Reveal delay={0.12} className="rounded-[4px] border hairline bg-paper-deep/60 p-6 sm:p-10">
           <AuditFlow />
         </Reveal>
       </div>
