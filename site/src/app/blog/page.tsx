@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { phone } from "@/lib/copy";
+import { pageSocial } from "@/lib/site";
+
+const title = "Archive";
+const description = "Older notes from MN Clockworks. This archive is not listed.";
 
 export const metadata: Metadata = {
-  title: "Archive",
-  description: "Older notes from MN Clockworks. This archive is not listed.",
+  title,
+  description,
   robots: { index: false, follow: true },
   alternates: { canonical: "/blog/" },
+  ...pageSocial(title, description, "/blog/"),
 };
 
 export default function BlogIndex() {

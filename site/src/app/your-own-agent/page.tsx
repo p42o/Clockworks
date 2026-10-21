@@ -2,19 +2,17 @@ import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
 import FinalBand from "@/components/v2/FinalBand";
 import { chatCta, ownershipLine, phone } from "@/lib/copy";
+import { pageSocial } from "@/lib/site";
+
+const title = "Front Desk";
+const description =
+  "The Front Desk helps answer customer questions from information you approve. The chat on this site is a working sample. Your team runs on your own account.";
 
 export const metadata: Metadata = {
-  title: "Front Desk",
-  description:
-    "The Front Desk helps answer customer questions from information you approve. The chat on this site is a working sample. Your team runs on your own account.",
+  title,
+  description,
   alternates: { canonical: "/your-own-agent/" },
-  openGraph: {
-    title: "Front Desk",
-    description:
-      "The Front Desk helps answer customer questions from information you approve. The chat on this site is a working sample.",
-    url: "/your-own-agent/",
-    images: [{ url: "/og.png", width: 1200, height: 630 }],
-  },
+  ...pageSocial(title, description, "/your-own-agent/"),
 };
 
 export default function YourOwnAgent() {

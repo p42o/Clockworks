@@ -18,6 +18,7 @@ import {
   ownershipLine,
   phone,
   primaryCta,
+  serviceTowns,
 } from "@/lib/copy";
 
 export const metadata: Metadata = {
@@ -148,6 +149,18 @@ export default function HomePage() {
           <div className="mt-10">
             <IndustryTabs />
           </div>
+        </div>
+      </section>
+
+      <section id="area" className="border-t hairline">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
+          <p className="eyebrow section-rule">Where I work</p>
+          <h2 className="display mt-4 max-w-3xl text-4xl sm:text-6xl">
+            Maple Grove and nearby, then the rest of Minnesota by phone.
+          </h2>
+          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-ink-soft">
+            I work with businesses in Maple Grove and nearby: {serviceTowns.join(", ")}, and across Minnesota by phone and screen share.
+          </p>
         </div>
       </section>
 

@@ -10,6 +10,25 @@ export const phone = {
   schema: "+1-763-296-9777",
 } as const;
 
+/** Approved service-area list. No Saint Paul. No doorway page. */
+export const serviceTowns = [
+  "Maple Grove",
+  "Osseo",
+  "Brooklyn Park",
+  "Plymouth",
+  "New Hope",
+  "Golden Valley",
+  "Rogers",
+  "Dayton",
+  "Corcoran",
+  "Medina",
+  "Champlin",
+  "Anoka",
+  "Coon Rapids",
+  "Brooklyn Center",
+  "Minneapolis",
+] as const;
+
 export const ownershipLine =
   "Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.";
 

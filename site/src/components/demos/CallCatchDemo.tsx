@@ -5,8 +5,8 @@ import { useReducedMotion } from "motion/react";
 
 /**
  * Scripted missed-call → text-back conversation. The visitor plays the
- * customer via quick replies; the "AI" side is a deterministic script —
- * the live chatbot elsewhere on the site is the real brain.
+ * customer via quick replies. The "AI" side is a deterministic script.
+ * The live chatbot elsewhere on the site is the real brain.
  */
 
 type Msg = { from: "ai" | "you" | "sys"; text: string };
@@ -39,13 +39,13 @@ const FLOW: Record<string, { reply: Msg[]; options?: string[] }> = {
   "Tomorrow 8:30 works": {
     reply: [
       { from: "ai", text: "Done: you're on the schedule for 8:30am tomorrow. You'll get a confirmation text and an on-my-way text when the tech heads over. Anything else tonight?" },
-      { from: "sys", text: "📅 Booked: Water heater repair · tomorrow 8:30 AM · added to Jobber" },
+      { from: "sys", text: "Booked: Water heater repair, tomorrow 8:30 AM, added to the schedule" },
       { from: "sys", text: "👤 Owner sees: transcript + booking in the morning summary. Total owner effort: zero." },
     ],
   },
   "This is an emergency": {
     reply: [
-      { from: "ai", text: "On it. I'm paging the on-call tech with your address and this conversation: expect a call inside 10 minutes. Keep that valve closed if you found it." },
+      { from: "ai", text: "On it. I'm paging the on-call tech with your address and this conversation. Expect a call from that person. Keep that valve closed if you found it." },
       { from: "sys", text: "🔔 On-call tech paged (SMS + call) · transcript attached" },
       { from: "sys", text: "👤 A real human takes over from here (the machine's job was the first 60 seconds)." },
     ],
@@ -173,7 +173,6 @@ export default function CallCatchDemo() {
 
       <p className="mx-auto mt-4 max-w-md text-center text-[0.8rem] leading-relaxed text-ink-faint">
         The words, the tone, the booking rules, the emergency triggers: all yours to set.
-        Runs on your existing number.
       </p>
     </div>
   );

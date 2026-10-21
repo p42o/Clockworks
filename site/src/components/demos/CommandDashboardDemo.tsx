@@ -5,7 +5,7 @@ import { CHART } from "./DemoShell";
 import { BarRows, LineChart, StatTile } from "./ChartBits";
 
 /**
- * The owner's morning view — every number is deterministic sample data.
+ * The owner's morning view. Every number is deterministic sample data.
  * Charts follow the dataviz mark specs; range filter re-slices the series.
  */
 

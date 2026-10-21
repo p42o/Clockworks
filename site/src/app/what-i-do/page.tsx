@@ -2,19 +2,17 @@ import type { Metadata } from "next";
 import AgentCards from "@/components/v2/AgentCards";
 import FinalBand from "@/components/v2/FinalBand";
 import { ownershipLine, phone, primaryCta } from "@/lib/copy";
+import { pageSocial } from "@/lib/site";
+
+const title = "The agent team";
+const description =
+  "Six agents, each with one job: missed-call follow-up, quiet quotes, review asks, invoice reminders, public local notes, and customer questions you approve.";
 
 export const metadata: Metadata = {
-  title: "The agent team",
-  description:
-    "Six agents, each with one job: missed-call follow-up, quiet quotes, review asks, invoice reminders, public local notes, and customer questions you approve.",
+  title,
+  description,
   alternates: { canonical: "/what-i-do/" },
-  openGraph: {
-    title: "The agent team",
-    description:
-      "Six agents, each with one job. You approve what goes out. Setup is together on a screen-share call.",
-    url: "/what-i-do/",
-    images: [{ url: "/og.png", width: 1200, height: 630 }],
-  },
+  ...pageSocial(title, description, "/what-i-do/"),
 };
 
 export default function WhatIDo() {

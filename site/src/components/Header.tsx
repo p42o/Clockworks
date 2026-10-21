@@ -26,6 +26,12 @@ export default function Header() {
   useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
+    const close = () => setOpen(false);
+    window.addEventListener("hashchange", close);
+    return () => window.removeEventListener("hashchange", close);
+  }, []);
+
+  useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
     return () => {
       document.documentElement.style.overflow = "";
@@ -67,11 +73,11 @@ export default function Header() {
           <div className="flex items-center gap-1.5 md:hidden">
             <a
               href={phone.tel}
-              className={`btn-press inline-flex min-h-11 items-center rounded-[3px] bg-ink px-3.5 py-2 text-[0.8rem] font-medium text-paper ${
+              className={`btn-press inline-flex min-h-11 items-center whitespace-nowrap rounded-[3px] bg-ink px-2.5 py-2 text-[0.75rem] font-medium text-paper ${
                 open ? "pointer-events-none opacity-0" : ""
               }`}
             >
-              Call
+              {phone.display}
             </a>
             <button
               type="button"
@@ -125,6 +131,7 @@ export default function Header() {
                 <motion.a
                   key={item.href}
                   href={item.href}
+                  onClick={() => setOpen(false)}
                   initial={reduced ? false : { opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: reduced ? 0 : 0.04 + index * 0.04, duration: 0.4, ease: easeGate }}
@@ -133,7 +140,11 @@ export default function Header() {
                   {item.label}
                 </motion.a>
               ))}
-              <a href="/portal/client/" className="display border-b hairline-soft py-4 text-4xl text-ink">
+              <a
+                href="/portal/client/"
+                onClick={() => setOpen(false)}
+                className="display border-b hairline-soft py-4 text-4xl text-ink"
+              >
                 Client login
               </a>
               <a href={phone.tel} className="mt-6 text-lg font-medium text-ink">

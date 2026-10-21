@@ -15,9 +15,9 @@ type Mail = {
 };
 
 const MAIL: Mail[] = [
-  { from: "k.hendricks@…", subject: "Do you guys do sump pumps?", tag: "LEAD", action: "Drafted reply + added to Jobber as lead", draft: "Hi Kara, we do, all the time. Are you seeing water now, or planning ahead? If you send your address I can get you a time this week." },
+  { from: "k.hendricks@…", subject: "Do you guys do sump pumps?", tag: "LEAD", action: "Drafted reply and saved as a lead", draft: "Hi Kara, we do, all the time. Are you seeing water now, or planning ahead? If you send your address I can get you a time this week." },
   { from: "billing@ferguson…", subject: "Invoice 88213: due Jul 10", tag: "INVOICE", action: "Filed to QuickBooks · due-date reminder set" },
-  { from: "dana.r@…", subject: "Re: water heater · one more question", tag: "SUPPORT", action: "Drafted answer from your past jobs + manuals", draft: "Good question: the pilot light staying blue is exactly what you want. The faint rumble the first week is sediment settling; if it's still there in two weeks, text us and we'll swing by." },
+  { from: "dana.r@…", subject: "Re: water heater, one more question", tag: "SUPPORT", action: "Drafted answer from your past jobs and manuals", draft: "Good question: the flame staying blue is exactly what you want. The faint rumble at the start is sediment settling. If it keeps up, call and we can take a look." },
   { from: "winner-alert@prizes…", subject: "🎁 You've been selected!!", tag: "JUNK", action: "Archived. You never saw it. You're welcome" },
   { from: "m.okafor@…", subject: "Quote for panel upgrade?", tag: "LEAD", action: "Drafted reply + flagged: mentions '2 other bids' → priority", draft: "Hi Marcus, happy to quote it. Since you're comparing bids: ours will itemize everything, no surprise line items. Any afternoon this week work for a quick look?" },
 ];

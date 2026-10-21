@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { peekQueuedChat } from "@/lib/chat-bridge";
 
 const API = "https://clockworks-bot.vercel.app/api/chat";
 type Msg = { role: "user" | "assistant"; content: string };
@@ -48,7 +49,7 @@ function track(name: string) {
 
 export default function ChatWidget() {
   const reduced = useReducedMotion();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(() => peekQueuedChat().queued);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -57,6 +58,9 @@ export default function ChatWidget() {
   const scroller = useRef<HTMLDivElement>(null);
   const session = useRef<string>("");
   const openedRef = useRef(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(peekQueuedChat().opener);
 
   useEffect(() => {
     session.current =
@@ -126,8 +130,9 @@ export default function ChatWidget() {
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const el = (e.target as HTMLElement | null)?.closest?.("[data-open-chat]");
-      if (el) {
+      if (el instanceof HTMLElement) {
         e.preventDefault();
+        openerRef.current = el;
         setOpen(true);
       }
     };
@@ -145,6 +150,28 @@ export default function ChatWidget() {
   useEffect(() => {
     scroller.current?.scrollTo({ top: 99999, behavior: "smooth" });
   }, [msgs, busy, open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const id = window.requestAnimationFrame(() => inputRef.current?.focus());
+    return () => cancelAnimationFrame(id);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setOpen(false);
+      const opener = openerRef.current;
+      const back = opener && opener.isConnected ? opener : launcherRef.current;
+      window.requestAnimationFrame(() => back?.focus());
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const latestAssistant = msgs.reduce<string>((found, message) => (message.role === "assistant" ? message.content : found), "");
 
   const send = async (text: string) => {
     const t = text.trim();
@@ -186,8 +213,9 @@ export default function ChatWidget() {
             >
               <button
                 type="button"
-                onClick={() => {
+                onClick={(event) => {
                   track("chat_nudge_click");
+                  openerRef.current = event.currentTarget;
                   setOpen(true);
                 }}
                 className="block text-[0.82rem] leading-snug text-ink"
@@ -212,8 +240,15 @@ export default function ChatWidget() {
 
         {/* the button */}
         <button
+          ref={launcherRef}
           type="button"
-          onClick={() => setOpen((v) => !v)}
+          onClick={() =>
+            setOpen((value) => {
+              const next = !value;
+              if (next) openerRef.current = launcherRef.current;
+              return next;
+            })
+          }
           aria-label={open ? "Close chat" : "Chat with the Front Desk"}
           className="group relative flex h-[58px] w-[58px] items-center justify-center rounded-full bg-gradient-to-br from-copper to-copper-deep text-cream-bright shadow-[0_16px_38px_-10px_rgba(212,88,42,0.7),inset_0_1px_0_rgba(255,255,255,0.25)] transition-transform duration-300 hover:scale-105 active:scale-95"
         >
@@ -271,13 +306,16 @@ export default function ChatWidget() {
               <p className="display text-lg leading-none">The Front Desk<span className="text-copper">.</span></p>
               <p className="mt-1 text-[0.75rem] text-paper/75">
                 The chat on this page is the product.{" "}
-                <a href="/your-own-agent/" className="text-copper underline underline-offset-2">
+                <a href="/your-own-agent/" className="text-cream-bright underline underline-offset-2">
                   About the Front Desk
                 </a>
               </p>
             </div>
 
-            <div ref={scroller} aria-live="polite" className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-3.5 py-4">
+            <p className="sr-only" aria-live="polite" aria-atomic="true">
+              {latestAssistant}
+            </p>
+            <div ref={scroller} className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-3.5 py-4">
               {msgs.length === 0 && (
                 <div className="m-auto text-center">
                   <p className="font-mono text-[0.68rem] tracking-[0.16em] text-ink-faint">
@@ -313,6 +351,7 @@ export default function ChatWidget() {
             <div className="border-t hairline px-3 py-2.5">
               <div className="flex gap-2">
                 <input
+                  ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && send(input)}

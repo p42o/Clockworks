@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
-/** Chart palette — validated (dataviz six-checks) against paper #F5F1E8. Fixed order. */
+/** Chart palette, validated (dataviz six-checks) against paper #F5F1E8. Fixed order. */
 export const CHART = {
   copper: "#D4582A",
   pine: "#1F7A50",

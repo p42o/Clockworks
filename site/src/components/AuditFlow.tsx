@@ -100,7 +100,7 @@ export default function AuditFlow() {
         key: "trade",
         title: `Good to meet you, ${form.name.split(" ")[0] || "there"}. What's your trade?`,
         valid: form.trade !== "",
-        hint: "Tap one.",
+        hint: "Tap one. Then choose Next. This page stays here until you do.",
       },
       {
         key: "pain",
@@ -244,7 +244,6 @@ export default function AuditFlow() {
                   />
                   <Field label="Your name">
                     <input
-                      autoFocus
                       autoComplete="name"
                       className={inputCls}
                       placeholder="Sam Nelson"
@@ -273,10 +272,7 @@ export default function AuditFlow() {
                       key={t}
                       label={t}
                       selected={form.trade === t}
-                      onClick={() => {
-                        set("trade")(t);
-                        setTimeout(() => go(1), 240);
-                      }}
+                      onClick={() => set("trade")(t)}
                     />
                   ))}
                 </div>
@@ -304,7 +300,6 @@ export default function AuditFlow() {
                 <>
                   <Field label="Email">
                     <input
-                      autoFocus
                       type="email"
                       inputMode="email"
                       autoComplete="email"
@@ -355,11 +350,11 @@ export default function AuditFlow() {
                     ))}
                   </dl>
                   {state === "failed" && (
-                    <div className="mt-6 rounded-[3px] border border-copper/50 bg-ember/40 p-4 text-[0.95rem] leading-relaxed">
+                    <div role="alert" className="mt-6 rounded-[3px] border border-copper/50 bg-ember/40 p-4 text-[0.95rem] leading-relaxed">
                       <p className="font-medium">That didn&rsquo;t send. {error}</p>
                       <p className="mt-1 text-ink-soft">
                         Your answers are safe right here.{" "}
-                        <button type="button" onClick={retry} className="text-copper underline underline-offset-2">
+                        <button type="button" onClick={retry} className="text-copper-deep underline underline-offset-2">
                           Give it one more try
                         </button>
                         . Flaky Wi-Fi loses to stubbornness most days.
@@ -387,7 +382,7 @@ export default function AuditFlow() {
             type="button"
             onClick={() => go(1)}
             disabled={!current.valid}
-            className="rounded-[3px] bg-ink px-6 py-3 font-medium text-paper transition-all duration-300 hover:bg-copper disabled:cursor-not-allowed disabled:opacity-30"
+            className="rounded-[3px] bg-ink px-6 py-3 font-medium text-paper transition-all duration-300 hover:bg-copper-deep disabled:cursor-not-allowed disabled:opacity-30"
           >
             Next →
           </button>

@@ -23,7 +23,18 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.description,
-    openGraph: { title: post.title, description: post.description, type: "article" },
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      type: "article",
+      images: [{ url: "/og.png", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: ["/og.png"],
+    },
     alternates: { canonical: `/blog/${post.slug}/` },
     robots: { index: false, follow: true },
   };
@@ -57,7 +68,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         <header className="mx-auto max-w-2xl text-center">
           <div className="mb-6 flex items-center justify-center gap-3">
             <span className="h-px w-8 bg-line" aria-hidden />
-            <Link href="/blog/" className="eyebrow hover:text-copper">
+            <Link href="/blog/" className="eyebrow hover:text-copper-deep">
               Field notes
             </Link>
             <span className="h-px w-8 bg-line" aria-hidden />

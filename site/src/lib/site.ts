@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 export const site = {
   name: "MN Clockworks",
   url: "https://mnclockworks.com",
@@ -35,3 +37,21 @@ export const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 /** Prefix public/ assets referenced via raw <img>/<a> so /v3 previews resolve. */
 export const asset = (p: string) => `${basePath}${p}`;
+
+/** Page Open Graph and Twitter use the same title and description. */
+export function pageSocial(title: string, description: string, path: string): Pick<Metadata, "openGraph" | "twitter"> {
+  return {
+    openGraph: {
+      title,
+      description,
+      url: path,
+      images: [{ url: "/og.png", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og.png"],
+    },
+  };
+}

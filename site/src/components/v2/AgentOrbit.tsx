@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { agents } from "@/lib/copy";
+import { motionPaused, setMotionPaused, subscribeMotion } from "@/lib/motion-pause";
 
 /**
  * Clock of the six agents. Names stay upright. A hand sweeps until paused.
@@ -11,13 +12,27 @@ import { agents } from "@/lib/copy";
 export default function AgentOrbit() {
   const reduced = useReducedMotion();
   const [paused, setPaused] = useState(false);
+  const [painted, setPainted] = useState(false);
   const [active, setActive] = useState(0);
   const agent = agents[active];
-  const hold = paused || Boolean(reduced);
+  const userHold = paused || Boolean(reduced);
+
+  useEffect(() => subscribeMotion(setPaused), []);
+
+  useEffect(() => {
+    let second = 0;
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => setPainted(true));
+    });
+    return () => {
+      cancelAnimationFrame(first);
+      cancelAnimationFrame(second);
+    };
+  }, []);
 
   return (
     <div className="mx-auto w-full max-w-[440px]">
-      <div className={`orbit-stage ${hold ? "is-paused" : ""}`}>
+      <div className={`orbit-stage ${userHold || !painted ? "is-paused" : ""}`}>
         <div className="orbit-rotor" aria-hidden>
           <span className="orbit-hand" />
           <span className="orbit-gear orbit-gear-a" />
@@ -48,10 +63,10 @@ export default function AgentOrbit() {
         <button
           type="button"
           className="min-h-8 rounded-[3px] border hairline bg-cream-bright px-3 text-[0.8rem] text-ink"
-          aria-pressed={hold}
-          onClick={() => setPaused((value) => !value)}
+          aria-pressed={userHold}
+          onClick={() => setMotionPaused(!motionPaused())}
         >
-          {hold ? "Play motion" : "Pause motion"}
+          {userHold ? "Play motion" : "Pause motion"}
         </button>
       </div>
 

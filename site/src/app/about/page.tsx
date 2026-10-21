@@ -2,21 +2,18 @@ import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
 import Reveal from "@/components/Reveal";
 import FinalBand from "@/components/v2/FinalBand";
-import { asset } from "@/lib/site";
+import { asset, pageSocial } from "@/lib/site";
 import { ownershipLine, phone, quoteLine } from "@/lib/copy";
 
+const title = "About Parker";
+const description =
+  "Parker Swanson, Maple Grove, Minnesota. I set up AI teams myself, on a screen-share call, for Minnesota businesses.";
+
 export const metadata: Metadata = {
-  title: "About Parker",
-  description:
-    "Parker Swanson, Maple Grove, Minnesota. I set up AI teams myself, on a screen-share call, for Minnesota businesses.",
+  title,
+  description,
   alternates: { canonical: "/about/" },
-  openGraph: {
-    title: "About Parker",
-    description:
-      "Parker Swanson, Maple Grove, Minnesota. I set up AI teams myself, on a screen-share call, for Minnesota businesses.",
-    url: "/about/",
-    images: [{ url: "/og.png", width: 1200, height: 630 }],
-  },
+  ...pageSocial(title, description, "/about/"),
 };
 
 const values = [

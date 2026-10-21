@@ -2,19 +2,17 @@ import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import AuditFlow from "@/components/AuditFlow";
 import { formHonestLine, phone, primaryCta } from "@/lib/copy";
+import { pageSocial } from "@/lib/site";
+
+const title = "Free 15-minute phone audit";
+const description =
+  "Ask for a free 15-minute phone audit. This form does not book a time. Parker will reach out. Or call (763) 296-9777.";
 
 export const metadata: Metadata = {
-  title: "Free 15-minute phone audit",
-  description:
-    "Ask for a free 15-minute phone audit. This form does not book a time. Parker will reach out. Or call (763) 296-9777.",
+  title,
+  description,
   alternates: { canonical: "/book/" },
-  openGraph: {
-    title: "Free 15-minute phone audit",
-    description:
-      "Ask for a free 15-minute phone audit. This form does not book a time. Parker will reach out. Or call (763) 296-9777.",
-    url: "/book/",
-    images: [{ url: "/og.png", width: 1200, height: 630 }],
-  },
+  ...pageSocial(title, description, "/book/"),
 };
 
 export default function Book() {

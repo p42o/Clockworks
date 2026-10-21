@@ -5,15 +5,15 @@ import { CHART } from "./DemoShell";
 import { LineChart } from "./ChartBits";
 
 /**
- * Market & competitor intel desk — the view big companies pay analysts for,
+ * Market and competitor intel desk. The view big companies pay analysts for,
  * scaled to one shop. Everything here is fabricated sample data on purpose.
  */
 
 const COMPETITORS = [
-  { name: "Competitor A (Plymouth)", service: "Water heater install", price: "$1,850", change: "+$100 on Jun 18", dir: "up" },
-  { name: "Competitor B (Osseo)", service: "Water heater install", price: "$1,690", change: "unchanged 90 days", dir: "flat" },
-  { name: "Competitor C (Rogers)", service: "Drain cleaning", price: "$249 → \"from $299\"", change: "+$50 on Jul 1", dir: "up" },
-  { name: "Competitor B (Osseo)", service: "AC tune-up promo", price: "$89", change: "new offer this week", dir: "new" },
+  { name: "Shop A (Plymouth)", service: "Water heater install", price: "Listed higher", change: "raised on Jun 18", dir: "up" },
+  { name: "Shop B (Osseo)", service: "Water heater install", price: "Listed", change: "unchanged 90 days", dir: "flat" },
+  { name: "Shop C (Rogers)", service: "Drain cleaning", price: "Listed higher", change: "raised on Jul 1", dir: "up" },
+  { name: "Shop B (Osseo)", service: "AC tune-up promo", price: "Promo listed", change: "new offer this week", dir: "new" },
 ] as const;
 
 const WEEKS = ["May 24", "May 31", "Jun 7", "Jun 14", "Jun 21", "Jun 28", "Jul 3"];
@@ -88,8 +88,7 @@ export default function IntelDeskDemo() {
             </table>
           </div>
           <p className="mt-3 text-[0.8rem] leading-relaxed text-ink-soft">
-            Checked automatically from public pages, weekly. When the guy across town raises his
-            water-heater price $100, you find out that week, not from a customer six months later.
+            Checked from public pages. When a nearby shop changes a published price, it shows up here.
           </p>
         </div>
       )}
@@ -104,9 +103,8 @@ export default function IntelDeskDemo() {
           </div>
           <div className="mt-3 rounded-[3px] border-l-2 border-copper bg-ember/30 px-4 py-3">
             <p className="text-[0.82rem] leading-relaxed">
-              <strong>What the desk would tell you:</strong> demand has nearly tripled in six weeks
-              with the heat: this is the fortnight to push AC tune-up offers and staff the phones
-              (or let Call Catch hold the overflow). Big outfits have an analyst for this. You&rsquo;d have a Tuesday email.
+              <strong>What the desk would tell you:</strong> public interest in AC repair is up with the heat.
+              A note like this stays with you. It is not a message to send.
             </p>
           </div>
         </div>

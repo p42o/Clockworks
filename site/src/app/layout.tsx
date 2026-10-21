@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Instrument_Serif } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { ViewTransitions } from "next-view-transitions";
 import { site } from "@/lib/site";
-import { phone } from "@/lib/copy";
+import { phone, serviceTowns } from "@/lib/copy";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ChatWidget from "@/components/ChatWidget";
+import ChatGate from "@/components/ChatGate";
+import MotionControl from "@/components/MotionControl";
 import "./globals.css";
 
 const instrument = Instrument_Serif({
@@ -62,7 +64,10 @@ const jsonLd = {
   email: site.email,
   founder: { "@type": "Person", name: site.owner },
   description: site.description,
-  areaServed: { "@type": "AdministrativeArea", name: "Minnesota (Twin Cities)" },
+  areaServed: [
+    ...serviceTowns.map((name) => ({ "@type": "City", name })),
+    { "@type": "State", name: "Minnesota" },
+  ],
   logo: `${site.url}/icon.svg`,
   image: `${site.url}/og.png`,
   sameAs: [
@@ -85,17 +90,31 @@ export default function RootLayout({
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
           />
-          {/* Analytics hook only. No tracking script is loaded on this build.
-              A later property would go here, and would stay off /v3 previews. */}
+          {/* GA4 — same property as the legacy site; omitted on /v3 previews */}
+          {!process.env.NEXT_PUBLIC_BASE_PATH && (
+            <>
+              <Script
+                src="https://www.googletagmanager.com/gtag/js?id=G-PSNYLVG4V1"
+                strategy="afterInteractive"
+              />
+              <Script id="ga4" strategy="afterInteractive">
+                {`window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', 'G-PSNYLVG4V1');`}
+              </Script>
+            </>
+          )}
           <a href="#content" className="skip-link">
             Skip to content
           </a>
           <Header />
-          <main id="content" className="flex-1">
+          <main id="content" tabIndex={-1} className="flex-1">
             {children}
           </main>
           <Footer />
-          <ChatWidget />
+          <MotionControl />
+          <ChatGate />
         </body>
       </html>
     </ViewTransitions>

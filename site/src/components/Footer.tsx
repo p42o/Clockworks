@@ -14,7 +14,7 @@ const pages = [
 export default function Footer() {
   const beforeTerms = agreementLine.split("Starter Terms")[0];
   return (
-    <footer className="bg-ground text-paper">
+    <footer className="bg-ground pb-28 text-paper">
       <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
         <div className="flex items-center gap-3">
           <LogoMark tone="paper" className="h-9 w-9" />

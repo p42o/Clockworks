@@ -1,5 +1,17 @@
+import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
 import { phone } from "@/lib/copy";
+import { pageSocial } from "@/lib/site";
+
+const title = "This page is not here";
+const description = "The link may be old. You can go home, or call me.";
+
+export const metadata: Metadata = {
+  title,
+  description,
+  robots: { index: false, follow: true },
+  ...pageSocial(title, description, "/"),
+};
 
 export default function NotFound() {
   return (

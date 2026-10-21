@@ -4,19 +4,17 @@ import PricingBlock from "@/components/v2/PricingBlock";
 import FaqList from "@/components/v2/FaqList";
 import FinalBand from "@/components/v2/FinalBand";
 import { faqJsonLd, phone, primaryCta } from "@/lib/copy";
+import { pageSocial } from "@/lib/site";
+
+const title = "How it works";
+const description =
+  "A free 15-minute phone audit, an optional $50 online presence assessment, and a $500 one-time deployment done together on a screen-share call.";
 
 export const metadata: Metadata = {
-  title: "How it works",
-  description:
-    "A free 15-minute phone audit, an optional $50 online presence assessment, and a $500 one-time deployment done together on a screen-share call.",
+  title,
+  description,
   alternates: { canonical: "/how-it-works/" },
-  openGraph: {
-    title: "How it works",
-    description:
-      "A free 15-minute phone audit, an optional $50 online presence assessment, and a $500 one-time deployment done together on a screen-share call.",
-    url: "/how-it-works/",
-    images: [{ url: "/og.png", width: 1200, height: 630 }],
-  },
+  ...pageSocial(title, description, "/how-it-works/"),
 };
 
 export default function HowItWorks() {

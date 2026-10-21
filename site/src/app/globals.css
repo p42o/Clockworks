@@ -41,6 +41,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 8rem;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -232,6 +233,7 @@ body {
   opacity: 0.85;
   will-change: transform;
   animation: hero-glow-drift 14s ease-in-out infinite alternate;
+  animation-play-state: paused;
 }
 .hero-glow-b {
   left: auto;
@@ -246,6 +248,20 @@ body {
 @keyframes hero-glow-drift {
   from { transform: translate3d(0, 0, 0) scale(1); }
   to { transform: translate3d(4%, 6%, 0) scale(1.06); }
+}
+html.motion-ready:not(.motion-paused) .hero-glow,
+html.motion-ready:not(.motion-paused) .hero-glow-b {
+  animation-play-state: running;
+}
+html.motion-paused .hero-glow,
+html.motion-paused .hero-glow-b,
+html.motion-paused .launcher-pulse,
+html.motion-paused .launcher-dot,
+html.motion-paused .typing-dot,
+html.motion-paused .orbit-rotor,
+html.motion-paused .orbit-gear-a,
+html.motion-paused .orbit-gear-b {
+  animation-play-state: paused;
 }
 
 /* — Card lift: translateY + shadow + copper kiss (fine pointer only) — */
@@ -359,12 +375,12 @@ details.faq-item[open] > p {
 }
 .prose-cw p { margin: 1.1em 0; }
 .prose-cw a {
-  color: var(--color-copper);
+  color: var(--color-copper-deep);
   text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--color-copper) 45%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--color-copper-deep) 45%, transparent);
   text-underline-offset: 3px;
 }
-.prose-cw a:hover { text-decoration-color: var(--color-copper); }
+.prose-cw a:hover { text-decoration-color: var(--color-copper-deep); }
 .prose-cw strong { color: var(--color-ink); }
 .prose-cw ul, .prose-cw ol { margin: 1.1em 0; padding-left: 1.4em; }
 .prose-cw li { margin: 0.45em 0; }

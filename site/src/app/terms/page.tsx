@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
+import { pageSocial } from "@/lib/site";
+
+const title = "Starter Terms";
+const description = "Terms for MN Clockworks, a business of PGS Ventures LLC.";
 
 export const metadata: Metadata = {
-  title: "Starter Terms",
-  description: "Terms for MN Clockworks, a business of PGS Ventures LLC.",
+  title,
+  description,
   alternates: { canonical: "/terms/" },
-  openGraph: {
-    title: "Starter Terms",
-    description: "Terms for MN Clockworks, a business of PGS Ventures LLC.",
-    url: "/terms/",
-    images: [{ url: "/og.png", width: 1200, height: 630 }],
-  },
+  ...pageSocial(title, description, "/terms/"),
 };
 
 export default function Terms() {
@@ -27,7 +26,7 @@ export default function Terms() {
         </p>
         <p>After setup, your AI team runs on your own platform accounts.</p>
         <p>
-          Questions: email <a href="mailto:pgsventuresllc@gmail.com" className="text-copper underline underline-offset-2">pgsventuresllc@gmail.com</a> or use the <Link href="/book/" className="text-copper underline underline-offset-2">book form</Link>. Maple Grove, MN. PGS Ventures LLC.
+          Questions: email <a href="mailto:pgsventuresllc@gmail.com" className="text-copper-deep underline underline-offset-2">pgsventuresllc@gmail.com</a> or use the <Link href="/book/" className="text-copper-deep underline underline-offset-2">book form</Link>. Maple Grove, MN. PGS Ventures LLC.
         </p>
       </div>
     </section>
