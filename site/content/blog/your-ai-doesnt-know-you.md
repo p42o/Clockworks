@@ -44,7 +44,7 @@ The “AI feels generic” complaint (the thing every small business owner I tal
 
 For the next stretch, Clockworks is one thing:
 
-**I sit down with you for 30 minutes, learn how your business actually runs, build your Context Vault, and wire it into Claude, ChatGPT, and Gemini. I also connect them to the tools you already use (your inbox, calendar, docs, CRM) so your AI can actually do things, not just talk. Two weeks. You own everything I build.**
+**Start with a free 15-minute phone audit. I learn how your business actually runs, build your Context Vault, and wire it into Claude, ChatGPT, and Gemini. I also connect them to the tools you already use (your inbox, calendar, docs, CRM) so your AI can actually do things, not just talk. Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.**
 
 I’m taking limited clients to start. This is a real engagement with a real person, not a subscription product. If it sounds like it would change something for your business, get in touch and we’ll talk about whether it’s a fit and what it would cost.
 

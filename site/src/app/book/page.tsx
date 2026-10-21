@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Book your free audit",
   description:
-    "Book a free 30-minute AI Time & Lead Audit for your trades business. No pitch — you leave with a written plan either way. Twin Cities, in person or by call.",
+    "Book a free 15-minute phone audit for your trades business. No pitch.",
 };
 
 export default function Book() {
@@ -17,16 +17,16 @@ export default function Book() {
           <Reveal>
             <p className="eyebrow">The free audit</p>
             <h1 className="display mt-4 text-5xl sm:text-6xl">
-              Thirty minutes. A written plan. Zero pitch
+              Fifteen minutes on the phone. Zero pitch
               <span className="text-copper">.</span>
             </h1>
           </Reveal>
           <Reveal delay={0.1}>
             <ul className="mt-8 space-y-5 text-[0.98rem] leading-relaxed text-ink-soft">
               {[
-                ["What this is", "A working session on your actual week — where calls, quotes, and hours leak — ending in a one-page plan with real numbers."],
-                ["What this isn't", "A demo call with a sales deck and a countdown timer. If automation doesn't make sense for you, the plan will say so."],
-                ["What happens next", "I reply within one business day, we pick a time around your jobs, and we meet — your shop, a coffee in the northwest metro, or a call."],
+                ["What this is", "A phone call about your actual week: where calls, quotes, and hours leak."],
+                ["What this isn't", "A demo call with a sales deck and a countdown timer. If automation doesn't make sense for you, I'll say so."],
+                ["What happens next", "Parker will follow up. We pick a time around your jobs, and we talk on the phone."],
               ].map(([t, d]) => (
                 <li key={t} className="border-l-2 border-copper/50 pl-4">
                   <p className="font-mono text-[0.7rem] tracking-[0.18em] text-copper">{t.toUpperCase()}</p>
@@ -35,7 +35,7 @@ export default function Book() {
               ))}
             </ul>
             <p className="mt-8 text-sm text-ink-faint">
-              This form is the whole front door — it lands on my phone in seconds, and a
+              This form is the whole front door. It lands on my phone in seconds, and a
               human answers it.
             </p>
           </Reveal>

@@ -6,17 +6,17 @@ import { asset, site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Parker Swanson — Maple Grove, MN. A decade-plus of technical operations, now building practical AI systems so Twin Cities trades owners can be home for dinner.",
+    "Parker Swanson, Maple Grove, MN. A decade-plus of technical operations, now building practical AI systems so Twin Cities trades owners can be home for dinner.",
 };
 
 const VALUES = [
   {
-    t: "Prices in print",
-    d: "Every number I charge is on this website. If a price ever feels mysterious, ask me to explain it until it doesn't.",
+    t: "Confirmed in writing",
+    d: "Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.",
   },
   {
-    t: "You own everything",
-    d: "Accounts, numbers, logic, documentation — in your name from day one. My favorite kind of client relationship is one you could leave but don't.",
+    t: "Your accounts",
+    d: "Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.",
   },
   {
     t: "Small on purpose",
@@ -24,7 +24,7 @@ const VALUES = [
   },
   {
     t: "No robots pretending",
-    d: "The systems answer fast and sound human because you approved the words — but the moment a conversation needs a person, it hands off to one. That's a feature, not an apology.",
+    d: "The systems answer fast and sound human because you approved the words, but the moment a conversation needs a person, it hands off to one. That's a feature, not an apology.",
   },
 ] as const;
 
@@ -45,30 +45,30 @@ export default function About() {
                 <p>
                   I live in Maple Grove with my wife Melissa and our two kids. By day I&rsquo;ve
                   spent over a decade running technical operations and account teams for a
-                  national smart-home security company — the kind of job where things have to
+                  national smart-home security company, the kind of job where things have to
                   work at 2am, for real customers, or somebody&rsquo;s phone rings.
                 </p>
                 <p>
-                  A few years ago I started building AI systems for my own life — assistants
+                  A few years ago I started building AI systems for my own life: assistants
                   that answer, schedulers that schedule, paperwork that files itself. It got a
                   little out of hand, in the best way. More than thirty of them run my
                   household and side projects today.
                 </p>
                 <p>
-                  Then I watched the owners around me — the people who fix our sinks and
-                  furnaces and yards — quoting jobs at their kitchen tables at 9pm, losing
+                  Then I watched the owners around me, the people who fix our sinks and
+                  furnaces and yards, quoting jobs at their kitchen tables at 9pm, losing
                   weekend calls to a full voicemail box. The gap was obvious: this technology
                   is ready for the trades, but the people selling it are agencies with sales
                   scripts, or faceless apps from three time zones away.
                 </p>
                 <p>
                   MN Clockworks is my answer: one local person who builds the machine, shows
-                  you the price, and answers his own phone. The name is the promise — a good
+                  you the price, and answers his own phone. The name is the promise: a good
                   system should be like a good clock. You don&rsquo;t think about it.
                   It just keeps your time.
                 </p>
                 <p className="italic text-ink-faint">
-                  Faith and family first here — which is exactly why I build things that give
+                  Faith and family first here, which is exactly why I build things that give
                   evenings back. I want your Tuesday dinner table to get you back, too.
                 </p>
               </div>
@@ -119,7 +119,7 @@ export default function About() {
 
       <AuditCTA
         title="Let's talk about your week."
-        context="Coffee in Maple Grove, a visit to your shop, or a 30-minute call — whatever's easiest. Worst case, you leave with a free plan and a strong opinion about me."
+        context="A free 15-minute phone audit. No pitch."
       />
     </>
   );

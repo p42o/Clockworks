@@ -10,7 +10,7 @@ Hey, I'm Parker. I run Clockworks, an AI consulting firm in Maple Grove, MN. Mos
 
 Nine times out of ten, the problem isn't the tool. The problem is the prompt. And the fix is simpler than you think.
 
-This post is going to show you exactly why vague prompts fail, the three-part formula I teach every client on day one, and three real before/after examples you can steal right now.
+This post is going to show you exactly why vague prompts fail, the three-part formula I teach every client first, and three real before/after examples you can steal right now.
 
 ---
 

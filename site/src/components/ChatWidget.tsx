@@ -26,12 +26,12 @@ const HINTS = [
 /* Two-beat invitation: a friendly hello, then one gentle re-invite if it was ignored. */
 const NUDGES = [
   {
-    lead: "Hey — I’m the front desk.",
+    lead: "Hey, I’m the front desk.",
     body: "Not a menu bot; the real thing, live. Ask me anything about getting your evenings back.",
   },
   {
     lead: "Still browsing? I can shortcut it.",
-    body: "Pricing, timelines, whether this fits your shop — asking me is faster than scrolling.",
+    body: "Pricing, timelines, whether this fits your shop: asking me is faster than scrolling.",
   },
 ] as const;
 
@@ -76,13 +76,13 @@ function InsightsSample({ open, onClose }: { open: boolean; onClose: () => void 
         ]} />
       </div>
       <div className="mt-3 rounded-[3px] border-l-2 border-copper bg-ember/30 px-4 py-3 text-[0.82rem] leading-relaxed">
-        <strong>What the desk would tell this owner:</strong> price questions dominate — publishing
+        <strong>What the desk would tell this owner:</strong> price questions dominate. Publishing
         a tune-up price would convert more chats; 46% of conversations happen after hours, so the
         agent is your night shift; “financing” came up 27 times and isn&rsquo;t on the website.
-        Demand signals from real conversations — not guesses.
+        Demand signals from real conversations, not guesses.
       </div>
       <p className="mt-4 text-center text-[0.8rem] text-ink-faint">
-        The bubble you just used logs and learns exactly like this — for Parker.{" "}
+        The bubble you just used logs and learns exactly like this, for Parker.{" "}
         <a href="/your-own-agent/" className="text-copper underline underline-offset-2">Your own agent →</a>
       </p>
     </DemoShell>
@@ -207,7 +207,7 @@ export default function ChatWidget() {
       const j = await r.json();
       setMsgs([...next, { role: "assistant", content: j.reply ?? "…" }]);
     } catch {
-      setMsgs([...next, { role: "assistant", content: "Connection hiccup — try that again in a second." }]);
+      setMsgs([...next, { role: "assistant", content: "Connection hiccup. Try that again in a second." }]);
     } finally {
       setBusy(false);
     }
@@ -316,7 +316,7 @@ export default function ChatWidget() {
             <div className="border-b hairline bg-ground px-4 py-3 text-paper">
               <p className="display text-lg leading-none">The Front Desk<span className="text-copper">.</span></p>
               <p className="mt-1 text-[0.7rem] text-paper/60">
-                Live demo — this bot IS the product.{" "}
+                Live demo. This bot IS the product.{" "}
                 <a href="/your-own-agent/" className="text-copper underline underline-offset-2" title="Learn more about having your own agent">
                   Get one for your shop →
                 </a>
@@ -330,7 +330,7 @@ export default function ChatWidget() {
                     NO SCRIPTS · NO MENUS · REAL AI
                   </p>
                   <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                    I&rsquo;m the front desk — trained on this business the way yours would be
+                    I&rsquo;m the front desk, trained on this business the way yours would be
                     trained on yours. Poke at me, interrogate me, try to break me. That&rsquo;s
                     what I&rsquo;m here for.
                   </p>

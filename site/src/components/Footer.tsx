@@ -70,8 +70,7 @@ export default function Footer() {
               Send a message →
             </Link>
             <p className="mt-3 max-w-xs text-paper/55">
-              Every message lands on my phone within minutes, and a real person answers.
-              {" "}{site.city}, Minnesota — serving the Twin Cities in person, everywhere else remotely.
+              Serving Minnesota businesses remotely by phone and screen share.
             </p>
           </div>
         </div>

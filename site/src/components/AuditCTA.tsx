@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 export default function AuditCTA({
   title = "Find out what your week is hiding.",
-  context = "The audit is free, it takes 30 minutes, and you leave with a written plan you can hand to anyone — including somebody who isn't me.",
+  context = "The audit is a free 15-minute phone call. No pitch. Call (763) 202-7778.",
 }: {
   title?: string;
   context?: string;
@@ -20,9 +20,7 @@ export default function AuditCTA({
           </p>
           <div className="mt-9 flex flex-col items-center gap-4">
             <MagneticButton href="/book/">{site.cta.label} →</MagneticButton>
-            <p className="text-sm text-ink-faint">
-              {site.cta.sub} And if I can&rsquo;t find anything worth fixing, the coffee&rsquo;s on me.
-            </p>
+            <p className="text-sm text-ink-faint">{site.cta.sub}</p>
           </div>
         </Reveal>
       </div>

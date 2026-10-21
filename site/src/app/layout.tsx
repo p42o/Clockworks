@@ -21,7 +21,7 @@ const instrument = Instrument_Serif({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "MN Clockworks — AI systems for Twin Cities trades businesses",
+    default: "MN Clockworks: AI systems for Twin Cities trades businesses",
     template: "%s · MN Clockworks",
   },
   description: site.description,
@@ -40,14 +40,14 @@ export const metadata: Metadata = {
     type: "website",
     url: site.url,
     siteName: site.name,
-    title: "Get your evenings back — MN Clockworks",
+    title: "Get your evenings back: MN Clockworks",
     description: site.description,
     images: [{ url: "/og.png", width: 1200, height: 630 }],
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Get your evenings back — MN Clockworks",
+    title: "Get your evenings back: MN Clockworks",
     description: site.description,
     images: ["/og.png"],
   },
@@ -76,7 +76,6 @@ const jsonLd = {
     { "@type": "City", name: "Maple Grove" },
     { "@type": "State", name: "Minnesota" },
   ],
-  priceRange: "$99 - $5,000",
   knowsAbout: [
     "AI automation",
     "missed-call text back",

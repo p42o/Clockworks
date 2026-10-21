@@ -7,10 +7,10 @@ export const site = {
   region: "MN",
   area: "Twin Cities, Minnesota",
   description:
-    "Practical AI systems for Twin Cities trades businesses — plumbing, HVAC, electrical, landscaping. Never miss a call, chase every quote, get your evenings back.",
+    "Practical AI systems for Twin Cities trades businesses: plumbing, HVAC, electrical, landscaping. Never miss a call, chase every quote, get your evenings back.",
   cta: {
     label: "Book your free audit",
-    sub: "30 minutes, no pitch. You leave with a written plan either way.",
+    sub: "15 minutes on the phone, no pitch.",
   },
 } as const;
 
@@ -25,8 +25,8 @@ export const nav = [
 
 /** Legacy pages that live outside the Next app — always plain <a>, never Link. */
 export const legacy = {
-  privacy: "/privacy.html",
-  terms: "/terms.html",
+  privacy: "https://mnclockworks.com/portal/client/#/privacy-notice",
+  terms: "/terms/",
   resources: "/resources.html",
   blog: "/blog/",
 } as const;

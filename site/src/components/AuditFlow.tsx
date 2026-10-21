@@ -92,7 +92,7 @@ export default function AuditFlow() {
     () => [
       {
         key: "you",
-        title: "First things first — who am I talking to?",
+        title: "First things first: who am I talking to?",
         valid: form.name.trim().length > 1 && form.business.trim().length > 1,
         hint: "Name and business, that's it.",
       },
@@ -110,13 +110,13 @@ export default function AuditFlow() {
       },
       {
         key: "contact",
-        title: "Where should the written plan go?",
+        title: "Where should I send the reply?",
         valid: /.+@.+\..+/.test(form.email),
-        hint: "I reply within one business day.",
+        hint: "Parker will follow up.",
       },
       {
         key: "review",
-        title: "Here's what I heard — look right?",
+        title: "Here's what I heard. Look right?",
         valid: true,
         hint: "",
       },
@@ -153,7 +153,7 @@ export default function AuditFlow() {
       }
     } catch {
       setState("failed");
-      setError("Something in the plumbing burst — fitting, I know.");
+      setError("Something in the plumbing burst. Fitting, I know.");
     }
   };
 
@@ -177,19 +177,18 @@ export default function AuditFlow() {
         </h2>
         <div className="mt-5 max-w-xl space-y-4 text-[1.05rem] leading-relaxed text-ink-soft">
           <p>
-            Your request just landed on my phone. You&rsquo;ll hear from me at{" "}
-            <span className="font-medium text-ink">{form.email}</span> within one business day —
-            a real reply from a real person, which is a little ironic given what I sell.
+            Your request just landed on my phone. Parker will follow up at{" "}
+            <span className="font-medium text-ink">{form.email}</span>.
+            A real reply from a real person, which is a little ironic given what I sell.
           </p>
           <p>
             We&rsquo;ll pick a time that fits around your jobs
             {form.preferred ? ` (you said ${form.preferred.toLowerCase()} works best)` : ""}, and
-            thirty minutes later you&rsquo;ll have a written plan. No pitch, no pressure —
-            and if there&rsquo;s nothing worth automating, the coffee&rsquo;s on me.
+            we&rsquo;ll talk for 15 minutes on the phone. No pitch, no pressure.
           </p>
         </div>
         <p className="mt-6 font-mono text-[0.75rem] text-ink-faint">
-          — Parker · {site.city}, MN
+          Parker · {site.city}, MN
         </p>
       </motion.div>
     );
@@ -291,7 +290,7 @@ export default function AuditFlow() {
                   <Field label="Anything you want me to know? (optional)">
                     <textarea
                       className={`${inputCls} min-h-[90px] resize-y`}
-                      placeholder="e.g. We miss weekend calls constantly — my voicemail's been full since March."
+                      placeholder="e.g. We miss weekend calls constantly. My voicemail's been full since March."
                       value={form.detail}
                       onChange={(e) => set("detail")(e.target.value)}
                     />
@@ -301,7 +300,7 @@ export default function AuditFlow() {
 
               {current.key === "contact" && (
                 <>
-                  <Field label="Email — where the plan goes">
+                  <Field label="Email">
                     <input
                       autoFocus
                       type="email"
@@ -314,7 +313,7 @@ export default function AuditFlow() {
                       onKeyDown={(e) => e.key === "Enter" && current.valid && go(1)}
                     />
                   </Field>
-                  <Field label="Phone (optional — some folks would rather talk)">
+                  <Field label="Phone (optional)">
                     <input
                       type="tel"
                       inputMode="tel"
@@ -355,13 +354,13 @@ export default function AuditFlow() {
                   </dl>
                   {state === "failed" && (
                     <div className="mt-6 rounded-[3px] border border-copper/50 bg-ember/40 p-4 text-[0.95rem] leading-relaxed">
-                      <p className="font-medium">That didn&rsquo;t send — {error}</p>
+                      <p className="font-medium">That didn&rsquo;t send. {error}</p>
                       <p className="mt-1 text-ink-soft">
                         Your answers are safe right here.{" "}
                         <button type="button" onClick={retry} className="text-copper underline underline-offset-2">
                           Give it one more try
-                        </button>{" "}
-                        — flaky Wi-Fi loses to stubbornness most days.
+                        </button>
+                        . Flaky Wi-Fi loses to stubbornness most days.
                       </p>
                     </div>
                   )}

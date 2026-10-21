@@ -9,7 +9,11 @@ import DemoGallery from "@/components/demos/DemoGallery";
 import { asset, site } from "@/lib/site";
 
 const TOOLS = ["Jobber", "QuickBooks", "Housecall Pro", "Google", "Your phone #"];
-const TRUST = ["Working demo in 48 hrs", "You own everything", "No contracts", "Coffee-bet guarantee"];
+const TRUST = [
+  "Free 15-minute phone audit",
+  "$50 online presence assessment",
+  "$500 one-time deployment",
+];
 
 /*
  * H1 candidates considered:
@@ -24,35 +28,35 @@ const SYSTEMS = [
     n: "01",
     code: "CALL CATCH",
     title: "Never miss another job call",
-    body: "You're under a sink; the phone rings twice and quits. Call Catch texts the caller back in seconds — in your words, from your number — and books them before they dial the next guy.",
+    body: "You're under a sink; the phone rings twice and quits. Call Catch texts the caller back in seconds, in your words, from your number, and books them before they dial the next guy.",
     runs: "Your existing number · Jobber · Housecall Pro",
   },
   {
     n: "02",
     code: "QUOTE CHASER",
     title: "Quotes that follow up themselves",
-    body: "Most quotes don't lose — they just go quiet. Quote Chaser sends the friendly nudge you never have time to write, on a schedule you set, until you get a yes or a no.",
+    body: "Most quotes don't lose. They just go quiet. Quote Chaser sends the friendly nudge you never have time to write, on a schedule you set, until you get a yes or a no.",
     runs: "Jobber · QuickBooks · Email + SMS",
   },
   {
     n: "03",
     code: "REVIEW ENGINE",
     title: "Five-star reviews on autopilot",
-    body: "Job closes, customer gets a short text with your review link. Happy customers talk you up in public. Unhappy ones reach you privately first — before they reach Google.",
+    body: "Job closes, customer gets a short text with your review link. Happy customers talk you up in public. Unhappy ones reach you privately first, before they reach Google.",
     runs: "Google Business Profile · Jobber",
   },
   {
     n: "04",
     code: "PAPER MOVER",
     title: "The office pile, handled",
-    body: "Invoices chased politely until they're paid. Job notes turned into clean records. A Friday summary of what moved and what's stuck — read it in two minutes, done.",
+    body: "Invoices chased politely until they're paid. Job notes turned into clean records. A Friday summary of what moved and what's stuck. Read it in two minutes, done.",
     runs: "QuickBooks · Your inbox",
   },
   {
     n: "05",
     code: "INTEL DESK",
     title: "Know what the big guys know",
-    body: "Live dashboards on your numbers — plus competitor price moves, local demand spikes, and material costs, read automatically from the public web. The analyst desk, scaled to one truck.",
+    body: "Live dashboards on your numbers, plus competitor price moves, local demand spikes, and material costs, read automatically from the public web. The analyst desk, scaled to one truck.",
     runs: "Public data · QuickBooks · a weekly digest",
   },
   {
@@ -68,7 +72,7 @@ const SYSTEMS = [
 const FAQS = [
   {
     q: "Do I need to buy new software?",
-    a: "No. I build on what you already run — Jobber, Housecall Pro, QuickBooks, your Google profile, your existing phone number. If you run your business from a notebook and a cell phone, that works too; we start simpler.",
+    a: "No. I build on what you already run: Jobber, Housecall Pro, QuickBooks, your Google profile, your existing phone number. If you run your business from a notebook and a cell phone, that works too; we start simpler.",
   },
   {
     q: "I'm not technical. How much do I have to learn?",
@@ -76,19 +80,19 @@ const FAQS = [
   },
   {
     q: "What does it actually cost?",
-    a: "The audit is free. A pilot — one working system, built and live — is a fixed quote between $2,000 and $5,000 depending on scope. After that, I keep it running, tuned, and improving from $99 to $299 a month. No contracts. One saved job typically covers months of it.",
+    a: "A free 15-minute phone audit. An online presence assessment for $50. A one-time deployment for $500. We set up your AI team with you on a screen-share call, test it together, and walk you through how to use it. Optional ongoing maintenance is available. Parker can walk you through it. Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.",
   },
   {
     q: "Am I locked in?",
-    a: "No. You own everything I build — the accounts, the numbers, the logic. Cancel the monthly service anytime and the system keeps working; you'd just be maintaining it yourself.",
+    a: "No. Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.",
   },
   {
     q: "Couldn't I just do this myself with ChatGPT?",
-    a: "You could, and for some owners that's the honest answer. Here's the real math, though: the paid tiers add up — ChatGPT, Claude, or Gemini run about $20+ a month each, an automation platform like n8n is roughly $25+ a month hosted (or a $10–20/month server you maintain yourself), and none of it arrives assembled. The tools are maybe $50–100 a month; the hundred hours of wiring them into Jobber and QuickBooks — and keeping it running when something updates — is the actual product. From $99 a month I bring the tooling AND the mechanic. If you enjoy the duct tape, I'll cheer you on; the audit plan works as a DIY map too.",
+    a: "You could, and for some owners that's the honest answer. Here's the real math, though: the paid tiers add up. ChatGPT, Claude, or Gemini run about $20+ a month each, an automation platform like n8n is roughly $25+ a month hosted (or a $10 to $20 a month server you maintain yourself), and none of it arrives assembled. The tools are maybe $50 to $100 a month. The hundred hours of wiring them into Jobber and QuickBooks, and keeping it running when something updates, is the actual product. If you enjoy the duct tape, I'll cheer you on.",
   },
   {
     q: "Will customers know it's AI?",
-    a: "The texts sound like you because you approve the wording. When a conversation needs a human, it hands off to you fast — the goal is never to fool anyone, it's to answer in seconds instead of never.",
+    a: "The texts sound like you because you approve the wording. When a conversation needs a human, it hands off to you fast. The goal is never to fool anyone, it's to answer in seconds instead of never.",
   },
 ] as const;
 
@@ -118,7 +122,7 @@ export default function Home() {
           <Reveal immediate delay={0.16}>
             <p className="mt-7 max-w-xl text-[1.1rem] leading-relaxed text-ink-soft">
               I build quiet, reliable systems for Twin Cities plumbing, HVAC, electrical, and
-              landscaping companies — they catch the calls you miss, chase the quotes you sent,
+              landscaping companies. They catch the calls you miss, chase the quotes you sent,
               and keep the paperwork moving while you&rsquo;re on the job.
             </p>
           </Reveal>
@@ -167,13 +171,13 @@ export default function Home() {
       <section id="week" className="border-t hairline bg-cream-bright/40">
         <div className="mx-auto max-w-6xl px-5 pt-20 sm:px-8 sm:pt-28">
           <Reveal>
-            <p className="eyebrow section-rule">01 — The problem</p>
+            <p className="eyebrow section-rule">01 · The problem</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
               The work isn&rsquo;t the problem. <em>The pile</em> is.
             </h2>
             <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
               Missed calls, quiet quotes, unpaid invoices, reviews you meant to ask for. None of
-              it is hard — there&rsquo;s just no hour left in the day to do it. Here&rsquo;s what
+              it is hard. There&rsquo;s just no hour left in the day to do it. Here&rsquo;s what
               one ordinary Tuesday looks like when the machine handles it instead.
             </p>
           </Reveal>
@@ -191,7 +195,7 @@ export default function Home() {
         </span>
         <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
           <Reveal>
-            <p className="eyebrow section-rule">02 — What I do</p>
+            <p className="eyebrow section-rule">02 · What I do</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
               Six systems. One quiet machine<span className="text-copper">.</span>
             </h2>
@@ -215,14 +219,14 @@ export default function Home() {
                   </button>
                 )}
                 <p className="mt-6 border-t hairline-soft pt-4 font-mono text-[0.72rem] tracking-wide text-ink-faint">
-                  RUNS ON — {s.runs}
+                  RUNS ON · {s.runs}
                 </p>
               </Reveal>
             ))}
           </div>
           <Reveal className="mt-8">
             <Link href="/what-i-do/" className="link-draw text-ink-soft hover:text-ink">
-              The full spec sheet, including what each one costs →
+              The full spec sheet →
             </Link>
           </Reveal>
         </div>
@@ -238,14 +242,14 @@ export default function Home() {
         </span>
         <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
           <Reveal>
-            <p className="eyebrow">Go ahead — poke it</p>
+            <p className="eyebrow">Go ahead. Poke it</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
               Don&rsquo;t take my word for it. <em>Play with it</em><span className="text-copper">.</span>
             </h2>
             <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
               Every card below is a working demo running right here in your browser, on clearly-labeled
               sample data. Text the missed-call bot back, run a week of quote follow-ups, poke the
-              dashboards. This is the actual stuff I build — rebuilt around your shop when it&rsquo;s yours.
+              dashboards. This is the actual stuff I build, rebuilt around your shop when it&rsquo;s yours.
             </p>
           </Reveal>
           <div className="mt-12">
@@ -291,14 +295,13 @@ export default function Home() {
         </svg>
         <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
           <Reveal>
-            <p className="eyebrow !text-copper">03 — Straight numbers</p>
+            <p className="eyebrow !text-copper">03 · Straight numbers</p>
           </Reveal>
           <div className="mt-10 grid grid-cols-2 gap-10 lg:grid-cols-4">
             {[
-              { v: 10, suffix: " hrs", label: "a week of admin a typical owner carries — the hours we go find" },
+              { v: 10, suffix: " hrs", label: "a week of admin a typical owner carries, the hours we go find" },
               { v: 9, suffix: " sec", label: "for a missed call to get a text back with your name on it" },
-              { v: 48, suffix: " hrs", label: "from kickoff to a working demo you can poke at" },
-              { v: 0, prefix: "$", label: "cost of the audit — a written plan, yours either way" },
+              { v: 0, prefix: "$", label: "cost of the free 15-minute phone audit" },
             ].map((s, i) => (
               <Reveal key={s.label} delay={i * 0.07}>
                 <p className="display text-5xl text-cream-bright sm:text-6xl">
@@ -310,7 +313,7 @@ export default function Home() {
           </div>
           <Reveal className="mt-14 border-t border-white/10 pt-8">
             <p className="max-w-2xl text-lg leading-relaxed text-paper/80">
-              Most callers who hit voicemail don&rsquo;t leave one — they call the next name on
+              Most callers who hit voicemail don&rsquo;t leave one. They call the next name on
               the list. The first company to answer usually wins the job.{" "}
               <span className="text-paper/50">
                 That&rsquo;s the whole pitch. Everything I build exists to make you first.
@@ -324,7 +327,7 @@ export default function Home() {
       <section className="border-t hairline">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
           <Reveal>
-            <p className="eyebrow section-rule">04 — How it works</p>
+            <p className="eyebrow section-rule">04 · How it works</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
               Three steps. No mystery<span className="text-copper">.</span>
             </h2>
@@ -332,19 +335,19 @@ export default function Home() {
           <div className="mt-12 grid gap-10 md:grid-cols-3">
             {[
               {
-                step: "STEP 1 — FREE",
-                title: "The audit",
-                body: "Thirty minutes, in person or on a call. We walk your week and find where the hours and leads actually leak. You get a one-page written plan — keep it, shop it around, or hand it to me.",
+                step: "STEP 1 · FREE",
+                title: "Phone audit",
+                body: "A free 15-minute phone audit. Call (763) 202-7778.",
               },
               {
-                step: "STEP 2 — $2,000–$5,000 FIXED",
-                title: "The pilot",
-                body: "I build the one system from the plan that pays back fastest. Working demo in 48 hours, live in about two weeks. Fixed quote before we start — if it grows, that's a new conversation, not a surprise invoice.",
+                step: "STEP 2 · $50",
+                title: "Online presence assessment",
+                body: "We check how your business shows up across search, AI assistants, and ratings and review sites.",
               },
               {
-                step: "STEP 3 — FROM $99/MO",
-                title: "It runs",
-                body: "I watch it, tune it, and improve it while it works. You get a plain-English report of what it caught. Cancel anytime — you own every piece, and it keeps working without me.",
+                step: "STEP 3 · $500 ONE TIME",
+                title: "The deployment",
+                body: "We set up your AI team with you on a screen-share call, test it together, and walk you through how to use it.",
               },
             ].map((s, i) => (
               <Reveal key={s.title} delay={i * 0.08} variant="rise" className="border-t-2 border-copper/70 pt-6">
@@ -354,6 +357,10 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
+          <Reveal className="mt-10 max-w-2xl space-y-3 leading-relaxed text-ink-soft">
+            <p>Optional ongoing maintenance is available. Parker can walk you through it.</p>
+            <p>Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.</p>
+          </Reveal>
           <Reveal className="mt-10">
             <Link href="/how-it-works/" className="link-draw text-ink-soft hover:text-ink">
               Exactly what happens in the audit →
@@ -366,13 +373,13 @@ export default function Home() {
       <section className="border-t hairline bg-paper-deep">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
           <Reveal>
-            <p className="eyebrow">05 — Proof</p>
+            <p className="eyebrow">05 · Proof</p>
             <h2 className="display mt-4 max-w-2xl text-4xl sm:text-6xl">
               I run these systems <em>every day</em><span className="text-copper">.</span>
             </h2>
             <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
               Before I ever sold one, I built them for myself. Thirty-plus automations run my own
-              family&rsquo;s life and businesses right now — answering, scheduling, logging,
+              family&rsquo;s life and businesses right now: answering, scheduling, logging,
               chasing. When I say &ldquo;it just runs,&rdquo; I&rsquo;m describing my Tuesday.
             </p>
           </Reveal>
@@ -402,7 +409,7 @@ export default function Home() {
             </div>
           </Reveal>
           <Reveal delay={0.1}>
-            <p className="eyebrow">06 — Who you&rsquo;re dealing with</p>
+            <p className="eyebrow">06 · Who you&rsquo;re dealing with</p>
             <h2 className="display mt-4 text-4xl sm:text-5xl">
               One guy. Local. Reachable<span className="text-copper">.</span>
             </h2>
@@ -410,7 +417,7 @@ export default function Home() {
               I&rsquo;m Parker. I&rsquo;ve spent a decade-plus running technical operations for a
               national smart-home company by day, and I live in Maple Grove with my wife and two
               kids. I built this business for one reason: owners around here work too hard to
-              lose jobs to a full voicemail box. When you call, you get me — not a sales team.
+              lose jobs to a full voicemail box. When you call, you get me, not a sales team.
             </p>
             <div className="mt-8 flex flex-wrap gap-5">
               <Link href="/about/" className="link-draw text-ink-soft hover:text-ink">
@@ -425,7 +432,7 @@ export default function Home() {
       <section className="border-t hairline">
         <div className="mx-auto max-w-3xl px-5 py-20 sm:px-8 sm:py-28">
           <Reveal>
-            <p className="eyebrow section-rule">07 — Straight answers</p>
+            <p className="eyebrow section-rule">07 · Straight answers</p>
             <h2 className="display mt-4 text-4xl sm:text-5xl">
               The stuff you&rsquo;d actually ask<span className="text-copper">.</span>
             </h2>

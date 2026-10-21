@@ -14,7 +14,7 @@ Industry-wide, the data on this is brutal:
 - **63%**: Of consumers book the first business that responds
 - **~40%**: Average missed-call rate for trades during peak season
 
-Here's the workflow I install on day one for any plumbing, HVAC, electrical, landscaping, or cleaning business that wants to plug the leak. It takes one focused afternoon to build, and it pays for itself with the first booked job it saves.
+Here's the workflow I install first for any plumbing, HVAC, electrical, landscaping, or cleaning business that wants to plug the leak. It takes one focused afternoon to build, and it pays for itself with the first booked job it saves.
 
 ---
 
@@ -26,7 +26,7 @@ Here's the workflow I install on day one for any plumbing, HVAC, electrical, lan
 - An LLM key (Claude or OpenAI), ~$5/month for a small business
 - A texting service: Twilio is the cheapest; OpenPhone has built-in SMS API on paid plans
 
-Total monthly cost when it's running: **~$60–$120**. Total time to build the first version: **about 90 minutes**.
+Total monthly cost when it's running: **~$60 to $120**. Total time to build the first version: **about 90 minutes**.
 
 ---
 

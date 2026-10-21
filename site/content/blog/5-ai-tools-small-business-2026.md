@@ -100,6 +100,6 @@ The businesses I work with that get the most out of AI aren't the ones using the
 
 ---
 
-If you want help figuring out which tool fits your specific workflow, that's literally what I do. I offer a free 30-minute strategy session where we look at your business and figure out where AI and automation would actually make a difference. No sales pitch. Just an honest conversation about what's worth your time.
+If you want help figuring out which tool fits your specific workflow, that's literally what I do. I offer a free 15-minute phone audit where we look at your business and figure out where AI and automation would actually make a difference. No sales pitch. Just an honest conversation about what's worth your time.
 
 Parker Swanson, Founder of Clockworks

@@ -1,14 +1,14 @@
 ---
 title: "The 5-Minute Email Triage Setup That Buys Back Your Mornings"
 date: "2026-02-12"
-description: "A no-code AI inbox setup that flags the three emails that actually matter and silences the rest. Twenty minutes to install. Saves most owners 5–7 hours a week."
+description: "A no-code AI inbox setup that flags the three emails that actually matter and silences the rest. Twenty minutes to install. Saves most owners 5 to 7 hours a week."
 legacyPath: "/blog/email-triage-tip.html"
 tags: [email, gmail, tip]
 ---
 
 Every business owner I work with has the same morning: open phone, swipe through 60 emails, mark 3 as important, lose the next hour responding to the noise instead of the signal. The fix is embarrassingly simple. You don't need a new tool. You need 20 minutes and a Gmail or Outlook account.
 
-This is the exact setup I run for myself and the one I install for clients on day one.
+This is the exact setup I run for myself and the one I install for clients first.
 
 ---
 

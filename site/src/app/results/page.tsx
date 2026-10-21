@@ -5,9 +5,9 @@ import StatCount from "@/components/StatCount";
 import DemoGallery from "@/components/demos/DemoGallery";
 
 export const metadata: Metadata = {
-  title: "Results — working demos you can poke",
+  title: "Results: working demos you can poke",
   description:
-    "Six working demos with sample data: missed-call capture, quote follow-up, review automation, an owner's dashboard, a market intel desk, and an inbox autopilot. Not screenshots — machines.",
+    "Six working demos with sample data: missed-call capture, quote follow-up, review automation, an owner's dashboard, a market intel desk, and an inbox autopilot. Not screenshots. Machines.",
 };
 
 export default function Results() {
@@ -17,13 +17,13 @@ export default function Results() {
         <Reveal>
           <p className="eyebrow">Not screenshots. Machines.</p>
           <h1 className="display mt-4 max-w-3xl text-5xl sm:text-7xl">
-            Don&rsquo;t take my word for it — <em>poke it</em>
+            Don&rsquo;t take my word for it. <em>Poke it</em>
             <span className="text-copper">.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-[1.1rem] leading-relaxed text-ink-soft">
             Every card below is a working demo running right here in your browser, loaded with
             clearly-labeled sample data. Play the customer. Run the week. Hover the charts.
-            This is the stuff I build — and every piece of it gets rebuilt around <em>your</em>{" "}
+            This is the stuff I build, and every piece of it gets rebuilt around <em>your</em>{" "}
             shop, your words, your numbers.
           </p>
         </Reveal>
@@ -41,7 +41,7 @@ export default function Results() {
               Early days, said out loud<span className="text-copper">.</span>
             </h2>
             <p className="mt-5 max-w-2xl leading-relaxed text-ink-soft">
-              MN Clockworks is new, and I don&rsquo;t have a wall of client logos yet — what I
+              MN Clockworks is new, and I don&rsquo;t have a wall of client logos yet. What I
               have is years of these systems running in production for my own life and work:
               assistants answering real communities at midnight, inbox workflows reading and
               routing hundreds of messages a day for a busy operations team, and live dashboards
@@ -78,7 +78,7 @@ export default function Results() {
             </h2>
             <p className="mt-5 max-w-2xl text-[1.05rem] leading-relaxed text-ink-soft">
               Early clients get launch pricing and first-in-line service. In exchange, when the
-              system delivers, I ask to tell the story right here — your company&rsquo;s name,
+              system delivers, I ask to tell the story right here: your company&rsquo;s name,
               the problem, the numbers, the result. Real proof for me, a permanent spotlight for
               you.
             </p>
@@ -91,7 +91,7 @@ export default function Results() {
 
       <AuditCTA
         title="Want one of these with your name on it?"
-        context="The audit finds which machine pays back fastest for your shop — with the math shown. Thirty minutes, written plan, zero pitch."
+        context="The free 15-minute phone audit looks at which machine fits your shop. Zero pitch."
       />
     </>
   );

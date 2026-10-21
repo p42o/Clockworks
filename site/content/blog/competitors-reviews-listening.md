@@ -98,12 +98,12 @@ Seriously. Right now. Before you close this tab.
 
 Go to Google Maps. Search for your biggest competitor. Click their reviews. Sort by newest. Read the last 10.
 
-I guarantee you'll see at least one pattern within 5 minutes. Something customers keep saying. Something your competitor isn't fixing. Something you could turn into a message that wins you business.
+Look for at least one pattern within 5 minutes. Something customers keep saying. Something your competitor isn't fixing. Something you could turn into a message that wins you business.
 
-If you want to turn that 5-minute experiment into an automated system that runs every day without you touching it, that's what I build. Takes about a day to set up, and you'll wonder how you ever competed without it.
+If you want to turn that 5-minute experiment into an automated system that runs every day without you touching it, that's what I build. Start with a free 15-minute phone audit.
 
 ---
 
-I offer a free 30-minute strategy session where we look at your business and figure out where automation makes the biggest difference. Competitive monitoring is usually the one that surprises people most. They didn't know it was possible. Once they see it, they want it immediately.
+I offer a free 15-minute phone audit where we look at your business and figure out where automation makes the biggest difference. Competitive monitoring is usually the one that surprises people most. They didn't know it was possible. Once they see it, they want it immediately.
 
 Parker Swanson, Founder of Clockworks

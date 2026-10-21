@@ -7,7 +7,7 @@ import { getPublishedPosts } from "@/lib/blog";
 export const metadata: Metadata = {
   title: "Field notes",
   description:
-    "Plain-English notes on AI for small business and the trades — missed calls, follow-up, paperwork, and what's actually worth automating. From Maple Grove, MN.",
+    "Plain-English notes on AI for small business and the trades: missed calls, follow-up, paperwork, and what's actually worth automating. From Maple Grove, MN.",
 };
 
 const fmt = (d: string) =>
@@ -26,7 +26,7 @@ export default function BlogIndex() {
             Notes from the bench<span className="text-copper">.</span>
           </h1>
           <p className="mt-6 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
-            Plain-English writing about AI for real businesses — what works, what&rsquo;s hype,
+            Plain-English writing about AI for real businesses: what works, what&rsquo;s hype,
             and what it costs. No jargon, no doom, no &ldquo;in today&rsquo;s fast-paced
             world.&rdquo;
           </p>
@@ -41,7 +41,7 @@ export default function BlogIndex() {
               className="card-lift group block rounded-[4px] border-2 border-copper/50 bg-cream-bright/70 p-7 hover:border-copper sm:p-10"
             >
               <p className="font-mono text-[0.68rem] tracking-[0.18em] text-copper">
-                LATEST — {fmt(latest.date).toUpperCase()}
+                LATEST · {fmt(latest.date).toUpperCase()}
               </p>
               <h2 className="display mt-3 max-w-2xl text-3xl leading-tight group-hover:text-copper sm:text-5xl">
                 {latest.title}
@@ -75,7 +75,7 @@ export default function BlogIndex() {
 
       <AuditCTA
         title="Reading is free. So is the audit."
-        context="If a post made you wonder whether this stuff would work in your shop, that's exactly what the 30-minute audit answers — with your numbers."
+        context="If a post made you wonder whether this stuff would work in your shop, that's what the free 15-minute phone audit is for."
       />
     </>
   );
