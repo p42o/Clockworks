@@ -41,6 +41,13 @@ RedirectMatch 301 ^/terms\.html$ /terms/
 # Counsel: these two posts are gone (410). Files kept in site/archive/2026-10-21/.
 # Other unreviewed posts are staged in BLOG-410-PENDING.md for Parker's keepers call.
 RedirectMatch 410 ^/blog/(trades-pivot|what-a-pilot-buys)(\.html|/.*)?$
+# Pre-launch (Counsel, 2026-10-21 3:34 AM CT): unlisted posts not yet re-reviewed are gone (410).
+# Files stay in place. Reversible: delete a slug from this rule and the post serves again
+# (after Sprocket re-reviews it). Covers /blog/<slug>, /blog/<slug>/, /blog/<slug>.html and
+# dated aliases such as /blog/2026-06/competitors-reviews-listening.html. client-story stays 200.
+RedirectMatch 410 ^/blog/(?:20[0-9]{2}-[0-9]{2}/)?(ai-tools-ranked|cheap-vs-good-ai|competitors-reviews-listening|prompting-101|guide-to-claude|30-day-challenge|what-cowork-gets-you)(\.html|/.*)?$
+# Legacy /sprocket page (served 200 locally). File stays; one hop home.
+RedirectMatch 301 ^/sprocket(/.*)?$ /
 # site/ (Next source + site/archive/) is excluded from the FTP deploy. Belt and braces: never serve it.
 RedirectMatch 404 ^/site(/.*)?$
 # /what-i-do, /results, /your-own-agent: live sent these to /front-desk.html; the
