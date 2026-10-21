@@ -14,7 +14,7 @@
 
 declare(strict_types=1);
 
-const IP_MODE = 'hashed'; // 'full' or 'hashed'
+const IP_MODE = 'full'; // 'full' or 'hashed'
 
 const COOKIE      = 'timely_auth';
 const PIN_LEN     = 4;      // client PIN digits
