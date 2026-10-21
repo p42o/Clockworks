@@ -6,6 +6,8 @@ legacyPath: "/blog/2026-06/anatomy-of-a-context-vault.html"
 tags: [context-vault, guide, ai-integration]
 ---
 
+Shop scenario: a composite of situations common in Twin Cities shops. Not a real client. Names and numbers are illustrative, and your results will differ.
+
 Last month I wrote about why your AI gives you generic answers: it doesn’t know you. And I introduced the idea of a **Context Vault**, one organized document that holds everything an AI should know about your business so it can stop guessing.
 
 That post got the most replies of anything I’ve published. About half of them were some version of:
@@ -52,7 +54,7 @@ A short, dated “current state” section. What goals you’re chasing this qua
 
 A Context Vault is not a knowledge base. It is not your wiki. It is not where you dump every doc in your business. The whole point is that it’s short enough to read in a few seconds. That’s why the AI is willing to read it before every answer.
 
-Mine is about eight pages. Most of my clients’ end up between five and twelve.
+Mine is about eight pages. In this example, a short vault might be five pages and a longer one twelve.
 
 > Long enough to actually know you. Short enough that an AI will read it every single time.
 
@@ -69,6 +71,6 @@ Once it’s built, you stop opening a blank chat. You start asking your AI thing
 
 And what comes back, for the first time, is something that sounds like you wrote it, on your worst day, in five seconds. That’s the bar. That’s the unlock.
 
-If you'd rather not build this yourself, that's what I do at Clockworks. Start with a free 15-minute phone audit. Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account. Limited clients. Reach out if you want to talk about it.
+If you'd rather not build this yourself, that's what I do at Clockworks. Start with a free 15-minute phone audit. Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform accounts. Limited clients. Reach out if you want to talk about it.
 
 If you’d rather build it yourself, you have everything you need above. Open a doc, start with section 01, and don’t skip section 04.

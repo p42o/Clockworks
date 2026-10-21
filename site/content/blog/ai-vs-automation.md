@@ -6,6 +6,8 @@ legacyPath: "/blog/ai-vs-automation.html"
 tags: [automation, ai-basics, guide]
 ---
 
+Shop scenario: a composite of situations common in Twin Cities shops. Not a real client. Names and numbers are illustrative, and your results will differ.
+
 Hey, I'm Parker. I run Clockworks, an AI consulting firm based in Maple Grove, MN. We help tradespeople, real estate agents, and local service businesses actually use AI in ways that make their lives easier. Not hype. Not theory. Real stuff that works.
 
 I spent 15+ years in SaaS and IoT before pivoting to AI consulting full-time. In that time, I've sat across from a lot of smart business owners who had no idea they were confusing two very different things: AI and automation.
@@ -32,9 +34,9 @@ A pipe breaks in a rental property and your tenant submits a non-standard reques
 
 AI is different. It doesn't follow your rules. It learns patterns and makes decisions based on context. It can read something it's never seen before and still give you a useful answer.
 
-Here's a real example. I work with a plumbing company. Every week, they want a competitive intelligence report: what their competitors are doing, what's happening in the market, where the opportunities are. That's not a rules problem. The inputs change every week. The context shifts.
+In this example, a plumbing company might want a competitive intelligence report every week: what their competitors are doing, what's happening in the market, where the opportunities are. That's not a rules problem. The inputs change every week. The context shifts.
 
-We built an AI agent that goes out, reads the web, synthesizes what it finds, and writes a custom report. No human babysitting it. It handles the messy, unpredictable, judgment-requiring work that automation simply can't touch.
+For example, if an AI agent went out, read the web, synthesized what it finds, and wrote a custom report, nobody would have to babysit it. It would handle the messy, unpredictable, judgment-requiring work that automation simply can't touch.
 
 AI can also read tone. It can respond to a frustrated customer differently than a happy one. It can draft a proposal that sounds like you, not like a robot. It can look at your schedule and suggest what to prioritize. These are judgment calls. That's AI's territory.
 
@@ -76,4 +78,4 @@ The goal isn't to automate your business. The goal is to free up your time for t
 
 ---
 
-If you're a contractor, real estate agent, or local service business owner wondering where to even start, reach out. I do free 20-minute calls. No pitch, just clarity.
+If you're a contractor, real estate agent, or local service business owner wondering where to even start, reach out. Book a free 15-minute phone audit. No pitch, just clarity.

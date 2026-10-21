@@ -6,6 +6,8 @@ legacyPath: "/blog/5-things-ai.html"
 tags: [prompts, productivity, quick-wins]
 ---
 
+Shop scenario: a composite of situations common in Twin Cities shops. Not a real client. Names and numbers are illustrative, and your results will differ.
+
 Hey, I'm Parker. I run Clockworks, an AI consulting firm in Maple Grove, MN. Most of the business owners I work with aren't looking for a five-year digital transformation. They want to save time this week. Real time, on real tasks.
 
 So here are five specific things you can do with free AI tools (ChatGPT or Claude, both have free tiers) starting right now. I'm including the exact prompts. Copy them, swap in your details, hit send.
@@ -26,7 +28,7 @@ Try this prompt:
 I'm the owner of a [type of business] in [city]. Write a [friendly / firm / apologetic] email to a customer who [describe the situation in one sentence]. Keep it under 120 words. End with a clear next step.
 ```
 
-A real estate agent I work with in Wayzata uses this every morning. She has a backlog of leads who went cold over the winter. She types the situation, gets a draft, tweaks two words, and sends it. She re-engaged four leads in the first week.
+In this example, a real estate agent in Wayzata might use this every morning. If she has a backlog of leads who went cold over the winter, she types the situation, gets a draft, tweaks two words, and sends it. In this example, four leads might come back in the first week.
 
 ---
 
@@ -62,7 +64,7 @@ Try this prompt:
 I'm a [type of contractor / service provider]. I'm writing a proposal for [describe the project]. The client is [describe who they are and what they care about]. Draft a one-page proposal with: a project overview, scope of work, timeline, price ([your price]), and a short "why us" closing paragraph. Professional but warm tone.
 ```
 
-You still need to plug in your real numbers and review it carefully before sending. But the structural work (the thing that eats your time) is done. A landscaping client told me this cut his proposal time from 45 minutes to about 12.
+You still need to plug in your real numbers and review it carefully before sending. But the structural work (the thing that eats your time) is done. In this example, proposal time might go from 45 minutes to about 12.
 
 ---
 
@@ -80,7 +82,7 @@ Try this prompt:
 I have a meeting tomorrow with a potential client who [describe what you know about them and what they need]. I want to come across as knowledgeable and helpful, not salesy. Give me: 5 questions I should ask, 2 things I should know about their situation, and 2 objections they might raise with honest responses.
 ```
 
-This one feels almost unfair. You walk into calls with sharper questions and a clearer head. The prep that used to take 30 minutes of scattered thinking now takes five minutes and produces better output.
+This one feels almost unfair. You walk into calls with sharper questions and a clearer head. In this example, prep that used to take 30 minutes of scattered thinking might take five minutes.
 
 ---
 
@@ -96,7 +98,7 @@ You have a contract, a lease, a lengthy quote from a vendor, or a long email cha
 Here's a document I need to understand: [paste the full text]. Give me: a plain-English summary of what this says, the three most important things I need to know, and anything in here that seems unusual or that I should ask about before agreeing to it.
 ```
 
-This one has saved clients real money. An HVAC business owner I work with used this to review a vendor contract before signing. The AI flagged a 90-day minimum commitment buried in paragraph 14 that he had completely missed. That would have cost him several thousand dollars to get out of.
+In this example, if someone pasted a vendor contract in before signing, the summary might flag a 90-day minimum commitment buried in paragraph 14. Missing that kind of clause could cost several thousand dollars to get out of.
 
 > Important caveat: AI is not a lawyer. For anything you're signing that has significant financial or legal implications, still have a human attorney review it. But AI can help you know what questions to ask before that conversation.
 

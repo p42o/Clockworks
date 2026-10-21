@@ -44,7 +44,7 @@ People hear "enterprise AI" and picture a $50,000 implementation budget. Some AI
 
 **The truth**
 
-The free tiers of ChatGPT and Claude will give you enormous value before you spend a dollar. Paid plans start at $20/month. For context: if AI saves you three hours a week and you bill at $75/hour, you've paid for a year of subscriptions in the first month. The ROI on basic AI adoption is almost always positive within the first 30 days.
+The free tiers of ChatGPT and Claude will give you enormous value before you spend a dollar. Paid plans start at $20/month. For context: in this example, if AI saves you three hours a week and you bill at $75/hour, a year of subscriptions is covered in the first month. Your results will differ.
 
 **Myth 04**
 
@@ -76,4 +76,4 @@ If any of these resonated because you've been telling yourself one of them, that
 
 ---
 
-If you're not sure where to start or want to pressure-test your specific situation, reach out. I offer free 20-minute calls and I won't push you into anything you don't need.
+If you're not sure where to start or want to pressure-test your specific situation, reach out. Book a free 15-minute phone audit. I won't push you into anything you don't need.

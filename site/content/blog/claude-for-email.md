@@ -6,6 +6,8 @@ legacyPath: "/blog/claude-for-email.html"
 tags: [claude, email, templates]
 ---
 
+Shop scenario: a composite of situations common in Twin Cities shops. Not a real client. Names and numbers are illustrative, and your results will differ.
+
 Hey, I'm Parker. I run Clockworks, and email is one of the first things I tackle with every client. Not because it's the biggest time sink (though it often is) but because it's the easiest win. You see the result immediately, and it builds confidence to go tackle the harder stuff.
 
 Here's the setup I recommend, the five email templates I use most often, the "rough draft first" technique that changes how you work, and how to make the output actually sound like you, not like a chatbot.
@@ -86,7 +88,7 @@ Here's the most underrated thing I teach: before you ask Claude to write an emai
 
 Why does this work better? Because your rough draft has your actual intent in it. Claude isn't guessing what you meant, it's just making it sound better. The output is closer to what you actually want to say, with way less back-and-forth to get there.
 
-I showed this technique to a property manager in Golden Valley who was spending 45 minutes a day on email. She started doing rough-draft-first on everything, and within two weeks she told me she had cut that to under 20 minutes. Not because she's a better writer, but because she stopped trying to write well in her head before she typed anything.
+In this example, if email takes 45 minutes a day, a rough-draft-first habit might bring that under 20 minutes. The change is not better writing. It is typing the messy version before trying to make it sound finished.
 
 ---
 

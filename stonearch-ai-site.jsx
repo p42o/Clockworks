@@ -71,14 +71,14 @@ const DEFAULT_BLOG_POSTS = [
   { id: 1, tag: "GUIDE", title: "5 AI Tools Every Plumber Should Be Using in 2026", excerpt: "You don't need to be technical. These tools take 10 minutes to set up and save hours every week on scheduling, invoicing, and follow-ups.", date: "Feb 18, 2026", readTime: "4 min", content: "Full article content goes here. This is where the detailed guide would appear when expanded." },
   { id: 2, tag: "CASE STUDY", title: "How a Maple Grove Electrician Cut Admin Work by 60%", excerpt: "From handwritten estimates to AI-generated proposals in under a minute. Here's exactly what we set up and what it costs.", date: "Feb 12, 2026", readTime: "6 min", content: "Full case study content goes here." },
   { id: 3, tag: "NEWS", title: "Your Competitors Are Already Using AI. Here's the Data.", excerpt: "72% of businesses now use AI in at least one function. If you're not one of them, you're already behind — but catching up takes one afternoon.", date: "Feb 5, 2026", readTime: "3 min", content: "Full news article content goes here." },
-  { id: 4, tag: "TIP", title: "The $40/Month Stack That Replaces a Part-Time Employee", excerpt: "Three off-the-shelf AI tools that handle scheduling, customer follow-ups, and bookkeeping. No coding. No contracts. Just results.", date: "Jan 28, 2026", readTime: "5 min", content: "Full tip article content goes here." },
+  { id: 4, tag: "TIP", title: "The $40/Month Stack That Replaces a Part-Time Employee", excerpt: "Three off-the-shelf AI tools that handle scheduling, customer follow-ups, and bookkeeping. No coding.", date: "Jan 28, 2026", readTime: "5 min", content: "Full tip article content goes here." },
 ];
 
 const DEFAULT_FAQ_ITEMS = [
   { id: 1, q: "I'm not technical at all. Is this still for me?", a: "That's exactly who this is for. I don't teach you to code or build anything complicated. I find off-the-shelf tools that solve your specific problems and set them up with you. If you can use a smartphone, you can use these tools." },
   { id: 2, q: "What does the AI assessment actually look like?", a: "We hop on a 45-minute call (or meet in person if you're local to the Twin Cities). I ask you about your day-to-day — where you spend your time, what's frustrating, what's repetitive. Then I match your pain points to AI tools that already exist. You get a clear action plan within 48 hours." },
   { id: 3, q: "How much do the AI tools actually cost?", a: "Most of my clients spend between $25–50/month total on tools. Many have free tiers to start. The average ROI is 6+ hours per week returned — that's over $1,000/month in time saved for less than the cost of a nice dinner out." },
-  { id: 4, q: "Can you just do it all for me?", a: "I can — that's what the Jumpstart package is for. But my goal is to make you self-sufficient. I set things up WITH you so you actually understand how they work. No dependency, no long-term contracts." },
+  { id: 4, q: "Can you just do it all for me?", a: "I can — that's what the Jumpstart package is for. But my goal is to make you self-sufficient. I set things up WITH you so you actually understand how they work." },
   { id: 5, q: "What if AI tools change or get better?", a: "They will — that's the beauty of the Partner plan. I stay on top of every new tool and update so you don't have to. When something better comes along, I bring it to you proactively." },
   { id: 6, q: "Do you only work with businesses in the Twin Cities?", a: "I prioritize local businesses because I can meet in person, but I work with anyone via Zoom or phone. Some of my best sessions have been a video call and a screen share — works just as well." },
 ];
@@ -588,7 +588,7 @@ function HeroSection() {
             </h1>
 
             <p style={{ fontFamily: FONT, fontSize: "clamp(15px,1.7vw,18px)", color: "#94a3b8", lineHeight: 1.7, maxWidth: "500px", marginBottom: "32px" }}>
-              I help small business owners in the Twin Cities find AI tools that eliminate the repetitive work eating your week — and I set them up with you, in person. No jargon. No contracts. Just hours back.
+              I help small business owners in the Twin Cities find AI tools that eliminate the repetitive work eating your week — and I set them up with you, in person. No jargon. Just hours back.
             </p>
 
             <div className="hero-btns" style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginBottom: "44px" }}>
@@ -759,7 +759,7 @@ function PricingSection() {
   const plans = [
     { name: "AI Snapshot", price: "$499", type: "one-time", desc: "Find exactly where AI can help most", popular: false, color: "#38bdf8", features: ["45-min deep-dive interview", "Top 5 AI opportunities identified", "One-page action plan with tool names & costs", "Time-saved estimates per tool", "15-min follow-up walkthrough", "Delivered within 48 hours"], cta: "Get Your Snapshot" },
     { name: "AI Jumpstart", price: "$1,500", type: "one-time", desc: "Hands-on setup — done with you", popular: true, color: "#C4834A", features: ["Everything in the Snapshot", "2–3 tools fully set up & configured", "Two 60-min working sessions", "Custom video walkthroughs for your team", "Templates & workflows customized to you", "30 days of follow-up support"], cta: "Book Your Jumpstart" },
-    { name: "AI Partner", price: "$500", type: "/month", desc: "Your ongoing AI advantage", popular: false, color: "#34d399", features: ["Monthly 60-min strategy session", "Proactive new tool recommendations", "Text/call access for quick questions", "Quarterly full re-assessment", "Priority access to new AI launches", "Cancel anytime — no contracts"], cta: "Become a Partner" },
+    { name: "AI Partner", price: "$500", type: "/month", desc: "Your ongoing AI advantage", popular: false, color: "#34d399", features: ["Monthly 60-min strategy session", "Proactive new tool recommendations", "Text/call access for quick questions", "Quarterly full re-assessment", "Priority access to new AI launches"], cta: "Become a Partner" },
   ];
 
   return (
@@ -768,7 +768,7 @@ function PricingSection() {
         <div className={`reveal ${inView ? "visible" : ""}`} style={{ textAlign: "center", marginBottom: "48px" }}>
           <SectionLabel text="Transparent Pricing" />
           <SectionHeading style={{ marginBottom: "10px" }}>Invest an hour. Save a day every week.</SectionHeading>
-          <p style={{ fontFamily: FONT, color: "#64748b", fontSize: "15px" }}>Fixed prices. No hourly billing. No surprises. No contracts.</p>
+          <p style={{ fontFamily: FONT, color: "#64748b", fontSize: "15px" }}>Fixed prices. No hourly billing. No surprises.</p>
         </div>
 
         <div className="plans-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "16px", marginBottom: "36px" }}>
@@ -948,7 +948,6 @@ function AboutSection() {
               {[
                 { icon: "🏆", label: "Trusted by 40+ local businesses" },
                 { icon: "📍", label: "Maple Grove native" },
-                { icon: "🤝", label: "No long-term contracts" },
               ].map(b => (
                 <div key={b.label} style={{ display: "flex", alignItems: "center", gap: "8px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "9px", padding: "9px 14px" }}>
                   <span style={{ fontSize: "16px" }}>{b.icon}</span>

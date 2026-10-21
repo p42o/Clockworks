@@ -16,7 +16,7 @@ const VALUES = [
   },
   {
     t: "Your accounts",
-    d: "Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.",
+    d: "Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform accounts.",
   },
   {
     t: "Small on purpose",

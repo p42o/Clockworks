@@ -15,7 +15,7 @@ export default function Terms() {
           Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.
         </p>
         <p>
-          Current offers: a free 15-minute phone audit, an online presence assessment for $50, and a one-time deployment for $500. Optional ongoing maintenance is available, and Parker will walk you through the options and pricing.
+          Current offers: a free 15-minute phone audit, an online presence assessment for $50, and a one-time deployment for $500, done together over screen share. Optional ongoing maintenance is available, and Parker will walk you through the options and pricing.
         </p>
         <p>After setup, your AI team runs on your own platform accounts.</p>
         <p>

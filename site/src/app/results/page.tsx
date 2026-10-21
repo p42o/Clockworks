@@ -77,13 +77,8 @@ export default function Results() {
               <span className="text-copper">.</span>
             </h2>
             <p className="mt-5 max-w-2xl text-[1.05rem] leading-relaxed text-ink-soft">
-              Early clients get launch pricing and first-in-line service. In exchange, when the
-              system delivers, I ask to tell the story right here: your company&rsquo;s name,
-              the problem, the numbers, the result. Real proof for me, a permanent spotlight for
-              you.
-            </p>
-            <p className="mt-6 font-mono text-[0.8rem] tracking-wide text-ink-faint">
-              PROBLEM → SYSTEM → NUMBERS → OWNER&rsquo;S OWN WORDS. THAT&rsquo;S THE FORMAT.
+              There is no named case study here yet. I will not publish a shop&rsquo;s name or
+              numbers unless they are yours and you ask.
             </p>
           </article>
         </Reveal>

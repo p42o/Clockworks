@@ -1,4 +1,4 @@
-import { getPublishedPosts, getScheduleSummary } from "@/lib/blog";
+import { getListedPosts, getScheduleSummary } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
@@ -8,7 +8,7 @@ export function GET() {
   return Response.json({
     generatedAt: new Date().toISOString(),
     publishedCount,
-    published: getPublishedPosts().map((p) => ({
+    published: getListedPosts().map((p) => ({
       slug: p.slug,
       title: p.title,
       date: p.date,

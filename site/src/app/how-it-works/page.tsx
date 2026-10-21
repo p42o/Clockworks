@@ -39,7 +39,7 @@ const jsonLd = {
       name: "Do I own the system?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.",
+        text: "Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform accounts.",
       },
     },
   ],

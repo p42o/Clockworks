@@ -1,95 +1,78 @@
 ---
-title: "I Sat in a Contractor's Truck for 4 Hours. Here's the AI Playbook I Built From It."
+title: "A Truck-Cab AI Playbook: An Illustrative Example"
 date: "2026-05-05"
-description: "47 5-star reviews. Phone answered in 90 seconds. Calendar open for next week. The five automations every Twin Cities trade business should run before Memorial Day."
+description: "Five automation ideas I would consider for a hypothetical Twin Cities trade business."
 legacyPath: "/blog/truck-cab-ai-playbook.html"
 tags: [case-study, trades, automation]
 ---
 
-I sat in a Twin Cities contractor's truck for four hours last Tuesday. He's not the most skilled in his trade. He's not the most experienced. He doesn't have the slickest website or the biggest crew. And yet his calendar is open for next week, his phone is answered within 90 seconds, and he just earned his 47th 5-star Google review, only three of which he asked for personally.
+Shop scenario: a composite of situations common in Twin Cities shops. Not a real client. Names and numbers are illustrative, and your results will differ.
 
-Here's what I learned sitting shotgun. And the AI playbook I built from it for every other small trade business in the west metro who's tired of working until 9pm and watching the close-rate stay flat.
+Imagine a Twin Cities contractor trying to handle customer messages between jobs from the cab of a truck. I would use that scenario to plan a workflow around missed calls, estimates, reviews, appointments, and recurring service.
 
----
+I would start by asking which messages need a person and which can follow a simple rule. The playbook below is a set of ideas to test, not a report of work I performed or results a contractor achieved.
 
 ## The truck-cab problem
 
-The job (fixing the furnace, framing the deck, snaking the line, replacing the panel) is the easy part. You're trained for it. You're paid for it. You enjoy it.
+The work around a job includes follow-up texts, estimate check-ins, review requests, appointment confirmations, maintenance reminders, and invoice questions.
 
-The hard part is everything around the job. The follow-up texts. The "did you get the estimate?" check-ins. The review requests. The 11pm Facebook message asking "do you serve Eden Prairie?" The appointment confirmations. The "I'm 15 minutes out" texts. The annual maintenance reminders. The invoicing nudges.
+In this hypothetical shop, the contractor handles those messages between service calls or after hours. I would map where each message comes from, who should answer it, and what should happen if an automation fails.
 
-This is the boring 30%. And it's killing your business. Not because you're bad at it, but because you can't be bad at it AND under a sink at the same time. So you do it after hours. Or on Saturday. Or you don't do it at all.
-
-The trade businesses crushing it in 2026 figured something out: that boring 30% is the cheapest, easiest, highest-ROI thing in your operation to hand to a system. Not because the system is smart. Because the system is *consistent*. And you, with the best intentions in the world, cannot be consistent when you're 12 feet up a ladder.
-
----
-
-## The five automations every Twin Cities trade should have running
+## Five automations I would consider
 
 ### 1. Missed-call text-back
 
-When a customer calls and you can't pick up, an automated text fires within five seconds: *"Hey, sorry I missed you. What can I help with?"*
+A missed call could trigger a text: "Hey, sorry I missed you. What can I help with?"
 
-Four out of five callers reply by text. Without it, they hang up and call the next name on Google.
+Cost: free with most CRMs.
 
-Setup: 15 minutes. Cost: free with most CRMs. The single highest-ROI automation we build, period.
+I would make sure a reply reaches a person and that the message does not imply an appointment is booked. Before relying on the workflow, I would test missed calls, replies, and delivery failures.
 
-### 2. The 3-text estimate follow-up
+### 2. Estimate follow-up
 
-Most estimates die on a counter or in an inbox, not because the customer hates the price but because life moves on. The fix: a sequence that politely keeps the conversation alive without being pushy.
+I would consider a sequence that politely keeps the conversation open:
 
 - **+24 hours:** "Just checking if you had any questions about the estimate."
-- **+72 hours:** "Still interested? I've got availability opening next week."
+- **+72 hours:** "Still interested? Let me know if you'd like to discuss scheduling."
 - **+7 days:** "Last check-in. No pressure, just wanted to make sure you're taken care of."
 
-Reply at any point and the sequence stops. A Bloomington contractor we work with took his close rate from 18% to 31% in the first month. Same leads, same prices, same crew. The only thing that changed was that nobody got forgotten.
+A reply should stop the sequence and route the conversation to a person. I would also stop follow-ups when an estimate is accepted, declined, or withdrawn. The wording should reflect actual availability and the customer's preferences.
 
-### 3. The review automation
+### 3. Review requests
 
-One hour after a job is marked complete, an automated text goes out: *"Thanks for having us out. Everything looking good?"* If yes, the next message includes a direct link to your Google Business Profile. If anything below 3 stars, you get an alert before the review goes public, so you can call the customer and make it right.
+After a completed job, a thank-you text could include a direct Google review link and a private feedback option alongside it. Neither option should depend on sentiment or star rating.
 
-A Wayzata roofing crew went from 14 reviews in 18 months to 27 new 5-star reviews in 30 days. They were already earning the reviews. They were just never asking for them at the right moment.
+I would check that the completion status is accurate and that the request is not sent repeatedly. The purpose is to invite honest feedback, without predicting a rating or review count.
 
-### 4. Two-text appointment confirmations
+### 4. Appointment confirmations
 
-The single cheapest way to cut your no-show rate by ~70%:
+I would consider these reminder templates:
 
 - **T-24 hours:** "We'll see you tomorrow at [time]. Reply C to confirm."
-- **T-2 hours:** "On our way in about 2 hours."
+- **T-2 hours:** "Your appointment is scheduled for [time]. Please call if you need to make a change."
 
-An Eden Prairie HVAC company set this up last fall. No-show rate dropped from 22% to 6% in the first month. They eliminated roughly four wasted truck rolls a week, and at an internal cost of about $110 each, that's $1,760 a month back in their pocket. From two text messages.
+The schedule should be the source of truth. A cancellation or rescheduled appointment should update the reminders, and a reply should reach someone who can act on it. I would test those paths before enabling messages.
 
 ### 5. Past-customer rebooking
 
-The automation almost no one is running, and the one that prints money: every twelve months after a service, an automated message fires to the past customer asking if they'd like to schedule the same service again. With a direct booking link.
+For a recurring service, a reminder could ask whether the customer would like to schedule again and provide a booking link. I would choose the interval based on the service and the customer's preferences.
 
-This is free revenue from people who already trust you. It runs forever after one setup. For a landscaping business in Plymouth, this single automation booked 38% of their spring cleanup work last year, work that used to take their office manager three weeks of cold calls every February.
+The message should be an invitation. It should not claim the customer needs work that has not been assessed, or imply that an appointment already exists.
 
----
+## Example math: putting a value on administrative time
 
-## Why "I'll just do it myself" is the most expensive sentence in trades
+**Example math:** In this scenario, I would value ten hours of administrative work at $600 a week, using an assumed $60 an hour. Over an assumed 52 weeks, that is $31,200 of time valued at that rate.
 
-> If you bill at $60 an hour and you spend ten hours a week on follow-ups, review requests, appointment confirmations, and answering "do you serve Plymouth?", then you're using $600 a week of your most valuable resource on tasks that a system could handle for less than $5.
-> **That's $31,200 a year. To send texts and answer the same four questions over and over.**
+Those are hypothetical inputs, not measured savings. Automating a task does not guarantee that time becomes billable work or revenue. Software, setup, maintenance, and human review also take resources.
 
-And that's just the dollars. The real cost is what the admin work does to your evenings, your weekends, the dinners you missed because you were quoting an emergency call at 7pm.
+I would use an owner's actual workload to decide whether a small test is worthwhile, then measure the time spent running and checking it.
 
-You wouldn't hand-dig a foundation when you own an excavator. Stop hand-sending follow-up texts when a system could do it while you sleep.
+## Where I would start for this hypothetical shop
 
----
+I would choose a recurring task with a clear trigger and a clear handoff. I would document what starts the workflow, what stops it, who receives replies, and how to handle failures.
 
-## What this actually looks like for your shop
+Before expanding it, I would review the messages for accuracy and ask whether the process is useful to both the owner and the customer. If it creates confusion or more correction work, I would change it or turn it off.
 
-I'm a Twin Cities small-business owner myself. I know what you're thinking: "this sounds great, but I don't have time to figure it out, I don't trust some 22-year-old with a SaaS subscription to set it up, and I'm not handing my business over to AI."
-
-Fair. None of that has to happen.
-
-What I do at Clockworks starts with a free 15-minute phone audit. We find the two or three boring tasks that are eating the most of your week, and build the automations that handle them. They sound like you. They sign off as you. They route real conversations back to a human (you) when the system reaches the edge of what it should handle. And they document everything in plain English so you're never locked out of your own systems.
+The goal of this playbook is to make the administrative process easier to inspect and manage. It does not promise bookings, reviews, fewer no-shows, or revenue.
 
 Call (763) 202-7778. Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.
-
----
-
-The trades guys getting crushed by competitors right now aren't getting crushed by AI. They're getting crushed by other trades guys who already use it to handle the boring 30%, so they have time to do their actual job better.
-
-Don't be the one getting crushed. Be the one with an open calendar and 47 5-star reviews.

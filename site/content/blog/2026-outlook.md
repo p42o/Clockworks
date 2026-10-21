@@ -8,7 +8,7 @@ tags: [news, trends, small-business]
 
 It's January, the inbox newsletters are full of "year of AI agents" predictions, and most of them are written by people who have never sold a job, hired a tech, or stared at a missed-call list at 7 AM. So here's the version for the rest of us: what's actually shifting for Twin Cities small businesses in 2026, and what's noise.
 
-I work with plumbers, landscapers, real estate teams, cleaners, and a handful of small offices. Across all of them, three things changed measurably in the back half of 2025 that are going to keep changing in 2026. The rest of the headlines you can mostly ignore.
+I would focus on these three shifts when considering AI for a small business in 2026. The rest of the headlines you can mostly ignore.
 
 ---
 
@@ -16,7 +16,7 @@ I work with plumbers, landscapers, real estate teams, cleaners, and a handful of
 
 Two years ago, an AI answering your phones sounded like a hostage situation. As of late 2025, the better voice models are essentially indistinguishable from a human receptionist on a 30-second triage call, and they're getting cheap. We're now under **10 cents a minute** for production-grade voice agents on most platforms.
 
-What this means in practice: the missed-call problem is solvable for under $200/month. For a contractor doing $1.5M a year, that's the difference between booking the next-day install or losing it to whoever picked up first.
+What this means in practice: the missed-call problem is solvable for under $200 a month in software costs (not including setup or support). For a contractor doing $1.5M a year, that's the difference between booking the next-day install or losing it to whoever picked up first.
 
 > If your business loses revenue when the phone rings while you're on a roof, in a basement, or with a client, voice is the single highest-ROI thing you can adopt this year.
 
@@ -61,4 +61,4 @@ If you do nothing else this year, do these three:
 
 That's a weekend of work. It will outperform 80% of "AI transformation" engagements I see pitched to small businesses.
 
-If you want a no-pitch read on which of these would actually move the needle for your business, that's literally what the free call is for.
+Call or send a message at mnclockworks.com.

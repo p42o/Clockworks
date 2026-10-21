@@ -6,11 +6,13 @@ legacyPath: "/blog/chatgpt-prompts.html"
 tags: [chatgpt, prompts, tips]
 ---
 
+Shop scenario: a composite of situations common in Twin Cities shops. Not a real client. Names and numbers are illustrative, and your results will differ.
+
 Hey, I'm Parker. I run Clockworks, an AI consulting firm in Maple Grove, MN. Most of my clients come to me after the same frustrating experience: they tried ChatGPT, got garbage back, and concluded that "AI just isn't for me."
 
 Nine times out of ten, the problem isn't the tool. The problem is the prompt. And the fix is simpler than you think.
 
-This post is going to show you exactly why vague prompts fail, the three-part formula I teach every client first, and three real before/after examples you can steal right now.
+This post is going to show you exactly why vague prompts fail, the three-part formula I teach every client first, and three before/after examples you can steal right now.
 
 ---
 
@@ -40,7 +42,7 @@ I teach every client a simple three-part formula. Once you see it, you'll use it
 
 ## Three before/after examples
 
-Let's make this concrete. Here are three real prompts I've seen clients use, and what they look like after applying the formula.
+Let's make this concrete. Here are three example prompts, and what they look like after applying the formula.
 
 **Before**
 
@@ -92,11 +94,11 @@ Here's the shift that separates people who get real value from AI and people who
 
 Your first prompt doesn't have to be perfect. Send it, see what comes back, then say "make it shorter" or "make it sound less formal" or "add a line about our warranty." You're not failing when you refine. That's how it's supposed to work.
 
-I had a client (a property manager in Plymouth) who spent 20 minutes trying to craft the perfect prompt before hitting send. I watched her do it and finally said, "Just send whatever you have. We'll fix it in two replies." She got exactly what she needed in under four minutes total. The iterating was faster than the over-thinking.
+In this example, someone might spend 20 minutes trying to craft a perfect prompt. Sending a rough version and fixing it in two replies might land the draft in under four minutes total. The iterating is faster than the over-thinking.
 
 > Think of ChatGPT as a very capable assistant who needs good directions. You wouldn't hand a new employee a sticky note and expect a finished report. Give them context, give them the task, tell them how you want it delivered, and then course-correct as needed.
 
-Once you internalize Context + Task + Format and stop expecting perfection on the first try, you'll be shocked how much faster your workday gets. I've watched people go from "AI doesn't work for me" to "I can't believe I was doing this by hand" in a single afternoon session.
+Once you internalize Context + Task + Format and stop expecting perfection on the first try, you'll be shocked how much faster your workday gets. In this example, the shift can show up in a single afternoon: from "this does not work for me" to using it on work you used to do by hand.
 
 That's the real unlock. Not a new tool, not a subscription upgrade. Just a better way of asking.
 

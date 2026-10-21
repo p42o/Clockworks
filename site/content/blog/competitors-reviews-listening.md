@@ -6,6 +6,8 @@ legacyPath: "/blog/2026-06/competitors-reviews-listening.html"
 tags: [reviews, competitors, research]
 ---
 
+Shop scenario: a composite of situations common in Twin Cities shops. Not a real client. Names and numbers are illustrative, and your results will differ.
+
 Your competitors are advertising their biggest weaknesses to the entire internet. Right now. For free. Every single day.
 
 Every one-star review about slow callbacks is telling you what customers in your market care about most. Every complaint about unclear pricing is handing you a positioning advantage. Every frustrated comment about messy cleanup or missed appointments is a gift-wrapped marketing angle.
@@ -68,15 +70,15 @@ The whole thing runs in the background. You don't check anything manually. You d
 
 ## What this looks like in practice
 
-I set this up for a general contractor in the Twin Cities suburbs earlier this year. He'd been in business for eight years, had a solid reputation, but kept losing bids to a competitor he couldn't figure out.
+In this example, imagine a general contractor in the Twin Cities suburbs. He has been in business for eight years, has a solid reputation, and keeps losing bids to a competitor he cannot figure out.
 
-Within three weeks of running the automated monitoring, a pattern became obvious. His biggest competitor's reviews had one recurring complaint: the company was hard to reach. Customers would call, leave a message, and not hear back for days. Some never heard back at all.
+For example, if automated monitoring ran for three weeks, a pattern might become obvious. The biggest competitor's reviews might have one recurring complaint: the company was hard to reach. Customers would call, leave a message, and not hear back for days. Some never heard back at all.
 
-His response was simple. He updated his website to say "We return every call within 2 hours." He added it to his truck signage. He mentioned it in every initial conversation.
+In this example, the response is simple. He updates his website to say "We return every call within 2 hours." He adds it to his truck signage. He mentions it in every initial conversation.
 
-The messaging change cost him nothing. The insight came from a system running quietly in the background. He didn't have to spend a single hour reading reviews himself.
+The messaging change costs nothing. The insight would come from a system running quietly in the background. In this example, he would not spend an hour reading reviews himself.
 
-He told me he booked four new jobs in the first month that he's pretty sure came from that positioning shift. Customers specifically mentioned response time as one of the reasons they chose him.
+In this example, four new jobs in the first month might get chalked up to that positioning shift, and callers might mention response time as one reason they called. That is an illustration, not a count from a shop.
 
 ---
 

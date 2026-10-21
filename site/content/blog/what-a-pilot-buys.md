@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "What Working With Me Looks Like"
 date: "2026-09-01"
 description: "The current MN Clockworks offers, from a phone audit to deployment over screen share."

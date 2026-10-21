@@ -92,4 +92,4 @@ At this budget level, you're either running Microsoft 365 and Copilot makes sens
 
 ---
 
-If you want help figuring out which tools are actually worth your time and money (not a list, but a specific recommendation based on your business), that's a 20-minute conversation I'm happy to have for free.
+If you want help figuring out which tools are actually worth your time and money (not a list, but a specific recommendation based on your business), that's what the free 15-minute phone audit is for.

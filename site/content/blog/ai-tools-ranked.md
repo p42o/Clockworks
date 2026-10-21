@@ -116,4 +116,4 @@ Best for: Enterprise marketing teams with dedicated content staff. Not for most 
 
 ---
 
-If you want help deciding which tools actually make sense for your specific business (not a generic answer, but your situation), that's what the free call is for. We'll figure it out together in 20 minutes.
+If you want help deciding which tools actually make sense for your specific business (not a generic answer, but your situation), book a free 15-minute phone audit.

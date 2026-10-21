@@ -5,7 +5,9 @@ description: "A minute-by-minute anatomy of one after-hours emergency call at tw
 tags: [trades, missed-calls]
 ---
 
-Neither of these companies exists. The night does. If you run a service business, some version of it has already happened to you. You just never got to see it, which is exactly the problem.
+Shop scenario: a composite of situations common in Twin Cities shops. Not a real client. Names and numbers are illustrative, and your results will differ.
+
+Neither of these companies exists. If you run a service business, some version of it has already happened to you. You just never got to see it, which is exactly the problem.
 
 It's 2:07 a.m. in Plymouth. A supply line lets go under a second-floor bathroom, and a homeowner wakes up to the sound of water finding the ceiling below. Phone flashlight. Towels. Panic. At 2:11 she's standing in the kitchen typing "emergency plumber plymouth mn" with wet socks on.
 
@@ -29,7 +31,7 @@ She replies, because replying to a text costs nothing. Burst pipe, second floor,
 
 2:19 a.m. She's still got a soaked ceiling. But she has a thread, a name, and the sense that somebody is on it. She stops dialing.
 
-6:40 a.m. The owner pours coffee and reads one text summary: name, address, burst supply line, water off at the main, callback number, timestamps. His first call of the day is a job that found him while he slept.
+6:40 a.m. The owner pours coffee and reads one text summary: name, address, burst supply line, water off at the main, callback number, timestamps. In this example, his first call of the day would be a job that reached him while he slept.
 
 ## What the system actually does, and doesn't
 
@@ -41,4 +43,4 @@ It doesn't: fix the pipe, quote the job, promise an arrival time you didn't auth
 
 One more honest note: you could just answer your own phone at 2 a.m. Some owners do, and it works. That's a real system too. The cost is just carried in your sleep, your marriage, and your mood on the ladder the next day. The question isn't whether the calls get handled. It's who's awake for it.
 
-Company A didn't lose that job because of skill, price, or reviews. It lost it in the 90 seconds where the phone rang into a recording from 2019. If you're not sure which company you are, book the free 15-minute phone audit at mnclockworks.com/book. We'll run your own 2 a.m. test.
+In this example, Company A would not lose that job because of skill, price, or reviews. The gap would be the 90 seconds where the phone rang into a recording from 2019. If you're not sure which company you are, book the free 15-minute phone audit at mnclockworks.com/book. We'll run your own 2 a.m. test.

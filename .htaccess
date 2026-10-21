@@ -1,7 +1,31 @@
-# Permanent redirect — old /sniper path → new /sitesniper.
-# Keeps any existing inbound links / shares working.
-Redirect 301 /sniper/ /sitesniper/
-Redirect 301 /sniper /sitesniper/
+DirectoryIndex index.html
+
+# --- Redirects (price-fix-2026-10-20) ---------------------------------------
+# Merged from the live server .htaccess (Front Desk cutover 2026-09-18; saved copy
+# htaccess-live-root.txt, all 49 rules matched live 2026-10-20) and retargeted:
+# nothing points at the retired /front-desk.html any more. RedirectMatch covers the
+# bare, trailing-slash and deeper variants of each path. No target matches any
+# source pattern, so there are no loops. The 23 /blog/*.html rules live in the
+# v3-managed block below (same as live).
+#
+# Retired sections with old prices in git -> home (whole subtree). Live had
+# /sniper -> / ; git main had /sniper -> /sitesniper/ (which 301'd to /). Now one hop.
+RedirectMatch 301 ^/(learn|sites|sitesniper|sniper|lab|v3|cowork|office)(/.*)?$ /
+# Retired admin pages -> home
+RedirectMatch 301 ^/(admin|admin-bot)\.html$ /
+# Contact -> the git booking page (live sent it to the server-only /book.html)
+RedirectMatch 301 ^/contact(/.*)?$ /book/
+# Server-only Front Desk era pages (not in git, old $247 prices) -> fixed git pages
+RedirectMatch 301 ^/front-desk(\.html|/.*)?$ /
+RedirectMatch 301 ^/book\.html$ /book/
+RedirectMatch 301 ^/about\.html$ /about/
+RedirectMatch 301 ^/(pricing|faq)(\.html|/.*)?$ /how-it-works/
+RedirectMatch 301 ^/how-it-works\.html$ /how-it-works/
+# Script used only by those server-only pages (contains "$247 diagnostic");
+# nothing reachable loads it once they redirect.
+Redirect gone /js/site.js
+# /what-i-do, /results, /your-own-agent: live sent these to /front-desk.html; the
+# fixed git pages now serve them directly, so no rule.
 
 # --- Cache policy -----------------------------------------------------------
 # Fixes "Application error: a client-side exception" after a redeploy: without

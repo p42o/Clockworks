@@ -1,4 +1,5 @@
 ---
+unlisted: true
 title: "What an AI Working Session Actually Gets You (The Inside Story)"
 date: "2026-06-15"
 description: "A minute-by-minute look at what happens in a MN Clockworks Cowork session, and what you walk away with."
@@ -6,7 +7,7 @@ legacyPath: "/blog/what-cowork-gets-you.html"
 tags: [cowork, services, behind-the-scenes]
 ---
 
-Note, October 2026: the Cowork session described in this post is no longer offered. Current offers are a free 15-minute phone audit, a $50 online presence assessment and a $500 one-time deployment. Nothing on this site is a quote or a contract.
+Note, October 2026: the Cowork session described in this post is no longer offered. Current offers are a free 15-minute phone audit, a $50 online presence assessment, and a $500 one-time deployment, done together over screen share. Nothing on this site is a quote or a contract.
 
 Hey, I'm Parker. I've been running MN Clockworks for a while now and one thing I've learned is that "AI consulting" sounds mysterious to most people. They don't know what to expect. They've never paid someone to help them with AI before. They're not sure what a two-hour session actually produces.
 

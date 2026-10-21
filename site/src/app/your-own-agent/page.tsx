@@ -6,7 +6,7 @@ import SteerDemo from "./SteerDemo";
 export const metadata: Metadata = {
   title: "Your own agent",
   description:
-    "A trained AI front desk that lives on YOUR site and text line: answers, books, logs every conversation, and learns. Your AI team runs on your own platform account.",
+    "A trained AI front desk that lives on YOUR site and text line: answers, books, logs every conversation, and learns. Your AI team runs on your own platform accounts.",
 };
 
 const CHANNELS = ["Your website", "Text messages (SMS)", "Telegram", "Discord", "More as you need them"];
@@ -31,7 +31,7 @@ export default function YourOwnAgent() {
             The chat bubble on this site isn&rsquo;t a support widget. It&rsquo;s a working
             sample of the product. Yours gets trained on <em>your</em> business: your services,
             your prices, your service area, your way of talking to people. Then it works your
-            front desk 24/7, and unlike the apps you rent, your AI team runs on your own platform account.
+            front desk 24/7, and unlike the apps you rent, your AI team runs on your own platform accounts.
           </p>
         </Reveal>
       </section>
@@ -116,7 +116,7 @@ export default function YourOwnAgent() {
               *Rough mid-2026 figures for a typical short customer conversation; usage-based and
               they keep falling. The point: the engine costs less than the coffee you&rsquo;d buy
               a human receptionist, and you can switch engines anytime, because your AI team
-              runs on your own platform account.
+              runs on your own platform accounts.
             </p>
           </Reveal>
         </div>
@@ -127,7 +127,7 @@ export default function YourOwnAgent() {
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
           <Reveal>
             <p className="eyebrow !text-copper">The part that matters</p>
-            <h2 className="display mt-3 max-w-2xl text-4xl sm:text-5xl">Your platform account.</h2>
+            <h2 className="display mt-3 max-w-2xl text-4xl sm:text-5xl">Your platform accounts.</h2>
             <div className="mt-6 grid max-w-4xl gap-6 sm:grid-cols-3">
               {[
                 ["COST", "Rented AI receptionists charge every month, forever, with meters on your minutes. Yours runs on a small cloud server, typically $10 to $20 a month to keep the lights on, plus pennies of AI usage."],
@@ -141,9 +141,9 @@ export default function YourOwnAgent() {
               ))}
             </div>
             <p className="mt-8 max-w-2xl leading-relaxed text-paper/60">
-              A one-time deployment for $500. We set up your AI team with you on a screen-share call, test it together, and walk you through how to use it.
+              A free 15-minute phone audit. An online presence assessment for $50. We check how your business shows up across search, AI assistants, and ratings and review sites. A one-time deployment for $500. We set up your AI team with you on a screen-share call, test it together, and walk you through how to use it.
               Optional ongoing maintenance is available. Parker can walk you through it.
-              Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.
+              Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform accounts.
             </p>
           </Reveal>
         </div>

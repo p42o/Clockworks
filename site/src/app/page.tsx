@@ -3,7 +3,6 @@ import Escapement from "@/components/Escapement";
 import WeekFlow from "@/components/WeekFlow";
 import MagneticButton from "@/components/MagneticButton";
 import Reveal from "@/components/Reveal";
-import StatCount from "@/components/StatCount";
 import AuditCTA from "@/components/AuditCTA";
 import DemoGallery from "@/components/demos/DemoGallery";
 import { asset, site } from "@/lib/site";
@@ -84,7 +83,7 @@ const FAQS = [
   },
   {
     q: "Am I locked in?",
-    a: "No. Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.",
+    a: "No. Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform accounts.",
   },
   {
     q: "Couldn't I just do this myself with ChatGPT?",
@@ -263,7 +262,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- NUMBERS ---------- */}
+      {/* ---------- VOICEMAIL ---------- */}
       <section className="relative overflow-clip bg-ground text-paper">
         {/* faint drafting tick-ring ornament */}
         <svg
@@ -295,23 +294,6 @@ export default function Home() {
         </svg>
         <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
           <Reveal>
-            <p className="eyebrow !text-copper">03 · Straight numbers</p>
-          </Reveal>
-          <div className="mt-10 grid grid-cols-2 gap-10 lg:grid-cols-4">
-            {[
-              { v: 10, suffix: " hrs", label: "a week of admin a typical owner carries, the hours we go find" },
-              { v: 9, suffix: " sec", label: "for a missed call to get a text back with your name on it" },
-              { v: 0, prefix: "$", label: "cost of the free 15-minute phone audit" },
-            ].map((s, i) => (
-              <Reveal key={s.label} delay={i * 0.07}>
-                <p className="display text-5xl text-cream-bright sm:text-6xl">
-                  <StatCount value={s.v} prefix={s.prefix ?? ""} suffix={s.suffix ?? ""} />
-                </p>
-                <p className="mt-3 max-w-[26ch] text-sm leading-relaxed text-paper/60">{s.label}</p>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="mt-14 border-t border-white/10 pt-8">
             <p className="max-w-2xl text-lg leading-relaxed text-paper/80">
               Most callers who hit voicemail don&rsquo;t leave one. They call the next name on
               the list. The first company to answer usually wins the job.{" "}

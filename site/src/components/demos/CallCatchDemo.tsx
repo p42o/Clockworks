@@ -13,15 +13,15 @@ type Msg = { from: "ai" | "you" | "sys"; text: string };
 
 const SCENARIOS = {
   "Water heater leaking · 7:58pm": [
-    { from: "sys", text: "☎ Missed call → text-back in 9 seconds" },
+    { from: "sys", text: "☎ Missed call → text-back" },
     { from: "ai", text: "Hi, this is Nelson Plumbing, sorry we missed you, we're on a job. This is the office assistant. What's going on?" },
   ],
   "No AC · Saturday, 91°": [
-    { from: "sys", text: "☎ Missed call → text-back in 9 seconds" },
+    { from: "sys", text: "☎ Missed call → text-back" },
     { from: "ai", text: "Hi, you've reached Ridgeline Heating & Air: we missed your call but we're still on deck this weekend. What's happening with your system?" },
   ],
   "Sparking outlet · 10:40pm": [
-    { from: "sys", text: "☎ Missed call → text-back in 9 seconds" },
+    { from: "sys", text: "☎ Missed call → text-back" },
     { from: "ai", text: "This is Anchor Electric's after-hours line. We missed your call: is everything safe right now? Tell me what you're seeing." },
   ],
 } as const;

@@ -6,6 +6,8 @@ legacyPath: "/blog/ai-job-replacement.html"
 tags: [jobs, ai-impact, small-business]
 ---
 
+Shop scenario: a composite of situations common in Twin Cities shops. Not a real client. Names and numbers are illustrative, and your results will differ.
+
 Hey, I'm Parker. I run Clockworks, and I want to be careful with this one. A lot of people, on both sides, are not being straight with you about AI and jobs. The optimists say "AI will just create new jobs!" and wave away legitimate concerns. The doom crowd says entire professions are about to disappear overnight. Neither is accurate.
 
 Here's my honest take. I think some jobs will change significantly. Some won't. And the biggest factor in which category you end up in isn't the industry you're in. It's what you decide to do about it right now.
@@ -56,7 +58,7 @@ The less standard the inputs, the less useful AI is. A complicated negotiation. 
 
 The thing I see working in the real world, not in theory but in actual businesses, is not AI replacing people. It's AI making individual people significantly more productive.
 
-The landscaper who used to spend 45 minutes per proposal now spends 12. The property manager who used to answer 40 routine emails a day now answers 40 emails in 90 minutes. The real estate agent who used to miss follow-ups because she ran out of time now follows up consistently because drafting takes seconds. Each of these people is doing more with the same hours, and they're getting better at their actual skilled work because they're not burning time on repetitive tasks.
+In this example, a landscaper's proposal time might go from 45 minutes to 12. For example, if a property manager answered 40 routine emails a day, that pile might take 90 minutes. In this example, a real estate agent who used to miss follow-ups might follow up consistently because drafting takes seconds. Each of these people would be doing more with the same hours, and they would be getting better at their actual skilled work because they would not be burning time on repetitive tasks.
 
 That's the model. Not "AI does my job." "I do more and better work because AI handles the parts that don't require me."
 
