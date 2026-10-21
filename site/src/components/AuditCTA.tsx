@@ -1,13 +1,17 @@
 import MagneticButton from "@/components/MagneticButton";
 import Reveal from "@/components/Reveal";
+import type { ReactNode } from "react";
 import { site } from "@/lib/site";
 
 export default function AuditCTA({
   title = "Find out what your week is hiding.",
   context = "The audit is free, it takes 30 minutes, and you leave with a written plan you can hand to anyone — including somebody who isn't me.",
+  sub = site.cta.sub,
 }: {
   title?: string;
-  context?: string;
+  context?: ReactNode;
+  /** Small line under the button. Defaults to site.cta.sub. */
+  sub?: string;
 }) {
   return (
     <section className="border-t hairline bg-paper-deep">
@@ -21,7 +25,7 @@ export default function AuditCTA({
           <div className="mt-9 flex flex-col items-center gap-4">
             <MagneticButton href="/book/">{site.cta.label} →</MagneticButton>
             <p className="text-sm text-ink-faint">
-              {site.cta.sub} And if I can&rsquo;t find anything worth fixing, the coffee&rsquo;s on me.
+              {sub} And if I can&rsquo;t find anything worth fixing, the coffee&rsquo;s on me.
             </p>
           </div>
         </Reveal>

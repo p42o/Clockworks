@@ -8,3 +8,7 @@ Nothing here is deleted. `site/**` is excluded from the FTP deploy, so files in 
 - The root `.htaccess` returns 410 Gone for every URL variant of the pulled slugs.
 
 To restore a post: remove `hold: true`, `git mv` its files back, drop the slug from the 410 rule, rebuild (`npm run export:root` in site/).
+
+## Commit C
+- `webroot/docs/calendar-month{1,2,3}.md`: internal content calendars that linked the pulled posts (served 200 live on 2026-10-21; /docs/ also shows a LiteSpeed autoindex). 410 in the root .htaccess.
+- `webroot/blog/post.html`: the old client-side post viewer (linked only from the retired admin.html). 410 in the root .htaccess.

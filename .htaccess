@@ -38,6 +38,11 @@ ErrorDocument 404 /404.html
 # Must stay ABOVE every Redirect 301 /blog/... line (mod_alias: first match wins).
 RedirectMatch 410 ^/blog/(?:20[0-9]{2}-[0-9]{2}/)?(client-story|lead-response-workflow|truck-cab-ai-playbook|90-day-reflection|competitors-reviews-listening|5-things-ai|chatgpt-prompts|ai-vs-automation|ai-job-replacement|claude-for-email|ai-myths|what-a-pilot-buys|trades-pivot|what-cowork-gets-you|anatomy-of-a-missed-call|2026-outlook|first-season-notes)(\.html|/.*)?$
 
+# Commit C (2026-10-21): internal content calendars that named the pulled posts, and the
+# old client-side post viewer. Moved to site/archive/2026-10-21/webroot/ (not deployed).
+RedirectMatch 410 ^/docs/calendar-month[0-9]+\.md$
+RedirectMatch 410 ^/blog/post\.html$
+
 # --- Retired SKU / coffee-bet era paths → Front Desk or home ---------------
 # Prefer Front Desk product page for agent/office SKUs; home for generic dead ends.
 Redirect 301 /what-i-do /front-desk.html
