@@ -1,4 +1,5 @@
 ---
+hold: true  # PULLED 2026-10-21 (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 unlisted: true
 title: "What Your Competitors' Reviews Are Telling You (And How to Listen Automatically)"
 date: "2026-04-23"

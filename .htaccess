@@ -1,5 +1,15 @@
 DirectoryIndex index.html
 
+# --- Blog pull 2026-10-21 (commits A + C, merged into V2) ---------------------
+# Parker approved (1:42 PM CT via Theo); Counsel signed off on the list (1:50 PM CT).
+# Unpublished, not deleted: sources hold: true or in site/archive/2026-10-21/; old built,
+# legacy and dated copies git mv'd to site/archive/2026-10-21/webroot/. Must stay ABOVE
+# every 301/404 rule below (mod_alias: first match wins). client-story is now 410 too
+# (Counsel overrode the V2 keep).
+RedirectMatch 410 ^/blog/(?:20[0-9]{2}-[0-9]{2}/)?(client-story|lead-response-workflow|truck-cab-ai-playbook|90-day-reflection|competitors-reviews-listening|5-things-ai|chatgpt-prompts|ai-vs-automation|ai-job-replacement|claude-for-email|ai-myths|what-a-pilot-buys|trades-pivot|what-cowork-gets-you|anatomy-of-a-missed-call|2026-outlook|first-season-notes)(\.html|/.*)?$
+RedirectMatch 410 ^/docs/calendar-month[0-9]+\.md$
+RedirectMatch 410 ^/blog/post\.html$
+
 # --- Redirects (price-fix-2026-10-20) ---------------------------------------
 # Merged from the live server .htaccess (Front Desk cutover 2026-09-18; saved copy
 # htaccess-live-root.txt, all 49 rules matched live 2026-10-20) and retargeted:
@@ -92,20 +102,11 @@ RedirectMatch 404 ^/site(/.*)?$
 ErrorDocument 404 /404.html
 Redirect 301 /resources.html /blog/
 Redirect 301 /blog/30-day-challenge.html /blog/30-day-challenge/
-Redirect 301 /blog/5-things-ai.html /blog/5-things-ai/
-Redirect 301 /blog/90-day-reflection.html /blog/90-day-reflection/
-Redirect 301 /blog/ai-job-replacement.html /blog/ai-job-replacement/
-Redirect 301 /blog/ai-myths.html /blog/ai-myths/
 Redirect 301 /blog/ai-tools-ranked.html /blog/ai-tools-ranked/
 Redirect 301 /blog/2026-06/anatomy-of-a-context-vault.html /blog/anatomy-of-a-context-vault/
-Redirect 301 /blog/chatgpt-prompts.html /blog/chatgpt-prompts/
 Redirect 301 /blog/cheap-vs-good-ai.html /blog/cheap-vs-good-ai/
-Redirect 301 /blog/claude-for-email.html /blog/claude-for-email/
-Redirect 301 /blog/client-story.html /blog/client-story/
-Redirect 301 /blog/2026-06/competitors-reviews-listening.html /blog/competitors-reviews-listening/
 Redirect 301 /blog/email-triage-tip.html /blog/email-triage-tip/
 Redirect 301 /blog/guide-to-claude.html /blog/guide-to-claude/
 Redirect 301 /blog/prompting-101.html /blog/prompting-101/
-Redirect 301 /blog/what-cowork-gets-you.html /blog/what-cowork-gets-you/
 Redirect 301 /blog/2026-05/your-ai-doesnt-know-you.html /blog/your-ai-doesnt-know-you/
 # END v3-managed

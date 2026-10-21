@@ -1,4 +1,5 @@
 ---
+hold: true  # PULLED 2026-10-21 (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 unlisted: true
 title: "Should You Be Worried About AI Replacing Your Job? My Honest Answer."
 date: "2026-06-08"

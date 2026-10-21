@@ -1,4 +1,5 @@
 ---
+hold: true  # PULLED 2026-10-21 (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 unlisted: true
 title: "5 Things AI Can Do For Your Business This Week (Real, Specific, Free)"
 date: "2026-04-20"

@@ -1,4 +1,5 @@
 ---
+hold: true  # PULLED 2026-10-21 (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 unlisted: true
 title: "How to Use Claude to Write All Your Business Emails in Half the Time"
 date: "2026-05-11"

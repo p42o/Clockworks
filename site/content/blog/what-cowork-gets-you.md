@@ -1,4 +1,5 @@
 ---
+hold: true  # PULLED 2026-10-21 (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 unlisted: true
 title: "What an AI Working Session Actually Gets You (The Inside Story)"
 date: "2026-06-15"
