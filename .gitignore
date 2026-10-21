@@ -32,6 +32,9 @@ eicher/_state/
 # Timely gate: generated at deploy / by the server
 timely/_config.php
 timely/_state/
+# Nickel gate: generated at deploy / by the server
+nickel/_config.php
+nickel/_state/
 
 # local preview screenshots
 site/.preview-*.png

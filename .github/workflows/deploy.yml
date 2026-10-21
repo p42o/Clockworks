@@ -24,6 +24,14 @@ jobs:
         run: |
           printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s'];\n" "$TIMELY_KEY" "$TIMELY_PIN_HMAC" "$TIMELY_ADMIN_HMAC" > timely/_config.php
 
+      - name: Write Nickel gate config (from secrets, never committed)
+        env:
+          NICKEL_KEY: ${{ secrets.NICKEL_KEY }}
+          NICKEL_PIN_HMAC: ${{ secrets.NICKEL_PIN_HMAC }}
+          NICKEL_ADMIN_HMAC: ${{ secrets.NICKEL_ADMIN_HMAC }}
+        run: |
+          printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s'];\n" "$NICKEL_KEY" "$NICKEL_PIN_HMAC" "$NICKEL_ADMIN_HMAC" > nickel/_config.php
+
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
