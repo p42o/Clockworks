@@ -70,7 +70,7 @@ export default function HowItWorks() {
             <p className="font-mono text-[0.7rem] tracking-[0.18em] text-copper">STEP 1 · FREE</p>
             <h2 className="display mt-3 text-4xl sm:text-5xl">The audit</h2>
             <p className="mt-4 max-w-md leading-relaxed text-ink-soft">
-              A free 15-minute phone audit. Call (763) 202-7778. Here&rsquo;s the agenda, so you know it&rsquo;s not a
+              A free 15-minute phone audit. Call (763) 296-9777. Here&rsquo;s the agenda, so you know it&rsquo;s not a
               sales ambush:
             </p>
           </Reveal>

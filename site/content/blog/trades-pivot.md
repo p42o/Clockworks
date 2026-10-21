@@ -35,7 +35,7 @@ All four run on the tools you already have: Jobber, Housecall Pro, QuickBooks, G
 
 There are national apps that sell pieces of this. Some are decent. Here's what they can't sell you: a person in Maple Grove who will learn how your shop actually runs.
 
-The engagement is simple: a free 15-minute phone audit, the $50 Online Presence Assessment, and a $500 one-time deployment, done together over screen share. Optional ongoing maintenance is available, and I'll walk you through the options. Call (763) 202-7778.
+The engagement is simple: a free 15-minute phone audit, the $50 Online Presence Assessment, and a $500 one-time deployment, done together over screen share. Optional ongoing maintenance is available, and I'll walk you through the options. Call (763) 296-9777.
 
 That's the whole pitch.
 

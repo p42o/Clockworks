@@ -319,7 +319,7 @@ export default function Home() {
               {
                 step: "STEP 1 · FREE",
                 title: "Phone audit",
-                body: "A free 15-minute phone audit. Call (763) 202-7778.",
+                body: "A free 15-minute phone audit. Call (763) 296-9777.",
               },
               {
                 step: "STEP 2 · $50",

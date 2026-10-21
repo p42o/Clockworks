@@ -151,7 +151,7 @@ export default function YourOwnAgent() {
 
       <AuditCTA
         title="Want one with your name on it?"
-        context="A free 15-minute phone audit. Call (763) 202-7778."
+        context="A free 15-minute phone audit. Call (763) 296-9777."
       />
     </>
   );

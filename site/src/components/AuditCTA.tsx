@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 export default function AuditCTA({
   title = "Find out what your week is hiding.",
-  context = "The audit is a free 15-minute phone call. No pitch. Call (763) 202-7778.",
+  context = "The audit is a free 15-minute phone call. No pitch. Call (763) 296-9777.",
 }: {
   title?: string;
   context?: string;
