@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "How to Use Claude to Write All Your Business Emails in Half the Time"
 date: "2026-05-11"
 description: "The setup takes 15 minutes. After that, you'll wonder how you wrote emails without it."

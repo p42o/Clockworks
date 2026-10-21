@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "From Missed Call to Booked Job in 90 Seconds"
 date: "2026-03-18"
 description: "The exact lead-response workflow we ship to home-service businesses. End-to-end: the trigger, the AI, the SMS, the handoff. ~$95/month, ~$2,500/week recovered."

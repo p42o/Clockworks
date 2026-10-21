@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "Notes From My First Season Building for the Trades"
 date: "2026-12-01"
 description: "What owners actually asked for, the three objections I heard most, what I changed, and what 2027 looks like for a one-man shop in Maple Grove."

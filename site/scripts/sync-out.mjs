@@ -27,6 +27,8 @@ function htaccessBlock(siteDir) {
   ];
   for (const f of readdirSync(dir).filter((f) => f.endsWith(".md"))) {
     const fm = readFileSync(join(dir, f), "utf8").slice(0, 600);
+    // Held posts are not built, so no 301 into them (their old URLs 404/410).
+    if (/^hold:\s*true\b/m.test(fm)) continue;
     const legacy = fm.match(/legacyPath:\s*"([^"]+)"/)?.[1];
     if (legacy) lines.push(`Redirect 301 ${legacy} /blog/${f.replace(/\.md$/, "")}/`);
   }

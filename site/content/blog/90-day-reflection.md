@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "90 Days of AI Content: What I Learned About What Clicks and What Doesn't"
 date: "2026-06-29"
 description: "An honest look back at three months of writing, posting, and figuring this out in public."

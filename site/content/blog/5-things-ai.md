@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "5 Things AI Can Do For Your Business This Week (Real, Specific, Free)"
 date: "2026-04-20"
 description: "No subscriptions required. No tech skills needed. Just five things you can try before Friday."

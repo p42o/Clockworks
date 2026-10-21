@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "What a $150 AI Session Actually Gets You (The Inside Story)"
 date: "2026-06-15"
 description: "A minute-by-minute look at what happens in a Clockworks Cowork session, and what you walk away with."

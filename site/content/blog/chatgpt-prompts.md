@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "Why Your ChatGPT Prompts Aren't Working (And the Simple Fix)"
 date: "2026-04-06"
 description: "Vague questions get vague answers. Here's the formula that changes everything."

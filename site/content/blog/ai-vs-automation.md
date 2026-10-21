@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "AI vs. Automation: What's the Difference, and Why It Matters"
 date: "2026-04-01"
 description: "Most people use these words interchangeably. That's a mistake and it's costing them."

@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "The AI Myths Costing Small Businesses Real Money"
 date: "2026-04-27"
 description: "Five beliefs about AI that keep business owners stuck, and the honest truth behind each one."

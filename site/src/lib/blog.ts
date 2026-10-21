@@ -17,6 +17,12 @@ export type Post = {
   description: string;
   tags: string[];
   legacyPath?: string;
+  /**
+   * Never publish. A held post stays out of the build, the index, the
+   * sitemap, and the manifest even after its date (so the monthly-publish
+   * run cannot ship it). The file stays in the repo. Same field as V2.
+   */
+  hold: boolean;
   html: string;
   words: number;
 };
@@ -39,6 +45,7 @@ function loadAll(): Post[] {
         description: String(data.description ?? ""),
         tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
         legacyPath: data.legacyPath ? String(data.legacyPath) : undefined,
+        hold: data.hold === true,
         html: marked.parse(content, { async: false }) as string,
         words: content.split(/\s+/).length,
       };
@@ -50,10 +57,10 @@ function loadAll(): Post[] {
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-/** Published = dated today or earlier at build time. */
+/** Published = dated today or earlier at build time, and not held. */
 export function getPublishedPosts(): Post[] {
   const t = today();
-  return loadAll().filter((p) => p.date <= t);
+  return loadAll().filter((p) => p.date <= t && !p.hold);
 }
 
 export function getPost(slug: string): Post | undefined {
@@ -64,7 +71,7 @@ export function getPost(slug: string): Post | undefined {
 export function getScheduleSummary() {
   const t = today();
   const future = loadAll()
-    .filter((p) => p.date > t)
+    .filter((p) => p.date > t && !p.hold)
     .sort((a, b) => (a.date > b.date ? 1 : -1));
   return {
     publishedCount: getPublishedPosts().length,

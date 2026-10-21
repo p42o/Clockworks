@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "What $2,000 to $5,000 Actually Buys"
 date: "2026-09-01"
 description: "The two-week pilot, walked day by day: fixed quote, a working demo at hour 48, a shadow week, and a handover where you own everything."

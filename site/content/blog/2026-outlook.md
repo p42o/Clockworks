@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "The 2026 Small-Business AI Outlook"
 date: "2026-01-08"
 description: "What's actually changing for small businesses this year: the three shifts that matter, the hype to ignore, and where Twin Cities owners should pay attention."

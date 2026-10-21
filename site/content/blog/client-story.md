@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "From 3 Hours to 20 Minutes: A Real Client Story"
 date: "2026-05-25"
 description: "What two hours of setup actually looks like, and what it means six weeks later."

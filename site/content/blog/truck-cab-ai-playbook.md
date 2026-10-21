@@ -1,4 +1,5 @@
 ---
+hold: true  # 2026-10-21 blog pull (Parker 1:42 PM CT via Theo; Counsel signed off). Do not publish.
 title: "I Sat in a Contractor's Truck for 4 Hours. Here's the AI Playbook I Built From It."
 date: "2026-05-05"
 description: "47 5-star reviews. Phone answered in 90 seconds. Calendar open for next week. The five automations every Twin Cities trade business should run before Memorial Day."
