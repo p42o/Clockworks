@@ -200,7 +200,15 @@ export default function AuditFlow() {
     <div>
       {/* progress: five segments, machined */}
       <div className="mb-8 flex items-center gap-4">
-        <div className="flex flex-1 gap-1.5" role="progressbar" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={total}>
+        <div
+          className="flex flex-1 gap-1.5"
+          role="progressbar"
+          aria-label="Form progress"
+          aria-valuenow={step + 1}
+          aria-valuemin={1}
+          aria-valuemax={total}
+          aria-valuetext={`Step ${step + 1} of ${total}`}
+        >
           {steps.map((s, i) => (
             <div key={s.key} className="h-[3px] flex-1 overflow-hidden rounded-full bg-line-soft">
               <motion.div

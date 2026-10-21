@@ -54,7 +54,7 @@ export default function IndustryTabs() {
         >
           <p className="eyebrow">{item.group === "primary" ? "Primary fit" : "Also a fit"}</p>
           <h3 className="display mt-3 text-4xl">{item.name}</h3>
-          <p className="mt-4 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink-faint">Agents that fit</p>
+          <p className="mt-4 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink-soft">Agents that fit</p>
           <ul className="mt-3 flex flex-wrap gap-2">
             {item.fit.map((name) => (
               <li key={name} className="rounded-[3px] border hairline bg-cream-bright px-3 py-2 text-[0.9rem]">

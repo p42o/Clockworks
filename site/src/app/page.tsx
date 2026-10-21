@@ -140,10 +140,10 @@ export default function HomePage() {
           <Reveal>
             <p className="eyebrow section-rule">Where it fits</p>
             <h2 className="display mt-4 max-w-3xl text-4xl sm:text-6xl">
-              Plumbing, HVAC, and electrical first. Real estate sits with them.
+              It fits a trade shop, and a real estate desk.
             </h2>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
-              Landscaping is next. Property management, cleaning, and professional services are a fit too. These are examples of the work, not a client list, and not a market claim.
+              Plumbing, HVAC, electrical, and real estate are the work I set up most. Landscaping, property management, cleaning, and professional services fit the same way. Open one to see an example of the work. These are examples, not a client list.
             </p>
           </Reveal>
           <div className="mt-10">

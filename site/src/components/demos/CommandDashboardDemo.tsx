@@ -50,7 +50,7 @@ export default function CommandDashboardDemo() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile label="Calls caught" value={String(totCaught)} delta={`would've missed ${missed.reduce((a, b) => a + b, 0)}`} good />
         <StatTile label="Jobs booked" value={range === 7 ? "11" : "19"} delta="+4 vs prior period" good />
-        <StatTile label="Cash outstanding" value="$7,410" delta="3 invoices > 30 days" />
+        <StatTile label="Cash outstanding" value="Open" delta="Invoices still out" />
         <StatTile label="New reviews" value={range === 7 ? "4" : "7"} delta="★ 4.4 average" good />
       </div>
 

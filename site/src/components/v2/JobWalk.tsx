@@ -7,8 +7,12 @@ import { jobExample } from "@/lib/copy";
 export default function JobWalk() {
   const reduced = useReducedMotion();
   const [step, setStep] = useState(0);
-  const [paused, setPaused] = useState(Boolean(reduced));
+  const [paused, setPaused] = useState(false);
   const total = jobExample.steps.length;
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setPaused(true);
+  }, []);
 
   useEffect(() => {
     if (paused || reduced) return;
@@ -32,10 +36,10 @@ export default function JobWalk() {
         <button
           type="button"
           className="min-h-8 rounded-[3px] border hairline px-3 text-[0.8rem]"
-          aria-pressed={paused || Boolean(reduced)}
+          aria-pressed={paused}
           onClick={() => setPaused((v) => !v)}
         >
-          {paused || reduced ? "Play example" : "Pause example"}
+          {paused ? "Play example" : "Pause example"}
         </button>
       </div>
       <h3 className="display mt-3 text-3xl sm:text-4xl">{jobExample.title}</h3>

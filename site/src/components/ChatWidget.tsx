@@ -24,11 +24,11 @@ const HINTS = [
 const NUDGES = [
   {
     lead: "Hey, I'm the Front Desk.",
-    body: "Ask me what the team does. The chat on this page is the product.",
+    body: "Pricing, setup, whether this fits your business",
   },
   {
     lead: "Still looking?",
-    body: "Ask what the team does, or whether it fits your shop.",
+    body: "Pricing, setup, whether this fits your business",
   },
 ] as const;
 

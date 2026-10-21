@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motionPaused, setMotionPaused, subscribeMotion } from "@/lib/motion-pause";
 
-/** One control for the hero glow and the chat launcher pulse. */
+/** One control for looping motion. It sits in the header, not over the page. */
 export default function MotionControl() {
   const [paused, setPaused] = useState(false);
 
@@ -25,11 +25,13 @@ export default function MotionControl() {
   return (
     <button
       type="button"
-      className="fixed bottom-5 left-5 z-[70] min-h-11 rounded-[3px] border hairline bg-paper/95 px-3 text-[0.8rem] text-ink shadow-[0_8px_24px_-16px_rgba(14,14,12,0.6)]"
+      className="inline-flex min-h-11 shrink-0 items-center rounded-[3px] border hairline bg-cream-bright px-2.5 text-[0.75rem] text-ink sm:px-3 sm:text-[0.8rem]"
       aria-pressed={paused}
+      aria-label={paused ? "Play motion" : "Pause motion"}
       onClick={() => setMotionPaused(!paused)}
     >
-      {paused ? "Play motion" : "Pause motion"}
+      <span className="sm:hidden">{paused ? "Play" : "Pause"}</span>
+      <span className="hidden sm:inline">{paused ? "Play motion" : "Pause motion"}</span>
     </button>
   );
 }

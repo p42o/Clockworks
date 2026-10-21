@@ -9,7 +9,6 @@ import { phone, serviceTowns } from "@/lib/copy";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatGate from "@/components/ChatGate";
-import MotionControl from "@/components/MotionControl";
 import "./globals.css";
 
 const instrument = Instrument_Serif({
@@ -113,7 +112,6 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-          <MotionControl />
           <ChatGate />
         </body>
       </html>

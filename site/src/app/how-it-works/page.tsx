@@ -35,6 +35,7 @@ export default function HowItWorks() {
         </a>
       </section>
       <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8" id="how">
+        <h2 className="display mb-8 max-w-3xl text-4xl sm:text-5xl">The steps, in order.</h2>
         <HowTimeline />
       </section>
       <section className="border-t hairline bg-paper-deep" id="pricing">

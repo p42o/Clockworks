@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
 /**
- * Scripted missed-call → text-back conversation. The visitor plays the
+ * Scripted missed-call follow-up. The visitor plays the
  * customer via quick replies. The "AI" side is a deterministic script.
  * The live chatbot elsewhere on the site is the real brain.
  */
@@ -13,15 +13,15 @@ type Msg = { from: "ai" | "you" | "sys"; text: string };
 
 const SCENARIOS = {
   "Water heater leaking · 7:58pm": [
-    { from: "sys", text: "☎ Missed call → text-back" },
+    { from: "sys", text: "Missed call, then a follow-up" },
     { from: "ai", text: "Hi, this is Nelson Plumbing, sorry we missed you, we're on a job. This is the office assistant. What's going on?" },
   ],
   "No AC · Saturday, 91°": [
-    { from: "sys", text: "☎ Missed call → text-back" },
+    { from: "sys", text: "Missed call, then a follow-up" },
     { from: "ai", text: "Hi, you've reached Ridgeline Heating & Air: we missed your call but we're still on deck this weekend. What's happening with your system?" },
   ],
   "Sparking outlet · 10:40pm": [
-    { from: "sys", text: "☎ Missed call → text-back" },
+    { from: "sys", text: "Missed call, then a follow-up" },
     { from: "ai", text: "This is Anchor Electric's after-hours line. We missed your call: is everything safe right now? Tell me what you're seeing." },
   ],
 } as const;

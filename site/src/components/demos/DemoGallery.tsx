@@ -15,7 +15,7 @@ const DEMOS = [
     key: "callcatch",
     code: "DEMO 01 · CALL CATCH",
     title: "Miss a call, keep the job",
-    blurb: "Play the customer whose water heater just burst. Watch the text-back land in nine seconds, then book yourself.",
+    blurb: "Play the customer whose water heater just burst. Watch the follow-up, then book yourself.",
     verbs: "You type · it answers · it books",
     component: CallCatchDemo,
     assumptions: "Scripted conversation; response times and booking rules are configurable per business.",

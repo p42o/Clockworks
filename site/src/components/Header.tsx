@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { nav } from "@/lib/site";
 import { phone, primaryCta } from "@/lib/copy";
 import LogoMark from "@/components/LogoMark";
+import MotionControl from "@/components/MotionControl";
 
 const easeGate: [number, number, number, number] = [0.2, 0.9, 0.25, 1.05];
 
@@ -15,6 +16,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const reduced = useReducedMotion();
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -33,9 +35,32 @@ export default function Header() {
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
+    const main = document.getElementById("content");
+    const footer = document.querySelector("footer");
+    if (open) {
+      main?.setAttribute("inert", "");
+      footer?.setAttribute("inert", "");
+    } else {
+      main?.removeAttribute("inert");
+      footer?.removeAttribute("inert");
+    }
     return () => {
       document.documentElement.style.overflow = "";
+      main?.removeAttribute("inert");
+      footer?.removeAttribute("inert");
     };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setOpen(false);
+      menuButton.current?.focus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
   return (
@@ -47,14 +72,21 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto max-w-6xl px-5 py-3 sm:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="group flex shrink-0 items-center gap-3" aria-label="MN Clockworks home">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <Link
+            href="/"
+            inert={open ? true : undefined}
+            className="group flex shrink-0 items-center gap-3"
+            aria-label="MN Clockworks home"
+          >
             <LogoMark className="h-11 w-11 transition-transform duration-700 group-hover:rotate-[24deg]" />
             <span className="display text-[1.55rem] leading-none sm:text-[1.7rem]">
               Clockworks<span className="text-copper">.</span>
             </span>
           </Link>
 
+          <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
+          <div className="flex items-center gap-2" inert={open ? true : undefined}>
           <div className="hidden items-center gap-4 md:flex">
             <a href="/portal/client/" className="link-draw text-[0.88rem] text-ink-soft hover:text-ink">
               Client login
@@ -70,16 +102,21 @@ export default function Header() {
             </a>
           </div>
 
-          <div className="flex items-center gap-1.5 md:hidden">
+          {!open && (
             <a
               href={phone.tel}
-              className={`btn-press inline-flex min-h-11 items-center whitespace-nowrap rounded-[3px] bg-ink px-2.5 py-2 text-[0.75rem] font-medium text-paper ${
-                open ? "pointer-events-none opacity-0" : ""
-              }`}
+              className="btn-press inline-flex min-h-11 items-center whitespace-nowrap rounded-[3px] bg-ink px-2.5 py-2 text-[0.75rem] font-medium text-paper md:hidden"
             >
               {phone.display}
             </a>
+          )}
+          </div>
+          <div inert={open ? true : undefined}>
+            <MotionControl />
+          </div>
+          <div className="md:hidden">
             <button
+              ref={menuButton}
               type="button"
               onClick={() => setOpen((value) => !value)}
               aria-expanded={open}
@@ -104,6 +141,7 @@ export default function Header() {
                 />
               </span>
             </button>
+          </div>
           </div>
         </div>
 
