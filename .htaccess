@@ -24,6 +24,12 @@ RedirectMatch 301 ^/how-it-works\.html$ /how-it-works/
 # Script used only by those server-only pages (contains "$247 diagnostic");
 # nothing reachable loads it once they redirect.
 Redirect gone /js/site.js
+# PARKER-DECISION (docs+jsx, Counsel blocker 2026-10-20): internal docs and the raw
+# stonearch-ai-site.jsx stay in git but are not served. 404 via the site 404 page.
+# (.htaccess rule chosen over the FTP exclude list: it also hides copies already on
+# the server, which an exclude would leave in place, and needs no workflow change.)
+RedirectMatch 404 ^/docs(/.*)?$
+RedirectMatch 404 \.jsx$
 # /what-i-do, /results, /your-own-agent: live sent these to /front-desk.html; the
 # fixed git pages now serve them directly, so no rule.
 

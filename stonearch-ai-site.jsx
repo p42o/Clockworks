@@ -76,11 +76,11 @@ const DEFAULT_BLOG_POSTS = [
 
 const DEFAULT_FAQ_ITEMS = [
   { id: 1, q: "I'm not technical at all. Is this still for me?", a: "That's exactly who this is for. I don't teach you to code or build anything complicated. I find off-the-shelf tools that solve your specific problems and set them up with you. If you can use a smartphone, you can use these tools." },
-  { id: 2, q: "What does the AI assessment actually look like?", a: "We hop on a 45-minute call (or meet in person if you're local to the Twin Cities). I ask you about your day-to-day — where you spend your time, what's frustrating, what's repetitive. Then I match your pain points to AI tools that already exist. You get a clear action plan within 48 hours." },
+  { id: 2, q: "What does the AI assessment actually look like?", a: "We hop on a call. I ask you about your day-to-day — where you spend your time, what's frustrating, what's repetitive. Then I match your pain points to AI tools that already exist. You get a clear action plan within 48 hours." },
   { id: 3, q: "How much do the AI tools actually cost?", a: "Most of my clients spend between $25–50/month total on tools. Many have free tiers to start. The average ROI is 6+ hours per week returned — that's over $1,000/month in time saved for less than the cost of a nice dinner out." },
-  { id: 4, q: "Can you just do it all for me?", a: "I can — that's what the Jumpstart package is for. But my goal is to make you self-sufficient. I set things up WITH you so you actually understand how they work." },
+  { id: 4, q: "Can you just do it all for me?", a: "My goal is to make you self-sufficient. I set things up WITH you so you actually understand how they work." },
   { id: 5, q: "What if AI tools change or get better?", a: "They will — that's the beauty of the Partner plan. I stay on top of every new tool and update so you don't have to. When something better comes along, I bring it to you proactively." },
-  { id: 6, q: "Do you only work with businesses in the Twin Cities?", a: "I prioritize local businesses because I can meet in person, but I work with anyone via Zoom or phone. Some of my best sessions have been a video call and a screen share — works just as well." },
+  { id: 6, q: "Do you only work with businesses in the Twin Cities?", a: "I work with businesses by phone and screen share. Some of my best sessions have been a video call and a screen share — works just as well." },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -157,14 +157,6 @@ function SEOHead() {
           "description": "A 45-minute deep-dive assessment to identify your top 5 AI opportunities, with a one-page action plan delivered within 48 hours.",
           "provider": { "@id": "https://clockworksai.com/#business" },
           "offers": { "@type": "Offer", "price": "499", "priceCurrency": "USD" }
-        },
-        {
-          "@type": "Service",
-          "@id": "https://clockworksai.com/#ai-jumpstart",
-          "name": "AI Jumpstart",
-          "description": "Hands-on setup of 2-3 AI tools with two 60-minute working sessions, custom video walkthroughs, and 30 days of follow-up support.",
-          "provider": { "@id": "https://clockworksai.com/#business" },
-          "offers": { "@type": "Offer", "price": "1500", "priceCurrency": "USD" }
         },
         {
           "@type": "FAQPage",
@@ -588,7 +580,7 @@ function HeroSection() {
             </h1>
 
             <p style={{ fontFamily: FONT, fontSize: "clamp(15px,1.7vw,18px)", color: "#94a3b8", lineHeight: 1.7, maxWidth: "500px", marginBottom: "32px" }}>
-              I help small business owners in the Twin Cities find AI tools that eliminate the repetitive work eating your week — and I set them up with you, in person. No jargon. Just hours back.
+              I help small business owners in the Twin Cities find AI tools that eliminate the repetitive work eating your week — and I set them up with you over screen share. No jargon. Just hours back.
             </p>
 
             <div className="hero-btns" style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginBottom: "44px" }}>
@@ -602,7 +594,7 @@ function HeroSection() {
 
             {/* Trust badges */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-              {["✓ No tech skills needed", "✓ In-person setup available", "✓ Local to Maple Grove, MN"].map(b => (
+              {["✓ No tech skills needed", "✓ Setup over screen share", "✓ Local to Maple Grove, MN"].map(b => (
                 <span key={b} style={{ fontFamily: FONT, fontSize: "12px", color: "#475569", fontWeight: 500 }}>{b}</span>
               ))}
             </div>
@@ -724,7 +716,7 @@ function AIWinsSection() {
 function HowItWorks() {
   const [ref, inView] = useInView();
   const steps = [
-    { num: "01", title: "We Talk", desc: "45 minutes. Tell me what eats your time. In person (Twin Cities), Zoom, or phone — your call.", icon: "💬", color: "#C4834A" },
+    { num: "01", title: "We Talk", desc: "Tell me what eats your time, by phone or screen share.", icon: "💬", color: "#C4834A" },
     { num: "02", title: "I Find Your Wins", desc: "I match your pain points to off-the-shelf AI tools. No custom builds. No guesswork. Just tools that work.", icon: "🎯", color: "#38bdf8" },
     { num: "03", title: "We Build Together", desc: "I sit beside you and set everything up. You'll know exactly how it all works before I leave.", icon: "🔧", color: "#34d399" },
     { num: "04", title: "You Keep Winning", desc: "Ongoing support, new tools as they launch, and someone to call when you have questions.", icon: "🚀", color: "#a78bfa" },
@@ -755,11 +747,9 @@ function HowItWorks() {
 /* ── PRICING ── */
 function PricingSection() {
   const [ref, inView] = useInView();
-  const [hovered, setHovered] = useState(1);
+  const [hovered, setHovered] = useState(0);
   const plans = [
     { name: "AI Snapshot", price: "$499", type: "one-time", desc: "Find exactly where AI can help most", popular: false, color: "#38bdf8", features: ["45-min deep-dive interview", "Top 5 AI opportunities identified", "One-page action plan with tool names & costs", "Time-saved estimates per tool", "15-min follow-up walkthrough", "Delivered within 48 hours"], cta: "Get Your Snapshot" },
-    { name: "AI Jumpstart", price: "$1,500", type: "one-time", desc: "Hands-on setup — done with you", popular: true, color: "#C4834A", features: ["Everything in the Snapshot", "2–3 tools fully set up & configured", "Two 60-min working sessions", "Custom video walkthroughs for your team", "Templates & workflows customized to you", "30 days of follow-up support"], cta: "Book Your Jumpstart" },
-    { name: "AI Partner", price: "$500", type: "/month", desc: "Your ongoing AI advantage", popular: false, color: "#34d399", features: ["Monthly 60-min strategy session", "Proactive new tool recommendations", "Text/call access for quick questions", "Quarterly full re-assessment", "Priority access to new AI launches"], cta: "Become a Partner" },
   ];
 
   return (
@@ -1105,7 +1095,7 @@ function CTASection() {
             </button>
 
             <div className="cta-options" style={{ display: "flex", justifyContent: "center", gap: "16px", marginTop: "18px", flexWrap: "wrap" }}>
-              {["📍 In Person (Twin Cities)", "💻 Zoom", "📞 Phone"].map(opt => (
+              {["💻 Zoom", "📞 Phone"].map(opt => (
                 <span key={opt} style={{ fontFamily: FONT, color: "#475569", fontSize: "12px", background: "rgba(255,255,255,0.03)", padding: "5px 12px", borderRadius: "7px", border: "1px solid rgba(255,255,255,0.05)" }}>{opt}</span>
               ))}
             </div>
