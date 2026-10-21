@@ -29,6 +29,13 @@ header('Referrer-Policy: no-referrer');
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 
+$path = $_GET['p'] ?? '';
+$path = ltrim(str_replace('\\', '/', $path), '/');
+if ($path === 'privacy' || $path === 'privacy/') {
+    render_privacy();
+    exit;
+}
+
 $cfgFile = __DIR__ . '/_config.php';
 if (!is_file($cfgFile)) {
     http_response_code(503);
@@ -168,8 +175,6 @@ function render_visits(): void {
     echo '</table></html>';
 }
 
-$path = $_GET['p'] ?? '';
-$path = ltrim(str_replace('\\', '/', $path), '/');
 if (preg_match('#(^|/)_#', $path)) { http_response_code(404); exit; }
 $isVisits = $path === 'admin/visits' || $path === 'admin/visits/';
 if ($path === 'admin') { header('Location: /timely/admin/', true, 301); exit; }  // keep relative asset URLs right
@@ -290,7 +295,47 @@ function render_gate(string $error, bool $playbook): void {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
-<style>
+<?php render_gate_styles(); ?>
+
+</head>
+<body>
+<main class="card">
+  <div class="brand"><span class="dot"></span>MN Clockworks</div>
+<?php if ($playbook): ?>
+  <p class="badge">Internal · Not for the client</p>
+  <p class="kicker">Impact Playbook</p>
+  <h1>Timely <em>Playbook</em></h1>
+  <p class="sub">Parker’s operating plan: actions, costs, expected lift and how we measure it. Enter the PIN to open it.</p>
+<?php else: ?>
+  <p class="kicker">Online Presence Assessment</p>
+  <h1>Timely <em>Drywall</em></h1>
+  <p class="sub">This report is private. Enter the <?= PIN_LEN ?>-digit PIN to view it.</p>
+  <p style="margin:0 0 24px;color:var(--muted);font-size:12px;line-height:1.5"><?= htmlspecialchars("This page records when it's opened (time, " . (IP_MODE === 'hashed' ? 'a scrambled IP' : 'IP address') . " and device type) for security and so Parker can follow up. Parker can also open it. Records are deleted after 90 days. Your PIN is never stored. You can change your PIN anytime. Just ask Parker.", ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?> <a href="/timely/privacy">Privacy details</a></p>
+<?php endif; ?>
+  <form method="post" action="<?= $action ?>" id="f" autocomplete="off">
+    <label for="pin" class="sr" style="position:absolute;left:-9999px">PIN</label>
+    <div class="boxes<?= $err ? ' shake' : '' ?>" id="boxes" aria-hidden="true">
+      <?= str_repeat('<div class="box"></div>', $len) ?>
+    </div>
+    <input class="pin" id="pin" name="pin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="<?= $len ?>" autocomplete="one-time-code" autofocus required>
+    <div class="err" role="alert"><?= $err ?></div>
+    <button type="submit"><?= $playbook ? 'Open the playbook' : 'View the assessment' ?></button>
+  </form>
+  <p class="foot">Prepared by MN Clockworks · mnclockworks.com</p>
+</main>
+<script>
+  const pin=document.getElementById('pin'),boxes=[...document.querySelectorAll('.box')],f=document.getElementById('f');
+  function paint(){const L=<?= $len ?>,v=pin.value.replace(/\D/g,'').slice(0,L);pin.value=v;boxes.forEach((b,i)=>{b.textContent=v[i]?'•':'';b.classList.toggle('on',!!v[i]);b.classList.toggle('cur',i===v.length&&document.activeElement===pin)});if(v.length===L)f.requestSubmit?f.requestSubmit():f.submit()}
+  document.getElementById('boxes').addEventListener('click',()=>pin.focus());
+  pin.addEventListener('input',paint);pin.addEventListener('focus',paint);pin.addEventListener('blur',paint);paint();
+</script>
+</body>
+</html>
+<?php
+}
+
+function render_gate_styles(): void {
+    ?><style>
   :root{--paper:#F5F1E8;--card:#FBF8F1;--ink:#1A1916;--muted:#6B645A;--line:#E3DACB;--copper:#D4582A;--copper-ink:#A8401A;--navy:#7A5A10;--err:#A8401A}
   @media (prefers-color-scheme:dark){:root{--paper:#161412;--card:#1F1C19;--ink:#F3EEE4;--muted:#A89F92;--line:#34302A;--copper:#E0703F;--copper-ink:#F08A5C;--navy:#E2B84A;--err:#F08A5C}}
   *{box-sizing:border-box}
@@ -317,41 +362,44 @@ function render_gate(string $error, bool $playbook): void {
   button:active{transform:scale(.98)}
   button:focus-visible,.boxes:focus-within .box.cur{outline:none}
   button:focus-visible{box-shadow:0 0 0 4px color-mix(in srgb,var(--copper) 35%,transparent)}
+  a{color:var(--copper-ink)}
   .foot{margin-top:18px;color:var(--muted);font-size:12.5px}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style><?php
+}
+
+function render_privacy(): void {
+    http_response_code(200);
+    header('Content-Type: text/html; charset=utf-8');
+    header('Cache-Control: no-store');
+    ?><!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Privacy Details for Client Report Pages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+<?php render_gate_styles(); ?>
+
+<style>
+  .card{max-width:720px;text-align:left;animation:none}
+  h2{margin:28px 0 12px;font:400 28px/1.15 'Instrument Serif',serif}
+  p{font-size:15px;line-height:1.65}
+  p:first-of-type{color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
 <main class="card">
-  <div class="brand"><span class="dot"></span>MN Clockworks</div>
-<?php if ($playbook): ?>
-  <p class="badge">Internal · Not for the client</p>
-  <p class="kicker">Impact Playbook</p>
-  <h1>Timely <em>Playbook</em></h1>
-  <p class="sub">Parker’s operating plan: actions, costs, expected lift and how we measure it. Enter the PIN to open it.</p>
-<?php else: ?>
-  <p class="kicker">Online Presence Assessment</p>
-  <h1>Timely <em>Drywall</em></h1>
-  <p class="sub">This report is private. Enter the <?= PIN_LEN ?>-digit PIN to view it.</p>
-  <p style="margin:0 0 24px;color:var(--muted);font-size:12px;line-height:1.5"><?= htmlspecialchars("This page records when it's opened (time, " . (IP_MODE === 'hashed' ? 'a scrambled IP' : 'IP address') . " and device type) for security and so Parker can follow up. Parker can also open it. Records are deleted after 90 days. Your PIN is never stored. You can change your PIN anytime. Just ask Parker.", ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></p>
-<?php endif; ?>
-  <form method="post" action="<?= $action ?>" id="f" autocomplete="off">
-    <label for="pin" class="sr" style="position:absolute;left:-9999px">PIN</label>
-    <div class="boxes<?= $err ? ' shake' : '' ?>" id="boxes" aria-hidden="true">
-      <?= str_repeat('<div class="box"></div>', $len) ?>
-    </div>
-    <input class="pin" id="pin" name="pin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="<?= $len ?>" autocomplete="one-time-code" autofocus required>
-    <div class="err" role="alert"><?= $err ?></div>
-    <button type="submit"><?= $playbook ? 'Open the playbook' : 'View the assessment' ?></button>
-  </form>
-  <p class="foot">Prepared by MN Clockworks · mnclockworks.com</p>
+<h1>Privacy Details for Client Report Pages</h1>
+<p>Last updated October 21, 2026</p>
+<p>This page adds to the MN Clockworks Privacy Notice and covers client report pages only.</p>
+<h2>Client Report Pages</h2>
+<p>Some client report pages are protected by a PIN. When one is opened, we record the time, the IP address, the device type and whether the client's PIN or MN Clockworks' PIN was used. We use this to keep the page secure and to know when a report has been opened. We delete these records after 90 days, though copies in routine website backups may last longer until those backups are replaced. Only Parker sees these records. We never sell or share them, except with the company that hosts our website or when the law requires it. Our web host also keeps its own standard server logs, which include IP addresses. We never store PINs.</p>
+<p><a href="/portal/client/#/privacy-notice">MN Clockworks Privacy Notice</a></p>
 </main>
-<script>
-  const pin=document.getElementById('pin'),boxes=[...document.querySelectorAll('.box')],f=document.getElementById('f');
-  function paint(){const L=<?= $len ?>,v=pin.value.replace(/\D/g,'').slice(0,L);pin.value=v;boxes.forEach((b,i)=>{b.textContent=v[i]?'•':'';b.classList.toggle('on',!!v[i]);b.classList.toggle('cur',i===v.length&&document.activeElement===pin)});if(v.length===L)f.requestSubmit?f.requestSubmit():f.submit()}
-  document.getElementById('boxes').addEventListener('click',()=>pin.focus());
-  pin.addEventListener('input',paint);pin.addEventListener('focus',paint);pin.addEventListener('blur',paint);paint();
-</script>
 </body>
 </html>
 <?php
