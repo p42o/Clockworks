@@ -16,8 +16,6 @@ declare(strict_types=1);
 
 const IP_MODE = 'hashed'; // 'full' or 'hashed'
 
-const PIN_NOTICE = "You can change your PIN anytime. Just ask Parker.";
-
 const COOKIE      = 'timely_auth';
 const PIN_LEN     = 4;      // client PIN digits
 const ADMIN_LEN   = 6;      // admin (playbook) PIN digits
@@ -208,10 +206,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pin'])) {
         if ($scope !== '') {
             visit('pin_ok', $scope);
             set_auth($key, $scope);
-            if ($scope === 'c') setcookie('timely_pin_notice_due', '1', [
-                'expires' => time() + 300, 'path' => '/timely/', 'secure' => true,
-                'httponly' => true, 'samesite' => 'Lax',
-            ]);
             $back = '/timely/' . preg_replace('#(^|/)index\.html$#', '$1', $path);
             header('Location: ' . $back, true, 303);
             exit;
@@ -254,16 +248,6 @@ $plain = openssl_decrypt($ct, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag, 
 if ($plain === false) {
     http_response_code(500);
     exit('Could not open file.');
-}
-
-if ($path === 'index.html' && $scope === 'c' && ($_COOKIE['timely_pin_notice_due'] ?? '') === '1' && !isset($_COOKIE['timely_pin_notice'])) {
-    $banner = '<div role="status" style="padding:10px 20px;background:#F5F1E8;color:#6B645A;font:13px system-ui;border-bottom:1px solid #E3DACB">' . htmlspecialchars(PIN_NOTICE, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ' <a href="#" aria-label="Dismiss PIN notice" style="float:right;color:#A8401A" onclick="this.parentNode.remove();return false">Close</a></div>';
-    $plain = preg_replace_callback('/<body\\b[^>]*>/i', fn($m) => $m[0] . $banner, $plain, 1, $inserted);
-    if ($inserted) {
-        $options = ['path' => '/timely/', 'secure' => true, 'httponly' => true, 'samesite' => 'Lax'];
-        setcookie('timely_pin_notice_due', '', ['expires' => time() - 3600] + $options);
-        setcookie('timely_pin_notice', '1', ['expires' => time() + 365 * 86400] + $options);
-    }
 }
 
 $types = [
