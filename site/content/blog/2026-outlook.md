@@ -18,7 +18,7 @@ Two years ago, an AI answering your phones sounded like a hostage situation. As 
 
 What this means in practice: the missed-call problem is solvable for under $200 a month in software costs (not including setup or support). For a contractor doing $1.5M a year, that's the difference between booking the next-day install or losing it to whoever picked up first.
 
-> If your business loses revenue when the phone rings while you're on a roof, in a basement, or with a client, voice is the single highest-ROI thing you can adopt this year.
+> If your business misses calls while you're on a roof, in a basement, or with a client, voice is worth a look this year.
 
 ---
 
@@ -59,6 +59,6 @@ If you do nothing else this year, do these three:
 2. Set up automated review requests after every completed job.
 3. Have AI draft your lead responses (you still hit send).
 
-That's a weekend of work. It will outperform 80% of "AI transformation" engagements I see pitched to small businesses.
+That's a weekend of work, and a much smaller commitment than a big "AI transformation" engagement.
 
 Call or send a message at mnclockworks.com.
