@@ -376,6 +376,15 @@ export default function AuditFlow() {
         </AnimatePresence>
       </div>
 
+      {step === total - 1 && (
+        <p className="mt-8 text-[0.95rem] leading-relaxed text-ink-soft">
+          We use what you send to reply to you. See our{" "}
+          <a href="/portal/client/#/privacy-notice" className="text-copper-deep underline underline-offset-2">
+            Privacy Notice
+          </a>
+          .
+        </p>
+      )}
       <div className="mt-8 flex items-center justify-between border-t hairline-soft pt-6">
         <button
           type="button"

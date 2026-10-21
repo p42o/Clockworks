@@ -27,7 +27,7 @@ export const nav = [
 
 /** Legacy pages that live outside the Next app — always plain <a>, never Link. */
 export const legacy = {
-  privacy: "https://mnclockworks.com/portal/client/#/privacy-notice",
+  privacy: "/portal/client/#/privacy-notice",
   terms: "/terms/",
   resources: "/resources.html",
   blog: "/blog/",

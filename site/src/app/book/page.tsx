@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import AuditFlow from "@/components/AuditFlow";
-import { formHonestLine, phone, primaryCta } from "@/lib/copy";
+import { formHonestLine, phone } from "@/lib/copy";
 import { pageSocial } from "@/lib/site";
 
 const title = "Free 15-minute phone audit";
@@ -30,8 +30,8 @@ export default function Book() {
                 Call{" "}
                 <a href={phone.tel} className="font-medium text-ink underline decoration-copper underline-offset-4">
                   {phone.display}
-                </a>{" "}
-                if you want to talk now. {primaryCta}.
+                </a>
+                . Iris, our AI phone assistant, answers and takes a message for Parker.
               </p>
               <p>{formHonestLine}</p>
               <p>Tell me the trade, what is piling up, and how to reach you. I read it myself.</p>

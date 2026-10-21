@@ -23,7 +23,7 @@ export default function Footer() {
           </p>
         </div>
         <p className="mt-4 max-w-md text-[1.02rem] leading-relaxed text-paper/80">
-          A real team of AI agents for your business, each with its own job, set up with you on one screen-share call.
+          A real team of AI agents for your business, each with its own job, set up with you on a screen-share call.
         </p>
 
         <div className="mt-12 grid gap-10 border-t border-white/15 pt-10 sm:grid-cols-3">
@@ -60,7 +60,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="/privacy/" className="text-paper/80 hover:text-paper">
+                <a href="/portal/client/#/privacy-notice" className="text-paper/80 hover:text-paper">
                   Privacy Notice
                 </a>
               </li>
@@ -89,7 +89,7 @@ export default function Footer() {
             Starter Terms
           </Link>{" "}
           and{" "}
-          <a href="/privacy/" className="underline decoration-copper underline-offset-4">
+          <a href="/portal/client/#/privacy-notice" className="underline decoration-copper underline-offset-4">
             Privacy Notice
           </a>{" "}
           before you buy.

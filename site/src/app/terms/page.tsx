@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
 import { pageSocial } from "@/lib/site";
+import { starterTerms } from "@/lib/legal";
 
 const title = "Starter Terms";
 const description = "Terms for MN Clockworks, a business of PGS Ventures LLC.";
@@ -13,14 +14,25 @@ export const metadata: Metadata = {
 };
 
 export default function Terms() {
+  const terms = starterTerms();
   return (
     <section className="mx-auto max-w-6xl px-5 pb-24 pt-36 sm:px-8">
       <p className="eyebrow">Starter Terms</p>
       <h1 className="display mt-4 text-5xl sm:text-7xl">Terms</h1>
       <div className="mt-8 max-w-xl space-y-5 text-[1.05rem] leading-relaxed text-ink-soft">
         <p>
-          Nothing on this site is a quote or a contract. All work is confirmed in writing before anything starts.
+          These are the Starter Terms of PGS Ventures LLC, doing business as MN Clockworks. Current version: {terms.version}. Last updated: {terms.date}.
         </p>
+        <p className="flex flex-col gap-2 sm:flex-row sm:gap-6">
+          <a href="/portal/client/#/starter-terms" className="text-copper-deep underline underline-offset-2">
+            Read the full Starter Terms
+          </a>
+          <a href="/portal/client/#/privacy-notice" className="text-copper-deep underline underline-offset-2">
+            Read the Privacy Notice
+          </a>
+        </p>
+        <p>You accept the Starter Terms in the client portal before any paid work starts.</p>
+        <p>Nothing on this site is a quote or a contract. Parker confirms everything in writing.</p>
         <p>
           Current offers: a free 15-minute phone audit, an online presence assessment for $50, and a one-time deployment for $500, done together over screen share. Optional ongoing maintenance is available, and Parker will walk you through the options and pricing.
         </p>

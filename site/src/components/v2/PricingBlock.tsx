@@ -14,7 +14,7 @@ const cards = [
   {
     kicker: "Start here",
     title: "Free 15-minute phone audit",
-    body: "A phone call. You talk, I listen. Call (763) 296-9777.",
+    body: "A phone call. Call (763) 296-9777 and Iris, our AI phone assistant, takes a message for Parker.",
     action: primaryCta,
     href: phone.tel,
   },
@@ -59,7 +59,7 @@ export default function PricingBlock() {
           Starter Terms
         </Link>{" "}
         and{" "}
-        <a href="/privacy/" className="text-copper-deep underline underline-offset-2">
+        <a href="/portal/client/#/privacy-notice" className="text-copper-deep underline underline-offset-2">
           Privacy Notice
         </a>{" "}
         before you buy.

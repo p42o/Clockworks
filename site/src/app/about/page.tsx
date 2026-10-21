@@ -42,13 +42,13 @@ export default function About() {
             <Reveal delay={0.08}>
               <div className="mt-7 max-w-xl space-y-5 text-[1.08rem] leading-relaxed text-ink-soft">
                 <p>
-                  I live in Maple Grove, Minnesota, with my wife Melissa and our two kids. I spent more than a decade running technical operations and account teams for a national smart-home security company, the kind of job where the system has to work for a real customer.
+                  I live in Maple Grove, Minnesota, with my wife Melissa and our two kids. I&rsquo;ve spent years in hands-on technical operations, the kind of job where the system has to work for a real customer.
                 </p>
                 <p>
                   I started building AI systems for my own life first: assistants that answer, schedulers that schedule, paperwork that moves. Then I watched owners around me quoting jobs at the kitchen table and losing calls to a full voicemail box.
                 </p>
                 <p>
-                  MN Clockworks is my answer. One local person sets up the team with you, shows you the price, and answers his own phone. The name is the idea: a good system should be like a good clock. You don&rsquo;t have to think about it.
+                  MN Clockworks is my answer. One local person sets up the team with you, shows you the price, and follows up himself. The name is the idea: a good system should be like a good clock. You don&rsquo;t have to think about it.
                 </p>
                 <p>
                   Faith and family come first, which is why I build things that take the after-hours pile off the table. Setup is a screen-share call. Call {phone.display}.

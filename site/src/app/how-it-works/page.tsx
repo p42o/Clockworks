@@ -25,7 +25,7 @@ export default function HowItWorks() {
         <p className="eyebrow section-rule">The steps</p>
         <h1 className="display mt-4 max-w-3xl text-5xl sm:text-7xl">Here is exactly how it goes.</h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
-          A phone call, an optional assessment, then one screen-share setup. You watch it get built, test it with me, and walk away knowing how to use it.
+          A phone call, an optional assessment, then a screen-share setup. You watch it get built, test it with me, and walk away knowing how to use it.
         </p>
         <a
           href={phone.tel}

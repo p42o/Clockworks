@@ -67,6 +67,8 @@ export const SWAP = Object.freeze({
     label: "I agree to the MN Clockworks Starter Terms and have read the Privacy Notice.",
     terms: Object.freeze({
       version: "v4.0",
+      // Matches "Last updated" in the file below. Shown on the public /terms/ page.
+      date: "October 20, 2026",
       file: "legal/starter-terms-v4.0.md",
       linkText: "Starter Terms",
       href: "#/starter-terms",

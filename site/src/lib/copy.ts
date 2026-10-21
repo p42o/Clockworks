@@ -48,7 +48,7 @@ export const quoteLine =
   "Nothing on this site is a quote or a contract. Parker confirms everything in writing.";
 
 export const cancelLine =
-  "Parker will send you the terms in writing. Cancelling is covered in your written agreement with Parker.";
+  "Cancelling is covered in the Starter Terms, your written agreement with PGS Ventures LLC (MN Clockworks). Please read them before you buy.";
 
 export const formHonestLine =
   "I can't book a time from this form. Parker will reach out.";
@@ -93,7 +93,7 @@ export const agents: Agent[] = [
     line: "asks every customer for a review, the same way each time.",
     task: "The job is done, and the review ask is still unsent.",
     draft:
-      "Thanks again for having us out. If the work went well, a short review helps neighbors find a local shop. Here is the link.",
+      "Thanks again for having us out. An honest review helps neighbors find a local shop. Here is the link.",
   },
   {
     id: "paper-mover",
@@ -154,7 +154,7 @@ export const jobExample = {
       agent: "Review Engine",
       does: "Drafts the review ask, the same way as the last one.",
       draft:
-        "Thanks again for having us out. If the work went well, a short review helps other people nearby find us.",
+        "Thanks again for having us out. An honest review helps other people nearby find us.",
     },
     {
       agent: "Intel Desk",
@@ -244,7 +244,7 @@ export const steps = [
   {
     n: "1",
     title: "Free 15-minute phone audit",
-    body: "Call (763) 296-9777. You talk, I listen. We look at missed calls, quiet quotes, open invoices, review asks, and the questions you answer over and over.",
+    body: "Call (763) 296-9777. Iris, our AI phone assistant, takes your details for Parker. We look at missed calls, quiet quotes, open invoices, review asks, and the questions you answer over and over.",
   },
   {
     n: "2",
@@ -266,7 +266,7 @@ export const steps = [
 export const easyPoints = [
   { t: "No IT project", d: "You share your screen. I do the setup and explain what I'm doing." },
   { t: "No new app to learn", d: "The team works from the tools and the account you already use. I am not handing you a rented inbox." },
-  { t: "Your own account", d: "Not another monthly app you rent. The team runs on your own AI account." },
+  { t: "Your own account", d: "Not an app you rent from me. The team runs on your own AI account, under your own plan with that platform." },
   { t: "You approve what goes out", d: "The team drafts. You approve. Nothing goes out until you say so." },
   { t: "I do it myself", d: "I build these, so let me be precise instead of breathless. There is no sales team on the call." },
   { t: "Plain written terms", d: agreementLine },
@@ -283,7 +283,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "Whose account does it run on?",
-    a: ownershipLine + " It is not another monthly app you rent.",
+    a: ownershipLine,
   },
   {
     q: "Who approves messages?",
@@ -311,7 +311,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "Can I talk to a person?",
-    a: "Yes. Call (763) 296-9777 and ask for Parker. You can also leave a note on the book page. I can't book a time from that form. Parker will reach out. Or use Talk to the Front Desk on this site. The chat on this page is the product.",
+    a: "Yes. Call (763) 296-9777. Iris, our AI phone assistant, answers and takes a message for Parker, and calls are recorded and transcribed. You can also leave a note on the book page, and Parker will reach out. Or use Talk to the Front Desk on this site.",
   },
 ];
 

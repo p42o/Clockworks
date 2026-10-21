@@ -111,7 +111,7 @@ export default function HomePage() {
               </ul>
             </Reveal>
           </div>
-          <p className="mt-8 max-w-2xl text-lg text-ink">You talk, I listen.</p>
+          <p className="mt-8 max-w-2xl text-lg text-ink">Call (763) 296-9777. Iris, our AI phone assistant, takes your details for Parker.</p>
         </div>
       </section>
 
@@ -143,7 +143,7 @@ export default function HomePage() {
               It fits a trade shop, and a real estate desk.
             </h2>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
-              Plumbing, HVAC, electrical, and real estate are the work I set up most. Landscaping, property management, cleaning, and professional services fit the same way. Open one to see an example of the work. These are examples, not a client list.
+              Plumbing, HVAC, electrical, and real estate are where I focus. Landscaping, property management, cleaning, and professional services fit the same way. Open one to see an example of the work. These are examples, not a client list.
             </p>
           </Reveal>
           <div className="mt-10">
@@ -169,7 +169,7 @@ export default function HomePage() {
           <Reveal>
             <p className="eyebrow section-rule">How it works</p>
             <h2 className="display mt-4 max-w-3xl text-4xl sm:text-6xl">
-              Visible steps. One screen-share setup.
+              Visible steps. A screen-share setup.
             </h2>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
               Audit, optional assessment, setup together, test together, then a walkthrough. You watch it get built.
@@ -261,10 +261,10 @@ export default function HomePage() {
             <h2 className="display mt-4 text-4xl sm:text-6xl">I live in Maple Grove. I do this work myself.</h2>
             <div className="mt-6 max-w-xl space-y-4 text-[1.05rem] leading-relaxed text-ink-soft">
               <p>
-                I&rsquo;m Parker Swanson. I live in Maple Grove, Minnesota, with my wife Melissa and our two kids. I spent more than a decade running technical operations and account teams for a national smart-home security company.
+                I&rsquo;m Parker Swanson. I live in Maple Grove, Minnesota, with my wife Melissa and our two kids. I&rsquo;ve spent years in hands-on technical operations.
               </p>
               <p>
-                MN Clockworks is me. I set the team up with you on a screen-share call, and I answer my own phone. Faith and family come first, which is why I care about the work that follows you home.
+                MN Clockworks is me. I set the team up with you on a screen-share call. When you call, Iris, our AI phone assistant, answers and takes a message, and I follow up myself. Faith and family come first, which is why I care about the work that follows you home.
               </p>
               <p>{ownershipLine}</p>
             </div>
