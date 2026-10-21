@@ -333,6 +333,7 @@ function render_gate(string $error, bool $playbook): void {
   <p class="kicker">Online Presence Assessment</p>
   <h1>Timely <em>Drywall</em></h1>
   <p class="sub">This report is private. Enter the <?= PIN_LEN ?>-digit PIN to view it.</p>
+  <p style="margin:0 0 24px;color:var(--muted);font-size:12px;line-height:1.5"><?= htmlspecialchars("This page notes when it's opened (time, device type and " . (IP_MODE === 'hashed' ? 'a scrambled IP' : 'IP address') . ") so Parker can follow up. Parker can also open it. Records are deleted after 90 days. Your PIN is never stored.", ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></p>
 <?php endif; ?>
   <form method="post" action="<?= $action ?>" id="f" autocomplete="off">
     <label for="pin" class="sr" style="position:absolute;left:-9999px">PIN</label>
