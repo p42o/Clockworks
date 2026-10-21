@@ -44,7 +44,7 @@ People hear "enterprise AI" and picture a $50,000 implementation budget. Some AI
 
 **The truth**
 
-The free tiers of ChatGPT and Claude will give you enormous value before you spend a dollar. Paid plans start at $20/month. For context: in this example, if AI saves you three hours a week and you bill at $75/hour, a year of subscriptions is covered in the first month. Your results will differ.
+The free tiers of ChatGPT and Claude will give you enormous value before you spend a dollar. Paid plans start at $20/month. Example math: if AI saves you three hours a week and you bill at $75/hour, a year of subscriptions is covered in the first month. These are hypothetical numbers, not a promise of results. Your results will differ.
 
 **Myth 04**
 

@@ -19,7 +19,7 @@ const MAIL: Mail[] = [
   { from: "billing@ferguson…", subject: "Invoice 88213: due Jul 10", tag: "INVOICE", action: "Filed to QuickBooks · due-date reminder set" },
   { from: "dana.r@…", subject: "Re: water heater · one more question", tag: "SUPPORT", action: "Drafted answer from your past jobs + manuals", draft: "Good question: the pilot light staying blue is exactly what you want. The faint rumble the first week is sediment settling; if it's still there in two weeks, text us and we'll swing by." },
   { from: "winner-alert@prizes…", subject: "🎁 You've been selected!!", tag: "JUNK", action: "Archived. You never saw it. You're welcome" },
-  { from: "m.okafor@…", subject: "Quote for panel upgrade?", tag: "LEAD", action: "Drafted reply + flagged: mentions '2 other bids' → priority", draft: "Hi Marcus, happy to quote it. Since you're comparing bids: ours will itemize everything, no surprise line items. Any afternoon this week work for a 20-minute look?" },
+  { from: "m.okafor@…", subject: "Quote for panel upgrade?", tag: "LEAD", action: "Drafted reply + flagged: mentions '2 other bids' → priority", draft: "Hi Marcus, happy to quote it. Since you're comparing bids: ours will itemize everything, no surprise line items. Any afternoon this week work for a quick look?" },
 ];
 
 const TAG_COLOR: Record<Mail["tag"], string> = {
