@@ -18,7 +18,7 @@ const IP_MODE = 'full'; // 'full' or 'hashed'
 
 const COOKIE      = 'timely_auth';
 const PIN_LEN     = 4;      // client PIN digits
-const ADMIN_LEN   = 6;      // admin (playbook) PIN digits
+const ADMIN_LEN   = 4;      // admin (playbook) PIN digits; must match TIMELY_ADMIN_HMAC's PIN length
 const COOKIE_DAYS = 30;
 const IP_MAX_FAIL = 8;      // per IP, per window
 const GLOBAL_MAX  = 60;     // all IPs combined, per window
