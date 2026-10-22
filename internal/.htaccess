@@ -1,0 +1,5 @@
+# /internal/ itself has no index and is not linked. Subfolders carry their own gate.
+Options -Indexes
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow, noarchive"
+</IfModule>
