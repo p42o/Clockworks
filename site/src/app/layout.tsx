@@ -105,6 +105,8 @@ export default function RootLayout({
                   gtag('js', new Date());
                   gtag('config', 'G-PSNYLVG4V1');`}
               </Script>
+              {/* Shared GA4 events (calls, email, booking). Reduced data; see public/cw-events.js */}
+              <Script src="/cw-events.js" strategy="afterInteractive" />
             </>
           )}
           <a href="#content" className="skip-link">

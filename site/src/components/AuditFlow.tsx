@@ -148,6 +148,8 @@ export default function AuditFlow() {
       const result = await submitAudit(req);
       if (result.delivered || result.logged) {
         setState("done");
+        // GA4 generate_lead through /cw-events.js. No form values are passed.
+        window.dispatchEvent(new CustomEvent("cw:event", { detail: { name: "generate_lead", form_id: "audit_request" } }));
       } else {
         setState("failed");
         setError("Neither delivery route answered.");

@@ -3,6 +3,7 @@
   "updated": "2026-10-23",
   "site": "https://mnclockworks.com",
   "ga": "G-PSNYLVG4V1",
+  "eventsScript": "/cw-events.js",
   "nap": {
     "name": "MN Clockworks",
     "locality": "Maple Grove"
