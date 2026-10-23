@@ -30,7 +30,10 @@ test("acceptance config points at v4.0a / v2.0a with the 296-9777 fix and no dea
   assert.equal(a.terms.version, "v4.0a");
   assert.equal(a.terms.date, "October 23, 2026");
   assert.equal(a.notice.version, "v2.0a");
-  assert.deepEqual([...a.changes], ["Our phone number is now (763) 296-9777. Nothing else changed."]);
+  assert.deepEqual([...a.changes], [
+    "Our phone number is now (763) 296-9777.",
+    "The Privacy Notice now explains the Google Analytics on our website and the sign-in pages of our client portal.",
+  ]);
   for (const d of [a.terms, a.notice]) {
     assert.ok(existsSync(C + d.file), d.file);
     const t = read(d.file);
@@ -40,6 +43,15 @@ test("acceptance config points at v4.0a / v2.0a with the 296-9777 fix and no dea
     assert.ok(t.includes("Last updated: October 23, 2026"), d.file);
   }
   assert.equal(a.label, "I agree to the MN Clockworks Starter Terms and have read the Privacy Notice.");
+});
+
+test("v2.0a carries the Counsel analytics paragraph (GA on the website and portal sign-in pages) and v4.0a is unchanged", () => {
+  assert.equal(sha("legal/privacy-notice-v2.0a.md"), "670a76d73a5a96d812aca131976a72bfb16691a6e8692470d838e927067353f2");
+  assert.equal(sha("legal/starter-terms-v4.0a.md"), "7cb00f4fe2fe776b10a697ba6425713d98f8a8993e33b579c9a26e5058c09975");
+  const t = read("legal/privacy-notice-v2.0a.md");
+  assert.ok(t.includes("Website analytics. Our website and the sign-in pages of our client portal use Google Analytics 4"));
+  assert.ok(t.includes("If your browser sends a Global Privacy Control signal, we do not load Google Analytics."));
+  assert.ok(!/does not (currently )?use third-party analytics/i.test(t));
 });
 
 test("no client route renders the DRAFT view while SWAP.draftHashes.draft is false", () => {

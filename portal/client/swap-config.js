@@ -74,7 +74,10 @@ export const SWAP = Object.freeze({
       href: "#/starter-terms",
     }),
     // Plain-English "what changed" bullets for the current versions, shown on the terms-updated screen.
-    changes: Object.freeze(["Our phone number is now (763) 296-9777. Nothing else changed."]),
+    changes: Object.freeze([
+      "Our phone number is now (763) 296-9777.",
+      "The Privacy Notice now explains the Google Analytics on our website and the sign-in pages of our client portal.",
+    ]),
     notice: Object.freeze({
       version: "v2.0a",
       file: "legal/privacy-notice-v2.0a.md",
@@ -83,6 +86,8 @@ export const SWAP = Object.freeze({
     }),
   }),
   // History (Counsel ruling 2026-10-23, non-material phone change, Terms s.25). Label and counsel unchanged on purpose.
+  // 2026-10-23 3:16 PM CT Counsel ruling: Notice v2.0a also gains the Google Analytics paragraph (website + portal sign-in pages);
+  // legal/privacy-notice-v2.0a.md sha256 670a76d73a5a96d812aca131976a72bfb16691a6e8692470d838e927067353f2. Terms v4.0a unchanged (7cb00f4f...c09975).
   // Superseded, kept unedited for acceptance proof: Terms v4.0 legal/starter-terms-v4.0.md sha256 6d130b1c...de52d; Notice v2.0 legal/privacy-notice-v2.0.md sha256 5302a16a...a2707 (accepted Oct 20 to Oct 23, 2026).
 
   // Parker approved: content-free "You have a reply" email (stubbed to the dev outbox) + in-portal badge.

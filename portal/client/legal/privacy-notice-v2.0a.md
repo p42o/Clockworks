@@ -6,7 +6,7 @@ Effective: {{EFFECTIVE_DATE}}
 
 Last updated: October 23, 2026
 
-Version 2.0a, October 23, 2026: our phone number is now (763) 296-9777. Nothing else changed.
+Version 2.0a, October 23, 2026: our phone number is now (763) 296-9777, and "Cookies and similar technology" now describes the Google Analytics on our website and the sign-in pages of our client portal. Nothing else changed.
 
 This copy was provided to {{CLIENT_CONTACT_NAME}} ({{CLIENT_EMAIL}}) for {{CLIENT_BUSINESS_NAME}} on {{EFFECTIVE_DATE}}.
 
@@ -107,7 +107,9 @@ Our service providers store and process information in the United States and may
 
 ## Cookies and similar technology
 
-The portal uses only the cookies and browser storage needed to keep you signed in, remember your settings and keep the portal secure. We do not use advertising cookies in the portal.
+Apart from the Google Analytics cookies described below, the portal uses only the cookies and browser storage needed to keep you signed in, remember your settings and keep the portal secure. We do not use advertising cookies in the portal.
+
+Website analytics. Our website and the sign-in pages of our client portal use Google Analytics 4 to count visits and see which pages people use. Google Analytics sets cookies and collects information such as your IP address, device and browser type, the pages you view, and how you reached our site. Google handles this information under its privacy policy at https://policies.google.com/privacy, and explains how it uses data from sites like ours at https://policies.google.com/technologies/partner-sites. We do not use advertising cookies and we do not sell your information. If your browser sends a Global Privacy Control signal, we do not load Google Analytics. You can also opt out with Google's browser add-on at https://tools.google.com/dlpage/gaoptout. Our hosting provider's server logs may also record basic connection information such as IP addresses.
 
 Some pages on our website show Google Maps content, such as our Google rating and reviews. When that content loads, Google may collect information such as your IP address and the page request under the Google Privacy Policy at https://policies.google.com/privacy. We do not control Google's practices. Reviews appear as Google provides them, with the author's name and a link to the original review.
 
