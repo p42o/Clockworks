@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import CopyPending from "@/components/CopyPending";
 import AgentCards from "@/components/v2/AgentCards";
 import FinalBand from "@/components/v2/FinalBand";
-import { ownershipLine, phone, primaryCta } from "@/lib/copy";
+import { assessmentLine, deploymentLine, ownershipLine, phone, primaryCta } from "@/lib/copy";
 import { pageSocial } from "@/lib/site";
 
 const title = "The agent team";
@@ -33,7 +34,24 @@ export default function WhatIDo() {
         </a>
       </section>
       <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
+        <p className="eyebrow section-rule">01 / The three offers</p>
+        <h2 className="display mb-6 mt-4 text-4xl sm:text-5xl">The three offers</h2>
+        <div className="max-w-3xl space-y-4 leading-relaxed text-ink-soft">
+          <p>{primaryCta}</p>
+          <p>{assessmentLine}</p>
+          <p>{deploymentLine}</p>
+        </div>
+      </section>
+      <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
+        <p className="eyebrow section-rule">02 / The agents</p>
+        <h2 className="display mb-6 mt-4 text-4xl sm:text-5xl">The agents</h2>
         <AgentCards />
+      </section>
+      <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
+        <p className="eyebrow section-rule">03 / Who it fits</p>
+        <h2 className="display mb-6 mt-4 text-4xl sm:text-5xl">Who it fits</h2>
+        {/* COPY PENDING (Sprocket): what-i-do/who-it-fits */}
+        <CopyPending slot="what-i-do/who-it-fits" note="Which kinds of owners and businesses this is for. 2 to 4 sentences." />
       </section>
       <FinalBand />
     </>

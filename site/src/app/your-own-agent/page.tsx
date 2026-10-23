@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
+import CopyPending from "@/components/CopyPending";
 import FinalBand from "@/components/v2/FinalBand";
 import { chatCta, ownershipLine, phone } from "@/lib/copy";
 import { pageSocial } from "@/lib/site";
@@ -50,6 +51,25 @@ export default function YourOwnAgent() {
             See the rest of the team
           </Link>
         </p>
+      </section>
+      <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
+        <p className="eyebrow section-rule">01 / What Front Desk answers</p>
+        <h2 className="display mb-6 mt-4 text-4xl sm:text-5xl">What Front Desk answers</h2>
+        {/* COPY PENDING (Sprocket): your-own-agent/what-it-answers */}
+        <CopyPending slot="your-own-agent/what-it-answers" note="Kinds of customer questions it handles from information you approve." />
+      </section>
+      <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
+        <p className="eyebrow section-rule">02 / You own it</p>
+        <h2 className="display mb-6 mt-4 text-4xl sm:text-5xl">You own it</h2>
+        <p className="mb-6 max-w-3xl leading-relaxed text-ink-soft">{ownershipLine}</p>
+        {/* COPY PENDING (Sprocket): your-own-agent/ownership-detail */}
+        <CopyPending slot="your-own-agent/ownership-detail" note="Optional extra detail on accounts and handoff." />
+      </section>
+      <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
+        <p className="eyebrow section-rule">03 / How it gets set up</p>
+        <h2 className="display mb-6 mt-4 text-4xl sm:text-5xl">How it gets set up</h2>
+        {/* COPY PENDING (Sprocket): your-own-agent/setup */}
+        <CopyPending slot="your-own-agent/setup" />
       </section>
       <FinalBand />
     </>
