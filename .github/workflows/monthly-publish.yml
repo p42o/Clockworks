@@ -37,6 +37,10 @@ jobs:
             npm run export:preview
           fi
 
+      # Parker's page rule (2026-10-23). Fails the run before anything is committed or uploaded.
+      - name: Page rule check (blocks publish on failure)
+        run: node site/scripts/check-pages.mjs
+
       - name: Commit refreshed output
         run: |
           git config user.name "clockworks-publisher"

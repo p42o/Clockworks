@@ -7,7 +7,8 @@
     "build": "next build",
     "build:preview": "NEXT_PUBLIC_BASE_PATH=/v3 next build",
     "typecheck": "tsc --noEmit",
-    "export:root": "npm run build && node scripts/sync-out.mjs root",
+    "export:root": "npm run build && node scripts/sync-out.mjs root && node scripts/check-pages.mjs",
+    "check:pages": "node scripts/check-pages.mjs",
     "export:preview": "npm run build:preview && node scripts/sync-out.mjs preview"
   },
   "dependencies": {

@@ -9,6 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Parker's page rule (2026-10-23): GA4, sitemap, canonical, robots, NAP/JSON-LD, inventory row.
+      # A failure here stops the job before any gate config is written or anything is uploaded.
+      - name: Page rule check (blocks deploy on failure)
+        run: node site/scripts/check-pages.mjs
       - name: Write Eicher gate config (from secrets, never committed)
         env:
           EICHER_KEY: ${{ secrets.EICHER_KEY }}

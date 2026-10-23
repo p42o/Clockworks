@@ -1,0 +1,578 @@
+{
+  "version": 1,
+  "updated": "2026-10-23",
+  "site": "https://mnclockworks.com",
+  "ga": "G-PSNYLVG4V1",
+  "nap": {
+    "name": "MN Clockworks",
+    "locality": "Maple Grove"
+  },
+  "phone": {
+    "display": "(763) 296-9777",
+    "tel": "tel:+17632969777",
+    "schema": "+1-763-296-9777"
+  },
+  "allowedDemoNumbers": [
+    "(763) 555-0142"
+  ],
+  "privateGaPolicy": "GA is intentionally OFF on private rows (PIN-gated client reports, /internal/, portal, unlisted pages). Keep it off unless Parker and Counsel decide otherwise: noindex, client data, /timely has its own visit logging and privacy page.",
+  "pages": [
+    {
+      "path": "/404.html",
+      "file": "404.html",
+      "class": "error",
+      "purpose": "Not-found page",
+      "ga": true,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (error page)"
+    },
+    {
+      "path": "/404/",
+      "file": "404/index.html",
+      "class": "error",
+      "purpose": "Not-found page (Next route copy)",
+      "ga": true,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (error page)"
+    },
+    {
+      "path": "/about/",
+      "file": "about/index.html",
+      "class": "public",
+      "purpose": "About Parker",
+      "ga": true,
+      "index": true,
+      "sitemap": true,
+      "canonical": "https://mnclockworks.com/about/",
+      "linkedFrom": "footer (About Parker)"
+    },
+    {
+      "path": "/admin-bot.html",
+      "file": "admin-bot.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/admin.html",
+      "file": "admin.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/2026-05/your-ai-doesnt-know-you.html",
+      "file": "blog/2026-05/your-ai-doesnt-know-you.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/2026-06/anatomy-of-a-context-vault.html",
+      "file": "blog/2026-06/anatomy-of-a-context-vault.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/30-day-challenge.html",
+      "file": "blog/30-day-challenge.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/30-day-challenge/",
+      "file": "blog/30-day-challenge/index.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/ai-tools-ranked.html",
+      "file": "blog/ai-tools-ranked.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/ai-tools-ranked/",
+      "file": "blog/ai-tools-ranked/index.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/anatomy-of-a-context-vault/",
+      "file": "blog/anatomy-of-a-context-vault/index.html",
+      "class": "public",
+      "purpose": "Blog post (noindex)",
+      "ga": true,
+      "index": false,
+      "sitemap": false,
+      "canonical": "https://mnclockworks.com/blog/anatomy-of-a-context-vault/",
+      "linkedFrom": "/blog/"
+    },
+    {
+      "path": "/blog/cheap-vs-good-ai.html",
+      "file": "blog/cheap-vs-good-ai.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/cheap-vs-good-ai/",
+      "file": "blog/cheap-vs-good-ai/index.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/email-triage-tip.html",
+      "file": "blog/email-triage-tip.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/email-triage-tip/",
+      "file": "blog/email-triage-tip/index.html",
+      "class": "public",
+      "purpose": "Blog post (noindex)",
+      "ga": true,
+      "index": false,
+      "sitemap": false,
+      "canonical": "https://mnclockworks.com/blog/email-triage-tip/",
+      "linkedFrom": "/blog/"
+    },
+    {
+      "path": "/blog/guide-to-claude.html",
+      "file": "blog/guide-to-claude.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/guide-to-claude/",
+      "file": "blog/guide-to-claude/index.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/",
+      "file": "blog/index.html",
+      "class": "public",
+      "purpose": "Blog index (noindex until posts are reviewed)",
+      "ga": true,
+      "index": false,
+      "sitemap": false,
+      "canonical": "https://mnclockworks.com/blog/",
+      "linkedFrom": "blog posts (back link)"
+    },
+    {
+      "path": "/blog/prompting-101.html",
+      "file": "blog/prompting-101.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/prompting-101/",
+      "file": "blog/prompting-101/index.html",
+      "class": "gone",
+      "purpose": "Legacy file, served 410 Gone by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/blog/your-ai-doesnt-know-you/",
+      "file": "blog/your-ai-doesnt-know-you/index.html",
+      "class": "public",
+      "purpose": "Blog post (noindex)",
+      "ga": true,
+      "index": false,
+      "sitemap": false,
+      "canonical": "https://mnclockworks.com/blog/your-ai-doesnt-know-you/",
+      "linkedFrom": "/blog/"
+    },
+    {
+      "path": "/book/",
+      "file": "book/index.html",
+      "class": "public",
+      "purpose": "Book the free 15-minute audit",
+      "ga": true,
+      "index": true,
+      "sitemap": true,
+      "canonical": "https://mnclockworks.com/book/",
+      "linkedFrom": "home CTAs + header CTA"
+    },
+    {
+      "path": "/contact/",
+      "file": "contact/index.html",
+      "class": "public",
+      "purpose": "Contact: phone, Maple Grove, service towns",
+      "ga": true,
+      "index": true,
+      "sitemap": true,
+      "canonical": "https://mnclockworks.com/contact/",
+      "linkedFrom": "footer Pages + service-area line"
+    },
+    {
+      "path": "/cowork/",
+      "file": "cowork/index.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/how-it-works/",
+      "file": "how-it-works/index.html",
+      "class": "public",
+      "purpose": "How setup works, steps, FAQ",
+      "ga": true,
+      "index": true,
+      "sitemap": true,
+      "canonical": "https://mnclockworks.com/how-it-works/",
+      "linkedFrom": "header nav + footer"
+    },
+    {
+      "path": "/",
+      "file": "index.html",
+      "class": "public",
+      "purpose": "Home (Parker's 2026-10-23 facelift, hand-built index.html)",
+      "ga": true,
+      "index": true,
+      "sitemap": true,
+      "canonical": "https://mnclockworks.com/",
+      "linkedFrom": "every page header logo"
+    },
+    {
+      "path": "/lab/",
+      "file": "lab/index.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/lab/next.html",
+      "file": "lab/next.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/learn/index.backup.html",
+      "file": "learn/index.backup.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/learn/",
+      "file": "learn/index.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/mg-splash-2026-ca0816/",
+      "file": "mg-splash-2026-ca0816/index.html",
+      "class": "private",
+      "purpose": "Unlisted Maple Grove splash pad community page (July 2026)",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (unlisted link shared directly)"
+    },
+    {
+      "path": "/office/",
+      "file": "office/index.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/portal/client/",
+      "file": "portal/client/index.html",
+      "class": "private",
+      "purpose": "Client portal v3, login app",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "header 'Client login'"
+    },
+    {
+      "path": "/portal/",
+      "file": "portal/index.html",
+      "class": "private",
+      "purpose": "Client portal (legacy entry), login app",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (unlisted link shared directly)"
+    },
+    {
+      "path": "/privacy.html",
+      "file": "privacy.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/resources.html",
+      "file": "resources.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/results/",
+      "file": "results/index.html",
+      "class": "redirect",
+      "purpose": "Held: 301 to /how-it-works/ until Parker's tap (Counsel ruling 1)",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/sitesniper/",
+      "file": "sitesniper/index.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/sniper/",
+      "file": "sniper/index.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/sniper/thank-you.html",
+      "file": "sniper/thank-you.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/sprocket/",
+      "file": "sprocket/index.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/terms.html",
+      "file": "terms.html",
+      "class": "redirect",
+      "purpose": "Legacy file, served 301 by .htaccess",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": ""
+    },
+    {
+      "path": "/terms/",
+      "file": "terms/index.html",
+      "class": "public",
+      "purpose": "Public Starter Terms summary + links",
+      "ga": true,
+      "index": true,
+      "sitemap": true,
+      "canonical": "https://mnclockworks.com/terms/",
+      "linkedFrom": "home 'Plain written terms' + every footer"
+    },
+    {
+      "path": "/what-i-do/",
+      "file": "what-i-do/index.html",
+      "class": "public",
+      "purpose": "Split page: the offers and the AI team",
+      "ga": true,
+      "index": true,
+      "sitemap": true,
+      "canonical": "https://mnclockworks.com/what-i-do/",
+      "linkedFrom": "header nav + footer"
+    },
+    {
+      "path": "/your-own-agent/",
+      "file": "your-own-agent/index.html",
+      "class": "public",
+      "purpose": "Split page: Front Desk / your own agent",
+      "ga": true,
+      "index": true,
+      "sitemap": true,
+      "canonical": "https://mnclockworks.com/your-own-agent/",
+      "linkedFrom": "header nav + footer"
+    },
+    {
+      "path": "/timely/",
+      "file": "timely/gate.php",
+      "class": "private",
+      "purpose": "Timely Drywall client report, PIN gate (gate.php), own visit logging + privacy page",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (shared privately)"
+    },
+    {
+      "path": "/thenickel/",
+      "file": "thenickel/gate.php",
+      "class": "private",
+      "purpose": "The Nickel client report, PIN gate (gate.php)",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (shared privately)"
+    },
+    {
+      "path": "/eicher/",
+      "file": "eicher/gate.php",
+      "class": "private",
+      "purpose": "Eicher client report/playbook, PIN gate (gate.php)",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (shared privately)"
+    },
+    {
+      "path": "/internal/timely-deploy/",
+      "file": "internal/timely-deploy/gate.php",
+      "class": "private",
+      "purpose": "Internal Timely deploy prompt, PIN gate (gate.php)",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (shared privately)"
+    }
+  ],
+  "prefixes": [
+    {
+      "prefix": "/v3/",
+      "class": "redirect",
+      "purpose": "Old v3 preview export, whole tree 301 to / by .htaccess"
+    }
+  ]
+}
