@@ -63,7 +63,12 @@ const PROTECTED = new Set([
   "admin.html", "privacy.html", "terms.html", "resources.html",
   "contact-modal.js", "SETUP.md", "Archive.zip", "stonearch-ai-site.jsx",
   "site", "v3", "test.csv.rtf", "eicher", "timely", "nickel", "thenickel", "portal",
+  "home-assets",
 ]);
+
+// Hand-built pages at repo root that a root export must leave alone (the export
+// still writes everything else). index.html = the 2026-10-23 facelift homepage.
+const HAND_BUILT = new Set(["index.html"]);
 
 if (!existsSync(out)) {
   console.error("No site/out — run the build first.");
@@ -103,6 +108,10 @@ for (const stale of prev.written.filter((w) => !entries.includes(w))) {
 
 for (const entry of entries) {
   const dest = join(repoRoot, entry);
+  if (HAND_BUILT.has(entry)) {
+    console.log(`= kept hand-built ${entry}`);
+    continue;
+  }
   if (OVERLAY.has(entry)) {
     cpSync(join(out, entry), dest, { recursive: true }); // merge, keep legacy files
     console.log(`✓ (overlay) ${entry}`);
