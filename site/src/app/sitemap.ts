@@ -5,7 +5,8 @@ import { site } from "@/lib/site";
 export const dynamic = "force-static";
 
 /** /results/ stays out (noindex Moved page, 301 in .htaccess) until Parker taps (Counsel ruling 1).
- * /blog/ and its posts are noindex/unlisted (blog pull 2026-10-21), so they stay out until Sprocket relists them. */
+ * /blog/ is indexable (2026-10-23). Posts join only when listed: dated today or earlier (UTC), not held, not unlisted.
+ * The posts pulled 2026-10-21 stay unlisted and noindex until Sprocket relists them. */
 const staticDates: Record<string, string> = {
   "": "2026-10-23",
   "what-i-do/": "2026-10-23",
@@ -15,6 +16,7 @@ const staticDates: Record<string, string> = {
   "contact/": "2026-10-23",
   "book/": "2026-10-23",
   "terms/": "2026-10-23",
+  "blog/": "2026-10-23",
 };
 const menuPaths = new Set(["what-i-do/", "your-own-agent/", "contact/"]);
 

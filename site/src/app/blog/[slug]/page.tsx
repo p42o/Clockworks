@@ -36,7 +36,8 @@ export async function generateMetadata({
       images: ["/og.png"],
     },
     alternates: { canonical: `/blog/${post.slug}/` },
-    robots: { index: false, follow: true },
+    // Listed posts (dated, not held, not unlisted) are indexable and in the sitemap; unlisted ones stay noindex.
+    robots: { index: !post.unlisted, follow: true },
   };
 }
 

@@ -220,12 +220,12 @@
       "path": "/blog/",
       "file": "blog/index.html",
       "class": "public",
-      "purpose": "Blog index (noindex until posts are reviewed)",
+      "purpose": "Blog index (indexable since 2026-10-23); lists listed posts",
       "ga": true,
-      "index": false,
-      "sitemap": false,
+      "index": true,
+      "sitemap": true,
       "canonical": "https://mnclockworks.com/blog/",
-      "linkedFrom": "blog posts (back link)"
+      "linkedFrom": "footer Pages (Blog) on Next pages + home footer"
     },
     {
       "path": "/blog/prompting-101.html",

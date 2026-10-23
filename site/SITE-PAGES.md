@@ -27,7 +27,7 @@ Classes: public (served marketing page), error (404), redirect (file kept, .htac
 | `/blog/email-triage-tip/` | public | Blog post (noindex) | yes | noindex | no | `https://mnclockworks.com/blog/email-triage-tip/` | /blog/ |
 | `/blog/guide-to-claude.html` | gone | Legacy file, served 410 Gone by .htaccess | no | noindex | no | none | none |
 | `/blog/guide-to-claude/` | gone | Legacy file, served 410 Gone by .htaccess | no | noindex | no | none | none |
-| `/blog/` | public | Blog index (noindex until posts are reviewed) | yes | noindex | no | `https://mnclockworks.com/blog/` | blog posts (back link) |
+| `/blog/` | public | Blog index (indexable since 2026-10-23); lists listed posts | yes | index | yes | `https://mnclockworks.com/blog/` | footer Pages (Blog) on Next pages + home footer |
 | `/blog/prompting-101.html` | gone | Legacy file, served 410 Gone by .htaccess | no | noindex | no | none | none |
 | `/blog/prompting-101/` | gone | Legacy file, served 410 Gone by .htaccess | no | noindex | no | none | none |
 | `/blog/your-ai-doesnt-know-you/` | public | Blog post (noindex) | yes | noindex | no | `https://mnclockworks.com/blog/your-ai-doesnt-know-you/` | /blog/ |

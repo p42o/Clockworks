@@ -8,6 +8,7 @@ const pages = [
   { href: "/what-i-do/", label: "The agent team" },
   { href: "/your-own-agent/", label: "Front Desk" },
   { href: "/about/", label: "About Parker" },
+  { href: "/blog/", label: "Blog" },
   { href: "/book/", label: "Send a note" },
   { href: "/contact/", label: "Contact" },
 ] as const;
