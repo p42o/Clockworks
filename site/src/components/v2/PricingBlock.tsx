@@ -4,7 +4,6 @@ import {
   assessmentCta,
   assessmentLine,
   deploymentLine,
-  maintenanceLine,
   phone,
   primaryCta,
   quoteLine,
@@ -52,7 +51,7 @@ export default function PricingBlock() {
           </article>
         ))}
       </div>
-      <p className="mt-8 max-w-3xl text-[1.05rem] leading-relaxed text-ink">{maintenanceLine}</p>
+      <p className="mt-8 max-w-3xl text-[1.05rem] leading-relaxed text-ink">Any other work is agreed separately in writing before it starts.</p>
       <p className="mt-4 max-w-3xl leading-relaxed text-ink-soft">
         {agreementLine.split("Starter Terms")[0]}
         <Link href="/terms/" className="text-copper-deep underline underline-offset-2">

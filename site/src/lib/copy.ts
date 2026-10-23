@@ -38,9 +38,6 @@ export const deploymentLine =
 export const assessmentLine =
   "The online presence assessment is $50. We check how your business shows up across search, AI assistants, and ratings and review sites. You get the exact searches and prompts we ran, plus an interactive report showing where you showed up that day and what we'd recommend improving. It's a snapshot, since search results and AI answers change on their own, but it gives you a baseline to compare against later.";
 
-export const maintenanceLine =
-  "There are optional ongoing maintenance options. Parker can walk you through them.";
-
 export const agreementLine =
   "Simple written terms, in plain English. Please read the Starter Terms and Privacy Notice before you buy.";
 
@@ -259,7 +256,7 @@ export const steps = [
   {
     n: "4",
     title: "It runs on your own account",
-    body: `${ownershipLine} ${maintenanceLine}`,
+    body: ownershipLine,
   },
 ] as const;
 
@@ -279,7 +276,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "How does setup work?",
-    a: "You call (763) 296-9777 for a free 15-minute phone audit. If you want it, the online presence assessment is $50. Then the deployment is $500, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. After that it runs on your own account. There are optional ongoing maintenance options. Parker can walk you through them.",
+    a: "You call (763) 296-9777 for a free 15-minute phone audit. If you want it, the online presence assessment is $50. Then the deployment is $500, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. After that it runs on your own account.",
   },
   {
     q: "Whose account does it run on?",
@@ -307,7 +304,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "What does it cost?",
-    a: `The phone audit is free and takes 15 minutes. ${assessmentLine} ${deploymentLine} ${maintenanceLine} ${quoteLine}`,
+    a: `The phone audit is free and takes 15 minutes. ${assessmentLine} ${deploymentLine} ${quoteLine}`,
   },
   {
     q: "Can I talk to a person?",
