@@ -66,22 +66,24 @@ export const SWAP = Object.freeze({
     counsel: "FINAL-2026-10-20 (Parker approved; Fable review, see portal-dev/spec/LEGAL-REVIEW-2026-10-20.md)",
     label: "I agree to the MN Clockworks Starter Terms and have read the Privacy Notice.",
     terms: Object.freeze({
-      version: "v4.0",
+      version: "v4.0a",
       // Matches "Last updated" in the file below. Shown on the public /terms/ page.
-      date: "October 20, 2026",
-      file: "legal/starter-terms-v4.0.md",
+      date: "October 23, 2026",
+      file: "legal/starter-terms-v4.0a.md",
       linkText: "Starter Terms",
       href: "#/starter-terms",
     }),
     // Plain-English "what changed" bullets for the current versions, shown on the terms-updated screen.
-    changes: Object.freeze([]),
+    changes: Object.freeze(["Our phone number is now (763) 296-9777. Nothing else changed."]),
     notice: Object.freeze({
-      version: "v2.0",
-      file: "legal/privacy-notice-v2.0.md",
+      version: "v2.0a",
+      file: "legal/privacy-notice-v2.0a.md",
       linkText: "Privacy Notice",
       href: "#/privacy-notice",
     }),
   }),
+  // History (Counsel ruling 2026-10-23, non-material phone change, Terms s.25). Label and counsel unchanged on purpose.
+  // Superseded, kept unedited for acceptance proof: Terms v4.0 legal/starter-terms-v4.0.md sha256 6d130b1c...de52d; Notice v2.0 legal/privacy-notice-v2.0.md sha256 5302a16a...a2707 (accepted Oct 20 to Oct 23, 2026).
 
   // Parker approved: content-free "You have a reply" email (stubbed to the dev outbox) + in-portal badge.
   replyNoticeEmail: true,
