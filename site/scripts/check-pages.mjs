@@ -5,6 +5,7 @@
  * the right robots call, a sitemap entry when indexed (and none when noindex), at least one internal link
  * when indexed, NAP + LocalBusiness JSON-LD that match the one business phone, and a row in
  * site/pages.inventory.json. Every HTML file in the deploy tree must be in the inventory.
+ * Every Google Analytics load in the deploy tree must sit behind a Global Privacy Control guard.
  *
  * Usage (from repo root or site/):
  *   node site/scripts/check-pages.mjs                 static check of the deploy tree (CI, predeploy)
@@ -15,6 +16,7 @@
 import { readFileSync, existsSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve, dirname, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import vm from "node:vm";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..", "..");
@@ -237,6 +239,82 @@ for (const p of inv.pages) {
   } else fail(where, `unknown class ${p.class}`);
 }
 
+// ---------- GPC guard on every Google Analytics load (Counsel ruling 2026-10-23) ----------
+// 1. A static <script src>, <link>, <img> or <iframe> pointing at a Google Analytics host loads on every visit: fail.
+// 2. Every script that names a Google Analytics host (inline script, a Next inline <Script> inside the RSC payload,
+//    or a .js file in the deploy tree) must contain a navigator.globalPrivacyControl === true check, and is then run
+//    in a sandbox with GPC on: if it asks for any Google Analytics URL (script/img src, fetch, sendBeacon, XHR), fail.
+const GA_HOST = /(?:www\.)?(?:googletagmanager\.com|google-analytics\.com|analytics\.google\.com)/g;
+const GA_HOST1 = /googletagmanager\.com|google-analytics\.com|analytics\.google\.com/;
+const GPC_GUARD = /globalPrivacyControl\s*===\s*true/;
+function walkAll(dir, out = []) {
+  for (const name of readdirSync(dir)) {
+    const full = join(dir, name);
+    const rel = relative(root, full).split(sep).join("/");
+    const st = statSync(full);
+    if (st.isDirectory()) {
+      if (name === "node_modules" || name === ".git" || (dir === root && (name === "site" || name === ".github"))) continue;
+      walkAll(full, out);
+    } else if (/\.(html?|m?js)$/.test(name)) out.push(rel);
+  }
+  return out;
+}
+// Run code with a fake browser. Returns the Google Analytics URLs it tried to load, or throws.
+function gaRequestsUnder(code, gpc) {
+  const hits = [];
+  const note = (u) => { if (typeof u === "string" && GA_HOST1.test(u)) hits.push(u.replace(/\?.*/, "")); };
+  const el = () => { const o = { style: {}, setAttribute(k, v) { if (k === "src" || k === "href") note(v); o[k] = v; }, appendChild() {}, addEventListener() {} };
+    for (const k of ["src", "href"]) { let v = ""; Object.defineProperty(o, k, { get: () => v, set: (x) => { v = x; note(x); } }); } return o; };
+  const doc = { createElement: el, head: { appendChild() {}, insertBefore() {} }, body: { appendChild() {} }, documentElement: {},
+    addEventListener() {}, getElementsByTagName: () => [{ parentNode: { insertBefore() {} } }], querySelector: () => null, querySelectorAll: () => [], cookie: "" };
+  const nav = { globalPrivacyControl: gpc, doNotTrack: null, sendBeacon: (u) => { note(u); return true; }, userAgent: "check-pages" };
+  const win = { navigator: nav, document: doc, location: { href: "https://mnclockworks.com/", origin: "https://mnclockworks.com", pathname: "/", hash: "#/signin", search: "", host: "mnclockworks.com" },
+    addEventListener() {}, removeEventListener() {}, dispatchEvent() {}, setTimeout() {}, clearTimeout() {}, history: { replaceState() {} },
+    fetch: (u) => { note(String(u)); return { then() { return this; }, catch() { return this; } }; },
+    XMLHttpRequest: function () { this.open = (m, u) => note(u); this.send = () => {}; this.setRequestHeader = () => {}; },
+    Image: function () { return el(); }, CustomEvent: function () {}, Date, Math, JSON, Object, Array, String, Number, RegExp, Error, console: { log() {}, warn() {}, error() {} } };
+  win.window = win; win.self = win; win.globalThis = win;
+  vm.runInNewContext(code, win, { timeout: 1000 });
+  return hits;
+}
+const gaScripts = []; // [where, code]
+for (const f of walkAll(root)) {
+  const text = read(f);
+  if (!GA_HOST1.test(text)) continue;
+  if (!/\.html?$/.test(f)) { gaScripts.push([f, text]); continue; }
+  for (const m of text.matchAll(GA_HOST)) { // static loads
+    const i = m.index, lt = text.lastIndexOf("<", i), gt = text.lastIndexOf(">", i);
+    if (lt > gt) {
+      const tag = (text.slice(lt + 1).match(/^[a-zA-Z]+/) || [""])[0].toLowerCase();
+      if (["script", "link", "img", "iframe", "source", "embed", "object"].includes(tag)) fail(f, `static <${tag}> loads ${m[0]} with no GPC guard`);
+    }
+  }
+  for (const m of text.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)) {
+    const body = m[1];
+    if (!GA_HOST1.test(body)) continue;
+    const rsc = body.match(/^\s*self\.__next_f\.push\((\[[\s\S]*\])\)\s*;?\s*$/);
+    if (!rsc) { gaScripts.push([f + " (inline script)", body]); continue; }
+    let rows = "";
+    try { rows = JSON.parse(rsc[1]).filter((x) => typeof x === "string").join(""); } catch { fail(f, "cannot parse Next RSC payload that names a Google Analytics host"); continue; }
+    let found = 0;
+    for (const c of rows.matchAll(/"children":("(?:[^"\\]|\\.)*")/g)) {
+      let code; try { code = JSON.parse(c[1]); } catch { continue; }
+      if (GA_HOST1.test(code)) { found++; gaScripts.push([f + " (Next inline Script)", code]); }
+    }
+    if (!found) fail(f, "Next RSC payload names a Google Analytics host outside an inline Script (cannot prove a GPC guard)");
+  }
+}
+let gaLoaders = 0;
+for (const [where, code] of gaScripts) {
+  gaLoaders++;
+  if (!GPC_GUARD.test(code)) { fail(where, "loads Google Analytics without a navigator.globalPrivacyControl === true guard"); continue; }
+  try {
+    const hits = gaRequestsUnder(code, true);
+    if (hits.length) fail(where, `with GPC on it still requests ${[...new Set(hits)].join(", ")}`);
+    if (!gaRequestsUnder(code, false).some((u) => /gtag\/js/.test(u))) fail(where, "with GPC off it never loads gtag.js (broken GA loader)");
+  } catch (e) { fail(where, `GPC sandbox run failed (${String(e.message || e).slice(0, 80)}); cannot prove the GPC guard`); }
+}
+
 // ---------- markdown freshness ----------
 if (!existsSync(mdPath) || readFileSync(mdPath, "utf8") !== renderMd()) fail("site/SITE-PAGES.md", "out of date: run node site/scripts/check-pages.mjs --write-md");
 
@@ -258,4 +336,4 @@ if (fails.length) {
   for (const f of fails) console.error("FAIL " + f);
   process.exit(1);
 }
-console.log(`check-pages: OK (${inv.pages.length} inventory rows, ${n} public, ${htmlFiles.length} HTML files, ${smLocs.size} sitemap URLs${BASE ? ", HTTP statuses checked" : ""})`);
+console.log(`check-pages: OK (${inv.pages.length} inventory rows, ${n} public, ${htmlFiles.length} HTML files, ${smLocs.size} sitemap URLs, ${gaLoaders} GA loaders GPC-guarded${BASE ? ", HTTP statuses checked" : ""})`);

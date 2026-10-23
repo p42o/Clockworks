@@ -7,20 +7,21 @@
                                                  { form_id, page_path }
    Reduced data: no names, emails, numbers, link text, form values, query strings or hashes are sent.
    page_path is location.pathname only. link_location is header, footer or main.
-   Global Privacy Control or Do Not Track: no custom events at all. */
+   Global Privacy Control or Do Not Track: the script stops at once (no listeners, no events). */
 (function () {
   if (window.__cwEvents) return;
   window.__cwEvents = true;
   var nav = window.navigator || {};
-  var off = nav.globalPrivacyControl === true || nav.doNotTrack === "1" || window.doNotTrack === "1";
+  // Global Privacy Control guard: stop before any listener is attached. This script never loads gtag.js itself.
+  if (nav.globalPrivacyControl === true || nav.doNotTrack === "1" || window.doNotTrack === "1") return;
   var ALLOWED = { click_to_call: 1, click_to_email: 1, book_cta_click: 1, generate_lead: 1 };
   var PARAMS = { link_location: 1, page_path: 1, form_id: 1 };
   function send(name, params) {
-    if (off || !ALLOWED[name]) return;
+    if (!ALLOWED[name]) return;
     var clean = { page_path: location.pathname };
     for (var k in params) if (PARAMS[k] && typeof params[k] === "string") clean[k] = params[k].slice(0, 40);
-    var g = typeof window.gtag === "function" ? window.gtag : function () { (window.dataLayer = window.dataLayer || []).push(arguments); };
-    g("event", name, clean);
+    if (typeof window.gtag !== "function") return; // no GA loader on this page: send nothing
+    window.gtag("event", name, clean);
   }
   function where(el) {
     if (el.closest("header")) return "header";

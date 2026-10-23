@@ -95,15 +95,24 @@ export default function RootLayout({
           {/* GA4 — same property as the legacy site; omitted on /v3 previews */}
           {!process.env.NEXT_PUBLIC_BASE_PATH && (
             <>
-              <Script
-                src="https://www.googletagmanager.com/gtag/js?id=G-PSNYLVG4V1"
-                strategy="afterInteractive"
-              />
+              {/* GA4 loader with a Global Privacy Control guard (Counsel ruling 2026-10-23): under GPC
+                  (or DNT) gtag.js is never requested and no page_view is sent. check-pages enforces it. */}
               <Script id="ga4" strategy="afterInteractive">
                 {`window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', 'G-PSNYLVG4V1');`}
+                  (function () {
+                    var n = window.navigator || {};
+                    if (n.globalPrivacyControl === true || n.doNotTrack === "1" || window.doNotTrack === "1") {
+                      window["ga-disable-G-PSNYLVG4V1"] = true;
+                      return;
+                    }
+                    var s = document.createElement("script");
+                    s.async = true;
+                    s.src = "https://www.googletagmanager.com/gtag/js?id=G-PSNYLVG4V1";
+                    document.head.appendChild(s);
+                    gtag('js', new Date());
+                    gtag('config', 'G-PSNYLVG4V1');
+                  })();`}
               </Script>
               {/* Shared GA4 events (calls, email, booking). Reduced data; see public/cw-events.js */}
               <Script src="/cw-events.js" strategy="afterInteractive" />

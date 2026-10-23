@@ -4,7 +4,8 @@
 //   location (origin + path + route name). Query strings, route params and tokens are never sent.
 // - On every other route (signed-in client views, invite, verify, reset-confirm, privacy request)
 //   GA is switched off with Google's own opt-out flag, so it sends nothing there.
-// - Global Privacy Control or Do Not Track turns it off entirely.
+// - Global Privacy Control guard: under GPC (or Do Not Track) it returns before anything is queued,
+//   so gtag.js is never requested and no page_view is sent. check-pages enforces the guard.
 (function () {
   var ID = "G-PSNYLVG4V1";
   var OPEN = { signin: 1, privacy: 1, terms: 1, "starter-terms": 1, "privacy-notice": 1, reset: 1, locked: 1 };
