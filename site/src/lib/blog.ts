@@ -14,6 +14,7 @@ export type Post = {
   slug: string;
   title: string;
   date: string; // YYYY-MM-DD
+  updated?: string;
   description: string;
   tags: string[];
   legacyPath?: string;
@@ -43,6 +44,7 @@ function loadAll(): Post[] {
         slug: f.replace(/\.md$/, ""),
         title: String(data.title ?? f),
         date: String(data.date ?? "1970-01-01"),
+        updated: data.updated ? String(data.updated) : undefined,
         description: String(data.description ?? ""),
         tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
         legacyPath: data.legacyPath ? String(data.legacyPath) : undefined,
