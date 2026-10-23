@@ -1,3 +1,4 @@
+import { phone } from "@/lib/copy";
 import { Link } from "next-view-transitions";
 import { asset, site } from "@/lib/site";
 
@@ -26,10 +27,10 @@ export default function AuthorBio() {
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-start">
             <a
-              href="tel:+17632969777"
+              href={phone.tel}
               className="inline-flex min-h-11 items-center gap-2 rounded-[3px] bg-ink px-4 py-2 text-[0.85rem] font-medium text-paper transition-colors hover:bg-copper-deep"
             >
-              Call (763) 296-9777
+              Call {phone.display}
             </a>
             <Link href="/about/" className="link-draw text-[0.85rem] text-ink-soft hover:text-ink">
               More about Parker

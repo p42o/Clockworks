@@ -111,7 +111,7 @@ export default function HomePage() {
               </ul>
             </Reveal>
           </div>
-          <p className="mt-8 max-w-2xl text-lg text-ink">Call (763) 296-9777. Iris, our AI phone assistant, takes your details for Parker.</p>
+          <p className="mt-8 max-w-2xl text-lg text-ink">Call {phone.display}. Iris, our AI phone assistant, takes your details for Parker.</p>
         </div>
       </section>
 

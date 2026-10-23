@@ -4,11 +4,25 @@
  * No em dashes, no en dashes, no prices beyond the three approved offers.
  */
 
-export const phone = {
-  display: "(763) 296-9777",
-  tel: "tel:+17632969777",
-  schema: "+1-763-296-9777",
-} as const;
+/**
+ * PHONE_PENDING: the ONE place the business phone lives. Every page, the header,
+ * footer, contact page and the LocalBusiness JSON-LD read from here.
+ * To publish: set PHONE_DIGITS to the 10 digits and rebuild.
+ */
+export const PHONE_DIGITS: string | null = null; // PHONE_PENDING
+
+function businessPhone(digits: string | null) {
+  return digits === null
+    ? { display: "(763) XXX-XXXX PHONE PENDING", tel: undefined, schema: "+1-763-XXX-XXXX (PHONE PENDING)", pending: true }
+    : {
+        display: `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`,
+        tel: `tel:+1${digits}`,
+        schema: `+1-${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`,
+        pending: false,
+      };
+}
+
+export const phone = businessPhone(PHONE_DIGITS);
 
 /** Approved service-area list. No Saint Paul. No doorway page. */
 export const serviceTowns = [
@@ -241,7 +255,7 @@ export const steps = [
   {
     n: "1",
     title: "Free 15-minute phone audit",
-    body: "Call (763) 296-9777. Iris, our AI phone assistant, takes your details for Parker. We look at missed calls, quiet quotes, open invoices, review asks, and the questions you answer over and over.",
+    body: `Call ${phone.display}. Iris, our AI phone assistant, takes your details for Parker. We look at missed calls, quiet quotes, open invoices, review asks, and the questions you answer over and over.`,
   },
   {
     n: "2",
@@ -276,7 +290,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "How does setup work?",
-    a: "You call (763) 296-9777 for a free 15-minute phone audit. If you want it, the online presence assessment is $50. Then the deployment is $500, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. After that it runs on your own account.",
+    a: `You call ${phone.display} for a free 15-minute phone audit. If you want it, the online presence assessment is $50. Then the deployment is $500, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. After that it runs on your own account.`,
   },
   {
     q: "Whose account does it run on?",
@@ -308,7 +322,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "Can I talk to a person?",
-    a: "Yes. Call (763) 296-9777. Iris, our AI phone assistant, answers and takes a message for Parker, and calls are recorded and transcribed. You can also leave a note on the book page, and Parker will reach out. Or use Talk to the Front Desk on this site.",
+    a: `Yes. Call ${phone.display}. Iris, our AI phone assistant, answers and takes a message for Parker, and calls are recorded and transcribed. You can also leave a note on the book page, and Parker will reach out. Or use Talk to the Front Desk on this site.`,
   },
 ];
 

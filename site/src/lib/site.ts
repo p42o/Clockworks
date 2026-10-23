@@ -1,3 +1,4 @@
+import { phone } from "@/lib/copy";
 import type { Metadata } from "next";
 
 export const site = {
@@ -12,7 +13,7 @@ export const site = {
     "I'm Parker, in Maple Grove. I set up an AI team of agents for the messages, quotes, and paperwork that pile up while you're working. You share your screen. I do the setup and explain what I'm doing.",
   cta: {
     label: "Get my free 15-minute phone audit",
-    sub: "Call (763) 296-9777",
+    sub: `Call ${phone.display}`,
   },
 } as const;
 

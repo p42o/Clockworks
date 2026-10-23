@@ -1,5 +1,6 @@
 "use client";
 
+import { phone } from "@/lib/copy";
 import { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { submitAudit, type AuditRequest } from "@/lib/booking";
@@ -183,8 +184,8 @@ export default function AuditFlow() {
           </p>
           <p>
             If you would rather talk now, call{" "}
-            <a href="tel:+17632969777" className="font-medium text-ink underline underline-offset-2">
-              (763) 296-9777
+            <a href={phone.tel} className="font-medium text-ink underline underline-offset-2">
+              {phone.display}
             </a>{" "}
             for the free 15-minute phone audit.
           </p>

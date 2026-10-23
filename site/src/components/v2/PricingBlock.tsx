@@ -13,7 +13,7 @@ const cards = [
   {
     kicker: "Start here",
     title: "Free 15-minute phone audit",
-    body: "A phone call. Call (763) 296-9777 and Iris, our AI phone assistant, takes a message for Parker.",
+    body: `A phone call. Call ${phone.display} and Iris, our AI phone assistant, takes a message for Parker.`,
     action: primaryCta,
     href: phone.tel,
   },

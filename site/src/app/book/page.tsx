@@ -6,7 +6,7 @@ import { pageSocial } from "@/lib/site";
 
 const title = "Free 15-minute phone audit";
 const description =
-  "Ask for a free 15-minute phone audit. This form does not book a time. Parker will reach out. Or call (763) 296-9777.";
+  `Ask for a free 15-minute phone audit. This form does not book a time. Parker will reach out. Or call ${phone.display}.`;
 
 export const metadata: Metadata = {
   title,
