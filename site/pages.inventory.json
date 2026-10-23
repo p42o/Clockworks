@@ -15,7 +15,7 @@
   "allowedDemoNumbers": [
     "(763) 555-0142"
   ],
-  "privateGaPolicy": "GA is intentionally OFF on private rows (PIN-gated client reports, /internal/, portal, unlisted pages). Keep it off unless Parker and Counsel decide otherwise: noindex, client data, /timely has its own visit logging and privacy page.",
+  "privateGaPolicy": "GA is off on private rows except where a reviewed loader (gaVia) keeps it to signed-out views. PIN-gated client reports (/timely/, /thenickel/, /eicher/), /internal/*, the admin /portal/ and the retired mg-splash page stay GA-off. Changing that needs Parker and Counsel.",
   "pages": [
     {
       "path": "/404.html",
@@ -362,7 +362,7 @@
       "path": "/mg-splash-2026-ca0816/",
       "file": "mg-splash-2026-ca0816/index.html",
       "class": "private",
-      "purpose": "Unlisted Maple Grove splash pad community page (July 2026)",
+      "purpose": "Retired: July 14, 2026 splash pad recap, PIN-gated. No inbound links, not in sitemap or portal. Kept (no delete), noindex (meta + X-Robots-Tag), GA off",
       "ga": false,
       "index": false,
       "sitemap": false,
@@ -384,30 +384,31 @@
       "path": "/portal/client/",
       "file": "portal/client/index.html",
       "class": "private",
-      "purpose": "Client portal v3, login app",
-      "ga": false,
+      "purpose": "Client portal v3 (login app). GA via ga.js on signed-out routes only (signin, privacy, terms, starter-terms, privacy-notice, reset, locked); off on signed-in, invite, verify, reset-confirm and privacy-request views",
+      "ga": true,
       "index": false,
       "sitemap": false,
       "canonical": null,
-      "linkedFrom": "header 'Client login'"
+      "linkedFrom": "header 'Client login'",
+      "gaVia": "portal/client/ga.js"
     },
     {
       "path": "/portal/",
       "file": "portal/index.html",
       "class": "private",
-      "purpose": "Client portal (legacy entry), login app",
+      "purpose": "Admin-only CRM (Parker). Every view is admin, so GA stays off by design",
       "ga": false,
       "index": false,
       "sitemap": false,
       "canonical": null,
-      "linkedFrom": "none (unlisted link shared directly)"
+      "linkedFrom": "none (admin bookmark)"
     },
     {
       "path": "/privacy.html",
       "file": "privacy.html",
       "class": "redirect",
-      "purpose": "Legacy file, served 301 by .htaccess",
-      "ga": false,
+      "purpose": "Legacy privacy page (already carries GA). Served 301 to /portal/client/#/privacy-notice, which GA covers via portal/client/ga.js",
+      "ga": true,
       "index": false,
       "sitemap": false,
       "canonical": null,

@@ -32,12 +32,17 @@ const inv = JSON.parse(readFileSync(invPath, "utf8"));
 const SITE = inv.site;
 const GA = inv.ga;
 const PHONE = inv.phone;
+const EVENTS = inv.eventsScript || null; // shared gtag event script every public page must load
+// Same clock as site/src/lib/blog.ts (UTC date). A row with publishFrom later than today is "scheduled":
+// its file must not exist yet, it must not be in the sitemap, and nothing may link to it.
+const TODAY = new Date().toISOString().slice(0, 10);
+const scheduled = (p) => !!(p.publishFrom && p.publishFrom > TODAY);
 
 // ---------- markdown view of the inventory ----------
 function renderMd() {
   const yn = (b) => (b ? "yes" : "no");
   const rows = inv.pages.map((p) =>
-    `| \`${p.path}\` | ${p.class} | ${p.purpose} | ${yn(p.ga)} | ${p.index ? "index" : "noindex"} | ${yn(p.sitemap)} | ${p.canonical ? `\`${p.canonical}\`` : "none"} | ${p.linkedFrom || "none"} |`);
+    `| \`${p.path}\` | ${p.class} | ${p.purpose} | ${yn(p.ga)} | ${p.index ? "index" : "noindex"} | ${yn(p.sitemap)} | ${p.canonical ? `\`${p.canonical}\`` : "none"} | ${p.linkedFrom || "none"}${p.publishFrom ? ` (from ${p.publishFrom} UTC)` : ""} |`);
   const pre = (inv.prefixes || []).map((p) => `| \`${p.prefix}*\` | ${p.class} | ${p.purpose} | no | noindex | no | none | none |`);
   return [
     "# Site page inventory (mnclockworks.com)",
@@ -81,6 +86,10 @@ for (const f of htmlFiles) {
   if (!covered(path)) fail(path, `HTML file ${f} has no row in site/pages.inventory.json`);
 }
 for (const p of inv.pages) {
+  if (scheduled(p)) {
+    if (p.file && existsSync(join(root, p.file))) fail(p.path, `scheduled for ${p.publishFrom} (UTC) but ${p.file} already exists (date gate leak)`);
+    continue;
+  }
   if (p.file && !existsSync(join(root, p.file))) fail(p.path, `inventory file ${p.file} does not exist`);
   for (const k of ["path", "class", "purpose"]) if (!p[k]) fail(p.path || "?", `inventory row missing ${k}`);
 }
@@ -150,12 +159,18 @@ const FORBIDDEN = ["PHONE PENDING", "XXX-XXXX", "202-7778", "2027778", "202 7778
 
 for (const p of inv.pages) {
   const where = p.path;
+  if (scheduled(p)) {
+    if (smLocs.has(SITE + p.path)) fail(where, `scheduled for ${p.publishFrom} (UTC) but already in sitemap.xml`);
+    if (linkGraph.has(p.path)) fail(where, `scheduled for ${p.publishFrom} (UTC) but already linked from ${[...linkGraph.get(p.path)].join(", ")}`);
+    continue;
+  }
   if (p.class === "public" || p.class === "error") {
     const html = pageHtml.get(p.path);
     if (!html) { fail(where, `no HTML file (${p.file})`); continue; }
     const ga = hasGA(html);
     if (!ga) fail(where, `GA4 ${GA} missing`);
     if (p.ga !== ga) fail(where, `inventory ga=${p.ga} but page has GA=${ga}`);
+    if (p.class === "public" && EVENTS && !html.includes(EVENTS)) fail(where, `does not load the shared event script ${EVENTS}`);
     const title = attr(html, /<title[^>]*>([^<]*)<\/title>/i);
     if (!title) fail(where, "missing <title>");
     const desc = attr(html, /<meta\s+name="description"\s+content="([^"]*)"/i);
@@ -209,6 +224,14 @@ for (const p of inv.pages) {
     const ht = join(root, p.path.replace(/^\//, ""), ".htaccess");
     if (!noindex && existsSync(ht) && /X-Robots-Tag\s+"[^"]*noindex/i.test(readFileSync(ht, "utf8"))) noindex = true;
     if (!noindex) fail(where, "private page has no noindex (meta robots or X-Robots-Tag)");
+    // GA on a private page only through a reviewed loader (p.gaVia) that keeps it off gated views.
+    if (p.file && /\.html?$/.test(p.file) && existsSync(join(root, p.file))) {
+      const html = read(p.file);
+      const viaOk = !!p.gaVia && html.includes(`src="${p.gaVia.split("/").pop()}"`) && existsSync(join(root, p.gaVia)) && readFileSync(join(root, p.gaVia), "utf8").includes(GA);
+      const has = hasGA(html) || viaOk;
+      if (p.ga !== has) fail(where, `inventory ga=${p.ga} but private page GA=${has}${p.gaVia ? ` (via ${p.gaVia})` : ""}`);
+      if (hasGA(html)) fail(where, "private page has an inline GA tag; use a gaVia loader that keeps GA off gated views");
+    }
   } else if (p.class === "redirect" || p.class === "gone") {
     if (smLocs.has(SITE + p.path)) fail(where, `${p.class} path listed in sitemap.xml`);
   } else fail(where, `unknown class ${p.class}`);

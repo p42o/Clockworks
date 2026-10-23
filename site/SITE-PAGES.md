@@ -40,11 +40,11 @@ Classes: public (served marketing page), error (404), redirect (file kept, .htac
 | `/lab/next.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/learn/index.backup.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/learn/` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
-| `/mg-splash-2026-ca0816/` | private | Unlisted Maple Grove splash pad community page (July 2026) | no | noindex | no | none | none (unlisted link shared directly) |
+| `/mg-splash-2026-ca0816/` | private | Retired: July 14, 2026 splash pad recap, PIN-gated. No inbound links, not in sitemap or portal. Kept (no delete), noindex (meta + X-Robots-Tag), GA off | no | noindex | no | none | none (unlisted link shared directly) |
 | `/office/` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
-| `/portal/client/` | private | Client portal v3, login app | no | noindex | no | none | header 'Client login' |
-| `/portal/` | private | Client portal (legacy entry), login app | no | noindex | no | none | none (unlisted link shared directly) |
-| `/privacy.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
+| `/portal/client/` | private | Client portal v3 (login app). GA via ga.js on signed-out routes only (signin, privacy, terms, starter-terms, privacy-notice, reset, locked); off on signed-in, invite, verify, reset-confirm and privacy-request views | yes | noindex | no | none | header 'Client login' |
+| `/portal/` | private | Admin-only CRM (Parker). Every view is admin, so GA stays off by design | no | noindex | no | none | none (admin bookmark) |
+| `/privacy.html` | redirect | Legacy privacy page (already carries GA). Served 301 to /portal/client/#/privacy-notice, which GA covers via portal/client/ga.js | yes | noindex | no | none | none |
 | `/resources.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/results/` | redirect | Held: 301 to /how-it-works/ until Parker's tap (Counsel ruling 1) | no | noindex | no | none | none |
 | `/sitesniper/` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
