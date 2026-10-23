@@ -5,21 +5,19 @@
  */
 
 /**
- * PHONE_PENDING: the ONE place the business phone lives. Every page, the header,
- * footer, contact page and the LocalBusiness JSON-LD read from here.
- * To publish: set PHONE_DIGITS to the 10 digits and rebuild.
+ * Business phone: the ONE place it lives. Every page, the header, footer,
+ * contact page and the LocalBusiness JSON-LD read from here.
+ * Parker, 2026-10-23 1:14 PM CT: (763) 296-9777, the Iris voice line.
  */
-export const PHONE_DIGITS: string | null = null; // PHONE_PENDING
+export const PHONE_DIGITS = "7632969777";
 
-function businessPhone(digits: string | null) {
-  return digits === null
-    ? { display: "(763) XXX-XXXX PHONE PENDING", tel: undefined, schema: "+1-763-XXX-XXXX (PHONE PENDING)", pending: true }
-    : {
-        display: `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`,
-        tel: `tel:+1${digits}`,
-        schema: `+1-${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`,
-        pending: false,
-      };
+function businessPhone(digits: string) {
+  return {
+    display: `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`,
+    tel: `tel:+1${digits}`,
+    schema: `+1-${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`,
+    pending: false as boolean,
+  };
 }
 
 export const phone = businessPhone(PHONE_DIGITS);
