@@ -57,14 +57,17 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": ["ProfessionalService", "LocalBusiness"],
+  "@id": "https://mnclockworks.com/#business",
   name: site.name,
   url: site.url,
   telephone: phone.schema,
   email: site.email,
+  address: { "@type": "PostalAddress", addressLocality: "Maple Grove", addressRegion: "MN", addressCountry: "US" },
+  contactPoint: [{ "@type": "ContactPoint", contactType: "customer service", telephone: phone.schema, areaServed: "US-MN", availableLanguage: "en" }],
   founder: { "@type": "Person", name: site.owner },
   description: site.description,
   areaServed: [
-    ...serviceTowns.map((name) => ({ "@type": "City", name })),
+    ...serviceTowns.map((name) => ({ "@type": "City", name, containedInPlace: { "@type": "State", name: "Minnesota" } })),
     { "@type": "State", name: "Minnesota" },
   ],
   logo: `${site.url}/icon.svg`,

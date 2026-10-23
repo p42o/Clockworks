@@ -56,9 +56,10 @@ const repoRoot = resolve(siteDir, "..");
 const manifestPath = join(siteDir, ".deploy-manifest.json");
 
 // Paths at repo root the sync must never create, modify, or delete.
+// contact: now a Next route (2026-10-23 self-assessment fixes); legacy file archived in site/archive/2026-10-23/webroot/contact/
 const PROTECTED = new Set([
   ".git", ".github", ".gitignore", ".htaccess",
-  "blog", "sitesniper", "sniper", "sprocket", "learn", "cowork", "contact",
+  "blog", "sitesniper", "sniper", "sprocket", "learn", "cowork",
   "docs", "images", "social", "lab", "preview",
   "admin.html", "privacy.html", "terms.html", "resources.html",
   "contact-modal.js", "SETUP.md", "Archive.zip", "stonearch-ai-site.jsx",

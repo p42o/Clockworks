@@ -1,7 +1,7 @@
 import { Link } from "next-view-transitions";
 import LogoMark from "@/components/LogoMark";
 import { nav, site } from "@/lib/site";
-import { agreementLine, phone } from "@/lib/copy";
+import { agreementLine, phone, serviceTowns } from "@/lib/copy";
 
 const pages = [
   { href: "/how-it-works/", label: "How it works" },
@@ -9,6 +9,7 @@ const pages = [
   { href: "/your-own-agent/", label: "Front Desk" },
   { href: "/about/", label: "About Parker" },
   { href: "/book/", label: "Send a note" },
+  { href: "/contact/", label: "Contact" },
 ] as const;
 
 export default function Footer() {
@@ -70,15 +71,16 @@ export default function Footer() {
             <p className="eyebrow mb-4 !text-paper/70">Contact</p>
             <ul className="space-y-2.5">
               <li>
-                <a href={phone.tel} className="font-medium text-paper underline decoration-copper underline-offset-4">
+                {phone.pending ? <span className="font-medium text-paper">{phone.display}</span> : <a href={phone.tel} className="font-medium text-paper underline decoration-copper underline-offset-4">
                   {phone.display}
-                </a>
+                </a>}
               </li>
               <li>
                 <a href={`mailto:${site.email}`} className="text-paper/80 underline decoration-white/30 underline-offset-4 hover:text-paper">
                   {site.email}
                 </a>
               </li>
+              <li>Maple Grove, Minnesota</li>
             </ul>
           </div>
         </div>
@@ -94,7 +96,8 @@ export default function Footer() {
           </a>{" "}
           before you buy.
         </p>
-        <p className="mt-4 text-paper/80">Serving Minnesota businesses by phone and screen share.</p>
+        <p className="mt-4 text-paper/80">Service area: {serviceTowns.join(", ")}, MN. Across Minnesota by phone and screen share.{" "}
+          <Link href="/contact/" className="underline decoration-copper underline-offset-4">Contact</Link></p>
 
         <p className="mt-10 flex items-center gap-2 border-t border-white/15 pt-6 text-[0.85rem] text-paper/70">
           <LogoMark tone="paper" className="h-4 w-4 opacity-70" />
