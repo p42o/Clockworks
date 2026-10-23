@@ -56,8 +56,8 @@ export function render(ctx) {
           : html`<button type="button" class="btn" data-all>Sign out everywhere</button>`}</div>
       </section>
 
-      <div class="legal stack"><p>Questions? <a href="mailto:${SWAP.contact.privacyEmail}">${SWAP.contact.privacyEmail}</a></p><ul class="list" aria-label="Legal"><li><a class="row" href="#/privacy"><div class="grow"><div class="title">Privacy notice</div></div><span class="chev">${ic("chevron-right")}</span></a></li>
-        <li><a class="row" href="#/terms"><div class="grow"><div class="title">Terms</div></div><span class="chev">${ic("chevron-right")}</span></a></li></ul></div>
+      <div class="legal stack"><p>Questions? <a href="mailto:${SWAP.contact.privacyEmail}">${SWAP.contact.privacyEmail}</a></p><ul class="list" aria-label="Legal"><li><a class="row" href="#/privacy-notice"><div class="grow"><div class="title">Privacy Notice</div></div><span class="chev">${ic("chevron-right")}</span></a></li>
+        <li><a class="row" href="#/starter-terms"><div class="grow"><div class="title">Starter Terms</div></div><span class="chev">${ic("chevron-right")}</span></a></li></ul></div>
     </div>`);
 
     el.querySelector("[data-cancel-plan]")?.addEventListener("click", () => {

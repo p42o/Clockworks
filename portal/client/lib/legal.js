@@ -55,6 +55,7 @@ export async function loadDocument(kind) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
   return { ...d, text, sha256: [...new Uint8Array(digest)].map(x => x.toString(16).padStart(2, '0')).join('') };
 }
+// Retired 2026-10-23 (Counsel): legacy draft-preview view. Not routed. Do not route to it while SWAP.acceptance holds live documents.
 export function renderDocument(ctx, kind) {
   const { el, router } = ctx;
   let dead = false;

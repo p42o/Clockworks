@@ -19,8 +19,9 @@ export const ROUTES = {
   invite:   { title: "Welcome",         mod: "invite",   auth: "public" },
   signin:   { title: "Sign in",         mod: "signin",   auth: "public" },
   verify:   { title: "Sign in",         mod: "signin",   auth: "public" },
-  privacy:  { title: "Privacy notice",  mod: "privacy",  auth: "any", ro: true },
-  terms:    { title: "Terms",           mod: "terms",    auth: "any", ro: true },
+  // Counsel 2026-10-23: old routes are aliases of the no-banner views, so bookmarks land on the live documents.
+  privacy:  { title: "Privacy Notice", mod: "privacy-notice", auth: "any", ro: true },
+  terms:    { title: "Starter Terms",  mod: "starter-terms",  auth: "any", ro: true },
   accept:   { title: "Agree to continue", mod: "accept", auth: "client", ro: true },
   "starter-terms": { title: "Starter Terms", mod: "starter-terms", auth: "any", ro: true },
   "privacy-notice": { title: "Privacy Notice", mod: "privacy-notice", auth: "any", ro: true },
@@ -120,9 +121,8 @@ async function resolve() {
       const me = await api.me();
       if (id !== navId) return;
       session.state.me = me;
-      if (me.legal.needsAcceptance) redirect = 'accept';
-      else if (me.legal.needsNotice) redirect = 'privacy';
-      else if (me.legal.needsTerms) redirect = 'terms';
+      // Counsel 2026-10-23: anyone who still owes the notice or terms goes to the real Starter Terms gate.
+      if (me.legal.needsAcceptance || me.legal.needsNotice || me.legal.needsTerms) redirect = 'accept';
     } catch { /* Screens provide their own retry states; server legal gates remain authoritative. */ }
   }
   if (id !== navId) return; // A sign-out or newer route may finish while the legal check is in flight.
