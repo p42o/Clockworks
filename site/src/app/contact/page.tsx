@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
-import CopyPending from "@/components/CopyPending";
-import { formHonestLine, phone, serviceTowns } from "@/lib/copy";
+import { PHONE_ANSWERED_BY_IRIS, formHonestLine, irisNotice, phone, serviceTowns } from "@/lib/copy";
 import { pageSocial } from "@/lib/site";
 
 const title = "Contact";
@@ -18,10 +17,9 @@ export default function Contact() {
     <>
       <section className="mx-auto max-w-6xl px-5 pb-12 pt-36 sm:px-8">
         <h1 className="display mb-6 text-5xl sm:text-7xl">Contact MN Clockworks.</h1>
-        {/* COPY PENDING (Sprocket): contact/intro */}
-        <CopyPending slot="contact/intro" note="Short welcome line above the contact details." />
         <div className="mt-8 space-y-4 text-lg text-ink-soft">
           <p>{phone.pending ? <span>{phone.display}</span> : <a href={phone.tel} className="link-draw">{phone.display}</a>}</p>
+          {PHONE_ANSWERED_BY_IRIS && <p className="text-sm">{irisNotice} Prefer not to be recorded? Reach Parker through mnclockworks.com.</p>}
           <p>Based in Maple Grove, Minnesota.</p>
           <p><Link href="/book/" className="link-draw">Send a note instead</Link></p>
           <p>{formHonestLine}</p>

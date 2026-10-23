@@ -24,6 +24,16 @@ function businessPhone(digits: string | null) {
 
 export const phone = businessPhone(PHONE_DIGITS);
 
+/**
+ * Call disclosure (Counsel, mandatory next to any call number). Tied to the
+ * phone above: PhoneCTA renders it right under phone.display. If the number
+ * Parker confirms is NOT answered by Iris, set PHONE_ANSWERED_BY_IRIS = false
+ * and the Iris line drops everywhere the phone CTA appears.
+ */
+export const PHONE_ANSWERED_BY_IRIS = true;
+export const irisNotice =
+  "Iris is an AI assistant. Calls are recorded and transcribed by our AI service provider.";
+
 /** Approved service-area list. No Saint Paul. No doorway page. */
 export const serviceTowns = [
   "Maple Grove",
