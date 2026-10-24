@@ -34,7 +34,7 @@ function callError(err) {
     .replace(/\s*\(functions\/[a-z0-9-]+\)\.?$/i, "");
 }
 async function callFn(name, data) {
-  if (!EMU) throw new Error("This action runs on the local emulator.");
+  // Prod and emulator both use httpsCallable; EMU connects the Functions emulator above.
   try {
     const res = await httpsCallable(fns, name)(data);
     return res.data;
