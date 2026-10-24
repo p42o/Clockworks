@@ -8,6 +8,8 @@ import { SWAP } from "../swap-config.js";
 import { state } from "../lib/session.js";
 import { LANDING_COPY, LOCK_REASON } from "../lib/clientCopy.js";
 import { ARCHIVED_BODY, fillNotice } from "../lib/statusNotices.js";
+import { isIrisChatVisible } from "../lib/irisChat.js";
+import { mountIrisChatCard } from "./iris-chat-card.js";
 const STATE_TEXT = { done: "Done", current: "Now", upcoming: "Coming up" };
 
 function scheduleItem(h) {
@@ -57,6 +59,8 @@ export function render(ctx) {
   const flash = router.takeFlash();
   const marked = new Set();    // needs the client just marked done in this visit
   let ideaUnsub = null, ideaFor = null, ideaTitle = "";
+  let irisUnmount = null;
+  let irisCid = null;
   let showStages = false, showNeeds = false, showDone = false;
   let last = null;
 
@@ -73,8 +77,13 @@ export function render(ctx) {
   }
 
   function paint() {
+    // Keep the live Iris node when Home redraws for a stage/need update.
+    // Non-DEV transcript and handoff draft live in this card's memory.
+    const preservedIris = el.querySelector("[data-iris-chat]");
+    preservedIris?.remove();
     const h = last;
     if (!h) {
+      irisUnmount?.(); irisUnmount = null; irisCid = null;
       mount(el, html`<h1>Home</h1>${emptyState("Nothing here yet.", "Parker will set up your home page soon.")}`);
       return;
     }
@@ -125,6 +134,8 @@ export function render(ctx) {
         ${ro ? html`<div class="banner info">${ic("info")}<div>Our work together has wrapped up. You can still see your files and data ${h.access.readOnlyUntil ? html`until ${fmtDateY(h.access.readOnlyUntil)} (${Math.max(0, Math.ceil(((h.access.readOnlyUntil?.toMillis?.() || new Date(h.access.readOnlyUntil).getTime()) - Date.now()) / 86400000))} days left)` : "here"}.</div></div>` : ""}
         ${(h.access?.state === "archived" || (ro && h.access?.closedAt)) ? html`<section class="card" aria-labelledby="arch-h"><h2 id="arch-h">Your account is ARCHIVED</h2>${fillNotice(ARCHIVED_BODY, { close_date: h.access.closedAt ? fmtDateY(h.access.closedAt) : "", export_window_end_date: h.access.readOnlyUntil ? fmtDateY(h.access.readOnlyUntil) : "" }).split("\n\n").map((p) => html`<p>${p}</p>`)}</section>` : ""}
         ${unread.messages > 0 ? html`<a class="banner copper" href="${h.latestUnread?.threadId ? `#/m/${h.latestUnread.threadId}` : "#/messages"}" style="text-decoration:none;color:inherit">${ic("chat")}<div><b>${h.latestUnread?.subject ? `Parker replied to ${h.latestUnread.subject}` : "You have a reply"}</b>${unread.messages} new ${unread.messages === 1 ? "message" : "messages"} from Parker.</div></a>` : ""}
+        ${SWAP.irisChat?.showOnHome && isIrisChatVisible({ cid: state.me?.cid, stageKey: h.stageKey, portalEnabled: h.access?.enabled !== false })
+          ? html`<section data-iris-chat class="iris-card-host" aria-label="Iris support chat"></section>` : ""}
 
         <div class="dash">
           ${!ro ? html`<section class="card next-card" aria-labelledby="next-step-h">
@@ -198,6 +209,20 @@ export function render(ctx) {
         </div>
       </div>`);
 
+    const irisHost = el.querySelector("[data-iris-chat]");
+    if (irisHost && preservedIris && irisCid === state.me?.cid) {
+      irisHost.replaceWith(preservedIris);
+    } else {
+      irisUnmount?.(); irisUnmount = null; irisCid = null;
+      if (irisHost) {
+        irisCid = state.me?.cid;
+        irisUnmount = mountIrisChatCard(irisHost, {
+          cid: state.me?.cid, clientName: h.businessName || state.me?.businessName || state.me?.displayName,
+          email: state.me?.email, phone: state.me?.phone,
+        });
+      }
+    }
+
     el.querySelectorAll("[data-more]").forEach((b) => b.addEventListener("click", () => {
       const which = b.dataset.more;
       if (which === "stages") showStages = !showStages;
@@ -241,5 +266,5 @@ export function render(ctx) {
   }
 
   const teardownLive = live(el, "Home", data.subscribeHome, (h) => { last = h; paint(); });
-  return () => { teardownLive(); ideaUnsub?.(); };
+  return () => { teardownLive(); ideaUnsub?.(); irisUnmount?.(); };
 }

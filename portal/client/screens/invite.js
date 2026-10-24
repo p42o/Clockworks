@@ -18,6 +18,7 @@ const STATE_COPY = {
 };
 
 let token = null;
+let completing = false;
 
 function reasonOf(e) {
   const msg = String(e?.message || "");
@@ -29,7 +30,8 @@ function reasonOf(e) {
 
 export async function render(ctx) {
   const { el, router } = ctx;
-  token = router.takeInviteToken() || token;
+  const nextToken = router.takeInviteToken();
+  if (nextToken) { token = nextToken; completing = false; }
   let tearForm = null;
   let dead = false;
 
@@ -37,6 +39,7 @@ export async function render(ctx) {
 
   async function load() {
     mount(el, html`<h1>Welcome</h1>${skeleton(2)}`);
+    if (completing) return;
     if (!token) return badLink();
     try {
       const info = await api.inviteOpen(token);
@@ -110,10 +113,12 @@ export async function render(ctx) {
         const r = await api.inviteSetPassword({
           token, password, agree: true, label: SWAP.acceptance.label, keepSignedIn: false,
         });
-        token = null;
+        completing = true;
         await signInWith(r.customToken, false);
         router.go("#/home");
+        token = null;
       } catch (e) {
+        completing = false;
         setBusy(go, false);
         showErrors(form, [{ msg: api.friendlyError(e) }]);
       }
@@ -134,10 +139,13 @@ export async function render(ctx) {
       lead: `We sent a 6-digit code to ${info.maskedEmail}. It works for 10 minutes.`,
       onSubmit: async (code, keep) => {
         const r = await api.inviteVerify(token, code, keep);
-        token = null;
-        await signInWith(r.customToken, keep);
-        document.querySelector(".devhelp")?.remove();
-        router.go("#/home");
+        completing = true;
+        try {
+          await signInWith(r.customToken, keep);
+          document.querySelector(".devhelp")?.remove();
+          router.go("#/home");
+          token = null;
+        } catch (e) { completing = false; throw e; }
       },
       onResend: () => api.inviteSendCode(token).then(() => showDevCode(info.maskedEmail)),
     });

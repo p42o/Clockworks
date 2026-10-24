@@ -41,3 +41,4 @@ site/.preview-*.png
 
 # Internal deploy-prompt gate: rate-limit state written by the server
 internal/timely-deploy/_state/
+_iris_wire/

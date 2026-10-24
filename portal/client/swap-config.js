@@ -19,6 +19,15 @@
 const INTAKE_COMPLETE_COPY = "Thanks, your intake is in. We'll get back to you. Submitting this intake does not start an engagement.";
 
 export const SWAP = Object.freeze({
+  irisChat: Object.freeze({
+    enabled: true,
+    loggingEnabled: false,
+    allowClientIds: Object.freeze(["dev-smoke-apex"]),
+    stages: Object.freeze(["*"]),
+    showOnHome: true,
+    maxMessageChars: 2000,
+    bannerVersion: "A",
+  }),
   // ---- Parker placeholders ----
   // Fake placeholder pilot. Parker picks the real pilot later (SPEC-v3 Q6). Never put a real client here.
   pilot: Object.freeze({

@@ -23,6 +23,10 @@ export const signinStart = (email) => call("signinStart")({ email });
 export const signinVerify = (email, code, keepSignedIn) => call("signinVerify")({ email, code, keepSignedIn: !!keepSignedIn });
 
 // signed in
+export const irisChatOpen = () => call("irisChatOpen")();
+export const irisChatSend = (text, history = []) => call("irisChatSend")({ text, history });
+export const irisChatAckDisclosure = () => call("irisChatAckDisclosure")({ bannerVersion: "A" });
+export const irisChatHandoffSubmit = (handoff) => call("irisChatHandoffSubmit")(handoff);
 export const sessionTouch = () => call("sessionTouch")();
 export const reverifySend = () => call("reverifySend")();
 export const reverifyCheck = (code) => call("reverifyCheck")({ code });
