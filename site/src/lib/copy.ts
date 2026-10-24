@@ -1,7 +1,9 @@
 /**
  * Approved V2 marketing copy. Homepage and subpages render these strings
  * so visible FAQ text and FAQPage JSON-LD stay identical.
- * No em dashes, no en dashes, no prices beyond the three approved offers.
+ * Homepage hero = Sprocket "Setup together" (presence/2026-10-21-homepage-copy-angles.md).
+ * Public prices: free 15-min / $50 / $499 only. No Membership on Site.
+ * No em dashes, no en dashes.
  */
 
 /**
