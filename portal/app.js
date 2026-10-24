@@ -1562,6 +1562,7 @@ function portalAccessCard(c) {
   </div></section>`;
 }
 const flowNotes = {};
+const flowInviteLinks = {}; // survives Firestore re-renders
 function clientFlowCard(c) {
   const email = c.email || (c.contacts || []).map((p) => p.email).find(Boolean) || "";
   const contact = (c.contacts || []).find((p) => p.name && (!email || p.email === email))?.name || "";
@@ -1601,11 +1602,13 @@ function clientFlowCard(c) {
       <button type="button" class="btn sm" data-flow="withdrawn">Record withdrawal</button>
     </div>` : `<p class="empty-note">Email-code signing and scheduling stay off unless this client is a local fixture.</p>`}
     <p role="status" id="flow-status">${esc(note)}</p>
+    ${flowInviteLinks[c.id] ? `<div id="flow-link" style="margin-top:10px;display:flex;gap:8px;align-items:center"><input type="text" readonly value="${esc(flowInviteLinks[c.id])}" aria-label="Invite link" style="flex:1;min-width:0;font-family:var(--fm, monospace);font-size:12px"><button type="button" class="btn sm" data-copy-link>Copy</button></div>` : ""}
   </div></section>`;
 }
 /** No email is sent from the portal: show the one-time link so Parker can text or email it himself. */
-function showInviteLink(v, link) {
+function showInviteLink(v, link, cid) {
   if (!link) return;
+  if (cid) flowInviteLinks[cid] = link;
   let box = $("#flow-link", v);
   if (!box) { box = document.createElement("div"); box.id = "flow-link"; box.style.cssText = "margin-top:10px;display:flex;gap:8px;align-items:center"; $("#flow-status", v)?.after(box); }
   box.innerHTML = `<input type="text" readonly value="${esc(link)}" aria-label="Invite link" style="flex:1;min-width:0;font-family:var(--fm, monospace);font-size:12px"><button type="button" class="btn sm" data-copy-link>Copy</button>`;
@@ -1620,6 +1623,12 @@ function wireClientFlow(c, v) {
     if (live) live.textContent = t;
   };
   const emailOf = () => ($("#flow-email", v)?.value || "").trim();
+  const copyBtn = $("[data-copy-link]", v);
+  if (copyBtn && flowInviteLinks[c.id]) {
+    copyBtn.onclick = async (ev) => {
+      try { await navigator.clipboard.writeText(flowInviteLinks[c.id]); ev.currentTarget.textContent = "Copied"; } catch { $("#flow-link input", v)?.select(); }
+    };
+  }
   $$("[data-flow]", v).forEach((b) => (b.onclick = async () => {
     const k = b.dataset.flow;
     try {
@@ -1628,7 +1637,7 @@ function wireClientFlow(c, v) {
         if (!contactName) { say("Add the contact's name first. It goes on their agreement."); $("#flow-contact", v)?.focus(); return; }
         const r = await callFn(k === "invite" ? "adminCreateInvite" : "adminResendInvite", { cid: c.id, email: emailOf(), contactName, role: "owner" });
         say(k === "resend" ? `Resent. Prior open links cancelled (${r.invalidated || 0}).` : "Invite issued. Copy the link below and send it yourself.");
-        showInviteLink(v, r.link);
+        showInviteLink(v, r.link, c.id);
       } else if (k === "intake") {
         const r = await callFn("adminIssueIntake", { cid: c.id });
         say(r.already ? "An intake is already open." : "Intake issued.");
