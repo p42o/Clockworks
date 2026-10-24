@@ -1579,6 +1579,15 @@ function clientFlowCard(c) {
       <button type="button" class="btn sm" data-flow="resend">Resend invite</button>
       <button type="button" class="btn sm" data-flow="intake">Issue intake</button>
     </div>
+    <div class="shop-pass-links" aria-label="Shop Pass Payment Links" style="margin-top:12px">
+      <h3>Shop Pass · ${esc(SWAP.shopPass.monthlyPriceLabel)} / Deploy · ${esc(SWAP.shopPass.deployPriceLabel)} one-time</h3>
+      <p>${SWAP.shopPass.offered ? "Payment Links configured below." : "Internal — not offered until terms are ready. Do not send Payment Links yet."}</p>
+      ${[["shopPassPaymentLinkUrl", "Shop Pass Payment Link"], ["deployPaymentLinkUrl", "Deploy Payment Link"]].map(([key, label]) => `<div>
+        <label for="flow-${key}">${label}</label>
+        <input id="flow-${key}" type="text" readonly value="${esc(SWAP.shopPass[key])}" placeholder="Not set — Estate fills SWAP.shopPass">
+        <button type="button" class="btn sm" data-copy="${esc(SWAP.shopPass[key])}" ${SWAP.shopPass[key] ? "" : "disabled"} aria-label="Copy ${label}">Copy</button>
+      </div>`).join("")}
+    </div>
     ${fx ? `<div class="acts" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
       <button type="button" class="btn sm" data-flow="msa">Mark MSA email-signed</button>
       <button type="button" class="btn sm" data-flow="sow">Mark SOW email-signed</button>

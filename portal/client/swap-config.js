@@ -38,6 +38,17 @@ export const SWAP = Object.freeze({
     Object.freeze({ id: "plan_setup", name: "One-time setup (placeholder)", priceDisplay: "$—", interval: "one_time" }),
   ]),
 
+  // Payment Links remain on sellability HOLD until Counsel clearance and Parker's release tap.
+  // HARD UI gate: URLs alone never make an offer available. Independent of portal billing.
+  shopPass: Object.freeze({
+    productName: "Shop Pass",
+    monthlyPriceLabel: "$99/mo",
+    deployPriceLabel: "$499",
+    deployPaymentLinkUrl: "",
+    shopPassPaymentLinkUrl: "",
+    offered: false,
+  }),
+
   // SPEC-v3 §5.2 client labels, keyed by the client stageKey.
   stageLabels: Object.freeze({
     intro: "Getting to know you",

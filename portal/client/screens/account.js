@@ -1,5 +1,6 @@
 // #/account — plan, links, this device, privacy/terms.
 import { html, mount, ic, fmtDateY, toast, raw } from "../lib/ui.js";
+import { shopPassUpgradeHtml } from "../lib/shopPassUpgrade.js";
 import { carePlanDisclosureHtml } from "../lib/carePlanDisclosure.js";
 import * as data from "../lib/data.js";
 import * as api from "../lib/api.js";
@@ -42,6 +43,8 @@ export function render(ctx) {
           <button type="button" class="btn" data-req="cancel">Request to cancel</button></div>`}
         ${raw(carePlanDisclosureHtml(disclosureSwap()))}
       </section>
+
+      ${shopPassUpgradeHtml(SWAP)}
 
       <ul class="list links" aria-label="Your information">
         <li><a class="row" href="#/account/files">${ic("file")}<div class="grow"><div class="title">Files &amp; receipts</div></div><span class="chev">${ic("chevron-right")}</span></a></li>
