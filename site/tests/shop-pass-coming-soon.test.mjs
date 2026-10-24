@@ -13,10 +13,11 @@ test('Coming soon modal HTML has Shop Pass, Coming soon, all five features, Coun
   assert.match(markup, /Coming soon/);
   assert.match(markup, /Keep your AI team current with Shop Pass\./);
   assert.match(markup, /\$99 a month after the \$499 deploy\./);
-  assert.match(markup, /Portal access after the grace window/);
-  assert.match(markup, /Agent Newsletter \(short updates you can hand your agents\)/);
-  assert.match(markup, /Monthly remote tune-up/);
-  assert.match(markup, /Quarterly check-in/);
+  assert.match(markup, /Portal stays open after the grace window for your shop/);
+  assert.match(markup, /Agent Newsletter tailored to your business and your agent team/);
+  assert.match(markup, /specific updates you can hand them, not a general blast/);
+  assert.match(markup, /Monthly remote tune-up for your setup/);
+  assert.match(markup, /Quarterly check-in on your shop/);
   assert.ok(markup.includes(PRIORITY));
   assert.match(markup, /One-time 7-day extension available separately/);
   assert.match(markup, /disabled[^>]*>Coming soon</);

@@ -22,19 +22,19 @@ export function shopPassComingSoonHtml(swap) {
     <ol class="shop-pass-modal__features">
       <li class="shop-pass-modal__feature">
         <span class="shop-pass-modal__num" aria-hidden="true">1</span>
-        <span class="shop-pass-modal__feat-text">Portal access after the grace window</span>
+        <span class="shop-pass-modal__feat-text">Portal stays open after the grace window for your shop</span>
       </li>
       <li class="shop-pass-modal__feature">
         <span class="shop-pass-modal__num" aria-hidden="true">2</span>
-        <span class="shop-pass-modal__feat-text">Agent Newsletter (short updates you can hand your agents)</span>
+        <span class="shop-pass-modal__feat-text">Agent Newsletter tailored to your business and your agent team — specific updates you can hand them, not a general blast</span>
       </li>
       <li class="shop-pass-modal__feature">
         <span class="shop-pass-modal__num" aria-hidden="true">3</span>
-        <span class="shop-pass-modal__feat-text">Monthly remote tune-up</span>
+        <span class="shop-pass-modal__feat-text">Monthly remote tune-up for your setup</span>
       </li>
       <li class="shop-pass-modal__feature">
         <span class="shop-pass-modal__num" aria-hidden="true">4</span>
-        <span class="shop-pass-modal__feat-text">Quarterly check-in</span>
+        <span class="shop-pass-modal__feat-text">Quarterly check-in on your shop</span>
       </li>
       <li class="shop-pass-modal__feature">
         <span class="shop-pass-modal__num" aria-hidden="true">5</span>
