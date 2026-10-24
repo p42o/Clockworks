@@ -44,8 +44,8 @@ export const SWAP = Object.freeze({
     productName: "Shop Pass",
     monthlyPriceLabel: "$99/mo",
     deployPriceLabel: "$499",
-    deployPaymentLinkUrl: "",
-    shopPassPaymentLinkUrl: "",
+    deployPaymentLinkUrl: "https://buy.stripe.com/6oU7sLgSP7vz10DdK21Nu00",
+    shopPassPaymentLinkUrl: "https://buy.stripe.com/7sY00j8mj3fjbFhaxQ1Nu01",
     offered: false,
   }),
 

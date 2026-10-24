@@ -9,8 +9,8 @@ test('Shop Pass defaults stay frozen and on hold, with portal billing disabled',
   assert.equal(SWAP.shopPass.monthlyPriceLabel, '$99/mo');
   assert.equal(SWAP.shopPass.deployPriceLabel, '$499');
   assert.equal(SWAP.shopPass.offered, false);
-  assert.equal(SWAP.shopPass.shopPassPaymentLinkUrl, '');
-  assert.equal(SWAP.shopPass.deployPaymentLinkUrl, '');
+  assert.equal(SWAP.shopPass.shopPassPaymentLinkUrl, 'https://buy.stripe.com/7sY00j8mj3fjbFhaxQ1Nu01');
+  assert.equal(SWAP.shopPass.deployPaymentLinkUrl, 'https://buy.stripe.com/6oU7sLgSP7vz10DdK21Nu00');
   assert.equal(SWAP.billing.enabled, false);
   assert.equal(SWAP.billing.disclosures, false);
 });
@@ -43,7 +43,9 @@ test('extend card shows contact fallback on hold and external buttons only when 
   assert.match(open, /Get Shop Pass/);
   assert.match(open, /Pay deploy \(\$499\)/);
   assert.equal((open.match(/target="_blank" rel="noopener noreferrer"/g) || []).length, 2);
-  const missing = String(shopPassUpgradeHtml({ ...SWAP, shopPass: { ...SWAP.shopPass, offered: true } }));
+  const missing = String(shopPassUpgradeHtml({ ...SWAP, shopPass: {
+    ...SWAP.shopPass, offered: true, shopPassPaymentLinkUrl: '', deployPaymentLinkUrl: '',
+  } }));
   assert.match(missing, /not offered yet/);
   assert.ok(!missing.includes('target="_blank"'));
 });
