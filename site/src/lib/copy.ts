@@ -55,7 +55,7 @@ export const ownershipLine =
   "Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.";
 
 export const deploymentLine =
-  "The deployment is $500, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it.";
+  "The deployment is $499, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it.";
 
 export const assessmentLine =
   "The online presence assessment is $50. We check how your business shows up across search, AI assistants, and ratings and review sites. You get the exact searches and prompts we ran, plus an interactive report showing where you showed up that day and what we'd recommend improving. It's a snapshot, since search results and AI answers change on their own, but it gives you a baseline to compare against later.";
@@ -272,7 +272,7 @@ export const steps = [
   },
   {
     n: "3",
-    title: "$500 one-time deployment, done together over screen share",
+    title: "$499 one-time deployment, done together over screen share",
     body: "We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. You watch it get built.",
   },
   {
@@ -298,7 +298,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "How does setup work?",
-    a: `You call ${phone.display} for a free 15-minute phone audit. If you want it, the online presence assessment is $50. Then the deployment is $500, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. After that it runs on your own account.`,
+    a: `You call ${phone.display} for a free 15-minute phone audit. If you want it, the online presence assessment is $50. Then the deployment is $499, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. After that it runs on your own account.`,
   },
   {
     q: "Whose account does it run on?",

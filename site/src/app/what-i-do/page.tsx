@@ -86,7 +86,7 @@ export default function WhatIDo() {
           The free 15-minute phone audit is a place to talk through the work that piles up: missed callers, unanswered questions, quiet quotes and paperwork. If you want a separate look at how your business appears online, the optional $50 Online Presence Assessment checks search, AI assistants and review sites. It includes the exact searches and prompts and an interactive report.
         </p>
         <p data-setup-mode="screen-share">
-          The deployment is $500 one time, over screen share. You share your screen while I build the team with you, explain the setup, test it with you and walk you through using it. Video is available if you like. The account belongs to you after setup.
+          The deployment is $499 one time, over screen share. You share your screen while I build the team with you, explain the setup, test it with you and walk you through using it. Video is available if you like. The account belongs to you after setup.
         </p>
       </Section>
       <Section n="05" eyebrow="Ownership" heading="Your information and your account">

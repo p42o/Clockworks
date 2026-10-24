@@ -8,7 +8,7 @@ import { pageSocial } from "@/lib/site";
 
 const title = "How it works";
 const description =
-  "A free 15-minute phone audit, an optional $50 online presence assessment, and a $500 one-time deployment done together on a screen-share call.";
+  "A free 15-minute phone audit, an optional $50 online presence assessment, and a $499 one-time deployment done together on a screen-share call.";
 
 export const metadata: Metadata = {
   title,

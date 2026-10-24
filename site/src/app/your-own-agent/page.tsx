@@ -90,8 +90,8 @@ export default function YourOwnAgent() {
           Estimate, not a quote. Provider rates can change. Based on public rates as of Oct 2026. Taxes extra. Optional texting and 911 address service cost extra.
         </p>
       </Section>
-      <Section n="06" eyebrow="Setup" heading="Setup is $500 one time">
-        {/* PARKER CONFIRM: is the Answer Line inside the $500 deployment or its own scope? */}
+      <Section n="06" eyebrow="Setup" heading="Setup is $499 one time">
+        {/* PARKER CONFIRM: is the Answer Line inside the $499 deployment or its own scope? */}
         <p data-setup-mode="screen-share">I set it up with you over screen share, test it together and walk you through using it.</p>
       </Section>
       <Section n="07" eyebrow="Text sample" heading="The text version on this site">

@@ -26,7 +26,7 @@ const cards = [
   },
   {
     kicker: "The setup",
-    title: "$500 one-time deployment",
+    title: "$499 one-time deployment",
     body: deploymentLine,
     action: "Call about the deployment",
     href: phone.tel,
