@@ -577,3 +577,45 @@ a[href^="mailto:"] { min-height: 44px; display: inline-flex; align-items: center
 .gate .sheet a.btn[href^="mailto:"], .btn[href^="mailto:"] { display: inline-flex; }
 .row span.title, .row span.sub { display: block; }
 .changes { margin: 0; padding-left: 20px; display: grid; gap: 8px; color: var(--ink-2); }
+
+/* Shop Pass Coming soon modal — Grok Premium–inspired feature card (held offer). */
+.shop-pass-modal { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 16px; }
+.shop-pass-modal__backdrop { position: absolute; inset: 0; border: 0; padding: 0; margin: 0; cursor: pointer;
+  background: rgba(20, 19, 15, .72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.shop-pass-modal__panel { position: relative; z-index: 1; width: min(100%, 440px); max-height: min(92dvh, 720px); overflow: auto;
+  animation: shopPassModalIn var(--dur-2) var(--ease-out) both; }
+.shop-pass-modal__card { position: relative; display: grid; gap: 14px; padding: 28px 24px 22px;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--ground-2) 92%, var(--copper) 8%), var(--ground) 55%, #0c0b09);
+  color: var(--ground-ink); border: 1px solid color-mix(in srgb, var(--copper) 35%, transparent);
+  border-radius: 20px; box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset,
+    0 0 48px -12px color-mix(in srgb, var(--copper) 45%, transparent), var(--shadow-3); }
+.shop-pass-modal__close { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border: 0; border-radius: 10px;
+  background: transparent; color: var(--ground-ink-2); font-size: 22px; line-height: 1; cursor: pointer; }
+.shop-pass-modal__close:hover { color: var(--ground-ink); background: rgba(255,255,255,.06); }
+.shop-pass-modal__close:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px; }
+.shop-pass-modal__eyebrow { margin: 0; font: 500 12px/1.3 var(--fm); letter-spacing: .14em; text-transform: uppercase;
+  color: var(--copper); }
+.shop-pass-modal__hero { margin: 0; font: 400 clamp(26px, 5vw, 32px)/1.2 var(--fd); color: var(--ground-ink); text-wrap: balance; }
+.shop-pass-modal__price { margin: 0; font: 500 15px/1.45 var(--ff); color: var(--ground-ink-2); }
+.shop-pass-modal__features { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 10px; }
+.shop-pass-modal__feature { display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: start;
+  padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06); }
+.shop-pass-modal__num { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  background: color-mix(in srgb, var(--copper) 22%, transparent); color: var(--copper); font: 600 12px/1 var(--fm); }
+.shop-pass-modal__feat-text { font-size: 14.5px; line-height: 1.45; color: var(--ground-ink); }
+.shop-pass-modal__quiet { margin: 2px 0 0; font-size: 13px; color: var(--ground-ink-2); }
+.shop-pass-modal__actions { display: grid; gap: 10px; margin-top: 4px; }
+.shop-pass-modal__actions .btn.primary[disabled] { opacity: .72; cursor: not-allowed; box-shadow: none; }
+.shop-pass-modal__secondary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.shop-pass-modal__secondary .btn { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); color: var(--ground-ink);
+  min-height: 44px; }
+.shop-pass-modal__secondary .btn:hover { border-color: color-mix(in srgb, var(--copper) 50%, transparent); color: var(--ground-ink); }
+.shop-pass-modal__footer { margin: 4px 0 0; font: 500 12px/1.4 var(--fm); letter-spacing: .02em; color: var(--ground-ink-2); }
+@keyframes shopPassModalIn {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shop-pass-modal__panel { animation: none; }
+}

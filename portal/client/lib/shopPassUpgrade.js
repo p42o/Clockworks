@@ -19,7 +19,10 @@ export function shopPassUpgradeHtml(swap) {
     <p>Your setup is done. Shop Pass keeps the portal open and your monthly tune-up on the calendar.</p>
     <p>$99/mo after the $499 deploy.</p>
     <p>Priority support: members' questions are answered before non-member requests, usually within one business day.</p>
-    ${upgrade ? html`<a class="btn primary" href="${upgrade}" target="_blank" rel="noopener noreferrer">Get Shop Pass</a>` : html`<p>Shop Pass is not offered yet.</p>`}
+    ${upgrade
+      ? html`<a class="btn primary" href="${upgrade}" target="_blank" rel="noopener noreferrer">Get Shop Pass</a>`
+      : html`<p>Shop Pass is not offered yet.</p>
+    <button type="button" class="btn" data-shop-pass-coming-soon>See what’s in Shop Pass</button>`}
     ${deploy ? html`<a class="btn" href="${deploy}" target="_blank" rel="noopener noreferrer">Pay deploy ($499)</a>` : ""}
     ${!upgrade || !deploy ? html`<p>Call <a href="tel:+17632969777">(763) 296-9777</a> or email <a href="mailto:parker@mnclockworks.com">parker@mnclockworks.com</a>.</p>` : ""}
     <footer>(763) 296-9777 · mnclockworks.com</footer>

@@ -1,6 +1,7 @@
 // #/account — plan, links, this device, privacy/terms.
 import { html, mount, ic, fmtDateY, toast, raw } from "../lib/ui.js";
 import { shopPassUpgradeHtml } from "../lib/shopPassUpgrade.js";
+import { openShopPassComingSoon } from "../lib/shopPassComingSoon.js";
 import { carePlanDisclosureHtml } from "../lib/carePlanDisclosure.js";
 import * as data from "../lib/data.js";
 import * as api from "../lib/api.js";
@@ -63,6 +64,9 @@ export function render(ctx) {
         <li><a class="row" href="#/starter-terms"><div class="grow"><div class="title">Starter Terms</div></div><span class="chev">${ic("chevron-right")}</span></a></li></ul></div>
     </div>`);
 
+    el.querySelector("[data-shop-pass-coming-soon]")?.addEventListener("click", (ev) => {
+      openShopPassComingSoon(SWAP, { opener: ev.currentTarget });
+    });
     el.querySelector("[data-cancel-plan]")?.addEventListener("click", () => {
       const box = el.querySelector("[data-cancel-screen]");
       if (box) box.hidden = false;
