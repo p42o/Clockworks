@@ -11,6 +11,7 @@ import { getStorage, connectStorageEmulator, ref as sref, listAll, getMetadata, 
 import { getFunctions, connectFunctionsEmulator, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 import { firebaseConfig } from "./config.js";
 import { SWAP } from "./client/swap-config.js";
+import { DEFAULT_FOLLOW_UP_GRACE_DAYS, followUpGraceDecision, graceAdminLine, shopPassKeepsPortalOpen, ymdChicago } from "./client/lib/followUpGrace.js";
 
 const LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
 const EMU = LOCAL && !new URLSearchParams(location.search).has("prod");
@@ -1557,12 +1558,79 @@ function portalAccessCard(c) {
       ${canArchive ? `<button type="button" class="btn sm" data-access="archived">Archive</button>` : ""}
       ${canReact ? `<button type="button" class="btn sm p" data-access="active">Reactivate</button>` : ""}
     </div>
+    ${followUpGraceBlock(c)}
     <h3 class="audit-h">Admin audit</h3>
     ${audits.length ? `<ul class="audit-list" aria-label="Admin audit">${audits.map((row) => `<li><b>${esc(row.action || "action")}</b><span>${esc(row.atUtc || fmtUtc(row.at))} · ${esc(row.actor?.email || row.by || "—")}</span></li>`).join("")}</ul>` : `<p class="empty-note">No admin audit yet.</p>`}
   </div></section>`;
 }
+const graceNotes = {};
+const GRACE_ERR = {
+  bad_grace_days: "Grace days need to be a whole number from 1 to 3650.",
+  bad_extend_days: "Extend days need to be a whole number from 1 to 3650.",
+  bad_deploy_at: "That deploy date did not work.",
+  bad_ends_at: "That end date did not work.",
+  bad_exempt: "Exempt must be on or off.",
+  bad_note: "That note did not work.",
+  no_client: "That client isn't here.",
+};
+function graceErrText(e) {
+  const msg = String(e?.message || "");
+  for (const [k, v] of Object.entries(GRACE_ERR)) if (msg.includes(k)) return v;
+  return msg || "That did not work.";
+}
+function followUpGraceBlock(c) {
+  const now = new Date();
+  const decision = followUpGraceDecision(c, now);
+  const line = graceAdminLine(decision, now);
+  const shop = shopPassKeepsPortalOpen(c);
+  const deploy = decision.deployAt != null ? ymdChicago(decision.deployAt) : "";
+  const endPick = decision.endsOverride != null ? ymdChicago(decision.endsOverride - 1) : "";
+  const days = decision.graceDays || DEFAULT_FOLLOW_UP_GRACE_DAYS;
+  const hint = shop
+    ? "Shop Pass is active, so this portal stays open after grace. Iris follows portal access."
+    : "Free portal stays open through the grace window, then access turns off and Iris with it. Shop Pass billing is not live, so Exempt is what keeps this portal open.";
+  return `<div class="grace" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">
+    <h3 style="margin:0 0 6px;font-size:15px">Follow-Up grace</h3>
+    <p id="grace-status" style="margin:0 0 6px"><b>${esc(line)}</b></p>
+    <p style="margin:0 0 10px;color:var(--ink-3);font-size:13px">${esc(hint)}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end">
+      <label style="display:grid;gap:4px;font-size:12px;color:var(--ink-3)">Deploy date
+        <input id="grace-deploy" type="date" value="${esc(deploy)}" autocomplete="off">
+      </label>
+      <button type="button" class="btn sm" data-grace="today">Today</button>
+      <button type="button" class="btn sm" data-grace="deploy">Save deploy date</button>
+      <button type="button" class="btn sm ghost" data-grace="clear-deploy">Clear deploy date</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:8px">
+      <label style="display:grid;gap:4px;font-size:12px;color:var(--ink-3)">Grace days
+        <input id="grace-days" type="number" min="1" max="3650" step="1" value="${esc(String(days))}" inputmode="numeric" style="width:6rem">
+      </label>
+      <button type="button" class="btn sm" data-grace="days">Save days</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:8px">
+      <label style="display:grid;gap:4px;font-size:12px;color:var(--ink-3)">Extend by days
+        <input id="grace-extend" type="number" min="1" max="3650" step="1" value="7" inputmode="numeric" style="width:6rem">
+      </label>
+      <button type="button" class="btn sm" data-grace="extend">Extend</button>
+      <label style="display:grid;gap:4px;font-size:12px;color:var(--ink-3)">End date
+        <input id="grace-end" type="date" value="${esc(endPick)}" autocomplete="off">
+      </label>
+      <button type="button" class="btn sm" data-grace="end">Set end date</button>
+      <button type="button" class="btn sm ghost" data-grace="clear-end">Clear end date</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:8px">
+      <label style="display:grid;gap:4px;font-size:12px;color:var(--ink-3);flex:1;min-width:12rem">Note
+        <input id="grace-note" type="text" maxlength="300" value="${esc(decision.note || "")}" autocomplete="off">
+      </label>
+      <button type="button" class="btn sm" data-grace="note">Save note</button>
+      ${decision.exempt
+        ? `<button type="button" class="btn sm" data-grace="clear-exempt">Clear exempt</button>`
+        : `<button type="button" class="btn sm p" data-grace="exempt">Exempt</button>`}
+    </div>
+    <p id="grace-msg" role="status" style="margin:8px 0 0;color:var(--ink-2)">${esc(graceNotes[c.id] || "")}</p>
+  </div>`;
+}
 const flowNotes = {};
-const flowInviteLinks = {}; // survives Firestore re-renders
 function clientFlowCard(c) {
   const email = c.email || (c.contacts || []).map((p) => p.email).find(Boolean) || "";
   const contact = (c.contacts || []).find((p) => p.name && (!email || p.email === email))?.name || "";
@@ -1580,15 +1648,6 @@ function clientFlowCard(c) {
       <button type="button" class="btn sm" data-flow="resend">Resend invite</button>
       <button type="button" class="btn sm" data-flow="intake">Issue intake</button>
     </div>
-    <div class="shop-pass-links" aria-label="Shop Pass Payment Links" style="margin-top:12px">
-      <h3>Shop Pass · ${esc(SWAP.shopPass.monthlyPriceLabel)} / Deploy · ${esc(SWAP.shopPass.deployPriceLabel)} one-time</h3>
-      <p>${SWAP.shopPass.offered ? "Payment Links configured below." : "Internal — not offered until terms are ready. Do not send Payment Links yet."}</p>
-      ${[["shopPassPaymentLinkUrl", "Shop Pass Payment Link"], ["deployPaymentLinkUrl", "Deploy Payment Link"]].map(([key, label]) => `<div>
-        <label for="flow-${key}">${label}</label>
-        <input id="flow-${key}" type="text" readonly value="${esc(SWAP.shopPass[key])}" placeholder="Not set — Estate fills SWAP.shopPass">
-        <button type="button" class="btn sm" data-copy="${esc(SWAP.shopPass[key])}" ${SWAP.shopPass[key] ? "" : "disabled"} aria-label="Copy ${label}">Copy</button>
-      </div>`).join("")}
-    </div>
     ${fx ? `<div class="acts" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
       <button type="button" class="btn sm" data-flow="msa">Mark MSA email-signed</button>
       <button type="button" class="btn sm" data-flow="sow">Mark SOW email-signed</button>
@@ -1602,13 +1661,11 @@ function clientFlowCard(c) {
       <button type="button" class="btn sm" data-flow="withdrawn">Record withdrawal</button>
     </div>` : `<p class="empty-note">Email-code signing and scheduling stay off unless this client is a local fixture.</p>`}
     <p role="status" id="flow-status">${esc(note)}</p>
-    ${flowInviteLinks[c.id] ? `<div id="flow-link" style="margin-top:10px;display:flex;gap:8px;align-items:center"><input type="text" readonly value="${esc(flowInviteLinks[c.id])}" aria-label="Invite link" style="flex:1;min-width:0;font-family:var(--fm, monospace);font-size:12px"><button type="button" class="btn sm" data-copy-link>Copy</button></div>` : ""}
   </div></section>`;
 }
 /** No email is sent from the portal: show the one-time link so Parker can text or email it himself. */
-function showInviteLink(v, link, cid) {
+function showInviteLink(v, link) {
   if (!link) return;
-  if (cid) flowInviteLinks[cid] = link;
   let box = $("#flow-link", v);
   if (!box) { box = document.createElement("div"); box.id = "flow-link"; box.style.cssText = "margin-top:10px;display:flex;gap:8px;align-items:center"; $("#flow-status", v)?.after(box); }
   box.innerHTML = `<input type="text" readonly value="${esc(link)}" aria-label="Invite link" style="flex:1;min-width:0;font-family:var(--fm, monospace);font-size:12px"><button type="button" class="btn sm" data-copy-link>Copy</button>`;
@@ -1623,12 +1680,6 @@ function wireClientFlow(c, v) {
     if (live) live.textContent = t;
   };
   const emailOf = () => ($("#flow-email", v)?.value || "").trim();
-  const copyBtn = $("[data-copy-link]", v);
-  if (copyBtn && flowInviteLinks[c.id]) {
-    copyBtn.onclick = async (ev) => {
-      try { await navigator.clipboard.writeText(flowInviteLinks[c.id]); ev.currentTarget.textContent = "Copied"; } catch { $("#flow-link input", v)?.select(); }
-    };
-  }
   $$("[data-flow]", v).forEach((b) => (b.onclick = async () => {
     const k = b.dataset.flow;
     try {
@@ -1637,7 +1688,7 @@ function wireClientFlow(c, v) {
         if (!contactName) { say("Add the contact's name first. It goes on their agreement."); $("#flow-contact", v)?.focus(); return; }
         const r = await callFn(k === "invite" ? "adminCreateInvite" : "adminResendInvite", { cid: c.id, email: emailOf(), contactName, role: "owner" });
         say(k === "resend" ? `Resent. Prior open links cancelled (${r.invalidated || 0}).` : "Invite issued. Copy the link below and send it yourself.");
-        showInviteLink(v, r.link, c.id);
+        showInviteLink(v, r.link);
       } else if (k === "intake") {
         const r = await callFn("adminIssueIntake", { cid: c.id });
         say(r.already ? "An intake is already open." : "Intake issued.");
@@ -1677,6 +1728,49 @@ function wirePortal(c, v) {
         toast(title);
       },
     });
+  }));
+  const graceSay = (t) => {
+    graceNotes[c.id] = t;
+    const live = document.getElementById("grace-msg");
+    if (live) live.textContent = t;
+  };
+  const graceVal = (id) => ($(id, v)?.value || "").trim();
+  $$("[data-grace]", v).forEach((b) => (b.onclick = async () => {
+    const k = b.dataset.grace;
+    const payload = { cid: c.id };
+    if (k === "today" || k === "deploy") {
+      const deployAt = k === "today" ? ymdChicago(Date.now()) : graceVal("#grace-deploy");
+      if (!deployAt) { graceSay("Pick a deploy date."); return; }
+      if (k === "today") { const input = $("#grace-deploy", v); if (input) input.value = deployAt; }
+      payload.deployAt = deployAt;
+    } else if (k === "clear-deploy") payload.clearDeployAt = true;
+    else if (k === "days") {
+      const graceDays = Number(graceVal("#grace-days"));
+      if (!Number.isInteger(graceDays) || graceDays < 1) { graceSay("Grace days need to be a whole number from 1 to 3650."); return; }
+      payload.graceDays = graceDays;
+    } else if (k === "extend") {
+      const extendDays = Number(graceVal("#grace-extend"));
+      if (!Number.isInteger(extendDays) || extendDays < 1) { graceSay("Extend days need to be a whole number from 1 to 3650."); return; }
+      payload.extendDays = extendDays;
+    } else if (k === "end") {
+      const endsAt = graceVal("#grace-end");
+      if (!endsAt) { graceSay("Pick an end date."); return; }
+      payload.endsAt = endsAt;
+    } else if (k === "clear-end") payload.clearEndsAt = true;
+    else if (k === "note") payload.note = graceVal("#grace-note");
+    else if (k === "exempt") payload.exempt = true;
+    else if (k === "clear-exempt") payload.exempt = false;
+    else return;
+    b.disabled = true;
+    try {
+      const r = await callFn("adminSetFollowUpGrace", payload);
+      graceSay(r?.graceBoot ? "Saved. Portal access is off." : "Saved.");
+      toast("Follow-Up grace saved");
+    } catch (e) {
+      graceSay(graceErrText(e));
+    } finally {
+      if (b.isConnected) b.disabled = false;
+    }
   }));
 }
 
