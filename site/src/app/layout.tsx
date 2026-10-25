@@ -63,7 +63,7 @@ const jsonLd = {
   telephone: phone.schema,
   email: site.email,
   address: { "@type": "PostalAddress", addressLocality: "Maple Grove", addressRegion: "MN", addressCountry: "US" },
-  contactPoint: [{ "@type": "ContactPoint", contactType: "customer service", telephone: phone.schema, areaServed: "US-MN", availableLanguage: "en" }],
+  contactPoint: [{ "@type": "ContactPoint", contactType: "customer service", telephone: phone.schema, email: site.email, areaServed: "US-MN", availableLanguage: "en" }],
   founder: { "@type": "Person", name: site.owner },
   description: site.description,
   areaServed: [

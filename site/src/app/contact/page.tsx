@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
 import { PHONE_ANSWERED_BY_IRIS, formHonestLine, irisNotice, phone, serviceTowns } from "@/lib/copy";
-import { pageSocial } from "@/lib/site";
+import { pageSocial, site } from "@/lib/site";
 
 const title = "Contact";
 const description = "Contact Parker at MN Clockworks in Maple Grove, MN. Service area: the northwest Twin Cities, and Minnesota by phone and screen share.";
@@ -20,6 +20,7 @@ export default function Contact() {
         <div className="mt-8 space-y-4 text-lg text-ink-soft">
           <p>{phone.pending ? <span>{phone.display}</span> : <a href={phone.tel} className="link-draw">{phone.display}</a>}</p>
           {PHONE_ANSWERED_BY_IRIS && <p className="text-sm">{irisNotice} Prefer not to be recorded? Reach Parker through mnclockworks.com.</p>}
+          <p><a href={`mailto:${site.email}`} className="link-draw">{site.email}</a></p>
           <p>Based in Maple Grove, Minnesota.</p>
           <p><Link href="/book/" className="link-draw">Send a note instead</Link></p>
           <p>{formHonestLine}</p>
