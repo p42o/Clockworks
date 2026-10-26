@@ -1,6 +1,6 @@
 <?php
 /**
- * PIN gate for the The Palmetto Painting assessment.
+ * PIN gate for the the Palmetto Painting assessment.
  *
  * Two scopes: the client PIN opens the assessment only; the admin PIN opens
  * Parker's internal playbook under /palmetto/admin/ (and the assessment).
@@ -16,7 +16,8 @@ declare(strict_types=1);
 
 const COOKIE      = 'palmetto_auth';
 const PIN_LEN     = 4;      // client PIN digits
-const ADMIN_LEN   = 6;      // admin (playbook) PIN digits
+const ADMIN_LEN   = 4;      // admin (playbook) PIN digits: Parker's shared admin PIN (same as /timely/admin/)
+const ADMIN_LEN_OWN = 6;    // fallback when the shared admin config is unavailable (legacy PALMETTO_ADMIN_HMAC)
 const COOKIE_DAYS = 30;
 const IP_MAX_FAIL = 8;      // per IP, per window
 const GLOBAL_MAX  = 60;     // all IPs combined, per window
@@ -36,6 +37,21 @@ $cfg = require $cfgFile;
 $key = base64_decode($cfg['key'], true);
 $pinMac = $cfg['pin'];
 $adminMac = $cfg['admin'] ?? '';
+$adminKey = $key;  // key the admin HMAC was made with
+$adminLen = ADMIN_LEN_OWN;
+// Parker uses one admin PIN on every assessment gate. Reuse the Timely gate's admin HMAC and key
+// (timely/_config.php, written by the same Deploy run from TIMELY_KEY / TIMELY_ADMIN_HMAC) so no new
+// secret or PIN entry is needed. If it is missing or malformed, fall back to PALMETTO_ADMIN_HMAC (6 digits, legacy).
+$sharedFile = dirname(__DIR__) . '/timely/_config.php';
+if (is_file($sharedFile)) {
+    $shared = require $sharedFile;
+    $sk = is_array($shared) ? base64_decode((string)($shared['key'] ?? ''), true) : false;
+    $sm = is_array($shared) ? (string)($shared['admin'] ?? '') : '';
+    if ($sk !== false && strlen($sk) === 32 && preg_match('/^[a-f0-9]{64}$/', $sm)) {
+        $adminKey = $sk; $adminMac = $sm; $adminLen = ADMIN_LEN;
+    }
+    unset($shared, $sk, $sm);
+}
 if ($key === false || strlen($key) !== 32) {
     http_response_code(503);
     exit('Not configured.');
@@ -106,7 +122,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pin'])) {
     } else {
         $pin = preg_replace('/\D/', '', (string)$_POST['pin']);
         $mac = sign($key, 'pin:' . $pin);
-        $scope = ($adminMac !== '' && hash_equals($adminMac, $mac)) ? 'a' : (hash_equals($pinMac, $mac) ? 'c' : '');
+        $amac = sign($adminKey, 'pin:' . $pin);
+        $scope = ($adminMac !== '' && hash_equals($adminMac, $amac)) ? 'a' : (hash_equals($pinMac, $mac) ? 'c' : '');
         // The client PIN never opens the playbook, even when typed on the playbook's gate.
         if ($scope === 'c' && $isPlaybook) $scope = '';
         if ($scope !== '') {
@@ -179,7 +196,7 @@ echo $plain;
 function render_gate(string $error, bool $playbook): void {
     $err = htmlspecialchars($error, ENT_QUOTES);
     $action = $playbook ? '/palmetto/admin/' : '/palmetto/';
-    $len = $playbook ? ADMIN_LEN : PIN_LEN;
+    $len = $playbook ? (int)($GLOBALS['adminLen'] ?? ADMIN_LEN_OWN) : PIN_LEN;
     ?><!doctype html>
 <html lang="en">
 <head>
@@ -188,7 +205,7 @@ function render_gate(string $error, bool $playbook): void {
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#F5F1E8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#161412" media="(prefers-color-scheme: dark)">
-<title><?= $playbook ? 'Nickel Playbook (internal)' : 'The Palmetto Painting Assessment' ?> · MN Clockworks</title>
+<title><?= $playbook ? 'Palmetto Playbook (internal)' : 'The Palmetto Painting Assessment' ?> · MN Clockworks</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
@@ -229,11 +246,11 @@ function render_gate(string $error, bool $playbook): void {
 <?php if ($playbook): ?>
   <p class="badge">Internal · Not for the client</p>
   <p class="kicker">Impact Playbook</p>
-  <h1>Nickel <em>Playbook</em></h1>
+  <h1>Palmetto <em>Playbook</em></h1>
   <p class="sub">Parker’s operating plan: actions, costs, expected lift and how we measure it. Enter the PIN to open it.</p>
 <?php else: ?>
   <p class="kicker">Online Presence Assessment</p>
-  <h1>The Osseo <em>Nickel</em></h1>
+  <h1>Palmetto <em>Painting</em></h1>
   <p class="sub">This report is private. Enter the <?= PIN_LEN ?>-digit PIN to view it.</p>
 <?php endif; ?>
   <form method="post" action="<?= $action ?>" id="f" autocomplete="off">
