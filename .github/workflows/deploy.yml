@@ -40,6 +40,14 @@ jobs:
         run: |
           printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s'];\n" "$PALMETTO_KEY" "$PALMETTO_PIN_HMAC" "$PALMETTO_ADMIN_HMAC" > palmetto/_config.php
 
+      - name: Write Bridge Right gate config (from secrets, never committed)
+        env:
+          BRIDGERIGHT_KEY: ${{ secrets.BRIDGERIGHT_KEY }}
+          BRIDGERIGHT_PIN_HMAC: ${{ secrets.BRIDGERIGHT_PIN_HMAC }}
+          BRIDGERIGHT_ADMIN_HMAC: ${{ secrets.BRIDGERIGHT_ADMIN_HMAC }}
+        run: |
+          printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s'];\n" "$BRIDGERIGHT_KEY" "$BRIDGERIGHT_PIN_HMAC" "$BRIDGERIGHT_ADMIN_HMAC" > bridgeright/_config.php
+
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:

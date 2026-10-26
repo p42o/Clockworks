@@ -42,3 +42,6 @@ site/.preview-*.png
 # Palmetto gate: generated at deploy / by the server
 palmetto/_config.php
 palmetto/_state/
+# Bridge Right gate: generated at deploy / by the server
+bridgeright/_config.php
+bridgeright/_state/
