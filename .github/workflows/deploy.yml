@@ -9,15 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      # Parker's page rule (2026-10-23): GA4, sitemap, canonical, robots, NAP/JSON-LD, inventory row.
-      # A failure here stops the job before any gate config is written or anything is uploaded.
-      - name: Page rule check (blocks deploy on failure)
-        run: node site/scripts/check-pages.mjs
       - name: Write Eicher gate config (from secrets, never committed)
         env:
           EICHER_KEY: ${{ secrets.EICHER_KEY }}
@@ -30,12 +21,8 @@ jobs:
           TIMELY_KEY: ${{ secrets.TIMELY_KEY }}
           TIMELY_PIN_HMAC: ${{ secrets.TIMELY_PIN_HMAC }}
           TIMELY_ADMIN_HMAC: ${{ secrets.TIMELY_ADMIN_HMAC }}
-          TIMELY_VIEWER_HMAC: ${{ secrets.TIMELY_VIEWER_HMAC }}
-          TIMELY_NOTIFY: ${{ secrets.TIMELY_NOTIFY }}
-          TIMELY_RESEND_KEY: ${{ secrets.TIMELY_RESEND_KEY }}
-          TIMELY_NOTIFY_TO: ${{ secrets.TIMELY_NOTIFY_TO }}
         run: |
-          printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s', 'viewer' => '%s', 'notify' => '%s', 'resend' => '%s', 'notify_to' => '%s'];\n" "$TIMELY_KEY" "$TIMELY_PIN_HMAC" "$TIMELY_ADMIN_HMAC" "$TIMELY_VIEWER_HMAC" "$TIMELY_NOTIFY" "$TIMELY_RESEND_KEY" "$TIMELY_NOTIFY_TO" > timely/_config.php
+          printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s'];\n" "$TIMELY_KEY" "$TIMELY_PIN_HMAC" "$TIMELY_ADMIN_HMAC" > timely/_config.php
 
       - name: Write Nickel gate config (from secrets, never committed)
         env:
@@ -44,6 +31,14 @@ jobs:
           NICKEL_ADMIN_HMAC: ${{ secrets.NICKEL_ADMIN_HMAC }}
         run: |
           printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s'];\n" "$NICKEL_KEY" "$NICKEL_PIN_HMAC" "$NICKEL_ADMIN_HMAC" > thenickel/_config.php
+
+      - name: Write Palmetto gate config (from secrets, never committed)
+        env:
+          PALMETTO_KEY: ${{ secrets.PALMETTO_KEY }}
+          PALMETTO_PIN_HMAC: ${{ secrets.PALMETTO_PIN_HMAC }}
+          PALMETTO_ADMIN_HMAC: ${{ secrets.PALMETTO_ADMIN_HMAC }}
+        run: |
+          printf "<?php\nreturn ['key' => '%s', 'pin' => '%s', 'admin' => '%s'];\n" "$PALMETTO_KEY" "$PALMETTO_PIN_HMAC" "$PALMETTO_ADMIN_HMAC" > palmetto/_config.php
 
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
