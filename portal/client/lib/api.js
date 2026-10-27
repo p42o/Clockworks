@@ -9,10 +9,17 @@ const call = (name) => async (payload = {}) => {
 };
 
 // public (signed out)
-export const inviteOpen = (token) => call("inviteOpen")({ token });
-export const inviteSendCode = (token) => call("inviteSendCode")({ token });
-export const inviteVerify = (token, code, keepSignedIn) => call("inviteVerify")({ token, code, keepSignedIn: !!keepSignedIn });
+const asInvite = (tokenOrPayload) => (typeof tokenOrPayload === "string" ? { token: tokenOrPayload } : (tokenOrPayload || {}));
+export const inviteOpen = (tokenOrPayload) => call("inviteOpen")(asInvite(tokenOrPayload));
+export const inviteSendCode = (tokenOrPayload) => call("inviteSendCode")(asInvite(tokenOrPayload));
+export const inviteVerify = (tokenOrPayload, code, keepSignedIn) => call("inviteVerify")(
+  tokenOrPayload && typeof tokenOrPayload === "object"
+    ? tokenOrPayload
+    : { token: tokenOrPayload, code, keepSignedIn: !!keepSignedIn },
+);
 export const inviteSetPassword = (p) => call("inviteSetPassword")(p);
+export const inviteAskRefresh = (p) => call("inviteAskRefresh")(p);
+export const inviteNote = (p) => call("inviteNote")(p);
 export const passwordResetStart = (email) => call("passwordResetStart")({ email });
 export const passwordResetFinish = (p) => call("passwordResetFinish")(p);
 export const starterAccept = (p) => call("starterAccept")(p);
@@ -27,6 +34,7 @@ export const irisChatOpen = () => call("irisChatOpen")();
 export const irisChatSend = (text, history = []) => call("irisChatSend")({ text, history });
 export const irisChatAckDisclosure = () => call("irisChatAckDisclosure")({ bannerVersion: "A" });
 export const irisChatHandoffSubmit = (handoff) => call("irisChatHandoffSubmit")(handoff);
+export const changelogCardList = () => call("changelogCardList")();
 export const sessionTouch = () => call("sessionTouch")();
 export const reverifySend = () => call("reverifySend")();
 export const reverifyCheck = (code) => call("reverifyCheck")({ code });
@@ -55,6 +63,12 @@ export function friendlyError(e) {
   if (isLocalDev()) console.debug("[cw] error", errCode(e), e && e.message);
   const code = errCode(e);
   const msg = String((e && e.message) || "");
+  if (code === "failed-precondition" && /apple_not_live/.test(msg)) return "Apple sign-in is coming soon. Use Google or your password, or ask Parker for help.";
+  if (code === "ask_parker" || /ask_parker/.test(msg)) return "This portal is invite-only. Ask Parker for an invite, then sign in with the method you set up.";
+  if (code === "use_password" || /use_password/.test(msg)) return "That sign-in isn't the one on this account. Use your password, or ask Parker.";
+  if (code === "apple_email_missing" || /apple_email_missing/.test(msg)) return "Apple didn't share an email address. Share the address on this invite, or use a password.";
+  if (code === "email_mismatch" || /email_mismatch/.test(msg)) return "That account doesn't match this invite. Switch accounts, or use a password.";
+  if (/proof_expired|proof_required/.test(msg)) return "That step timed out. Enter your invite code again. The invite itself is still good until it expires.";
   if (/sign_in_failed/.test(msg)) return "That email or password didn't match.";
   if (code === "permission-denied" && /invalid_code/.test(msg)) return "That didn't match. Check the latest email and try again.";
   if (code === "unauthenticated" || code === "permission-denied") return "Your session ended. Please sign in again.";
@@ -68,6 +82,19 @@ export function friendlyError(e) {
     return "We couldn't reach the portal. Check your connection and try again.";
   }
   return "Something went wrong. Please try again.";
+}
+
+/** Reject if the callable takes too long. The invite proof stays put for a retry. */
+export function withTimeout(promise, ms = 20000) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      const e = new Error("deadline-exceeded");
+      e.code = "deadline-exceeded";
+      reject(e);
+    }, ms);
+  });
+  return Promise.race([Promise.resolve(promise).finally(() => clearTimeout(timer)), timeout]);
 }
 
 export const me = () => call("me")();
