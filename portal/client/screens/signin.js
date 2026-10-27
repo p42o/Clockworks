@@ -7,7 +7,24 @@ import { signInWith, signInWithPassword, signInWithGoogleReturn, signInWithApple
 import { showDevCode } from "../lib/dev.js";
 import { renderCodeForm } from "./_codeform.js";
 
+// /portal/ is the one sign-in page. Hand off there, carrying the gate message and the remembered target.
+// ?signin keeps this screen for the local UI suites that still drive it directly.
 export async function render(ctx) {
+  if (!new URLSearchParams(location.search).has("signin")) {
+    const target = ctx.router.takeRememberedTarget();
+    try {
+      if (state.gateMessage) sessionStorage.setItem("cw.door.note", state.gateMessage);
+      if (target) sessionStorage.setItem("cw.door.next", target);
+    } catch { /* private mode */ }
+    clearGateMessage();
+    mount(ctx.el, html`<h1>Sign in</h1><p>Opening the sign-in page…</p>`);
+    location.replace("/portal/");
+    return;
+  }
+  return renderHere(ctx);
+}
+
+async function renderHere(ctx) {
   const { el, router } = ctx;
   const note = state.gateMessage;
   const appleAvailable = appleSignInAllowed(appleSignInContext(location.pathname));
