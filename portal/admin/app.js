@@ -2,7 +2,7 @@
 // Clockworks Portal · CRM. Admin-only; access and data shape are enforced by firebase/firestore.rules.
 // On localhost it talks to the Firebase emulators unless the URL has ?prod.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut, connectAuthEmulator, signInWithCredential } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, connectAuthEmulator, signInWithCredential } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager, connectFirestoreEmulator, terminate, clearIndexedDbPersistence,
   collection, collectionGroup, doc, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, getDocs, query, orderBy, limit, serverTimestamp, Timestamp, writeBatch,
@@ -413,7 +413,13 @@ function renderGate(kind) {
   if (denied) { $("#out").onclick = doSignOut; return; }
   $("#signin").onclick = async () => {
     const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" });
-    try { await signInWithPopup(auth, p); } catch (e) { if (/popup/.test(e.code || "")) return signInWithRedirect(auth, p); toast("Sign-in failed: " + (e.code || e.message)); }
+    // Popup only. A redirect lands on the firebaseapp.com auth handler, and browsers that partition
+    // storage (Safari, iOS, newer Chrome) lose its state: "Unable to process request due to missing initial state".
+    try { await signInWithPopup(auth, p); } catch (e) {
+      const c = e.code || "";
+      if (c === "auth/popup-closed-by-user" || c === "auth/cancelled-popup-request") return;
+      toast(c === "auth/popup-blocked" ? "Allow pop-ups for mnclockworks.com, then tap Sign in again." : "Sign-in failed: " + (c || e.message));
+    }
   };
   if (EMU) $("#devin").onclick = () => window.__portalDevSignIn();
 }
