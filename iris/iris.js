@@ -10,7 +10,7 @@
 (function () {
   'use strict';
   var IRIS_PUBLIC_CHAT_DEFAULT = true; // LIVE 2026-10-27 (Parker tap)
-  var VERSION = '20261027b';
+  var VERSION = '20261027c';
   var KEY = 'cw.iris.public';
 
   // ---------- flag ----------

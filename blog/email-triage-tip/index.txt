@@ -19,7 +19,7 @@
 25:I[4224,[],"MetadataBoundary"]
 26:"$Sreact.suspense"
 5:["$","$L4",null,{"src":"/cw-events.js","strategy":"afterInteractive"}]
-6:["$","$L4",null,{"src":"/iris/iris.js?v=20261027b","strategy":"afterInteractive"}]
+6:["$","$L4",null,{"src":"/iris/iris.js?v=20261027c","strategy":"afterInteractive"}]
 7:["$","a",null,{"href":"#content","className":"skip-link","children":"Skip to content"}]
 8:["$","$L11",null,{}]
 9:["$","main",null,{"id":"content","tabIndex":-1,"className":"flex-1","children":["$","$L12",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L13",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","section",null,{"className":"mx-auto flex min-h-dvh max-w-6xl flex-col items-start justify-center px-5 sm:px-8","children":[["$","p",null,{"className":"eyebrow","children":"404"}],["$","h1",null,{"className":"display mt-4 max-w-2xl text-5xl sm:text-7xl","children":"This page is not here."}],["$","p",null,{"className":"mt-6 max-w-md text-lg leading-relaxed text-ink-soft","children":"The link may be old. You can go home, or call me."}],["$","div",null,{"className":"mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center","children":[["$","$L14",null,{"href":"/","className":"btn-press inline-flex min-h-11 items-center rounded-[3px] bg-ink px-5 py-3 font-medium text-paper hover:bg-copper-deep","children":"Back home"}],["$","a",null,{"href":"tel:+17632969777","className":"inline-flex min-h-11 items-center font-medium text-ink underline decoration-copper underline-offset-4","children":"(763) 296-9777"}]]}]]}],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]

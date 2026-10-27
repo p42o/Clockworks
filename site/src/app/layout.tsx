@@ -117,7 +117,7 @@ export default function RootLayout({
               {/* Shared GA4 events (calls, email, booking). Reduced data; see public/cw-events.js */}
               <Script src="/cw-events.js" strategy="afterInteractive" />
               {/* Iris public site chat (see /iris/iris.js for the irisPublicChat flag). */}
-              <Script src="/iris/iris.js?v=20261027b" strategy="afterInteractive" />
+              <Script src="/iris/iris.js?v=20261027c" strategy="afterInteractive" />
             </>
           )}
           <a href="#content" className="skip-link">

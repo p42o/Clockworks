@@ -45,7 +45,12 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 // Escape first, then turn our own links and the phone number into links. Nothing from the model becomes HTML.
 function rich(text) {
   return esc(text)
-    .replace(/https:\/\/mnclockworks\.com\/[A-Za-z0-9/_#.-]*/g, (u) => `<a href="${u}">${u.replace('https://', '')}</a>`)
+    // Our own URLs, with or without a path. A sentence-ending period stays outside the link.
+    .replace(/https:\/\/mnclockworks\.com(?:\/[A-Za-z0-9/_#.-]*)?/g, (u) => {
+      const tail = (u.match(/\.+$/) || [''])[0];
+      const url = u.slice(0, u.length - tail.length);
+      return `<a href="${url}">${url.replace('https://', '')}</a>${tail}`;
+    })
     .replace(/\(763\) 296-9777/g, `<a href="${TEL}">${PHONE}</a>`)
     .replace(/\n/g, '<br>');
 }
