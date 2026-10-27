@@ -10,6 +10,8 @@ import { LANDING_COPY, LOCK_REASON } from "../lib/clientCopy.js";
 import { ARCHIVED_BODY, fillNotice } from "../lib/statusNotices.js";
 import { isIrisChatVisible } from "../lib/irisChat.js";
 import { mountIrisChatCard } from "./iris-chat-card.js";
+import { isChangelogCardVisible } from "../lib/changelogCard.js";
+import { mountChangelogCard } from "./changelog-card.js";
 const STATE_TEXT = { done: "Done", current: "Now", upcoming: "Coming up" };
 
 function scheduleItem(h) {
@@ -50,17 +52,30 @@ function stageDial(steps) {
     <text x="60" y="88" text-anchor="middle">${pos}/${n}</text></svg>`);
 }
 const fDay = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", weekday: "long", month: "long", day: "numeric" });
+// Time-of-day greeting in the visitor's own clock, same words as the sign-in door.
+const partOfDay = (h = new Date().getHours()) => h < 5 ? "Up late" : h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
 const STAGE_WINDOW = 3;
 const NEED_WINDOW = 2;
 const DONE_WINDOW = 3;
 
+const WELCOME_KEY = "cw.iris.welcome";
+
 export function render(ctx) {
   const { el, router } = ctx;
   const flash = router.takeFlash();
+  let irisWelcome = null;
+  try {
+    const raw = sessionStorage.getItem(WELCOME_KEY);
+    if (raw) {
+      sessionStorage.removeItem(WELCOME_KEY);
+      irisWelcome = JSON.parse(raw);
+    }
+  } catch { irisWelcome = null; }
   const marked = new Set();    // needs the client just marked done in this visit
   let ideaUnsub = null, ideaFor = null, ideaTitle = "";
   let irisUnmount = null;
   let irisCid = null;
+  let changelogUnmount = null;
   let showStages = false, showNeeds = false, showDone = false;
   let last = null;
 
@@ -77,13 +92,15 @@ export function render(ctx) {
   }
 
   function paint() {
-    // Keep the live Iris node when Home redraws for a stage/need update.
-    // Non-DEV transcript and handoff draft live in this card's memory.
+    // Keep the live Iris node when Home redraws for a stage or need update.
     const preservedIris = el.querySelector("[data-iris-chat]");
     preservedIris?.remove();
+    const preservedChangelog = el.querySelector("[data-changelog-card]");
+    preservedChangelog?.remove();
     const h = last;
     if (!h) {
       irisUnmount?.(); irisUnmount = null; irisCid = null;
+      changelogUnmount?.(); changelogUnmount = null;
       mount(el, html`<h1>Home</h1>${emptyState("Nothing here yet.", "Parker will set up your home page soon.")}`);
       return;
     }
@@ -118,10 +135,12 @@ export function render(ctx) {
     const showLocks = !ro;
     const dueLine = (n) => n.due && n.state !== "done" ? (dueText(n.due).startsWith("overdue") ? html`<div class="sub"><b>${ic("alert")} Overdue by ${dueText(n.due).replace("overdue by ", "")}</b></div>` : html`<div class="sub">Due ${fmtDate(n.due)} · ${dueText(n.due)}</div>`) : "";
 
+    const welcomeName = irisWelcome?.name || name;
     mount(el, html`
+      ${irisWelcome ? html`<div class="banner info" id="iris-welcome" role="status">${ic("info")}<div>Iris here. Welcome, ${welcomeName || "you"}.</div></div>` : ""}
       <div class="hero">
         <div>
-          <span class="eyebrow rule">${fDay.format(new Date())}</span>
+          <span class="eyebrow rule hello-eyebrow"><span class="live-dot" aria-hidden="true"></span>${partOfDay()} · ${fDay.format(new Date())}</span>
           <h1>${name ? html`Hi, <em>${name}</em>.` : h.businessName ? html`Welcome, <em>${h.businessName}</em>.` : "Home"}</h1>
           <p class="lede">${cur ? html`You're at <b>${cur.label}</b>, step ${curIdx + 1} of ${steps.length}. Here's what's happening and what Parker needs from you.` : "Here's where things stand and what Parker needs from you."}</p>
           ${h.flowLabel ? html`<p class="chip live" id="flow-stage">${h.flowLabel}</p>` : ""}
@@ -136,6 +155,8 @@ export function render(ctx) {
         ${unread.messages > 0 ? html`<a class="banner copper" href="${h.latestUnread?.threadId ? `#/m/${h.latestUnread.threadId}` : "#/messages"}" style="text-decoration:none;color:inherit">${ic("chat")}<div><b>${h.latestUnread?.subject ? `Parker replied to ${h.latestUnread.subject}` : "You have a reply"}</b>${unread.messages} new ${unread.messages === 1 ? "message" : "messages"} from Parker.</div></a>` : ""}
         ${SWAP.irisChat?.showOnHome && isIrisChatVisible({ cid: state.me?.cid, stageKey: h.stageKey, portalEnabled: h.access?.enabled !== false })
           ? html`<section data-iris-chat class="iris-card-host" aria-label="Iris support chat"></section>` : ""}
+        ${isChangelogCardVisible({ cid: state.me?.cid, stageKey: h.stageKey, portalEnabled: h.access?.enabled !== false })
+          ? html`<div data-changelog-card class="changelog-card-host"></div>` : ""}
 
         <div class="dash">
           ${!ro ? html`<section class="card next-card" aria-labelledby="next-step-h">
@@ -178,7 +199,7 @@ export function render(ctx) {
                 ${dueLine(n)}
                 ${n.link ? html`<div class="sub"><a href="${n.link}">Open link</a></div>` : ""}</div>
               ${n.state === "done" ? html`<span class="chip ok">${ic("check")} Done</span>`
-                : (marked.has(n.id) || n.clientDoneAt) ? html`<p class="small" role="status">Sent — Parker will check it off.</p>`
+                : (marked.has(n.id) || n.clientDoneAt) ? html`<p class="small" role="status">Sent. Parker will check it off.</p>`
                 : ro ? "" : html`<button type="button" class="btn" data-done="${n.id}">I've done this</button>`}
             </div></li>`)}</ul>
             ${rest.length > NEED_WINDOW ? html`<button type="button" class="btn quiet show-more" data-more="needs" aria-expanded="${showNeeds ? "true" : "false"}">${showNeeds ? "Show fewer" : `Show all ${rest.length}`}</button>` : ""}
@@ -223,6 +244,14 @@ export function render(ctx) {
       }
     }
 
+    const changelogHost = el.querySelector("[data-changelog-card]");
+    if (changelogHost && preservedChangelog) {
+      changelogHost.replaceWith(preservedChangelog);
+    } else {
+      changelogUnmount?.(); changelogUnmount = null;
+      if (changelogHost) changelogUnmount = mountChangelogCard(changelogHost);
+    }
+
     el.querySelectorAll("[data-more]").forEach((b) => b.addEventListener("click", () => {
       const which = b.dataset.more;
       if (which === "stages") showStages = !showStages;
@@ -251,7 +280,7 @@ export function render(ctx) {
       try {
         await api.needDone(n.id);
         marked.add(n.id);
-        const p = document.createElement("p"); p.className = "small"; p.setAttribute("role", "status"); p.textContent = "Sent — Parker will check it off.";
+        const p = document.createElement("p"); p.className = "small"; p.setAttribute("role", "status"); p.textContent = "Sent. Parker will check it off.";
         b.replaceWith(p);
       } catch (e) { setBusy(b, false); toast("Something went wrong. Please try again."); }
     }));
@@ -266,5 +295,5 @@ export function render(ctx) {
   }
 
   const teardownLive = live(el, "Home", data.subscribeHome, (h) => { last = h; paint(); });
-  return () => { teardownLive(); ideaUnsub?.(); irisUnmount?.(); };
+  return () => { teardownLive(); ideaUnsub?.(); irisUnmount?.(); changelogUnmount?.(); };
 }
