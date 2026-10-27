@@ -522,3 +522,6 @@ h2 em{white-space:nowrap}
 .demo .ph-head b,.demo .ask-top b{color:var(--gb-tx)}
 @media (max-width:760px){.demo .composer{display:none}}
 @media (max-width:760px){.demo .feed{height:400px;padding-bottom:84px}}
+
+/* Phones: the Client portal button moves to the footer so "Book a free audit" fits (2026-10-27). */
+@media (max-width:760px){.nav-cta .btn-ghost{display:none}}

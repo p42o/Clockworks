@@ -19,7 +19,7 @@ const cards = [
   },
   {
     kicker: "Optional",
-    title: "$50 online presence assessment",
+    title: "$49 online presence assessment",
     body: assessmentLine,
     action: assessmentCta,
     href: phone.tel,

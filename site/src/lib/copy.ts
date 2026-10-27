@@ -2,7 +2,7 @@
  * Approved V2 marketing copy. Homepage and subpages render these strings
  * so visible FAQ text and FAQPage JSON-LD stay identical.
  * Homepage hero = Sprocket "Setup together" (presence/2026-10-21-homepage-copy-angles.md).
- * Public prices: free 15-min / $50 / $499 only. No Membership on Site.
+ * Public prices: free 15-min / $49 / $499 only. No Membership on Site.
  * No em dashes, no en dashes.
  */
 
@@ -60,7 +60,7 @@ export const deploymentLine =
   "The deployment is $499, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it.";
 
 export const assessmentLine =
-  "The online presence assessment is $50. We check how your business shows up across search, AI assistants, and ratings and review sites. You get the exact searches and prompts we ran, plus an interactive report showing where you showed up that day and what we'd recommend improving. It's a snapshot, since search results and AI answers change on their own, but it gives you a baseline to compare against later.";
+  "The online presence assessment is $49. We check how your business shows up across search, AI assistants, and ratings and review sites. You get the exact searches and prompts we ran, plus an interactive report showing where you showed up that day and what we'd recommend improving. It's a snapshot, since search results and AI answers change on their own, but it gives you a baseline to compare against later.";
 
 export const agreementLine =
   "Simple written terms, in plain English. Please read the Starter Terms and Privacy Notice before you buy.";
@@ -75,7 +75,7 @@ export const formHonestLine =
   "I can't book a time from this form. Parker will reach out.";
 
 export const primaryCta = "Get my free 15-minute phone audit";
-export const assessmentCta = "Get the $50 Online Presence Assessment";
+export const assessmentCta = "Get the $49 Online Presence Assessment";
 export const chatCta = "Talk to the Front Desk";
 
 export const hero = {
@@ -269,7 +269,7 @@ export const steps = [
   },
   {
     n: "2",
-    title: "Optional $50 online presence assessment",
+    title: "Optional $49 online presence assessment",
     body: assessmentLine,
   },
   {
@@ -300,7 +300,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "How does setup work?",
-    a: `You call ${phone.display} for a free 15-minute phone audit. If you want it, the online presence assessment is $50. Then the deployment is $499, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. After that it runs on your own account.`,
+    a: `You call ${phone.display} for a free 15-minute phone audit. If you want it, the online presence assessment is $49. Then the deployment is $499, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. After that it runs on your own account.`,
   },
   {
     q: "Whose account does it run on?",
