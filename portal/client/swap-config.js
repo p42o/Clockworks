@@ -21,12 +21,33 @@ const INTAKE_COMPLETE_COPY = "Thanks, your intake is in. We'll get back to you. 
 export const SWAP = Object.freeze({
   irisChat: Object.freeze({
     enabled: true,
-    loggingEnabled: false,
-    allowClientIds: Object.freeze(["dev-smoke-apex"]),
+    // Customer-visible transcript logging. On for every signed-in portal client.
+    // allowClientIds stays an array because the server filters one. Empty on purpose.
+    // It is not a write gate. loggingOn is true for any cid while loggingEnabled is true.
+    loggingEnabled: true,
+    allowClientIds: Object.freeze([]),
     stages: Object.freeze(["*"]),
     showOnHome: true,
     maxMessageChars: 2000,
     bannerVersion: "A",
+  }),
+  // Home changelog card. Live scrape on the server. DEV allowlist only. Not the Iris digest.
+  changelogCard: Object.freeze({
+    enabled: true,
+    loggingEnabled: false,
+    allowClientIds: Object.freeze(["dev-smoke-apex"]),
+    stages: Object.freeze(["*"]),
+    showOnHome: true,
+    cacheMinutes: 30,
+    maxItems: 16,
+  }),
+  // One hour of Parker's time. $125. Card stays on Account while offered is false.
+  // No payment URL. Do not turn offered on until Counsel sellability and Parker go-live.
+  workingSession: Object.freeze({
+    offered: false,
+    showComingSoon: true,
+    priceDisplay: "$125",
+    durationLabel: "1 hour",
   }),
   // ---- Parker placeholders ----
   // Fake placeholder pilot. Parker picks the real pilot later (SPEC-v3 Q6). Never put a real client here.
@@ -47,14 +68,14 @@ export const SWAP = Object.freeze({
     Object.freeze({ id: "plan_setup", name: "One-time setup (placeholder)", priceDisplay: "$—", interval: "one_time" }),
   ]),
 
-  // Payment Links remain on sellability HOLD until Counsel clearance and Parker's release tap.
-  // HARD UI gate: URLs alone never make an offer available. Independent of portal billing.
+  // Shop Pass is not available yet. Keep Payment Link URLs blank until Counsel clearance and release.
+  // This offer stays independently gated from portal billing.
   shopPass: Object.freeze({
     productName: "Shop Pass",
     monthlyPriceLabel: "$99/mo",
     deployPriceLabel: "$499",
-    deployPaymentLinkUrl: "https://buy.stripe.com/6oU7sLgSP7vz10DdK21Nu00",
-    shopPassPaymentLinkUrl: "https://buy.stripe.com/7sY00j8mj3fjbFhaxQ1Nu01",
+    deployPaymentLinkUrl: "",
+    shopPassPaymentLinkUrl: "",
     offered: false,
   }),
 
@@ -86,29 +107,34 @@ export const SWAP = Object.freeze({
     counsel: "FINAL-2026-10-20 (Parker approved; Fable review, see portal-dev/spec/LEGAL-REVIEW-2026-10-20.md)",
     label: "I agree to the MN Clockworks Starter Terms and have read the Privacy Notice.",
     terms: Object.freeze({
-      version: "v4.0a",
+      version: "v4.0b",
       // Matches "Last updated" in the file below. Shown on the public /terms/ page.
-      date: "October 23, 2026",
-      file: "legal/starter-terms-v4.0a.md",
+      date: "October 24, 2026",
+      file: "legal/starter-terms-v4.0b.md",
       linkText: "Starter Terms",
       href: "#/starter-terms",
+      approvedSha256: "b826ed205b6866318f9ff51e2be89c944b44627cc141f1c598222a468aa59704",
     }),
     // Plain-English "what changed" bullets for the current versions, shown on the terms-updated screen.
     changes: Object.freeze([
-      "Our phone number is now (763) 296-9777.",
-      "The Privacy Notice now explains the Google Analytics on our website and the sign-in pages of our client portal.",
+      "The portal sign-in methods include password, Google, and Sign in with Apple.",
+      "When you use Sign in with Apple, Apple may provide a private relay address if you choose Hide My Email.",
     ]),
     notice: Object.freeze({
-      version: "v2.0a",
-      file: "legal/privacy-notice-v2.0a.md",
+      version: "v2.0c",
+      file: "legal/privacy-notice-v2.0c.md",
       linkText: "Privacy Notice",
       href: "#/privacy-notice",
+      approvedSha256: "ba0ae930cb6e243bb7a36ef365e8bdd5ef6420c847d50764375acbd453cffe9e",
     }),
   }),
-  // History (Counsel ruling 2026-10-23, non-material phone change, Terms s.25). Label and counsel unchanged on purpose.
-  // 2026-10-23 3:16 PM CT Counsel ruling: Notice v2.0a also gains the Google Analytics paragraph (website + portal sign-in pages);
-  // legal/privacy-notice-v2.0a.md sha256 670a76d73a5a96d812aca131976a72bfb16691a6e8692470d838e927067353f2. Terms v4.0a unchanged (7cb00f4f...c09975).
-  // Superseded, kept unedited for acceptance proof: Terms v4.0 legal/starter-terms-v4.0.md sha256 6d130b1c...de52d; Notice v2.0 legal/privacy-notice-v2.0.md sha256 5302a16a...a2707 (accepted Oct 20 to Oct 23, 2026).
+  // History (2026-10-26 Counsel CLEAR, material: portal sign-in methods (password, Google, Sign in with Apple)
+  // and Apple private relay / Hide My Email). Label unchanged. This is a material bump: force recount and re-acceptance.
+  // NOT NON_MATERIAL_SUCCESSORS. Superseded for Notice only: v2.0b legal/privacy-notice-v2.0b.md sha256
+  // acda7544173880d01ba9c32b7397f9d76936a2829d50a35d53708147f1e4066c. Terms v4.0b remains live:
+  // legal/starter-terms-v4.0b.md sha256 b826ed205b6866318f9ff51e2be89c944b44627cc141f1c598222a468aa59704.
+  // Superseded, kept unedited for acceptance proof: Terms v4.0a legal/starter-terms-v4.0a.md sha256 7cb00f4fe2fe776b10a697ba6425713d98f8a8993e33b579c9a26e5058c09975; Notice v2.0a legal/privacy-notice-v2.0a.md sha256 670a76d73a5a96d812aca131976a72bfb16691a6e8692470d838e927067353f2 (accepted Oct 23, 2026).
+  // Superseded earlier: Terms v4.0 legal/starter-terms-v4.0.md sha256 6d130b1c...de52d; Notice v2.0 legal/privacy-notice-v2.0.md sha256 5302a16a...a2707 (accepted Oct 20 to Oct 23, 2026).
 
   // Parker approved: content-free "You have a reply" email (stubbed to the dev outbox) + in-portal badge.
   replyNoticeEmail: true,
@@ -118,8 +144,9 @@ export const SWAP = Object.freeze({
     privacyEmail: "parker@mnclockworks.com",
   }),
 
-  // History only. Legacy email-code acceptance of these hashes still opens the gate.
-  // Never displayed as the current versions. Current client-facing docs are `acceptance` above.
+  // History only. Never displayed as the current versions. Current client-facing docs are `acceptance` above.
+  // While termsLive is on, a real client clears the gate only with starterAcceptance (Contract Record).
+  // These legacy hashes do not.
   docs: Object.freeze({
     notice: Object.freeze({ version: "v1.2 DRAFT", file: "legal/privacy-notice-v1.2-DRAFT.md", approvedSha256: "[NOTICE_SHA256]", legacy: true }),
     terms: Object.freeze({ version: "v3.1 DRAFT", file: "legal/portal-terms-v3.1-DRAFT.md", approvedSha256: "[TERMS_SHA256]", legacy: true }),
@@ -184,12 +211,15 @@ export const SWAP = Object.freeze({
   // App Check enforcement hook. Off in the emulator (functions/config.js also forces it off there).
   appCheck: Object.freeze({ enforce: false }),
   // COUNSEL-DRAFT-2026-10-19 7:40 PM CT: submit without signing is APPROVED.
-  // The flag stays off globally until go-live. Emulator fixtures may still force the path in tests.
   // submitWithoutSigning: on for go-live 2026-10-20 (Counsel-approved copy). The MSA/SOW are signed later, outside the intake.
-  intake: Object.freeze({ termsLive: false, submitWithoutSigning: true }),
-  termsLive: false,                                // HARD: portal account terms acceptance is a DRAFT preview while false
+  // intake.termsLive is the intake/e-sign flag (SERVER_FLAGS.termsLive). It does not turn on real-client
+  // MSA/SOW signing: that still requires eSign.realClients, which stays false.
+  intake: Object.freeze({ termsLive: true, submitWithoutSigning: true }),
+  // Counsel CLEAR WITH CONDITIONS 2026-10-25. Portal account acceptance is live: #/accept + Contract Record.
+  // Real clients are not cleared by the draft termsAccept path or by legacy email-code hashes.
+  termsLive: true,
   // When false, the real "Sign and agree" is refused server-side for any client not marked fixture:true,
-  // and the UI shows "Preview — signing isn't live yet".
+  // and the UI shows "Preview — signing isn't live yet". Stays false: do not flip with termsLive.
   eSign: Object.freeze({ realClients: false }),
   // Password reset. "firebase" = Firebase Auth's built-in reset email (free, sent from
   // noreply@clockworks-portal-pgs.firebaseapp.com); its link opens #/reset-confirm, which enforces the portal

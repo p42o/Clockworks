@@ -5,24 +5,32 @@
 <script>
 // Runs before any module or network fetch: lift an invite token out of the URL into memory only.
 (function () { var h = location.hash || ""; if (h.indexOf("#/invite?") !== 0) return;
-  var t = new URLSearchParams(h.slice(h.indexOf("?") + 1)).get("t"); if (t) window.__cwInviteToken = t;
+  var q = new URLSearchParams(h.slice(h.indexOf("?") + 1));
+  var t = q.get("t"); var c = q.get("c");
+  if (t) window.__cwInviteToken = t;
+  if (c) window.__cwInviteCode = c;
   history.replaceState(null, "", location.pathname + location.search + "#/invite"); })();
 // Same for a password-reset link (?mode=resetPassword&oobCode=...): keep the code in memory, clean the address bar.
 (function () { var q = new URLSearchParams(location.search); if (q.get("mode") !== "resetPassword" || !q.get("oobCode")) return;
   window.__cwResetCode = q.get("oobCode"); history.replaceState(null, "", location.pathname + "#/reset-confirm"); })();
 </script>
-<!-- GA4 G-PSNYLVG4V1 for signed-out pages only; see ga.js. Must stay after the scrub above. -->
-<script src="ga.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#F5F1E8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#12110E" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clockworks">
+<link rel="manifest" href="/portal/client/manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/portal/client/apple-touch-icon.png">
+<link rel="icon" href="/portal/client/icon-192.png">
 <title>Clockworks client portal</title>
 <!-- TODO(Run 2): strict Content-Security-Policy meta (script-src 'self' https://www.gstatic.com; connect-src emulators + googleapis; style/font allowances for Google Fonts). -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="client.css?v=iris-chat-phase1">
+<link rel="stylesheet" href="/portal/client/client.css?v=privacy-v20c-20261026">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -32,6 +40,6 @@
 <div id="app"><div class="boot"><svg aria-hidden="true"><use href="#cw-mark"/></svg></div></div>
 <div class="toast" role="status" aria-live="polite"></div>
 <div class="sr" id="announcer" aria-live="polite"></div>
-<script type="module" src="app.js?v=iris-chat-phase1"></script>
+<script type="module" src="/portal/client/app.js?v=privacy-v20c-20261026"></script>
 </body>
 </html>
