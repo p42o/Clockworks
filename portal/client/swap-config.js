@@ -122,20 +122,24 @@ export const SWAP = Object.freeze({
     }),
     // Plain-English "what changed" bullets for the current versions, shown on the terms-updated screen.
     changes: Object.freeze([
-      "The portal sign-in methods include password, Google, and Sign in with Apple.",
-      "When you use Sign in with Apple, Apple may provide a private relay address if you choose Hide My Email.",
+      "Our marketing website may offer Website chat (Iris) for visitors; we store the transcript, session, page URL, and a hashed IP.",
     ]),
     notice: Object.freeze({
-      version: "v2.0c",
-      file: "legal/privacy-notice-v2.0c.md",
+      version: "v2.0d",
+      file: "legal/privacy-notice-v2.0d.md",
       linkText: "Privacy Notice",
       href: "#/privacy-notice",
-      approvedSha256: "ba0ae930cb6e243bb7a36ef365e8bdd5ef6420c847d50764375acbd453cffe9e",
+      approvedSha256: "5dcda59b5c60d8de6a0e6de95750f514627a2f1d378dccfdc325ba2fa9e93e86",
     }),
   }),
-  // History (2026-10-26 Counsel CLEAR, material: portal sign-in methods (password, Google, Sign in with Apple)
-  // and Apple private relay / Hide My Email). Label unchanged. This is a material bump: force recount and re-acceptance.
-  // NOT NON_MATERIAL_SUCCESSORS. Superseded for Notice only: v2.0b legal/privacy-notice-v2.0b.md sha256
+  // History (2026-10-27 Parker tap via Theo, material: marketing website chat (Iris) stores the transcript,
+  // session, page URL, and hashed IP). Label unchanged. Material bump: force recount and re-acceptance.
+  // NOT NON_MATERIAL_SUCCESSORS. Superseded for Notice only: v2.0c legal/privacy-notice-v2.0c.md sha256
+  // ba0ae930cb6e243bb7a36ef365e8bdd5ef6420c847d50764375acbd453cffe9e. Terms v4.0b remains live:
+  // legal/starter-terms-v4.0b.md sha256 b826ed205b6866318f9ff51e2be89c944b44627cc141f1c598222a468aa59704.
+  // Earlier history (2026-10-26 Counsel CLEAR): material portal sign-in methods and Apple private relay / Hide My Email.
+  // v2.0c is now superseded for Notice only; its history is retained here. NOT NON_MATERIAL_SUCCESSORS.
+  // Superseded Notice only: v2.0b legal/privacy-notice-v2.0b.md sha256
   // acda7544173880d01ba9c32b7397f9d76936a2829d50a35d53708147f1e4066c. Terms v4.0b remains live:
   // legal/starter-terms-v4.0b.md sha256 b826ed205b6866318f9ff51e2be89c944b44627cc141f1c598222a468aa59704.
   // Superseded, kept unedited for acceptance proof: Terms v4.0a legal/starter-terms-v4.0a.md sha256 7cb00f4fe2fe776b10a697ba6425713d98f8a8993e33b579c9a26e5058c09975; Notice v2.0a legal/privacy-notice-v2.0a.md sha256 670a76d73a5a96d812aca131976a72bfb16691a6e8692470d838e927067353f2 (accepted Oct 23, 2026).
