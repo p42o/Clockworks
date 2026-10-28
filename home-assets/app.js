@@ -72,6 +72,15 @@
         { a: 'site', t: '1:30 PM', msg: '12 new arrivals are ready for your shop page. Photos, sizes and descriptions are done.',
           to: 'Shop page update', body: 'New this week: 12 fall sweaters, in sizes XS to XL.',
           ok: 'Publish it', res: 'Shop page updated', done: 'Added 12 new arrivals' }
+      ]},
+      { name: 'Sample Realty Group', day: 'Thursday', kind: 'a real estate agent', team: ['desk', 'book', 'design', 'site', 'docs', 'review'], scenes: [
+        { a: 'desk', t: '7:52 AM', msg: 'New buyer lead on 412 Maple St: "Is it still available? Can we see it this weekend?"',
+          to: 'Text to the buyer', body: 'It is! I have Saturday at 11 or 1 open for a showing. Which works better for you?',
+          ok: 'Send it', res: 'Replied to the new lead', done: 'Answered a buyer lead in minutes' },
+        { a: 'design', t: '12:20 PM', msg: 'The Just Listed post and flyer for 412 Maple are ready.',
+          to: 'Instagram and Facebook post', art: ['Just listed', '412 Maple St'], body: 'Just listed: 3 bed, 2 bath on a quiet street. Open house Sunday, 1 to 3.',
+          tweak: { say: 'Mention the big backyard', msg: 'Added it.', body: 'Just listed: 3 bed, 2 bath with a big backyard on a quiet street. Open house Sunday, 1 to 3.' },
+          ok: 'Post it', res: 'Posted to Instagram and Facebook', done: 'Posted the Just Listed post' }
       ]}
     ];
 
@@ -340,7 +349,14 @@
       ['desk', 'Answers "do you have this in a medium?" from your stock notes.', 'Answers to OK'],
       ['inbox', 'Sorts supplier email and drafts the replies that matter.', 'Replies to OK'],
       ['docs', 'Writes your return policy and the how-tos for new staff.', 'A doc to review'],
-      ['review', 'Asks shoppers for a review and drafts your replies.', 'A reply to OK']] }
+      ['review', 'Asks shoppers for a review and drafts your replies.', 'A reply to OK']] },
+    realty: { name: 'Sample Realty Group', team: [
+      ['desk', 'Replies to new buyer leads in minutes, day or night, from your listing details.', 'A reply to OK'],
+      ['book', 'Lines up showings and sends reminders the night before.', 'Texts to OK'],
+      ['design', 'Makes Just Listed flyers, open house signs and social posts.', 'Artwork to approve'],
+      ['site', 'Adds each new listing to your website with photos and details.', 'A page update to OK'],
+      ['docs', 'Writes listing descriptions and your under-contract checklist.', 'A doc to review'],
+      ['review', 'Asks happy clients for a review after closing and drafts your replies.', 'A reply to OK']] }
   };
   var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
   var tabWrap = root.querySelector('.tb-tabs');
