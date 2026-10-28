@@ -535,3 +535,29 @@ h2 em{white-space:nowrap}
   .tb-roles{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (prefers-reduced-motion:reduce){.tb-list li.enter{animation:none}.tb-roles li{transition:none}}
+
+/* ---------- "+ More" industries menu (hero chips and team tabs) ---------- */
+.tb-tabbar{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin:-28px auto 28px}
+.tb-tabbar .tb-tabs{margin:0}
+.biz-more{position:relative;display:inline-flex}
+.biz-more .biz-more-btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border-radius:999px;border:1px dashed var(--orange-ink);background:var(--orange-soft);color:var(--orange-ink);font-weight:600;transition:background .25s,color .25s,border-color .25s,transform .2s var(--ease)}
+.dm-biz .biz-more .biz-more-btn{font:600 13.5px/1 var(--sans);padding:8px 12px}
+.tb-tabbar .biz-more-btn{font:600 14.5px/1 var(--sans);padding:11px 16px}
+.biz-more .biz-more-btn::after{content:"";width:6px;height:6px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .25s var(--ease)}
+.biz-more.open .biz-more-btn::after{transform:translateY(1px) rotate(-135deg)}
+.biz-more .biz-more-btn:hover{transform:translateY(-1px)}
+.biz-more .biz-more-btn.picked{border-style:solid;background:var(--ink);border-color:var(--ink);color:#F5F1E8}
+.biz-menu{position:absolute;z-index:40;top:calc(100% + 8px);left:0;min-width:220px;padding:6px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-lg);display:grid;gap:2px;animation:bizMenu .22s var(--ease) both}
+.tb-tabbar .biz-menu{left:auto;right:0}
+@keyframes bizMenu{from{opacity:0;transform:translateY(-6px) scale(.98)}}
+.biz-menu[hidden]{display:none}
+.dm-biz .biz-menu button,.biz-menu button{display:block;width:100%;text-align:left;font:500 14.5px/1.2 var(--sans);color:var(--ink-2);background:none;border:0;border-radius:10px;padding:10px 12px;cursor:pointer}
+.dm-biz .biz-menu button:hover,.biz-menu button:hover,.biz-menu button:focus-visible{background:var(--cream);border:0;outline-offset:-2px}
+.dm-biz .biz-menu button[aria-checked="true"],.biz-menu button[aria-checked="true"]{background:var(--orange-soft);color:var(--orange-ink);font-weight:600}
+.biz-menu button[aria-checked="true"]::after{content:" ✓"}
+@media (max-width:760px){
+  .tb-tabbar{margin:-12px 0 20px;justify-content:flex-start}
+  .tb-tabbar .biz-more-btn{font-size:14px;padding:10px 13px}
+  .biz-menu,.tb-tabbar .biz-menu{left:0;right:auto;min-width:200px;max-width:calc(100vw - 40px)}
+}
+@media (prefers-reduced-motion:reduce){.biz-menu{animation:none}}

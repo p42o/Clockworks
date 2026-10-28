@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/home-assets/site.css?v=202610272130">
+<link rel="stylesheet" href="/home-assets/site.css?v=202610272230">
 </head>
 <body>
 
@@ -105,6 +105,7 @@
             <button type="button" data-biz="3" aria-pressed="false">Landscaping</button>
             <button type="button" data-biz="4" aria-pressed="false">Retail shop</button>
             <button type="button" data-biz="5" aria-pressed="false">Real estate</button>
+            <div class="biz-more" data-more="dmMore"><button type="button" class="biz-more-btn" id="dmMore-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dmMore-menu"><span class="biz-more-t">+ More</span></button><div class="biz-menu" id="dmMore-menu" role="menu" aria-labelledby="dmMore-btn" hidden></div></div>
           </div>
         </div>
         <ol class="dm-steps" id="dmSteps">
@@ -168,6 +169,7 @@
     </div>
 
     <div class="tb reveal" id="teamBuilder">
+<div class="tb-tabbar">
       <div class="tb-tabs" role="tablist" aria-label="See a team for">
         <button role="tab" id="tb-t-plumb" aria-controls="tbPanel" aria-selected="true" data-biz="plumb">Plumbing &amp; HVAC</button>
         <button role="tab" id="tb-t-salon" aria-controls="tbPanel" aria-selected="false" tabindex="-1" data-biz="salon">Salon &amp; spa</button>
@@ -175,6 +177,8 @@
         <button role="tab" id="tb-t-lawn" aria-controls="tbPanel" aria-selected="false" tabindex="-1" data-biz="lawn">Landscaping</button>
         <button role="tab" id="tb-t-shop" aria-controls="tbPanel" aria-selected="false" tabindex="-1" data-biz="shop">Retail shop</button>
         <button role="tab" id="tb-t-realty" aria-controls="tbPanel" aria-selected="false" tabindex="-1" data-biz="realty">Real estate</button>
+      </div>
+        <div class="biz-more" data-more="tbMore"><button type="button" class="biz-more-btn" id="tbMore-btn" aria-haspopup="true" aria-expanded="false" aria-controls="tbMore-menu"><span class="biz-more-t">+ More</span></button><div class="biz-menu" id="tbMore-menu" role="menu" aria-labelledby="tbMore-btn" hidden></div></div>
       </div>
 
       <div class="tb-grid">
@@ -410,6 +414,6 @@
   </div>
 </footer>
 
-<script src="/home-assets/app.js?v=202610272130"></script>
+<script src="/home-assets/app.js?v=202610272230"></script>
 <script defer src="/iris/iris.js?v=20261027c"></script></body>
 </html>

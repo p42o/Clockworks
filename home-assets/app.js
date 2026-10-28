@@ -1,3 +1,51 @@
+/* ---------- "+ More" industries: shared by the hero demo and the team section ---------- */
+// The six chips cover the most common shops; these sit behind "+ More". Picking one in either
+// section locks it in there and pre-selects it in the other (event "cw:biz", detail { key, src }).
+window.CW_MORE = (function () {
+  var LIST = [['elec', 'Electrician'], ['gc', 'General contractor'], ['roof', 'Roofing'], ['auto', 'Auto repair'],
+    ['clean', 'Cleaning service'], ['photo', 'Photographer'], ['event', 'Event planner'], ['fit', 'Fitness studio']];
+  function label(key) { for (var i = 0; i < LIST.length; i++) if (LIST[i][0] === key) return LIST[i][1]; return ''; }
+  // wrap: .biz-more element. onPick(key). Returns { set(key|null) } to reflect the current pick on the button.
+  function mount(wrap, onPick) {
+    var btn = wrap.querySelector('.biz-more-btn'), menu = wrap.querySelector('.biz-menu'), t = btn.querySelector('.biz-more-t'), cur = null;
+    menu.innerHTML = LIST.map(function (x) { return '<button type="button" role="menuitemradio" aria-checked="false" data-key="' + x[0] + '">' + x[1] + '</button>'; }).join('');
+    var items = Array.prototype.slice.call(menu.querySelectorAll('[data-key]'));
+    function open(focusFirst) {
+      menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); wrap.classList.add('open');
+      var at = items.filter(function (b) { return b.dataset.key === cur; })[0] || items[0];
+      if (focusFirst) at.focus();
+      setTimeout(function () { document.addEventListener('click', outside, true); }, 0);
+    }
+    function close(refocus) {
+      menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); wrap.classList.remove('open');
+      document.removeEventListener('click', outside, true);
+      if (refocus) btn.focus();
+    }
+    function outside(e) { if (!wrap.contains(e.target)) close(false); }
+    btn.addEventListener('click', function () { menu.hidden ? open(true) : close(false); });
+    btn.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown') { e.preventDefault(); open(true); } });
+    menu.addEventListener('keydown', function (e) {
+      var i = items.indexOf(document.activeElement);
+      if (e.key === 'Escape') { e.preventDefault(); close(true); }
+      else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus(); }
+      else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); items[e.key === 'Home' ? 0 : items.length - 1].focus(); }
+      else if (e.key === 'Tab') close(false);
+    });
+    items.forEach(function (b) { b.addEventListener('click', function () { close(true); onPick(b.dataset.key); }); });
+    function set(key) {
+      cur = key && label(key) ? key : null;
+      t.textContent = cur ? label(cur) : '+ More';
+      btn.classList.toggle('picked', !!cur);
+      btn.setAttribute('aria-pressed', cur ? 'true' : 'false');
+      items.forEach(function (b) { b.setAttribute('aria-checked', b.dataset.key === cur ? 'true' : 'false'); });
+    }
+    set(null);
+    return { set: set };
+  }
+  function announce(key, src) { document.dispatchEvent(new CustomEvent('cw:biz', { detail: { key: key, src: src } })); }
+  return { list: LIST, label: label, mount: mount, announce: announce };
+})();
+
 /* MN Clockworks — homepage: reveals, hero demo (texts from your team), day toggle, team builder */
 (function () {
   'use strict';
@@ -83,6 +131,82 @@
           ok: 'Post it', res: 'Posted to Instagram and Facebook', done: 'Posted the Just Listed post' }
       ]}
     ];
+
+    // Behind "+ More". Same shape as above.
+    BIZ = BIZ.concat([
+      { key: 'elec', name: 'Sample Electric Co.', day: 'Wednesday', kind: 'an electrician', team: ['call', 'quote', 'book', 'paper', 'review', 'site'], scenes: [
+        { a: 'call', t: '7:48 AM', msg: 'You missed a call from (763) 555-0188 about a breaker that keeps tripping. Text them back?',
+          to: 'Text to (763) 555-0188', body: "Sorry we missed you! Is the breaker tripping now, or only when something's running? We can come out today or tomorrow.",
+          ok: 'Send it', res: 'Texted (763) 555-0188', done: 'Texted back a missed call' },
+        { a: 'quote', t: '1:15 PM', msg: 'The panel upgrade quote for the Ortiz house is ready. I built it from your walkthrough notes.',
+          to: 'Quote for the Ortiz family', body: '200 amp panel upgrade with permit and inspection. Two day job, starting the 14th.',
+          tweak: { say: 'Start the 21st instead', msg: 'Updated.', body: '200 amp panel upgrade with permit and inspection. Two day job, starting the 21st.' },
+          ok: 'Send it', res: 'Quote sent to the Ortiz family', done: 'Sent the panel upgrade quote' }
+      ]},
+      { key: 'gc', name: 'Sample Builders', day: 'Monday', kind: 'a general contractor', team: ['inbox', 'quote', 'book', 'docs', 'paper', 'site'], scenes: [
+        { a: 'book', t: '6:55 AM', msg: "The drywall crew can't make Thursday. Let the Parkers know we're shifting a day?",
+          to: 'Text to the Parker family', body: 'Quick update: drywall moves from Thursday to Friday. Everything else stays on schedule. Questions anytime.',
+          tweak: { say: 'Add that the tile came in', msg: 'Added it.', body: 'Quick update: drywall moves from Thursday to Friday, and your tile came in. Everything else stays on schedule.' },
+          ok: 'Send it', res: 'Sent to the Parker family', done: 'Kept the Parkers in the loop' },
+        { a: 'docs', t: '4:30 PM', msg: "Today's job log for the Parker kitchen is written up from your crew's photos and notes.",
+          to: 'Daily update email', body: 'Today: cabinets set, plumbing rough-in passed inspection. Tomorrow: countertop template.',
+          ok: 'Send it', res: 'Daily update sent', done: 'Sent the daily job update' }
+      ]},
+      { key: 'roof', name: 'Sample Roofing', day: 'Thursday', kind: 'a roofing company', team: ['intel', 'call', 'quote', 'chase', 'design', 'review'], scenes: [
+        { a: 'intel', t: '7:20 AM', msg: 'Hail hit the north metro overnight. 14 of your past customers live in that area. Check in with them?',
+          to: 'Text to 14 past customers', body: "Hi, it's Sample Roofing. Last night's hail hit your area. Want us to take a look at your roof this week?",
+          ok: 'Send to all 14', res: 'Sent to 14 past customers', done: 'Checked in after the hail' },
+        { a: 'chase', t: '11:05 AM', msg: "Mike's roof replacement estimate has been quiet for 10 days. Follow up?",
+          to: 'Text to Mike', body: 'Checking in on your roof estimate. Happy to walk through the shingle options or adjust the timing.',
+          ok: 'Send it', res: 'Sent to Mike', done: 'Followed up on a quiet estimate' }
+      ]},
+      { key: 'auto', name: 'Sample Auto Repair', day: 'Tuesday', kind: 'an auto repair shop', team: ['book', 'desk', 'quote', 'paper', 'review', 'site'], scenes: [
+        { a: 'quote', t: '10:30 AM', msg: "Inspection on Lisa's Camry found worn front brakes. The estimate with photos is ready.",
+          to: 'Text to Lisa', body: "Your Camry's front brakes are worn down. Photos attached. Want us to replace them today? It would be ready by 4.",
+          tweak: { say: 'Say ready by 5', msg: 'Changed it.', body: "Your Camry's front brakes are worn down. Photos attached. Want us to replace them today? It would be ready by 5." },
+          ok: 'Send it', res: 'Sent to Lisa', done: 'Sent a brake estimate with photos' },
+        { a: 'book', t: '4:50 PM', msg: "Lisa's car is done. Text her it's ready for pickup?",
+          to: 'Text to Lisa', body: "Your Camry is ready! We're open until 6. Your keys are at the front desk.",
+          ok: 'Send it', res: 'Sent to Lisa', done: 'Told Lisa her car is ready' }
+      ]},
+      { key: 'clean', name: 'Sample Cleaning Co.', day: 'Friday', kind: 'a cleaning service', team: ['book', 'desk', 'paper', 'docs', 'review', 'design'], scenes: [
+        { a: 'book', t: '8:10 AM', msg: "Maria is out sick. Two of her homes today could move. Text those clients?",
+          to: 'Text to 2 clients', body: "Hi, it's Sample Cleaning Co. We need to move today's clean to Monday at the same time. Does that still work?",
+          tweak: { say: 'Offer Saturday too', msg: 'Done.', body: "Hi, it's Sample Cleaning Co. We need to move today's clean. Would Saturday or Monday at the same time work better?" },
+          ok: 'Send it', res: 'Sent to 2 clients', done: 'Rescheduled 2 cleans' },
+        { a: 'docs', t: '2:00 PM', msg: 'The move-out checklist for new hires is written up from how your team works.',
+          to: 'Doc for your team', body: 'Move-out clean: inside the fridge and oven, baseboards, window tracks, cabinets inside and out.',
+          ok: 'Share it', res: 'Shared with your team', done: 'Wrote the move-out checklist' }
+      ]},
+      { key: 'photo', name: 'Sample Photography', day: 'Wednesday', kind: 'a photographer', team: ['desk', 'book', 'design', 'site', 'paper', 'docs'], scenes: [
+        { a: 'desk', t: '9:20 AM', msg: 'An engaged couple asked: "Are you free June 14 for a wedding?" Your calendar is open.',
+          to: 'Reply to the couple', body: 'Congratulations! June 14 is open. Want me to send my wedding packages and set up a quick call?',
+          ok: 'Send it', res: 'Replied to the couple', done: 'Answered a wedding inquiry' },
+        { a: 'site', t: '3:00 PM', msg: "Sarah and Tom's gallery is ready to share. I picked 6 favorites for your portfolio page.",
+          to: 'Gallery email and portfolio update', body: 'Your gallery is ready! Downloads are open for 60 days. It was a joy to photograph your day.',
+          ok: 'Send it', res: 'Gallery sent, portfolio updated', done: 'Delivered a gallery' }
+      ]},
+      { key: 'event', name: 'Sample Events Co.', day: 'Thursday', kind: 'an event planner', team: ['inbox', 'book', 'docs', 'design', 'paper', 'desk'], scenes: [
+        { a: 'inbox', t: '8:30 AM', msg: 'The florist says peonies are out for the Hansen wedding and suggests garden roses. Tell the couple?',
+          to: 'Email to the Hansens', body: 'Quick update from the florist: peonies are out for June. Garden roses in the same blush color are a lovely match. Okay to switch?',
+          ok: 'Send it', res: 'Sent to the Hansens', done: 'Handled a florist change' },
+        { a: 'docs', t: '1:40 PM', msg: 'The day-of timeline for the Hansen wedding is ready for all 6 vendors.',
+          to: 'Email to 6 vendors', body: 'Ceremony 4:00. Photos 4:30. Dinner 6:00. Toasts 7:15. Last song 11:00.',
+          tweak: { say: 'Toasts at 7:00', msg: 'Moved it.', body: 'Ceremony 4:00. Photos 4:30. Dinner 6:00. Toasts 7:00. Last song 11:00.' },
+          ok: 'Send to all 6', res: 'Sent to 6 vendors', done: 'Sent the day-of timeline' }
+      ]},
+      { key: 'fit', name: 'Sample Fitness Studio', day: 'Monday', kind: 'a fitness studio', team: ['book', 'desk', 'design', 'site', 'review', 'inbox'], scenes: [
+        { a: 'book', t: '6:15 AM', msg: "Tonight's 6:00 class has 4 on the waitlist and 2 people just canceled. Offer the spots?",
+          to: 'Text to 4 on the waitlist', body: "Two spots opened in tonight's 6:00 class. Reply YES to grab one!",
+          ok: 'Send it', res: 'Sent to 4 on the waitlist', done: 'Filled 2 class spots' },
+        { a: 'design', t: '12:30 PM', msg: 'Your new member challenge graphic is ready for Instagram and the front desk.',
+          to: 'Instagram post', art: ['30 day challenge', 'Starts Nov 1'], body: 'Our 30 day challenge starts November 1. Sign up at the front desk or reply here!',
+          ok: 'Post it', res: 'Posted to Instagram', done: 'Posted the challenge promo' }
+      ]}
+    ]);
+    ['plumb', 'salon', 'food', 'lawn', 'shop', 'realty'].forEach(function (k, i) { BIZ[i].key = k; });
+    var MAIN = 6; // chips; anything past this lives behind "+ More"
+    function bizIndex(key) { for (var i = 0; i < BIZ.length; i++) if (BIZ[i].key === key) return i; return -1; }
 
     var bizEl = $('#bizName'), bizShort = $('#dmBizShort'), capEl = $('#demoCap'), stack = $('#dmStack'),
         chips = $('#dmChips'), field = $('#dmField'), tap = $('#tap'), screen = $('#dmScreen'),
@@ -206,7 +330,7 @@
       }, 1500);
     }
 
-    var bizIdx = 0;
+    var bizIdx = 0, locked = false, moreUi = null;
     function setBiz(i) {
       bizIdx = (i + BIZ.length) % BIZ.length;
       var B = BIZ[bizIdx];
@@ -214,6 +338,7 @@
       if (capEl) capEl.textContent = 'Sample day for ' + B.kind + '. Names, numbers and times are made up.';
       stack.innerHTML = B.team.slice(0, 3).map(avatar).join('') + '<span class="more">+' + (B.team.length - 3) + '</span>';
       bizBtns.forEach(function (b) { b.setAttribute('aria-pressed', +b.dataset.biz === bizIdx ? 'true' : 'false'); });
+      if (moreUi) moreUi.set(bizIdx >= MAIN ? B.key : null);
       thread.innerHTML = ''; doneList.innerHTML = ''; hideChips(); clearField(); setStep(0);
       taps = 0; tapsEl.textContent = 0;
       return B;
@@ -226,7 +351,8 @@
         dayline(B);
         var k = 0;
         (function nextScene() {
-          if (k >= B.scenes.length) { setStep(0); later(function () { playBiz(bizIdx + 1); }, 1800); return; }
+          // A business the visitor picked stays put and replays; otherwise rotate through the six chips.
+          if (k >= B.scenes.length) { setStep(0); later(function () { playBiz(locked ? bizIdx : (bizIdx + 1) % MAIN); }, 1800); return; }
           later(function () { scene(B.scenes[k++], nextScene); }, k ? 500 : 900);
         })();
       }, 450);
@@ -250,11 +376,18 @@
       running = go; demo.classList.toggle('is-paused', !go);
       if (go) thaw(); else freeze();
     }
-    bizBtns.forEach(function (b) {
-      b.addEventListener('click', function () {
-        if (reduce) { staticBiz(+b.dataset.biz); return; }
-        paused = false; setPauseUi(); playBiz(+b.dataset.biz); sync();
-      });
+    function pickBiz(i, src) {
+      locked = true;
+      if (reduce) staticBiz(i); else { paused = false; setPauseUi(); playBiz(i); sync(); }
+      if (src) window.CW_MORE.announce(BIZ[i].key, src);
+    }
+    bizBtns.forEach(function (b) { b.addEventListener('click', function () { pickBiz(+b.dataset.biz, 'hero'); }); });
+    var moreWrap = $('#dmBiz .biz-more');
+    if (moreWrap && window.CW_MORE) moreUi = window.CW_MORE.mount(moreWrap, function (key) { var i = bizIndex(key); if (i > -1) pickBiz(i, 'hero'); });
+    // Picked further down the page: follow along, so scrolling back up shows the same business.
+    document.addEventListener('cw:biz', function (e) {
+      if (e.detail.src === 'hero') return;
+      var i = bizIndex(e.detail.key); if (i > -1 && i !== bizIdx) pickBiz(i, null);
     });
     function setPauseUi() {
       if (!pauseBtn) return;
@@ -356,7 +489,63 @@
       ['design', 'Makes Just Listed flyers, open house signs and social posts.', 'Artwork to approve'],
       ['site', 'Adds each new listing to your website with photos and details.', 'A page update to OK'],
       ['docs', 'Writes listing descriptions and your under-contract checklist.', 'A doc to review'],
-      ['review', 'Asks happy clients for a review after closing and drafts your replies.', 'A reply to OK']] }
+      ['review', 'Asks happy clients for a review after closing and drafts your replies.', 'A reply to OK']] },
+    elec: { name: 'Sample Electric Co.', team: [
+      ['call', "Texts back the calls you miss while you're up a ladder.", 'A text to OK'],
+      ['quote', 'Turns walkthrough notes into a clean panel upgrade or rewire quote.', 'A quote to send'],
+      ['book', "Confirms tomorrow's jobs and inspection times with each customer.", 'Texts to OK'],
+      ['paper', 'Sends the invoice when a job is signed off and nudges it if it sits.', 'An invoice to OK'],
+      ['review', 'Asks every customer for a review and drafts your replies.', 'A reply to OK'],
+      ['site', 'Keeps your services, service area and license info current on your website.', 'A page update to OK']] },
+    gc: { name: 'Sample Builders', team: [
+      ['inbox', 'Sorts sub and supplier email and flags what needs you today.', 'A short list'],
+      ['quote', 'Turns your measurements into a clear, itemized remodel bid.', 'A bid to send'],
+      ['book', 'Keeps homeowners posted when the schedule shifts.', 'Texts to OK'],
+      ['docs', 'Writes daily job logs and change orders from crew photos and notes.', 'A doc to review'],
+      ['paper', 'Sends progress invoices at each milestone.', 'An invoice to OK'],
+      ['site', 'Adds finished projects to your website gallery.', 'A page update to OK']] },
+    roof: { name: 'Sample Roofing', team: [
+      ['intel', 'Notes storms and hail nearby so you can reach the right customers fast.', 'A note, nothing sent'],
+      ['call', 'Texts back the calls you miss while you are on a roof.', 'A text to OK'],
+      ['quote', 'Turns your photos and measurements into a clean estimate.', 'A quote to send'],
+      ['chase', 'Follows up on estimates that went quiet.', 'A follow-up to OK'],
+      ['design', 'Makes yard signs and before and after posts.', 'Artwork to approve'],
+      ['review', 'Asks every homeowner for a review and drafts your replies.', 'A reply to OK']] },
+    auto: { name: 'Sample Auto Repair', team: [
+      ['book', 'Books oil changes and texts when a car is ready for pickup.', 'Texts to OK'],
+      ['desk', 'Answers "how much is an alignment?" from your price list.', 'Answers to OK'],
+      ['quote', 'Turns inspection notes and photos into an estimate customers approve by text.', 'An estimate to send'],
+      ['paper', 'Sends invoices and fleet account reminders.', 'An invoice to OK'],
+      ['review', 'Asks every customer for a review and drafts your replies.', 'A reply to OK'],
+      ['site', 'Keeps your services, hours and specials current on your website.', 'A page update to OK']] },
+    clean: { name: 'Sample Cleaning Co.', team: [
+      ['book', "Confirms tomorrow's cleans and handles reschedules.", 'Texts to OK'],
+      ['desk', 'Answers "do you do move-outs?" with a ballpark from your rates.', 'Answers to OK'],
+      ['paper', 'Sends recurring invoices and gentle reminders.', 'An invoice to OK'],
+      ['docs', 'Writes room-by-room checklists for new hires.', 'A doc to review'],
+      ['review', 'Asks happy clients for a review and drafts your replies.', 'A reply to OK'],
+      ['design', 'Makes referral cards and seasonal promo posts.', 'Artwork to approve']] },
+    photo: { name: 'Sample Photography', team: [
+      ['desk', 'Answers questions about dates and packages, even at midnight.', 'A reply to OK'],
+      ['book', 'Books sessions and sends prep tips the day before.', 'Texts to OK'],
+      ['design', 'Makes sneak peek posts from your favorite shots.', 'A post to approve'],
+      ['site', 'Keeps your portfolio and packages fresh on your website.', 'A page update to OK'],
+      ['paper', 'Sends contracts, deposit reminders and final invoices.', 'An invoice to OK'],
+      ['docs', 'Writes shot lists and day-of timelines.', 'A doc to review']] },
+    event: { name: 'Sample Events Co.', team: [
+      ['inbox', 'Sorts vendor email and flags anything that changes the plan.', 'A short list'],
+      ['book', "Tracks deadlines and reminds clients what's due next.", 'Texts to OK'],
+      ['docs', 'Writes timelines, run-of-show sheets and vendor packets.', 'A doc to review'],
+      ['design', 'Makes invitations, signage and recap posts.', 'Artwork to approve'],
+      ['paper', 'Sends deposit and final payment reminders.', 'An invoice to OK'],
+      ['desk', 'Answers "are you free in October?" with your packages.', 'A reply to OK']] },
+    fit: { name: 'Sample Fitness Studio', team: [
+      ['book', 'Fills canceled class spots from the waitlist.', 'Texts to OK'],
+      ['desk', 'Answers "do you have a drop-in rate?" from your price list.', 'Answers to OK'],
+      ['design', 'Makes challenge graphics and class schedule posts.', 'A post to approve'],
+      ['site', 'Keeps your class schedule and coaches current on your website.', 'A page update to OK'],
+      ['review', 'Asks members for a review and drafts your replies.', 'A reply to OK'],
+      ['inbox', 'Sorts member email and drafts the replies that matter.', 'Replies to OK']] }
   };
   var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
   var tabWrap = root.querySelector('.tb-tabs');
@@ -366,7 +555,10 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function show(key, animate) {
     var t = TEAMS[key]; if (!t) return;
-    tabs.forEach(function (b) { var on = b.dataset.biz === key; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; if (on) panel.setAttribute('aria-labelledby', b.id); });
+    var isTab = tabs.some(function (b) { return b.dataset.biz === key; });
+    tabs.forEach(function (b, i) { var on = b.dataset.biz === key; b.setAttribute('aria-selected', on); b.tabIndex = on || (!isTab && i === 0) ? 0 : -1; if (on) panel.setAttribute('aria-labelledby', b.id); });
+    if (!isTab) panel.setAttribute('aria-labelledby', 'tbMore-btn');
+    if (moreUi) moreUi.set(isTab ? null : key);
     bizEl.textContent = t.name;
     countEl.textContent = 'A team of ' + t.team.length + ', picked for this business';
     list.innerHTML = t.team.map(function (m, i) {
@@ -389,7 +581,12 @@
       timer = setTimeout(next, DUR);
     }, DUR);
   }
-  function pick(b, focus) { touched = true; stop(); idx = keys.indexOf(b.dataset.biz); show(b.dataset.biz, true); if (focus) b.focus(); }
+  function pick(b, focus) { touched = true; stop(); idx = keys.indexOf(b.dataset.biz); show(b.dataset.biz, true); if (focus) b.focus(); window.CW_MORE && window.CW_MORE.announce(b.dataset.biz, 'team'); }
+  function pickKey(key, src) { if (!TEAMS[key]) return; touched = true; stop(); show(key, true); if (src) window.CW_MORE.announce(key, src); }
+  var moreWrap = root.querySelector('.biz-more');
+  var moreUi = moreWrap && window.CW_MORE ? window.CW_MORE.mount(moreWrap, function (key) { pickKey(key, 'team'); }) : null;
+  // Picked in the hero demo: pre-select the same business here.
+  document.addEventListener('cw:biz', function (e) { if (e.detail.src !== 'team') pickKey(e.detail.key, null); });
   tabs.forEach(function (b, i) {
     b.addEventListener('click', function () { pick(b); });
     b.addEventListener('keydown', function (e) {
