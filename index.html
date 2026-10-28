@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/home-assets/site.css?v=202610271930">
+<link rel="stylesheet" href="/home-assets/site.css?v=202610272030">
 </head>
 <body>
 
@@ -92,44 +92,55 @@
     <p class="proof reveal"><span>Free phone audit</span><i></i><span>$49 assessment</span><i></i><span>$499 one-time setup</span></p>
   </div>
 
-  <!-- Product demo -->
+  <!-- Product demo: your AI teammates text YOU a draft; you reply; then it goes out -->
   <div class="container demo-wrap reveal">
-    <div class="demo" id="demo" aria-label="Animated example: your AI team drafting work and asking for approval">
-      <div class="win">
-        <div class="win-bar">
-          <div class="win-title"><img src="/home-assets/icon.svg" alt="" width="20" height="20"><b>Your team</b><span class="win-sub" id="bizName">Sample Plumbing Co. · Tuesday</span></div>
-          <div class="win-live"><span class="live-dot"></span>Working</div>
-        </div>
-        <div class="win-body">
-          <aside class="roster" aria-label="Agents">
-            <p class="roster-h">Agents</p>
-            <ul id="roster"></ul>
-          </aside>
-          <div class="feed">
-            <div class="feed-h"><span>Today</span><span class="feed-count"><b id="countDone">0</b> handled · <b>0</b> sent without you</span></div>
-            <ol class="feed-list" id="feed" aria-live="polite"></ol>
-            <div class="composer" aria-hidden="true"><span class="cmp-plus">+</span><span class="cmp-txt">Message your team</span><span class="cmp-mic"><i></i><i></i><i></i><i></i></span></div>
+    <div class="demo" id="demo" role="region" aria-label="Example: your AI teammates text you a draft, you reply, and only then does it go out">
+      <div class="dm-left">
+        <div class="dm-intro">
+          <p class="dm-k" id="dmBizLabel">See a sample day for</p>
+          <div class="dm-biz" id="dmBiz" role="group" aria-labelledby="dmBizLabel">
+            <button type="button" data-biz="0" aria-pressed="true">Plumbing &amp; HVAC</button>
+            <button type="button" data-biz="1" aria-pressed="false">Salon &amp; spa</button>
+            <button type="button" data-biz="2" aria-pressed="false">Restaurant</button>
+            <button type="button" data-biz="3" aria-pressed="false">Landscaping</button>
+            <button type="button" data-biz="4" aria-pressed="false">Retail shop</button>
           </div>
+        </div>
+        <ol class="dm-steps" id="dmSteps">
+          <li data-step="1"><span class="n">1</span><div><b>A teammate does the work</b><small>Catches the call, builds the quote, makes the post.</small></div></li>
+          <li data-step="2"><span class="n">2</span><div><b>It texts you a draft</b><small>On your phone, like a text from a coworker.</small></div></li>
+          <li data-step="3"><span class="n">3</span><div><b>You reply: send, change or skip</b><small>One tap, or a few words like "make it Thursday."</small></div></li>
+          <li data-step="4"><span class="n">4</span><div><b>Only then does it go out</b><small>Nothing sends without your OK.</small></div></li>
+        </ol>
+        <button type="button" class="dm-pause" id="dmPause" aria-pressed="false"><span class="dm-pause-i" aria-hidden="true"></span><span class="dm-pause-t">Pause</span></button>
+      </div>
+
+      <div class="dm-phone" aria-hidden="true">
+        <div class="phone-notch"></div>
+        <div class="dm-screen" id="dmScreen">
+          <div class="ph-status"><span>9:41</span><span class="ph-sig"><i></i><i></i><i></i></span></div>
+          <div class="dm-head">
+            <span class="dm-back">&lsaquo;</span>
+            <div class="dm-who"><b>Your team</b><small id="bizName">Sample Plumbing Co.</small></div>
+            <span class="dm-stack" id="dmStack"></span>
+          </div>
+          <div class="dm-thread" id="dmThread"></div>
+          <div class="dm-reply">
+            <div class="dm-chips" id="dmChips"></div>
+            <div class="dm-input"><span class="dm-field" id="dmField"><span class="ph">Reply to your team</span></span><span class="dm-send"><svg class="ico"><use href="#i-arrow"/></svg></span></div>
+          </div>
+          <div class="tap" id="tap"></div>
         </div>
       </div>
 
-      <div class="phone" aria-hidden="true">
-        <div class="phone-notch"></div>
-        <div class="phone-screen">
-          <div class="ph-status"><span>9:41</span><span class="ph-sig"><i></i><i></i><i></i></span></div>
-          <div class="ph-head">
-            <img src="/home-assets/icon.svg" alt="" width="26" height="26">
-            <div><b>Clockworks</b><small id="phSub">Your team is on it</small></div>
-          </div>
-          <p class="ph-label">Needs your OK</p>
-          <div class="ph-stage" id="phStage">
-            <div class="ph-empty" id="phEmpty"><svg class="ico"><use href="#i-check"/></svg>All caught up</div>
-          </div>
-          <p class="ph-label">Done today</p>
-          <ul class="ph-done" id="phDone"></ul>
-          <div class="ph-foot"><span><b id="phTaps">0</b> taps today</span><span><b>0</b> sent without you</span></div>
-          <div class="tap" id="tap"></div>
+      <div class="dm-score">
+        <p class="dm-k">Today at <span id="dmBizShort">Sample Plumbing Co.</span></p>
+        <div class="dm-stats">
+          <div><b id="phTaps">0</b><span>taps from you</span></div>
+          <div class="zero"><b>0</b><span>sent without your OK</span></div>
         </div>
+        <p class="dm-k dm-done-h">Done today, after your OK</p>
+        <ul class="dm-done" id="phDone"></ul>
       </div>
     </div>
     <p class="demo-cap" id="demoCap" aria-live="polite">Sample day for a plumbing shop. Names, numbers and times are made up.</p>
@@ -397,6 +408,6 @@
   </div>
 </footer>
 
-<script src="/home-assets/app.js?v=202610271930"></script>
+<script src="/home-assets/app.js?v=202610272030"></script>
 <script defer src="/iris/iris.js?v=20261027c"></script></body>
 </html>

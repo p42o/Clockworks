@@ -1,4 +1,4 @@
-/* MN Clockworks — facelift v2 mockup: hero demo, reveals, day toggle */
+/* MN Clockworks — homepage: reveals, hero demo (texts from your team), day toggle, team builder */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -17,275 +17,257 @@
     revealEls.forEach(function (el) { el.classList.add('in'); });
   }
 
-  /* ---------- hero demo ---------- */
-  // Agents are drawn as little blob characters (chat-app style), each with its own shape + colour.
-  var AGENTS = {
-    call:   { name: 'Call Catch',    c: '#F26A2E', shape: 'circle', idle: 'Missed calls' },
-    desk:   { name: 'Front Desk',    c: '#2F7FEA', shape: 'tri',    idle: 'Common questions' },
-    quote:  { name: 'Quote Chaser',  c: '#27B567', shape: 'pill',   idle: 'Follow-ups' },
-    paper:  { name: 'Paper Mover',   c: '#8A5A3B', shape: 'cloud',  idle: 'Open paperwork' },
-    review: { name: 'Review Engine', c: '#E5458A', shape: 'flower', idle: 'Review asks' },
-    intel:  { name: 'Intel Desk',    c: '#17A99B', shape: 'drop',   idle: 'Notes for you' }
-  };
-  var SHAPES = {
-    circle: '<circle cx="20" cy="20" r="17"/>',
-    tri:    '<path d="M20 3.5c2.2 0 3.6 1.3 5 3.7l11 19.6c2.3 4.2.3 8.2-4.6 8.2H8.6c-4.9 0-6.9-4-4.6-8.2l11-19.6c1.4-2.4 2.8-3.7 5-3.7z"/>',
-    pill:   '<rect x="2" y="8" width="36" height="25" rx="12.5"/>',
-    cloud:  '<circle cx="14" cy="16" r="10"/><circle cx="25" cy="14" r="10"/><circle cx="28" cy="24" r="9.5"/><circle cx="13" cy="26" r="9.5"/>',
-    flower: '<circle cx="20" cy="9.5" r="8"/><circle cx="30" cy="16.5" r="8"/><circle cx="26.5" cy="28.5" r="8"/><circle cx="13.5" cy="28.5" r="8"/><circle cx="10" cy="16.5" r="8"/><circle cx="20" cy="20" r="10"/>',
-    drop:   '<path d="M20 3c4 4.7 15 13.6 15 21.6C35 32.5 28.3 37 20 37S5 32.5 5 24.6C5 16.6 16 7.7 20 3z"/>'
-  };
-  var EYES = '<rect x="13.2" y="14.5" width="4.6" height="9" rx="2.3" fill="#fff"/><rect x="22.2" y="14.5" width="4.6" height="9" rx="2.3" fill="#fff"/>';
+  /* ---------- hero demo: your teammates text YOU a draft, you reply, then it goes out ---------- */
+  (function heroDemo() {
+    var demo = $('#demo'), thread = $('#dmThread');
+    if (!demo || !thread) return;
+    // Same names, icons and colours as the team section below, so the hero and the team tell one story.
+    var ROLE = {
+      call: ['Call Catch', 'i-call', '#D4582A'], desk: ['Front Desk', 'i-desk', '#B9822B'], book: ['Booking Desk', 'i-cal', '#8A6FB0'],
+      quote: ['Quote Builder', 'i-quote', '#5E7F63'], chase: ['Quote Chaser', 'i-loop', '#4E8A86'], paper: ['Paper Mover', 'i-paper', '#7A5A43'],
+      site: ['Site Keeper', 'i-web', '#3E6A9A'], design: ['Asset Designer', 'i-brush', '#C2557A'], docs: ['Doc Writer', 'i-doc', '#5B6B7A'],
+      review: ['Review Engine', 'i-review', '#9A4659'], inbox: ['Inbox Sorter', 'i-mail', '#6D7A3A'], intel: ['Intel Desk', 'i-intel', '#4F6475']
+    };
+    // Sample days only. Businesses, names, numbers and times are made up.
+    // Each scene: a teammate texts the owner a draft; the owner replies; only then does it go out.
+    var BIZ = [
+      { name: 'Sample Plumbing Co.', day: 'Tuesday', kind: 'a plumbing shop', team: ['call', 'quote', 'chase', 'paper', 'review', 'site'], scenes: [
+        { a: 'call', t: '8:12 AM', msg: 'You missed a call from (763) 555-0142 while you were on a job. Want me to text them back?',
+          to: 'Text to (763) 555-0142', body: "Sorry we missed your call! What's going on, and when is a good time to call you back?",
+          ok: 'Send it', res: 'Texted (763) 555-0142', done: 'Texted back a missed call' },
+        { a: 'quote', t: '10:40 AM', msg: "Dana's water heater quote is ready. I built it from your site photos.",
+          to: 'Quote for Dana', body: '50 gallon water heater swap, haul-away included. Install Wednesday morning.',
+          tweak: { say: 'Make it Thursday', msg: 'Done. Moved the install to Thursday.', body: '50 gallon water heater swap, haul-away included. Install Thursday morning.' },
+          ok: 'Send it', res: 'Quote sent to Dana', done: "Sent Dana's quote" }
+      ]},
+      { name: 'Sample Salon & Spa', day: 'Friday', kind: 'a salon and spa', team: ['book', 'desk', 'design', 'site', 'review', 'docs'], scenes: [
+        { a: 'book', t: '9:05 AM', msg: 'Jenna canceled her 2:00 tomorrow. Offer the spot to your waitlist?',
+          to: 'Text to 3 people on the waitlist', body: "A 2:00 spot just opened tomorrow with Ava. Reply YES and it's yours!",
+          ok: 'Send it', res: 'Sent to 3 on the waitlist', done: 'Filled a canceled spot' },
+        { a: 'design', t: '11:30 AM', msg: "This month's promo graphic is ready for Instagram and the front window.",
+          to: 'Instagram post', art: ['Holiday color', 'Book early'], body: 'Booking holiday color now. Grab your spot before the calendar fills!',
+          ok: 'Post it', res: 'Posted to Instagram', done: 'Posted the holiday promo' }
+      ]},
+      { name: 'Sample Bistro', day: 'Saturday', kind: 'a restaurant', team: ['design', 'site', 'desk', 'review', 'docs', 'inbox'], scenes: [
+        { a: 'review', t: '9:40 AM', msg: 'New 3-star review from Sam: "Great food, slow on a busy night." I drafted a reply.',
+          to: 'Reply on Google', body: "Thanks, Sam. You're right about Friday. We've added a server, and we hope you'll give us another try.",
+          ok: 'Post it', res: 'Reply posted on Google', done: "Answered Sam's review" },
+        { a: 'site', t: '2:15 PM', msg: "You're closed on Thanksgiving. Want me to update your hours?",
+          to: 'Hours on your website and Google', body: 'Closed Thanksgiving Day. Regular hours again on Friday.',
+          ok: 'Update it', res: 'Hours updated on your site and Google', done: 'Updated holiday hours' }
+      ]},
+      { name: 'Sample Lawn & Landscape', day: 'Monday', kind: 'a landscaping crew', team: ['book', 'quote', 'chase', 'paper', 'design', 'intel'], scenes: [
+        { a: 'chase', t: '7:30 AM', msg: "The Hendersons' spring cleanup bid has been quiet for 9 days. Follow up?",
+          to: 'Text to the Hendersons', body: 'Checking in on your spring cleanup bid. Spots are filling up. Want me to hold a date in April?',
+          tweak: { say: 'Say May, April is full', msg: "Got it. Here's the new version.", body: 'Checking in on your spring cleanup bid. Spots are filling up. Want me to hold a date in early May?' },
+          ok: 'Send it', res: 'Sent to the Hendersons', done: 'Followed up on a quiet bid' },
+        { a: 'book', t: '3:10 PM', msg: "Tomorrow's route has 8 stops. Text everyone a heads-up?",
+          to: 'Text to 8 customers', body: "Hi, it's Sample Lawn & Landscape. We'll be out tomorrow morning. Please leave the side gate unlocked. Thanks!",
+          ok: 'Send to all 8', res: 'Sent to 8 customers', done: "Gave tomorrow's route a heads-up" }
+      ]},
+      { name: 'Sample Boutique', day: 'Wednesday', kind: 'a retail shop', team: ['design', 'site', 'desk', 'inbox', 'docs', 'review'], scenes: [
+        { a: 'desk', t: '10:15 AM', msg: 'A shopper texted: "Do you have the green wrap dress in a medium?" Your stock notes say 2 left.',
+          to: 'Text to the shopper', body: 'We do! Two left in medium. Want us to hold one at the counter until 6?',
+          ok: 'Send it', res: 'Replied to the shopper', done: 'Answered a sizing question' },
+        { a: 'site', t: '1:30 PM', msg: '12 new arrivals are ready for your shop page. Photos, sizes and descriptions are done.',
+          to: 'Shop page update', body: 'New this week: 12 fall sweaters, in sizes XS to XL.',
+          ok: 'Publish it', res: 'Shop page updated', done: 'Added 12 new arrivals' }
+      ]}
+    ];
 
-  // Sample days only. Names, numbers and times are made up. The demo rotates through these.
-  var BIZ = [
-    { name: 'Sample Plumbing Co.', day: 'Tuesday', kind: 'a plumbing shop', scenes: [
-      { a: 'call', time: '8:12 AM', ev: '<b>Missed call</b> from (763) 555-0142', sub: 'You were on a job',
-        ctx: 'Text back · (763) 555-0142', done: 'Texted back the missed caller',
-        draft: 'Sorry we missed your call. Reply with what you need and a good time for a call back.' },
-      { a: 'quote', time: '11:30 AM', ev: '<b>Quote #318</b> has gone quiet', sub: 'Sent 6 days ago · no reply',
-        ctx: 'Follow-up text · Quote #318', done: 'Followed up on Quote #318',
-        draft: 'Checking in on the quote I sent. Happy to answer questions or adjust the scope. Want me to hold a date?' },
-      { a: 'desk', time: '1:05 PM', ev: '<b>Website question:</b> "Do you do water heaters?"', sub: 'Answered from info you approved',
-        ctx: 'Reply on your website', done: 'Answered a water heater question',
-        draft: 'We do handle that. I can take the address and the best time for a call back.' },
-      { a: 'review', time: '2:40 PM', ev: '<b>Job closed</b> at the Maple Grove address', sub: 'Customer marked happy',
-        ctx: 'Review ask · text', done: 'Asked for a review',
-        draft: 'Thanks again for having us out. An honest review helps neighbors find a local shop. Here is the link.' },
-      { a: 'paper', time: '4:15 PM', ev: '<b>Invoice #1042</b> is still open', sub: 'Open 14 days',
-        ctx: 'Invoice reminder · email', done: 'Sent the Invoice #1042 reminder',
-        draft: 'A reminder that this invoice is still open. Here is the pay link if you want it. Tell me if anything on the bill looks off.' },
-      { a: 'intel', time: '5:00 PM', ev: '<b>Weekly note</b> on what people nearby are asking', sub: 'From public posts', note: true,
-        ctx: 'A note just for you · nothing sent', done: 'Saved a note for you',
-        draft: 'Public posts this week mention furnace checks and water heater leaks in the north metro.' }
-    ]},
-    { name: 'Sample Realty', day: 'Thursday', kind: 'a real estate agent', scenes: [
-      { a: 'call', time: '9:05 AM', ev: '<b>Missed call</b> from (763) 555-0188', sub: 'You were at a showing',
-        ctx: 'Text back · (763) 555-0188', done: 'Texted back the missed caller',
-        draft: "Sorry I missed you, I'm at a showing. Calling about the Elm Street listing? Reply with a good time and I'll call you back today." },
-      { a: 'desk', time: '10:40 AM', ev: '<b>Website question:</b> "Is Elm Street still available?"', sub: 'Answered from your listing info',
-        ctx: 'Reply on your website', done: 'Answered a listing question',
-        draft: "Yes, it's still available. The open house is Saturday 1 to 3. Want me to set up a private showing?" },
-      { a: 'quote', time: '12:15 PM', ev: '<b>Saturday\'s buyers</b> haven\'t heard back', sub: 'Toured 3 days ago',
-        ctx: 'Follow-up text · showing', done: 'Followed up after the showing',
-        draft: 'Thanks for touring the Elm Street home. Any questions I can answer, or want to see a couple of similar homes this week?' },
-      { a: 'paper', time: '1:30 PM', ev: '<b>Inspection addendum</b> still unsigned', sub: 'Due Friday',
-        ctx: 'Reminder · email', done: 'Reminded about the addendum',
-        draft: 'Quick reminder: the inspection addendum still needs your signature by Friday. Here is the link. Call me if anything looks off.' },
-      { a: 'review', time: '3:15 PM', ev: '<b>Closing day</b> on Birch Lane', sub: 'Keys handed over',
-        ctx: 'Review ask · text', done: 'Asked for a review',
-        draft: 'Congratulations on the new house! If you have a minute, an honest review helps other families find me.' },
-      { a: 'intel', time: '5:00 PM', ev: '<b>Weekly note</b> on what buyers nearby are asking', sub: 'From public posts', note: true,
-        ctx: 'A note just for you · nothing sent', done: 'Saved a note for you',
-        draft: 'Public posts this week ask about first-time buyer programs and property taxes in Maple Grove.' }
-    ]},
-    { name: 'Sample Salon & Spa', day: 'Friday', kind: 'a salon', scenes: [
-      { a: 'call', time: '9:20 AM', ev: '<b>Missed call</b> from (763) 555-0123', sub: 'You were with a client',
-        ctx: 'Text back · (763) 555-0123', done: 'Texted back the missed caller',
-        draft: "Sorry we missed your call! Reply with the service you want and a couple of times that work, and we'll get you booked." },
-      { a: 'desk', time: '11:00 AM', ev: '<b>Instagram question:</b> "Do you do balayage?"', sub: 'Answered from your service menu',
-        ctx: 'Reply on Instagram', done: 'Answered a balayage question',
-        draft: 'We do! Balayage starts with a quick consult. Want me to find you a time next week?' },
-      { a: 'quote', time: '12:30 PM', ev: '<b>Jenna\'s color</b> is due', sub: 'Last visit 7 weeks ago',
-        ctx: 'Rebook text · Jenna', done: 'Offered Jenna her usual spot',
-        draft: "Hi Jenna, it's been about 7 weeks since your color. Want me to hold your usual Thursday spot?" },
-      { a: 'paper', time: '1:45 PM', ev: '<b>Gift card order</b> waiting on payment', sub: 'Ordered online 2 days ago',
-        ctx: 'Reminder · email', done: 'Sent the gift card pay link',
-        draft: "Your gift card order is almost done. Here's the pay link, and we'll email it right over." },
-      { a: 'review', time: '4:10 PM', ev: '<b>Happy client</b> flagged by your stylist', sub: 'Loved the new cut',
-        ctx: 'Review ask · text', done: 'Asked for a review',
-        draft: 'Thanks for coming in today! If you love your hair, a quick review means a lot to a small salon.' },
-      { a: 'intel', time: '5:30 PM', ev: '<b>Weekly note</b> on what people nearby are asking', sub: 'From public posts', note: true,
-        ctx: 'A note just for you · nothing sent', done: 'Saved a note for you',
-        draft: 'Local posts this month mention prom updos and booking holiday color early.' }
-    ]},
-    { name: 'Sample Coffee Co.', day: 'Saturday', kind: 'a coffee shop', scenes: [
-      { a: 'call', time: '7:10 AM', ev: '<b>Missed call</b> during the morning rush', sub: '(763) 555-0177',
-        ctx: 'Text back · (763) 555-0177', done: 'Texted back the missed caller',
-        draft: 'Sorry we missed you during the rush! Calling about catering? Reply with the date and headcount and we will get back to you.' },
-      { a: 'desk', time: '9:30 AM', ev: '<b>Website question:</b> "Are you dog friendly?"', sub: 'Answered from info you approved',
-        ctx: 'Reply on your website', done: 'Answered a patio question',
-        draft: 'Yes! Dogs are welcome on the patio, and we keep treats behind the counter.' },
-      { a: 'quote', time: '11:45 AM', ev: '<b>Catering quote</b> for a birthday party is quiet', sub: 'Sent 5 days ago',
-        ctx: 'Follow-up text · catering', done: 'Followed up on the catering quote',
-        draft: 'Checking in on the catering quote for your party. Happy to adjust the menu. Want me to hold the date?' },
-      { a: 'paper', time: '1:20 PM', ev: '<b>Office coffee invoice</b> still open', sub: 'Open 10 days',
-        ctx: 'Invoice reminder · email', done: 'Sent the invoice reminder',
-        draft: "A friendly reminder that the invoice for your office coffee order is still open. Here's the pay link." },
-      { a: 'review', time: '3:00 PM', ev: '<b>Regular</b> tapped "Loved it" on the receipt', sub: 'Morning visit',
-        ctx: 'Review ask · text', done: 'Asked for a review',
-        draft: 'Thanks for stopping in this morning! A quick review helps neighbors find a local coffee shop.' },
-      { a: 'intel', time: '4:30 PM', ev: '<b>Weekly note</b> on what people nearby are asking', sub: 'From public posts', note: true,
-        ctx: 'A note just for you · nothing sent', done: 'Saved a note for you',
-        draft: 'Public posts this week mention pumpkin drinks and quiet places to work with good Wi-Fi.' }
-    ]}
-  ];
-  var bizIdx = 0, SCENES = BIZ[0].scenes;
+    var bizEl = $('#bizName'), bizShort = $('#dmBizShort'), capEl = $('#demoCap'), stack = $('#dmStack'),
+        chips = $('#dmChips'), field = $('#dmField'), tap = $('#tap'), screen = $('#dmScreen'),
+        tapsEl = $('#phTaps'), doneList = $('#phDone'), pauseBtn = $('#dmPause'),
+        steps = Array.prototype.slice.call(document.querySelectorAll('#dmSteps li')),
+        bizBtns = Array.prototype.slice.call(document.querySelectorAll('#dmBiz [data-biz]'));
 
-  var roster = $('#roster'), feed = $('#feed'), stage = $('#phStage'), empty = $('#phEmpty'),
-      doneList = $('#phDone'), tapsEl = $('#phTaps'), countEl = $('#countDone'), tap = $('#tap'), phSub = $('#phSub'), demo = $('#demo'),
-      bizEl = $('#bizName'), capEl = $('#demoCap');
-  if (!roster) return;
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function ico(id) { return '<svg class="ico"><use href="#' + id + '"/></svg>'; }
+    function avatar(k) { var r = ROLE[k]; return '<span class="m-av" style="--c:' + r[2] + '">' + ico(r[1]) + '</span>'; }
 
-  function setBiz(i) {
-    bizIdx = i % BIZ.length; var B = BIZ[bizIdx]; SCENES = B.scenes;
-    if (bizEl) { bizEl.textContent = B.name + ' · ' + B.day; bizEl.classList.remove('swap'); void bizEl.offsetWidth; bizEl.classList.add('swap'); }
-    if (capEl) capEl.textContent = 'Sample day for ' + B.kind + '. Names, numbers and times are made up.';
-  }
+    /* A tiny pausable timer queue, so Pause (and scrolling away) freezes the thread mid-sentence. */
+    var q = [], running = false, instant = false;
+    function arm(t) { t.at = Date.now(); t.id = setTimeout(function () { var i = q.indexOf(t); if (i > -1) q.splice(i, 1); t.fn(); }, t.left); }
+    function later(fn, ms) { if (instant) { fn(); return; } var t = { fn: fn, left: ms }; q.push(t); if (running) arm(t); }
+    function freeze() { q.forEach(function (t) { clearTimeout(t.id); t.left = Math.max(0, t.left - (Date.now() - t.at)); }); }
+    function thaw() { q.forEach(arm); }
+    function flush() { q.forEach(function (t) { clearTimeout(t.id); }); q = []; }
 
-  function svg(id) { return '<svg class="ico"><use href="#' + id + '"/></svg>'; }
-  function av(k, cls) {
-    var A = AGENTS[k];
-    return '<span class="av blob ' + (cls || '') + '" style="--c:' + A.c + '"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="' + A.c + '">' + SHAPES[A.shape] + '</g>' + EYES + '</svg></span>';
-  }
-
-  Object.keys(AGENTS).forEach(function (k) {
-    var li = document.createElement('li');
-    li.className = 'r-item'; li.dataset.k = k;
-    li.title = AGENTS[k].name;
-    li.innerHTML = av(k) + '<div><b>' + AGENTS[k].name + '</b><small>' + AGENTS[k].idle + '</small></div>';
-    roster.appendChild(li);
-  });
-  function setRoster(k, state, text) {
-    var li = roster.querySelector('[data-k="' + k + '"]');
-    li.classList.toggle('on', state !== 'idle');
-    li.querySelector('small').textContent = text || AGENTS[k].idle;
-  }
-
-  var timers = [], running = false, started = false, idx = 0, handled = 0, cur = null;
-  function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
-  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
-
-  function addEvent(s, chipClass, chipText) { // chat style: newest message at the bottom
-    var li = document.createElement('li');
-    li.className = 'ev';
-    li.innerHTML = '<div class="ev-from">Message from ' + av(s.a, 'mini') + '<b>' + AGENTS[s.a].name + '</b><span>· ' + s.time + '</span></div>' +
-      '<div class="ev-b"><div class="ev-t">' + s.ev + '<small>' + s.sub + '</small></div>' +
-      '<span class="chip ' + chipClass + '">' + chipText + '</span></div>';
-    feed.appendChild(li);
-    while (feed.children.length > 4) feed.removeChild(feed.firstChild);
-    return li;
-  }
-  function setChip(li, cls, html) { var c = li.querySelector('.chip'); c.className = 'chip ' + cls; c.innerHTML = html; }
-
-  function askCard(s) {
-    var d = document.createElement('div');
-    d.className = 'ask';
-    d.innerHTML = '<div class="ask-top">' + av(s.a) + '<div><b>' + AGENTS[s.a].name + '</b><small>' + s.ctx + '</small></div></div>' +
-      '<div class="ask-draft"><span class="txt"></span><span class="caret"></span></div>' +
-      '<div class="ask-btns"><span class="e">' + (s.note ? 'Later' : 'Edit') + '</span><span class="a">' + svg('i-check') + (s.note ? 'Got it' : 'Approve') + '</span></div>';
-    return d;
-  }
-  function addDone(s) {
-    var li = document.createElement('li');
-    li.innerHTML = svg('i-check') + '<span>' + s.done + '</span><time>' + s.time.replace(' AM', 'a').replace(' PM', 'p') + '</time>';
-    doneList.insertBefore(li, doneList.firstChild);
-    while (doneList.children.length > 3) doneList.removeChild(doneList.lastChild);
-  }
-
-  function type(el, text, cb) {
-    var i = 0;
-    (function step() {
-      if (!running) return;
-      i += Math.max(1, Math.round(text.length / 60));
-      el.textContent = text.slice(0, i);
-      if (i < text.length) later(step, 26); else cb();
-    })();
-  }
-
-  function playScene() {
-    if (!running) return;
-    if (idx >= SCENES.length) { // end of day: pause, then reset
-      phSub.textContent = 'All caught up for today';
-      later(function () { setBiz(bizIdx + 1); resetDay(); }, 3600);
-      return;
+    /* ---- thread building blocks ---- */
+    function push(cls, html) {
+      var m = document.createElement('div');
+      m.className = 'm ' + cls;
+      m.innerHTML = '<div class="mi">' + html + '</div>';
+      thread.appendChild(m);
+      if (instant) m.classList.add('in'); else { void m.offsetWidth; m.classList.add('in'); }
+      while (thread.children.length > 10) thread.removeChild(thread.firstChild);
+      return m;
     }
-    var s = SCENES[idx];
-    setRoster(s.a, 'on', 'Drafting…');
-    phSub.textContent = AGENTS[s.a].name + ' is drafting…';
-    var ev = addEvent(s, 'drafting', 'Drafting');
-    cur = { ev: ev, card: null, a: s.a };
+    function draftHtml(s, body) {
+      return '<div class="draft">' +
+        (s.art ? '<div class="d-art"><b>' + esc(s.art[0]) + '</b><span>' + esc(s.art[1]) + '</span></div>' : '') +
+        '<p class="d-lab"><span class="tag">Draft</span> ' + esc(s.to) + '</p><p class="d-body">' + esc(body) + '</p></div>';
+    }
+    function incoming(s, msg, body) {
+      var r = ROLE[s.a];
+      return push('m-in', avatar(s.a) + '<div class="m-col"><p class="m-name"><b>' + r[0] + '</b><time>' + s.t + '</time></p>' +
+        '<div class="bub" style="--c:' + r[2] + '"><p>' + esc(msg) + '</p>' + (body ? draftHtml(s, body) : '') + '</div></div>');
+    }
+    function typing(s) {
+      return push('m-in m-typing', avatar(s.a) + '<div class="m-col"><p class="m-name"><b>' + ROLE[s.a][0] + '</b><time>typing</time></p>' +
+        '<div class="bub"><span class="dots"><i></i><i></i><i></i></span></div></div>');
+    }
+    function outgoing(text) { return push('m-out', '<div class="m-col"><p class="m-name"><b>You</b></p><div class="bub">' + esc(text) + '</div></div>'); }
+    function result(text) { return push('m-sys', '<span class="sys">' + ico('i-check') + esc(text) + '</span>'); }
+    function dayline(B) {
+      return push('m-day', '<span class="dl">' + esc(B.day) + ' at ' + esc(B.name) + '</span>' +
+        '<span class="lock">' + ico('i-lock') + 'Nothing sends without your OK</span>');
+    }
+    function drop(m) { if (m && m.parentNode) m.parentNode.removeChild(m); }
 
-    later(function () {
-      empty.style.opacity = 0;
-      var card = askCard(s);
-      stage.appendChild(card);
-      cur.card = card;
-      setChip(ev, s.note ? 'note' : 'waiting', s.note ? 'For you' : 'Waiting on you');
-      setRoster(s.a, 'on', s.note ? 'Note ready' : 'Waiting on you');
-      phSub.textContent = s.note ? 'A note for you' : '1 draft needs your OK';
-      type(card.querySelector('.txt'), s.draft, function () {
-        card.querySelector('.caret').remove();
+    function showChips(s) {
+      chips.innerHTML = '<span class="c ok">' + ico('i-check') + esc(s.ok) + '</span><span class="c">Change it</span><span class="c">Skip</span>';
+      chips.classList.add('on');
+    }
+    function hideChips() { chips.classList.remove('on'); }
+    function setStep(n) { steps.forEach(function (li) { li.classList.toggle('on', +li.dataset.step === n); }); }
+    var taps = 0;
+    function addDone(s) {
+      var li = document.createElement('li');
+      li.innerHTML = ico('i-check') + '<span>' + esc(s.done) + '</span><time>' + s.t.replace(' AM', 'a').replace(' PM', 'p') + '</time>';
+      doneList.insertBefore(li, doneList.firstChild);
+      while (doneList.children.length > 4) doneList.removeChild(doneList.lastChild);
+    }
+    function tapOn(el, cb) {
+      if (!instant) {
+        var r = el.getBoundingClientRect(), pr = screen.getBoundingClientRect();
+        tap.style.left = (r.left - pr.left + r.width / 2 - 22) + 'px';
+        tap.style.top = (r.top - pr.top + r.height / 2 - 22) + 'px';
+        tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go');
+        el.classList.add('press');
+      }
+      later(cb, 320);
+    }
+    function typeInto(text, cb) { // the owner types a quick tweak into the reply box
+      field.innerHTML = '<span class="tx"></span><span class="caret"></span>';
+      var tx = field.querySelector('.tx'), i = 0;
+      (function step() { i++; tx.textContent = text.slice(0, i); if (i < text.length) later(step, 55); else later(cb, 380); })();
+    }
+    function clearField() { field.innerHTML = '<span class="ph">Reply to your team</span>'; }
+
+    /* ---- one scene: teammate types, texts you a draft, you reply, it goes out ---- */
+    function scene(s, next, stopAtAsk) {
+      setStep(1);
+      var ty = typing(s);
+      later(function () {
+        drop(ty);
+        var msg = incoming(s, s.msg, s.body);
+        setStep(2);
         later(function () {
-          var btn = card.querySelector('.a');
-          var r = btn.getBoundingClientRect(), pr = stage.parentNode.getBoundingClientRect();
-          tap.style.left = (r.left - pr.left + r.width / 2 - 22) + 'px';
-          tap.style.top = (r.top - pr.top + r.height / 2 - 22) + 'px';
-          tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go');
+          showChips(s); setStep(3);
+          if (stopAtAsk) return next && next();
           later(function () {
-            btn.classList.add('done');
-            btn.innerHTML = svg('i-check') + (s.note ? 'Saved' : 'Sent');
-            setChip(ev, s.note ? 'note' : 'sent', svg('i-check') + (s.note ? 'Saved · not sent' : 'Sent ' + s.time));
-            setRoster(s.a, 'idle');
-            handled++; countEl.textContent = handled; tapsEl.textContent = handled;
-            cur = null;
+            if (s.tweak) {
+              typeInto(s.tweak.say, function () {
+                clearField(); hideChips(); outgoing(s.tweak.say); setStep(1);
+                later(function () {
+                  var ty2 = typing(s);
+                  later(function () {
+                    drop(ty2);
+                var old = msg.querySelector('.draft'); if (old) { old.classList.add('old'); old.querySelector('.tag').textContent = 'Changed'; }
+                msg = incoming(s, s.tweak.msg, s.tweak.body); setStep(2);
+                    later(function () { showChips(s); setStep(3); later(approve, 900); }, 2300);
+                  }, 1300);
+                }, 500);
+              });
+            } else approve();
+          }, 1000);
+        }, 2700);
+        function approve() {
+          tapOn(chips.querySelector('.ok'), function () {
+            hideChips(); outgoing(s.ok);
+            taps++; tapsEl.textContent = taps;
             later(function () {
-              card.classList.add('out');
-              addDone(s);
-              later(function () { card.remove(); empty.style.opacity = 1; phSub.textContent = 'Your team is on it'; }, 420);
-              idx++;
-              later(playScene, 1100);
+              var d = msg.querySelector('.draft'); if (d) { d.classList.add('sent'); d.querySelector('.tag').innerHTML = ico('i-check') + 'Sent'; }
+              result(s.res); addDone(s); setStep(4);
+              later(next, 2400);
             }, 650);
-          }, 260);
-        }, 900);
-      });
-    }, 1300);
-  }
-
-  function resetDay() {
-    feed.innerHTML = ''; doneList.innerHTML = ''; stage.querySelectorAll('.ask').forEach(function (n) { n.remove(); });
-    empty.style.opacity = 1; handled = 0; countEl.textContent = 0; tapsEl.textContent = 0; idx = 0;
-    Object.keys(AGENTS).forEach(function (k) { setRoster(k, 'idle'); });
-    phSub.textContent = 'Your team is on it';
-    later(playScene, 700);
-  }
-  function start() {
-    if (running) return; running = true;
-    if (!started) { started = true; setBiz(0); resetDay(); } else { later(playScene, 400); }
-  }
-  function stop() { // pause; drop any half-finished scene so resume replays it cleanly
-    if (!running) return;
-    running = false; clearTimers(); tap.classList.remove('go');
-    if (cur) {
-      if (cur.ev && cur.ev.parentNode) cur.ev.remove();
-      if (cur.card && cur.card.parentNode) cur.card.remove();
-      setRoster(cur.a, 'idle'); cur = null;
+          });
+        }
+      }, 1500);
     }
-    stage.querySelectorAll('.ask.out').forEach(function (n) { n.remove(); });
-    if (!stage.querySelector('.ask')) empty.style.opacity = 1;
-  }
 
-  function staticState() { // reduced motion: show a finished day, no movement
-    setBiz(0);
-    SCENES.slice(0, 5).forEach(function (s) {
-      addEvent(s, s.note ? 'note' : 'sent', svg('i-check') + (s.note ? 'Saved · not sent' : 'Sent ' + s.time));
-    });
-    var s = SCENES[5], card = askCard(s);
-    card.querySelector('.txt').textContent = s.draft; card.querySelector('.caret').remove();
-    stage.appendChild(card); empty.style.opacity = 0;
-    SCENES.slice(2, 5).forEach(addDone);
-    countEl.textContent = 5; tapsEl.textContent = 5; phSub.textContent = 'A note for you';
-  }
+    var bizIdx = 0;
+    function setBiz(i) {
+      bizIdx = (i + BIZ.length) % BIZ.length;
+      var B = BIZ[bizIdx];
+      bizEl.textContent = B.name; bizShort.textContent = B.name;
+      if (capEl) capEl.textContent = 'Sample day for ' + B.kind + '. Names, numbers and times are made up.';
+      stack.innerHTML = B.team.slice(0, 3).map(avatar).join('') + '<span class="more">+' + (B.team.length - 3) + '</span>';
+      bizBtns.forEach(function (b) { b.setAttribute('aria-pressed', +b.dataset.biz === bizIdx ? 'true' : 'false'); });
+      thread.innerHTML = ''; doneList.innerHTML = ''; hideChips(); clearField(); setStep(0);
+      taps = 0; tapsEl.textContent = 0;
+      return B;
+    }
+    function playBiz(i) {
+      flush();
+      var B = setBiz(i);
+      demo.classList.remove('swap'); void demo.offsetWidth; demo.classList.add('swap');
+      later(function () {
+        dayline(B);
+        var k = 0;
+        (function nextScene() {
+          if (k >= B.scenes.length) { setStep(0); later(function () { playBiz(bizIdx + 1); }, 1800); return; }
+          later(function () { scene(B.scenes[k++], nextScene); }, k ? 500 : 900);
+        })();
+      }, 450);
+    }
 
-  if (reduce) { staticState(); }
-  else if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) start(); else stop(); });
-    }, { threshold: 0.05 }).observe(demo);
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) stop();
+    // Reduced motion (or no animation): a finished, readable exchange plus one draft waiting on your OK.
+    function staticBiz(i) {
+      instant = true; flush();
+      var B = setBiz(i);
+      dayline(B);
+      scene(B.scenes[0], function () {});
+      scene(B.scenes[1], function () {}, true);
+      setStep(0);
+      instant = false;
+    }
+
+    var paused = false, visible = false;
+    function sync() {
+      var go = visible && !paused && !document.hidden;
+      if (go === running) return;
+      running = go; demo.classList.toggle('is-paused', !go);
+      if (go) thaw(); else freeze();
+    }
+    bizBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (reduce) { staticBiz(+b.dataset.biz); return; }
+        paused = false; setPauseUi(); playBiz(+b.dataset.biz); sync();
+      });
     });
-  } else { start(); }
+    function setPauseUi() {
+      if (!pauseBtn) return;
+      pauseBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
+      pauseBtn.querySelector('.dm-pause-t').textContent = paused ? 'Play' : 'Pause';
+      pauseBtn.classList.toggle('paused', paused);
+    }
+
+    if (reduce) {
+      demo.classList.add('static');
+      if (pauseBtn) pauseBtn.hidden = true;
+      staticBiz(0);
+    } else {
+      if (pauseBtn) pauseBtn.addEventListener('click', function () { paused = !paused; setPauseUi(); sync(); });
+      playBiz(0); // queued; runs once the demo is on screen
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) { es.forEach(function (e) { visible = e.isIntersecting; sync(); }); }, { threshold: 0.05 }).observe(demo);
+      } else { visible = true; }
+      document.addEventListener('visibilitychange', sync);
+      sync();
+    }
+  })();
 
   /* ---------- before / after toggle ---------- */
   var day = $('#dayCard'), tW = $('#tWith'), tWo = $('#tWithout'), tog = $('.toggle');
