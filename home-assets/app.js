@@ -411,28 +411,6 @@ window.CW_MORE = (function () {
     }
   })();
 
-  /* ---------- before / after toggle ---------- */
-  var day = $('#dayCard'), tW = $('#tWith'), tWo = $('#tWithout'), tog = $('.toggle');
-  var userTouched = false;
-  function setMode(m) {
-    day.dataset.mode = m;
-    tog.classList.toggle('with', m === 'with');
-    tW.setAttribute('aria-selected', m === 'with'); tWo.setAttribute('aria-selected', m !== 'with');
-    day.classList.remove('swap'); void day.offsetWidth; day.classList.add('swap');
-  }
-  tW.addEventListener('click', function () { userTouched = true; setMode('with'); });
-  tWo.addEventListener('click', function () { userTouched = true; setMode('without'); });
-  if (!reduce && 'IntersectionObserver' in window) {
-    var flipped = false;
-    new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (e.isIntersecting && !flipped) {
-          flipped = true;
-          setTimeout(function () { if (!userTouched) setMode('with'); }, 2600);
-        }
-      });
-    }, { threshold: 0.5 }).observe(day);
-  }
 })();
 
 /* ---------- team builder: a different team for each kind of business ---------- */
@@ -602,7 +580,7 @@ window.CW_MORE = (function () {
 
 /* ---------- assessment stats: count up once when they come into view ---------- */
 (function () {
-  var nums = document.querySelectorAll('.as-stats [data-count]');
+  var nums = document.querySelectorAll('.aq-stats [data-count]');
   if (!nums.length || !('IntersectionObserver' in window) || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
   nums.forEach(function (n) { n.textContent = '0'; });
   new IntersectionObserver(function (es, io) {
@@ -616,5 +594,15 @@ window.CW_MORE = (function () {
         if (k < 1) requestAnimationFrame(step);
       })(t0);
     });
-  }, { threshold: 0.4 }).observe(document.querySelector('.as-stats'));
+  }, { threshold: 0.4 }).observe(document.querySelector('.aq-stats'));
+})();
+
+/* ---------- assessment sample pages: scale the 850px page to whatever width its sheet has ---------- */
+(function () {
+  var sheets = document.querySelectorAll('.aq-sheet');
+  if (!sheets.length) return;
+  function fit(el) { el.style.setProperty('--s', (el.clientWidth / 850).toFixed(4)); }
+  sheets.forEach(fit);
+  if ('ResizeObserver' in window) { var ro = new ResizeObserver(function (es) { es.forEach(function (e) { fit(e.target); }); }); sheets.forEach(function (el) { ro.observe(el); }); }
+  else window.addEventListener('resize', function () { sheets.forEach(fit); });
 })();
