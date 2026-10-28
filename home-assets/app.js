@@ -310,3 +310,97 @@
     }, { threshold: 0.5 }).observe(day);
   }
 })();
+
+/* ---------- team builder: a different team for each kind of business ---------- */
+(function () {
+  var root = document.getElementById('teamBuilder');
+  if (!root) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ROLE = {
+    call: ['Call Catch', 'i-call', '#D4582A'], desk: ['Front Desk', 'i-desk', '#B9822B'], book: ['Booking Desk', 'i-cal', '#8A6FB0'],
+    quote: ['Quote Builder', 'i-quote', '#5E7F63'], chase: ['Quote Chaser', 'i-loop', '#4E8A86'], paper: ['Paper Mover', 'i-paper', '#7A5A43'],
+    site: ['Site Keeper', 'i-web', '#3E6A9A'], design: ['Asset Designer', 'i-brush', '#C2557A'], docs: ['Doc Writer', 'i-doc', '#5B6B7A'],
+    review: ['Review Engine', 'i-review', '#9A4659'], inbox: ['Inbox Sorter', 'i-mail', '#6D7A3A'], intel: ['Intel Desk', 'i-intel', '#4F6475']
+  };
+  // [role, what it does for this business, what it hands the owner]
+  var TEAMS = {
+    plumb: { name: 'Sample Plumbing Co.', team: [
+      ['call', "Texts back the calls you miss while you're under a sink.", 'A text to OK'],
+      ['quote', 'Turns your site notes and photos into a clean water heater quote.', 'A quote to send'],
+      ['chase', 'Checks in on quotes that went quiet after a week.', 'A follow-up to OK'],
+      ['paper', 'Builds the invoice when a job closes and nudges it politely if it sits.', 'An invoice to OK'],
+      ['review', 'Asks every customer for a review and drafts your replies.', 'A reply to OK'],
+      ['site', 'Keeps your service area, emergency hours and job photos current on your website.', 'A page update to OK']] },
+    salon: { name: 'Sample Salon & Spa', team: [
+      ['book', "Confirms tomorrow's appointments and offers cancellations to the waitlist.", 'Texts to OK'],
+      ['desk', 'Answers "do you do balayage?" and "how much is a gloss?" from your price list.', 'Answers to OK'],
+      ['design', "Makes this month's promo graphic for Instagram and the front window.", 'A graphic to approve'],
+      ['site', 'Updates your service menu, prices and stylist bios on your website.', 'A page update to OK'],
+      ['review', 'Asks happy clients for a review and drafts your replies.', 'A reply to OK'],
+      ['docs', 'Writes the opening and closing checklist for new hires.', 'A doc to review']] },
+    food: { name: 'Sample Bistro', team: [
+      ['design', 'Designs the weekly specials board and the matching social post.', 'Artwork to approve'],
+      ['site', 'Keeps hours, the menu and holiday closures right on your website.', 'A page update to OK'],
+      ['desk', 'Answers catering and private event questions with your packages.', 'Answers to OK'],
+      ['review', 'Drafts a reply to every review, good or rough.', 'A reply to OK'],
+      ['docs', 'Turns your recipes into prep sheets and line checklists.', 'A doc to review'],
+      ['inbox', 'Sorts vendor emails and flags invoices that are due.', 'A short list']] },
+    lawn: { name: 'Sample Lawn & Landscape', team: [
+      ['book', "Texts tomorrow's route a heads-up so gates are unlocked.", 'Texts to OK'],
+      ['quote', 'Turns your walkthrough photos into a spring cleanup quote.', 'A quote to send'],
+      ['chase', 'Follows up on bids that went quiet before the season fills.', 'A follow-up to OK'],
+      ['paper', 'Sends seasonal contract invoices and gentle reminders.', 'An invoice to OK'],
+      ['design', 'Makes door hangers and yard sign artwork for new neighborhoods.', 'Artwork to approve'],
+      ['intel', 'Notes what people nearby are asking for this month.', 'A note, nothing sent']] },
+    shop: { name: 'Sample Boutique', team: [
+      ['design', 'Creates new arrival posts and in-store sale signage.', 'Artwork to approve'],
+      ['site', 'Adds new products and keeps your shop page and hours current.', 'A page update to OK'],
+      ['desk', 'Answers "do you have this in a medium?" from your stock notes.', 'Answers to OK'],
+      ['inbox', 'Sorts supplier email and drafts the replies that matter.', 'Replies to OK'],
+      ['docs', 'Writes your return policy and the how-tos for new staff.', 'A doc to review'],
+      ['review', 'Asks shoppers for a review and drafts your replies.', 'A reply to OK']] }
+  };
+  var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+  var tabWrap = root.querySelector('.tb-tabs');
+  var panel = document.getElementById('tbPanel'), list = document.getElementById('tbList');
+  var bizEl = document.getElementById('tbBiz'), countEl = document.getElementById('tbCount');
+  var roles = Array.prototype.slice.call(root.querySelectorAll('.tb-roles [data-role]'));
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function show(key, animate) {
+    var t = TEAMS[key]; if (!t) return;
+    tabs.forEach(function (b) { var on = b.dataset.biz === key; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; if (on) panel.setAttribute('aria-labelledby', b.id); });
+    bizEl.textContent = t.name;
+    countEl.textContent = 'A team of ' + t.team.length + ', picked for this business';
+    list.innerHTML = t.team.map(function (m, i) {
+      var r = ROLE[m[0]];
+      return '<li class="' + (animate && !reduce ? 'enter' : '') + '" style="--c:' + r[2] + ';--i:' + i + '"><span class="tb-av"><svg class="ico"><use href="#' + r[1] + '"/></svg></span>'
+        + '<div><b>' + esc(r[0]) + '</b><p>' + esc(m[1]) + '</p></div><span class="tb-hand">' + esc(m[2]) + '</span></li>';
+    }).join('');
+    var on = {}; t.team.forEach(function (m) { on[m[0]] = 1; });
+    roles.forEach(function (li) { li.classList.toggle('on', !!on[li.dataset.role]); });
+  }
+  // Rotate through businesses while the section is on screen, until the visitor picks one.
+  var keys = tabs.map(function (b) { return b.dataset.biz; }), idx = 0, timer = null, raf = null, start = 0, touched = false, DUR = 6500;
+  function stop() { clearTimeout(timer); cancelAnimationFrame(raf); timer = raf = null; tabWrap.classList.remove('auto'); }
+  function tick() { var p = Math.min(100, (performance.now() - start) / DUR * 100); var sel = tabWrap.querySelector('[aria-selected="true"]'); if (sel) sel.style.setProperty('--p', p + '%'); raf = requestAnimationFrame(tick); }
+  function play() {
+    if (touched || reduce || timer) return;
+    tabWrap.classList.add('auto'); start = performance.now(); tick();
+    timer = setTimeout(function next() {
+      idx = (idx + 1) % keys.length; show(keys[idx], true); start = performance.now();
+      timer = setTimeout(next, DUR);
+    }, DUR);
+  }
+  function pick(b, focus) { touched = true; stop(); idx = keys.indexOf(b.dataset.biz); show(b.dataset.biz, true); if (focus) b.focus(); }
+  tabs.forEach(function (b, i) {
+    b.addEventListener('click', function () { pick(b); });
+    b.addEventListener('keydown', function (e) {
+      var n = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : null;
+      if (n == null) return; e.preventDefault(); pick(tabs[(n + tabs.length) % tabs.length], true);
+    });
+  });
+  show('plumb', false);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) play(); else stop(); }); }, { threshold: 0.35 }).observe(root);
+  }
+})();
