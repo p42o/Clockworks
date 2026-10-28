@@ -20,7 +20,7 @@ export function render(ctx) {
           <button type="button" class="btn" data-dl="${f.id}">${ic("download")} Download<span class="sr">, ${f.title}</span></button></div></li>`)}</ul>`
           : emptyState("No receipts yet.", "After you sign, your receipt is kept here.", "file", true)}</section>`;
     };
-    mount(el, html`${back("#/account", "Account")}<div class="page-head"><h1>Files</h1></div>
+    mount(el, html`${back("#/account", "Settings")}<div class="page-head"><h1>Files</h1></div>
       ${files.length === 0 ? html`<div class="stack">${emptyState("Nothing shared yet.", "When Parker shares a file, it will show up here.", "file")}
         <section class="card" aria-labelledby="g-receipt"><h2 id="g-receipt">Receipts</h2>${emptyState("No receipts yet.", "After you sign, your receipt is kept here.", "file", true)}</section></div>`
         : html`<div class="stack">${GROUPS.map(([k, label]) => group(k, label, files.filter((f) => f.kind === k)))}</div>`}`);

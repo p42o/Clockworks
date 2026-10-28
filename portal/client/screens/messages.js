@@ -58,7 +58,7 @@ export function questionForm(host, { subject = "", onSent, kind = "general", int
 
 export function render(ctx) {
   const { el, router } = ctx;
-  mount(el, html`<div class="page-head"><h1>Messages</h1></div>
+  mount(el, html`<div class="page-head"><h1>Support</h1></div>
     <div class="split-msg">
       <div class="split-pane list-pane stack">
         <div data-empty></div>

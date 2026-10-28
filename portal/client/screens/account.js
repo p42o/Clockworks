@@ -10,6 +10,8 @@ import { live, act } from "./_util.js";
 
 import { SWAP } from "../swap-config.js";
 import { isLocalDev } from "../lib/env.js";
+import { openWorkingSession, workingSessionCardHtml } from "../lib/workingSession.js";
+import { presenceSectionHtml } from "../lib/presenceView.js";
 
 const STATUS = { active: ["ok", "Active"], paused: ["warn", "Paused"], canceled: ["", "Canceled"], cancelled: ["", "Canceled"], pending: ["info", "Pending"] };
 
@@ -29,7 +31,7 @@ export function render(ctx) {
     const ro = state.status === "readonly";
     const plan = a?.plan;
     const [cls, label] = STATUS[a?.status] || ["", a?.status ? String(a.status) : ""];
-    mount(el, html`<div class="page-head"><h1>Account</h1></div><div class="account-grid">
+    mount(el, html`<div class="page-head"><h1>Settings</h1></div><div class="account-grid">
       <section class="card plan" aria-labelledby="plan-h"><h2 id="plan-h">Your plan</h2>
         ${plan ? html`<dl class="kv">
           <dt>Plan</dt><dd>${plan.name}</dd>
@@ -45,6 +47,7 @@ export function render(ctx) {
         ${raw(carePlanDisclosureHtml(disclosureSwap()))}
       </section>
 
+      ${workingSessionCardHtml(SWAP)}
       ${shopPassUpgradeHtml(SWAP)}
 
       <ul class="list links" aria-label="Your information">
@@ -53,6 +56,8 @@ export function render(ctx) {
         ${ro ? '' : html`<li><a class="row" href="#/account/people">${ic("user")}<div class="grow"><div class="title">People</div></div><span class="chev">${ic("chevron-right")}</span></a></li>`}
       </ul>
 
+      ${presenceSectionHtml(a?.presenceReports)}
+
       <section class="card device" aria-labelledby="dev-h"><h2 id="dev-h">This device</h2>
         <div class="actions"><button type="button" class="btn" data-out>${ic("logout")} Sign out</button>
         ${confirmAll ? html`<div class="banner warn" role="alert"><div>This signs you out on every phone and computer. You'll need a new link or code to get back in.
@@ -60,10 +65,13 @@ export function render(ctx) {
           : html`<button type="button" class="btn" data-all>Sign out everywhere</button>`}</div>
       </section>
 
-      <div class="legal stack"><p>Questions? <a href="mailto:${SWAP.contact.privacyEmail}">${SWAP.contact.privacyEmail}</a></p><ul class="list" aria-label="Legal"><li><a class="row" href="#/privacy-notice"><div class="grow"><div class="title">Privacy Notice</div></div><span class="chev">${ic("chevron-right")}</span></a></li>
-        <li><a class="row" href="#/starter-terms"><div class="grow"><div class="title">Starter Terms</div></div><span class="chev">${ic("chevron-right")}</span></a></li></ul></div>
+      <div class="legal stack"><p>Questions? <a href="mailto:${SWAP.contact.privacyEmail}">${SWAP.contact.privacyEmail}</a></p><ul class="list" aria-label="Legal"><li><a class="row" href="#/privacy-notice"><div class="grow"><div class="title">Privacy notice</div></div><span class="chev">${ic("chevron-right")}</span></a></li>
+        <li><a class="row" href="#/starter-terms"><div class="grow"><div class="title">Terms</div></div><span class="chev">${ic("chevron-right")}</span></a></li></ul></div>
     </div>`);
 
+    el.querySelector("[data-ws-open]")?.addEventListener("click", (ev) => {
+      openWorkingSession(SWAP, { opener: ev.currentTarget });
+    });
     el.querySelector("[data-shop-pass-coming-soon]")?.addEventListener("click", (ev) => {
       openShopPassComingSoon(SWAP, { opener: ev.currentTarget });
     });
@@ -90,5 +98,5 @@ export function render(ctx) {
     });
   }
   const ctxRedraw = () => draw();
-  return live(el, "Account", data.subscribeAccount, (a) => { acct = a; draw(); });
+  return live(el, "Settings", data.subscribeAccount, (a) => { acct = a; draw(); });
 }

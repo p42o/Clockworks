@@ -10,7 +10,7 @@ const HIDDEN_NOTICE = "This message wasn't sent. It looked like it had a card or
 export function render(ctx) {
   const { el, params } = ctx;
   const tid = params.tid;
-  mount(el, html`${back("#/messages", "Messages")}<h1>Conversation</h1>${skeleton(2)}`);
+  mount(el, html`${back("#/messages", "Support")}<h1>Conversation</h1>${skeleton(2)}`);
   let thread = null, msgs = [], sideRows = null, unsubT, unsubM, unsubSide, lastReadFor = null, formDone = false;
   const fillSide = () => {
     const slot = el.querySelector("[data-side-list]");
@@ -18,13 +18,13 @@ export function render(ctx) {
     mount(slot, threadsMarkup(sideRows, tid));
   };
 
-  const fail = () => { unsubT?.(); unsubM?.(); mount(el, html`${back("#/messages", "Messages")}<h1>Conversation</h1>${errorState()}`); formDone = false; onRetry(el, start); };
+  const fail = () => { unsubT?.(); unsubM?.(); mount(el, html`${back("#/messages", "Support")}<h1>Conversation</h1>${errorState()}`); formDone = false; onRetry(el, start); };
 
   function frame() {
     mount(el, html`<div class="split-msg is-thread">
       <div class="split-pane list-pane" data-side-list></div>
       <div class="split-pane thread-pane">
-      ${back("#/messages", "Messages")}
+      ${back("#/messages", "Support")}
       <div class="page-head"><h1 data-title></h1><div data-chip></div></div>
       <div class="stack"><div class="bubbles" data-bubbles aria-live="polite"></div>
       <div data-closed></div>
@@ -54,7 +54,7 @@ export function render(ctx) {
   }
 
   function paint() {
-    if (!thread) { mount(el, html`${back("#/messages", "Messages")}<h1>Conversation</h1>${emptyState("We couldn't find that conversation.", "It may have been removed. Head back to Messages and try another.", "chat")}`); formDone = false; return; }
+    if (!thread) { mount(el, html`${back("#/messages", "Support")}<h1>Conversation</h1>${emptyState("We couldn't find that conversation.", "It may have been removed. Head back to Support and try another.", "chat")}`); formDone = false; return; }
     const firstPaint = !formDone;
     if (!formDone) frame();
     el.querySelector("[data-title]").textContent = thread.subject || "Conversation";

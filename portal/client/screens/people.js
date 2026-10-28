@@ -6,7 +6,7 @@ import { back, act } from "./_util.js";
 
 export function render(ctx) {
   const { el, router } = ctx;
-  const head = html`${back("#/account", "Account")}<div class="page-head"><h1>People</h1></div>`;
+  const head = html`${back("#/account", "Settings")}<div class="page-head"><h1>People</h1></div>`;
   const memberNote = () => mount(el, html`${head}<p>Only the account owner can see this list.</p>`);
   let dead = false;
   async function load() {

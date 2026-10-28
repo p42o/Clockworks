@@ -40,7 +40,7 @@ export const SWAP = Object.freeze({
   changelogCard: Object.freeze({
     enabled: true,
     loggingEnabled: false,
-    allowClientIds: Object.freeze(["dev-smoke-apex"]),
+    allowClientIds: Object.freeze(["*"]), // opened to every portal client 2026-10-27 (Parker)
     stages: Object.freeze(["*"]),
     showOnHome: true,
     cacheMinutes: 30,

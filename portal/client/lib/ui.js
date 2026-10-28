@@ -114,6 +114,13 @@ const P = {
   "arrow-right": '<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',
   sparkle: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 17v4M17 19h4"/>',
   x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  gauge: '<path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/>',
+  store: '<path d="M4 9h16l-1.2-4H5.2z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>',
+  folder: '<path d="M3 6h6l2 2h10v11H3z"/>',
+  paper: '<path d="M5 4h11l3 3v13H5z"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+  upload: '<path d="M12 20V8"/><path d="M7 12l5-5 5 5"/><path d="M5 4h14"/>',
+  support: '<path d="M4 12a8 8 0 1 1 3.3 6.5L4 20l1.4-3.3A8 8 0 0 1 4 12z"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/>',
 };
 /** Returns trusted svg markup (string). Wrap with raw() when interpolating into html``. */
 export function icon(name) {

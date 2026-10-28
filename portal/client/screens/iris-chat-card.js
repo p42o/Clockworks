@@ -1,4 +1,4 @@
-import { html, mount, fmtDateTime } from "../lib/ui.js";
+import { html, mount, fmtDateTime, toast } from "../lib/ui.js";
 import * as api from "../lib/api.js";
 import { IRIS_AVATAR, IRIS_DISCLOSURE_TITLE, IRIS_DISCLOSURE_COPY, IRIS_DISCLOSURE_AGREEMENT } from "../lib/irisChat.js";
 
@@ -11,6 +11,24 @@ const HANDOFF = {
 };
 const METHODS = ["phone", "email", "chat", "text"];
 const now = () => Date.now();
+const COS_LABEL = "Copy for your Chief of Staff:";
+
+// Label and both fences are exact lines. The brief is only the text between the fences.
+function chiefOfStaffBrief(text) {
+  const lines = String(text ?? "").split(/\r?\n/);
+  const labelAt = lines.findIndex((line) => line === COS_LABEL);
+  if (labelAt < 0) return null;
+  let open = -1;
+  for (let i = labelAt + 1; i < lines.length; i++) {
+    if (lines[i] === "") continue;
+    if (lines[i] === "---") { open = i; break; }
+    return null;
+  }
+  if (open < 0) return null;
+  const close = lines.findIndex((line, i) => i > open && line === "---");
+  if (close < 0) return null;
+  return lines.slice(open + 1, close).join("\n");
+}
 
 export function mountIrisChatCard(hostEl, ctx = {}) {
   const s = {
@@ -35,13 +53,17 @@ export function mountIrisChatCard(hostEl, ctx = {}) {
         <div class="iris-brand"><img src="${IRIS_AVATAR}" alt="" aria-hidden="true" class="iris-avatar"><div><span class="eyebrow">Clockworks support</span><h2 id="iris-heading">Iris <small>AI assistant</small></h2></div></div>
         <button type="button" class="btn iris-human" data-human>I need a human</button>
       </div>
-      <div class="iris-bubbles" role="log" aria-label="Iris chat" aria-live="polite">
-        ${s.loading ? html`<p class="small muted">Opening chat…</p>` : s.messages.map((m) => html`<div class="bubble ${m.by === "client" ? "me" : "iris"}"><span class="sr">${m.by === "client" ? "You" : "Iris"} said: </span>${m.text}<span class="meta">${m.by === "client" ? "You" : "Iris"} · ${fmtDateTime(m.createdAt || now())}</span></div>`)}
+      <div class="iris-bubbles" role="log" aria-label="Iris chat" aria-live="polite" tabindex="0">
+        ${s.loading ? html`<p class="small muted">Opening chat…</p>` : s.messages.map((m, i) => {
+          const who = m.by === "client" ? "You" : "Iris";
+          const brief = m.by === "client" ? null : chiefOfStaffBrief(m.text);
+          return html`<div class="bubble ${m.by === "client" ? "me" : "iris"}"><span class="sr">${who} said: </span>${m.text}${brief != null ? html`<button type="button" class="btn quiet iris-copy" data-cos="${i}" aria-label="Copy for your Chief of Staff">Copy</button>` : ""}<span class="meta">${who} · ${fmtDateTime(m.createdAt || now())}</span></div>`;
+        })}
         ${s.typing ? html`<div class="iris-typing" role="status">Iris is typing<span aria-hidden="true">…</span></div>` : ""}
       </div>
       ${s.disclosureNeeded ? html`<div class="iris-disclosure" role="group" aria-labelledby="iris-disclosure-title">
         <h3 id="iris-disclosure-title">${IRIS_DISCLOSURE_TITLE}</h3><p>${IRIS_DISCLOSURE_COPY}</p>
-        ${!s.loggingEnabled ? html`<p class="iris-storage-note"><b>For this session, the chat transcript is not saved in the portal.</b> A note is saved only if you submit a human handoff.</p>` : ""}
+        ${!s.loading && !s.loggingEnabled ? html`<p class="iris-storage-note"><b>For this session, the chat transcript is not saved in the portal.</b> A note is saved only if you submit a human handoff.</p>` : ""}
         <p>${IRIS_DISCLOSURE_AGREEMENT}</p>
         <button type="button" class="btn primary" data-disclosure ${s.busy ? "disabled" : ""}>Start chat</button>
       </div>` : ""}
@@ -51,9 +73,21 @@ export function mountIrisChatCard(hostEl, ctx = {}) {
       ${s.submitted ? html`<p class="iris-confirm" role="status">Your note is with Parker. You can keep chatting with Iris here.</p>` : ""}
       ${s.error ? html`<p class="iris-error" role="alert">${s.error} If you need the company line, call (763) 296-9777.</p>` : ""}
       <form class="iris-composer" data-compose><label class="sr" for="iris-message">Message Iris</label><textarea id="iris-message" rows="1" maxlength="2000" placeholder="Ask Iris…" ${s.disclosureNeeded || s.busy || s.loading ? "disabled" : ""}>${s.draft}</textarea><button class="btn primary" type="submit" ${s.disclosureNeeded || s.busy || s.loading ? "disabled" : ""}>Send</button></form>
-      <p class="iris-footer">Iris (AI) · ${s.loggingEnabled ? "chat stored" : "chat transcript not saved"} · <a href="#/privacy-notice">Privacy Notice</a></p>
+      <p class="iris-footer">Iris (AI)${s.loading ? "" : html` · ${s.loggingEnabled ? "chat stored" : "chat transcript not saved"}`} · <a href="#/privacy-notice">Privacy Notice</a></p>
     </div>`);
 
+    hostEl.querySelectorAll("[data-cos]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const brief = chiefOfStaffBrief(s.messages[Number(btn.dataset.cos)]?.text);
+        if (brief == null) return;
+        try {
+          await navigator.clipboard.writeText(brief);
+          toast("Copied");
+        } catch {
+          toast("Could not copy. Select the brief and copy it.");
+        }
+      });
+    });
     hostEl.querySelector("[data-human]")?.addEventListener("click", () => {
       s.error = ""; s.flow = "notes"; s.submitted = false;
       iris(HANDOFF.start); iris(HANDOFF.notes); paint();

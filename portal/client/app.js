@@ -22,6 +22,7 @@ function host(want) {
     layout = want;
     if (want === "shell") {
       mount(app, html`
+        <a class="railbrand" href="#/home" aria-label="Clockworks home">${markSvg("mark")}<span><b>Clockworks<i>.</i></b><small>Client portal</small></span></a>
         <header class="appbar"><span aria-hidden="true">${markSvg("mark")}</span><span class="brand" aria-hidden="true">Clockworks<i>.</i></span>
           <div class="who"><b data-biz>Clockworks</b><small>Client portal</small></div></header>
         <div data-offline></div>
@@ -63,7 +64,7 @@ function gateSide() {
     <span class="eyebrow">MN Clockworks · Client portal</span>
     <h2>Your business, <em>organized</em>.</h2>
     <p>One private place for your intake, files, and messages with Parker.</p>
-    <ol><li><span><b>Set your password</b><span>Takes a minute.</span></span></li>
+    <ol><li><span><b>Open your invite</b><span>A link or a short code from Parker.</span></span></li>
       <li><span><b>Tell us about your business</b><span>Mostly taps. Saves as you go.</span></span></li>
       <li><span><b>Parker takes it from there</b><span>You'll see every step here.</span></span></li></ol>
   </aside>`;
@@ -81,12 +82,12 @@ function renderTabs() {
   const f = h.features || {};
   const unread = h.unread || {};
   const intakeDone = ["submitted", "reviewed"].includes(h.intake?.status);
+  void intakeDone;
   const tabs = [
-    { key: "home", hash: "#/home", label: "Home", icon: "home" },
-    { key: "intake", hash: "#/intake", label: intakeDone ? "My info" : "Intake", icon: "intake", feature: "intake" },
-    { key: "messages", hash: "#/messages", label: "Messages", icon: "chat", feature: "messages", n: unread.messages },
-    { key: "ideas", hash: "#/ideas", label: "Ideas", icon: "lightbulb", feature: "ideas", n: unread.ideas },
-    { key: "account", hash: "#/account", label: "Account", icon: "user" },
+    { key: "home", hash: "#/home", label: "Home", icon: "home", n: unread.ideas },
+    { key: "shop-pass", hash: "#/shop-pass", label: "Shop Pass", icon: "store" },
+    { key: "messages", hash: "#/messages", label: "Support", icon: "support", feature: "messages", n: unread.messages },
+    { key: "account", hash: "#/account", label: "Settings", icon: "settings" },
   ].filter((t) => !t.feature || f[t.feature] !== false)
    .filter((t) => session.state.status !== "readonly" || ["home", "account"].includes(t.key));
   mount(nav, html`${tabs.map((t) => html`<a href="${t.hash}" data-tab="${t.key}">${ic(t.icon)}<span>${t.label}</span>${t.n > 0 ? html`<span class="dot" aria-hidden="true">${t.n > 9 ? "9+" : t.n}</span><span class="sr">${t.n} new</span>` : ""}</a>`)}`);

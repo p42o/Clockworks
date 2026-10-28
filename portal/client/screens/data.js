@@ -22,7 +22,7 @@ export function render(ctx) {
     const open = reqs.some((r) => OPEN.includes(r.status));
     const ro = state.status === "readonly";
     if (!formState.cats) formState.cats = new Set(cats.map((c) => c.key));
-    mount(el, html`${back("#/account", "Account")}<div class="page-head"><h1>My data</h1><p>${EXPLAIN}</p></div><div class="stack">
+    mount(el, html`${back("#/account", "Settings")}<div class="page-head"><h1>My data</h1><p>${EXPLAIN}</p></div><div class="stack">
       <section class="card" aria-labelledby="hold-h"><h2 id="hold-h">What we hold</h2>
         ${cats.length ? html`<ul class="list" style="margin-top:8px">${cats.map((c) => html`<li><div class="row"><div class="grow"><div class="title" style="white-space:normal">${c.label}</div>
           <div class="sub">Held by ${HOLDER[c.holder] || c.holder} · ${c.deletable ? "Can be deleted" : "Kept for a set time"}</div></div></div></li>`)}</ul>` : html`<p class="muted">Nothing to show yet.</p>`}</section>

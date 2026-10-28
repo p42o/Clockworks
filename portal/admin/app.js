@@ -5,7 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, connectAuthEmulator, signInWithCredential } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager, connectFirestoreEmulator, terminate, clearIndexedDbPersistence,
-  collection, collectionGroup, doc, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, getDocs, query, orderBy, limit, serverTimestamp, Timestamp, writeBatch,
+  collection, collectionGroup, doc, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, query, where, orderBy, limit, serverTimestamp, Timestamp, writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, connectStorageEmulator, ref as sref, listAll, getMetadata, getDownloadURL, uploadBytesResumable, deleteObject, updateMetadata } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { getFunctions, connectFunctionsEmulator, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
@@ -261,7 +261,7 @@ const ICON = {
   home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>', users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.8c1.7.7 2.8 2.4 3.2 5.2"/>',
   gauge: '<path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-5"/>', file: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>', search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/>',
   plus: '<path d="M12 5v14M5 12h14"/>', sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>', moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
-  out: '<path d="M15 4h4v16h-4M10 16l4-4-4-4M14 12H4"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', cal: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', pen: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+  out: '<path d="M15 4h4v16h-4M10 16l4-4-4-4M14 12H4"/>', eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', cal: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', pen: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
   play: '<path d="M8 5v14l11-7z"/>', phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>', globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.5 5.4 3.5 8.5S14.5 17.9 12 20.5C9.5 17.9 8.5 15.1 8.5 12S9.5 6.1 12 3.5z"/>',
   pin: '<path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>', wrench: '<path d="M14.5 5.5a4 4 0 0 0 5 5L12 18l-3 3-3-3 3-3 7.5-7.5a4 4 0 0 1-2-2z"/>', spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
   msg: '<path d="M4 5h16v11H9l-5 4z"/>', flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>', trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>', link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
@@ -449,13 +449,15 @@ function renderShell() {
       <a class="brand" href="#/">${mark("mark sweep")}<span><b>Clockworks<i>.</i></b><small>Portal · CRM</small></span></a>
       <div class="nav-lbl">Workspace</div>
       <nav class="nav" id="nav">
-        <a href="#/" data-r="dash">${ic("home")}Dashboard</a>
+        <a href="#/" data-r="dash">${ic("home")}Today</a>
         <a href="#/clients" data-r="clients">${ic("users")}Clients<span class="n" id="navClients"></span></a>
         <a href="#/assess" data-r="assess">${ic("gauge")}Assessments</a>
-        <a href="#/quotes" data-r="quotes">${ic("file")}Quotes &amp; invoices</a>
-        <a href="#/assets" data-r="assets">${ic("box")}Assets</a>
-        <a href="#/due" data-r="due">${ic("cal")}Due</a>
-        <a href="#/privacy" data-r="privacy">${ic("shield")}Privacy</a>
+        <a href="#/quotes" data-r="quotes">${ic("file")}Money</a>
+        <details class="nav-more"><summary>${ic("more")}More</summary>
+          <a href="#/due" data-r="due">${ic("cal")}Due</a>
+          <a href="#/assets" data-r="assets">${ic("box")}Assets</a>
+          <a href="#/privacy" data-r="privacy">${ic("shield")}Privacy</a>
+        </details>
       </nav>
       <div class="nav-lbl">Clients</div>
       <nav class="nav" id="navPins"></nav>
@@ -579,6 +581,54 @@ function paint(first) {
   if (first) countUp(v); else $$("[data-count]", v).forEach((el) => (el.textContent = (el.dataset.pre || "") + Number(el.dataset.count).toLocaleString("en-US")));
 }
 
+// ------------------------------------------------------------------ customer dashboard preview
+// Read-only: the client's own Home, rendered by the client app's lib/dash.js inside an iframe.
+// Data comes from the same clientView docs the client reads; admin rules already allow these reads.
+const plainData = (v) => v == null ? v : typeof v.toDate === "function" ? v.toDate() : Array.isArray(v) ? v.map(plainData)
+  : (typeof v === "object" && !(v instanceof Date)) ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, plainData(x)])) : v;
+async function customerModel(cid) {
+  const view = async (n) => { try { const s = await getDoc(doc(db, "clients", cid, "clientView", n)); return s.exists() ? plainData(s.data()) : null; } catch { return null; } };
+  const [home, account, profile] = await Promise.all([view("home"), view("account"), view("profile")]);
+  let ideas = [];
+  if (home && home.features?.ideas !== false) {
+    try { ideas = (await getDocs(query(collection(db, "clients", cid, "suggestions"), orderBy("publishedAt", "desc"), limit(20)))).docs
+      .map((d) => ({ id: d.id, ...plainData(d.data()) })).filter((x) => !x.state || x.state === "published"); } catch { ideas = []; }
+  }
+  let firstName = "";
+  try { const u = (await getDocs(query(collection(db, "clientUsers"), where("cid", "==", cid), limit(1)))).docs[0]?.data();
+    firstName = u?.firstName || String(u?.contactName || u?.displayName || "").trim().split(/\s+/)[0] || ""; } catch { firstName = ""; }
+  let changelog = { visible: true, items: [] };
+  try { changelog = await callFn("adminChangelogPreview", { cid }); } catch { changelog = { visible: true, items: [], failed: true }; }
+  return { cid, home, account, profile, ideas, firstName, changelog };
+}
+async function openCustomerDashboard(c) {
+  document.querySelector(".cdash")?.remove();
+  const wrap = document.createElement("div");
+  wrap.className = "cdash"; wrap.setAttribute("role", "dialog"); wrap.setAttribute("aria-modal", "true"); wrap.setAttribute("aria-label", `Customer dashboard for ${c.name}`);
+  wrap.innerHTML = `<header class="cdash-bar"><span class="chip ok"><span class="d"></span>Read only</span><b>What ${esc(c.name)} sees</b><small class="cdash-note">Loading…</small><span class="sp"></span>
+    <div class="cdash-size" role="group" aria-label="Screen size"><button type="button" data-w="" aria-pressed="true">Desktop</button><button type="button" data-w="390" aria-pressed="false">Phone</button></div>
+    <button type="button" class="btn sm" data-close>${ic("x")}Close</button></header>
+    <div class="cdash-stage"><iframe title="Customer dashboard preview" src="/portal/client/preview.html?v=dash-20261027"></iframe></div>`;
+  document.body.appendChild(wrap); document.body.classList.add("cdash-open");
+  const frame = wrap.querySelector("iframe"), note = wrap.querySelector(".cdash-note");
+  const close = () => { removeEventListener("message", onMsg); removeEventListener("keydown", onKey); wrap.remove(); document.body.classList.remove("cdash-open"); };
+  const onKey = (e) => { if (e.key === "Escape") close(); };
+  let model = null, ready = false;
+  const send = () => { if (model && ready) frame.contentWindow.postMessage({ type: "cw-dash-preview", model }, location.origin); };
+  const onMsg = (e) => { if (e.origin === location.origin && e.source === frame.contentWindow && e.data?.type === "cw-dash-preview-ready") { ready = true; send(); } };
+  addEventListener("message", onMsg); addEventListener("keydown", onKey);
+  wrap.querySelector("[data-close]").onclick = close;
+  wrap.querySelectorAll("[data-w]").forEach((b) => (b.onclick = () => {
+    wrap.querySelectorAll("[data-w]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    wrap.querySelector(".cdash-stage").classList.toggle("phone", !!b.dataset.w);
+  }));
+  wrap.querySelector("[data-close]").focus();
+  model = await customerModel(c.id);
+  note.textContent = !model.home ? "No portal yet: the client has not been set up, so they would see an empty Home."
+    : model.changelog?.failed ? "Capabilities list could not load; the rest is live." : "Live data, exactly as rendered for the client.";
+  send();
+}
+
 // ------------------------------------------------------------------ dashboard
 function milestones() {
   const pub = S.reports.filter((r) => r.status === "published").sort((a, b) => (a.date || "").localeCompare(b.date || ""));
@@ -654,7 +704,6 @@ function viewDash(v) {
   <section class="tiles">
     <a class="panel tile" href="#/clients" style="text-decoration:none"><span class="lbl">${ic("users")}Prospects &amp; clients</span><span class="row1"><span class="big" data-count="${S.clients.length}">${S.clients.length}</span><span class="stack">${S.clients.slice(0, 4).map((c) => `<span style="background:${colorOf(c)}">${esc(initials(c.name))}</span>`).join("")}</span></span><span class="sub">${active.length ? `<b>${active.length} active</b> · ` : ""}${leads.length} in the pipeline</span></a>
     <a class="panel tile" href="#/assess" style="text-decoration:none"><span class="lbl">${ic("gauge")}Assessments published</span><span class="row1"><span class="big" data-count="${pub.length}">${pub.length}</span>${latestPub && latestPub.score != null ? gauge(latestPub.score) : ""}</span><span class="sub">${latestPub ? `Latest: ${esc(client(latestPub.client)?.name || "")}` : "Your first one is a click away"}</span></a>
-    <div class="panel tile"><span class="lbl">${ic("bolt")}Moves this week</span><span class="row1"><span class="big" data-count="${week.length}">${week.length}</span>${spark()}</span><span class="sub">${week.length ? (week.length >= 5 ? "<b>Nice momentum.</b> Keep it rolling." : "Every note and call counts.") : "Log a call or a note to start the streak."}</span></div>
     ${openQ.length || unpaid.length
       ? `<a class="panel tile" href="#/quotes" style="text-decoration:none"><span class="lbl">${ic("file")}Quotes out</span><span class="big" data-count="${Math.round(openQ.reduce((a, x) => a + quoteTotal(x).total, 0))}" data-pre="$">${money(openQ.reduce((a, x) => a + quoteTotal(x).total, 0))}</span><span class="sub">${openQ.length} open${unpaid.length ? ` · ${money(unpaid.reduce((a, x) => a + quoteTotal(x).total, 0))} to collect` : ""}</span></a>`
       : `<button class="panel tile cta" data-newquote><span class="lbl">${ic("file")}Quotes</span><span class="big">Draft your first quote <span class="arr">→</span></span><span class="sub">When a sit-down lands, the pilot quote goes here.</span></button>`}
@@ -676,11 +725,6 @@ function viewDash(v) {
       </div>
     </div>
     <div class="grid col">
-      <div class="panel journey p-journey">
-        <div class="jhead"><span class="ringwrap"><svg class="ring" viewBox="0 0 72 72" aria-hidden="true"><circle class="bg" cx="36" cy="36" r="31" fill="none" stroke-width="6"/><circle class="fg" cx="36" cy="36" r="31" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${reduced || !entering ? off.toFixed(1) : C.toFixed(1)}" data-off="${off.toFixed(1)}" transform="rotate(-90 36 36)"/><svg class="mark${entering ? " sweep" : ""}" x="18" y="18" width="36" height="36" viewBox="0 0 364 361">${$("#cw-mark").innerHTML}</svg></svg><span class="ring-n">${done}/${ms.length}</span></span>
-          <div><b>${done === 0 ? "Let's get started." : done < 3 ? "You're off the starting line." : done < ms.length ? "The flywheel is turning." : "Clockworks is up and running."}</b><small>${done} of ${ms.length} early milestones reached. Next: ${esc(nowI >= 0 ? ms[nowI].t.toLowerCase() : "keep going")}.</small></div></div>
-        <ol class="steps">${ms.map((m, i) => `<li class="${m.done ? "done" : i === nowI ? "now" : ""}"><span class="st">${m.done ? ic("check") : i + 1}</span><div><b>${esc(m.t)}</b><small>${esc(m.done ? (m.sub || "Done") : m.hint)}</small>${i === nowI ? `<div class="go">${stepAct[i] || ""}</div>` : ""}</div><span class="when">${m.done ? esc(m.when || "✓") : i === nowI ? `<span class="chip acc">Up next</span>` : ""}</span></li>`).join("")}</ol>
-      </div>
       <div class="panel lane p-lane">
         <div class="ph" style="padding:0"><h2>Pipeline <small>${S.clients.length} ${S.clients.length === 1 ? "client" : "clients"}</small></h2></div>
         <div class="lane-track">${MAIN.map((s) => { const here = S.clients.filter((c) => c.stage === s); return `<div class="lane-col ${here.length ? "has" : ""}"><span class="bar"></span><small>${esc(STAGE_SHORT[s] || s)}</small><div class="pucks">${here.map((c) => `<a class="puck" href="#/c/${esc(c.id)}" title="${esc(c.name)}" style="background:${colorOf(c)}">${esc(initials(c.name))}</a>`).join("")}</div></div>`; }).join("")}</div>
@@ -688,7 +732,6 @@ function viewDash(v) {
       ${(() => { const rows = S.clients.map((c) => ({ c, r: latestPresence(c.id) })).filter((x) => x.r && hasModule(x.c, "presence")); return rows.length ? `<div class="panel p-scores"><div class="ph"><h2>Presence scores <small>latest per client</small></h2></div><div class="pb scores">${rows.map(({ c, r }) => `<div class="score-row"><a href="#/c/${esc(c.id)}" style="text-decoration:none"><b style="font:600 13.5px var(--ff)">${esc(c.name)}</b><br><small class="chip ${bandCls(r.score)}" style="height:20px;margin-top:3px">${esc(band(r.score))}</small></a><span class="track"><span class="fill ${bandCls(r.score)}" style="width:${r.score}%"></span></span><b>${r.score}</b></div>`).join("")}</div></div>` : ""; })()}
     </div>
   </section>`;
-  requestAnimationFrame(() => { const fg = $(".ring .fg", v); if (fg) fg.setAttribute("stroke-dashoffset", fg.dataset.off); });
   wireCommon(v);
 }
 
@@ -1410,6 +1453,7 @@ function viewAssets(v) {
 // ------------------------------------------------------------------ client 360
 let composeKind = "Note";
 const presenceReader = { cid: "", id: "" };
+const moreOpenFor = new Set();
 function viewClient(v) {
   const c = client(R.args[0]);
   if (!c) { v.innerHTML = `<div class="crumb"><a href="#/clients">Clients</a></div><div class="empty-note">That client isn't here. <a class="btn link" href="#/clients">Back to clients</a></div>`; return; }
@@ -1421,7 +1465,7 @@ function viewClient(v) {
   const site = siteUrl(c.website);
   const ints = c.interests || [];
   v.innerHTML = `
-  <div class="crumb"><a href="#/clients">Clients</a> / ${esc(c.name)}</div>
+  <div class="crumb crumb-bar"><span><a href="#/clients">Clients</a> / ${esc(c.name)}</span><button type="button" class="btn sm p" data-viewdash>${ic("eye")}View Customer Dashboard</button></div>
   <section class="panel hero">
     <div class="hero-top">
       <div class="ident"><span class="avatar" style="background:${colorOf(c)}${c.brand?.color2 ? `;box-shadow:inset 0 0 0 3px ${esc(c.brand.color2)}` : ""}">${esc(initials(c.name))}</span>
@@ -1443,11 +1487,10 @@ function viewClient(v) {
     </div>
   </section>
 
-  ${scopeLockCard(c)}
-
-  ${portalAccessCard(c)}
-
-  ${clientFlowCard(c)}
+  <details class="more-details" ${moreOpenFor.has(c.id + ":portal") ? "open" : ""} data-moredetails="portal"><summary>Portal access &amp; invites <small>invite links, access, follow-up grace</small></summary>
+    ${portalAccessCard(c)}
+    ${clientFlowCard(c)}
+  </details>
 
   <section class="grid g3">
     <div class="panel"><div class="ph"><h2>Details</h2><button class="btn sm ghost" data-edit="details">${ic("pen")}Edit</button></div><div class="pb">
@@ -1463,27 +1506,13 @@ function viewClient(v) {
 
   ${filesCardHtml(`clients/${c.id}`, { title: "Files", empty: `No files yet for ${esc(short)}. Drop a returned intake or a photo here — PDF or images, 20 MB each.`, taggable: true })}
 
-  ${hasModule(c, "household") ? `<section class="panel"><div class="ph"><h2>Household</h2></div><div class="pb"><div class="empty-note"><b>Coming soon — household.</b> Life stays on the always-on cards for now.</div></div></section>` : ""}
-
   <section class="crm-cards">
-    ${moneyCard(c)}
-    ${agreementCard(c)}
-    ${accessCard(c)}
-    ${hoursCard(c)}
-    ${(() => { const filled = !!(c.deal?.type || c.deal?.startDate || c.deal?.guarantee); return filled || clientPath(c) === "business" ? dealCard(c) : ""; })()}
-    ${hasModule(c, "intake") ? intakeCard(c) : ""}
-    ${leadCard(c)}
     ${nextStepsCard(c)}
-    ${hasModule(c, "team_bots") ? aiSetupCard(c) : ""}
+    ${moneyCard(c)}
   </section>
 
   ${onlinePresenceCardHtml(c.id, reps, presenceReader.cid === c.id ? presenceReader.id : "")}
 
-  ${hasModule(c, "tech_stack") ? `<section class="panel"><div class="ph"><h2>Tech stack <small>as discovered · ${tech.length} ${tech.length === 1 ? "system" : "systems"}</small></h2><button class="btn sm ghost" data-tech="new">${ic("plus")}Add system</button></div><div class="pb">
-    ${tech.length ? `<div class="tech-bar"><i style="flex:${tc.confirmed || 0};background:var(--ok-fill)"></i><i style="flex:${tc.assumed || 0};background:repeating-linear-gradient(135deg,var(--warn-fill) 0 4px,transparent 4px 7px)"></i><i style="flex:${tc.unknown || 0};background:var(--line-strong)"></i></div>
-      <div class="tech-legend"><span>Confirmed <b>${tc.confirmed}</b></span><span>Assumed <b>${tc.assumed}</b></span><span>Unknown <b>${tc.unknown}</b></span></div>
-      <div class="techs">${tech.map((t, i) => `<button class="tech ${esc(t.status)}" data-tech="${i}"><span class="cat">${esc(t.category || "System")}</span><b>${esc(t.name)}</b>${t.source ? `<small>${esc(t.source)}</small>` : ""}<span class="st">${esc(TECH_ST[t.status] || t.status)}</span></button>`).join("")}</div>`
-      : `<div class="empty-note">Nothing discovered yet. Add the systems you learn about (CRM, phones, payments).<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-tech="new">${ic("plus")}Add a system</button></div></div>`}</div></section>` : ""}
 
   ${(() => {
     const vis = REPORTS.filter((t) => hasModule(c, reportModule(t.type)));
@@ -1506,17 +1535,36 @@ function viewClient(v) {
   })()}
 
   <section class="grid g2">
-    ${hasModule(c, "vendors") ? `<div class="panel"><div class="ph"><h2>Contracts <small>vendors they're locked into</small></h2><button class="btn sm ghost" data-vendor="new">${ic("plus")}Add</button></div><div class="pb">
-      ${(c.vendors || []).length ? c.vendors.map((x, i) => contractHtml(x, i)).join("") : `<div class="empty-note">No contracts on file. If they're tied to a vendor (a marketing agency, a website company), note the end date and notice window here.<button class="btn sm" data-vendor="new">${ic("plus")}Add a contract</button></div>`}</div></div>` : ""}
     <div class="panel"><div class="ph"><h2>Activity <small>${logs.length}</small></h2></div><div class="pb">
       <div class="composer"><div class="kinds" role="group" aria-label="Kind">${KINDS.map((k) => `<button type="button" data-kind="${k}" aria-pressed="${k === composeKind}">${k}</button>`).join("")}</div>
         <div class="kinds touch-chs" role="group" aria-label="Channel">${[["", "No channel"], ...TOUCH_CH].map(([k, lab]) => `<button type="button" data-ch="${esc(k)}" aria-pressed="${(window.__touchCh || "") === k}">${esc(lab)}</button>`).join("")}</div>
         <div class="row"><textarea id="compose" placeholder="What happened? e.g. Texted the owner about Thursday" rows="1"></textarea><button class="btn p" id="addLog">Add</button></div></div>
       <div class="log">${logs.map((l) => `<div class="le"><time>${esc(dayOf(l.at) || "…")}</time><div><span class="k">${esc(l.kind || "Note")}</span><p>${esc(l.text)}</p></div></div>`).join("") || `<div class="le"><time></time><div><p style="color:var(--ink-3)">Nothing logged yet.</p></div></div>`}</div></div></div>
   </section>
+  <details class="more-details" ${moreOpenFor.has(c.id) ? "open" : ""} data-moredetails=""><summary>More details <small>scope, agreement, access, hours, deal terms, intake, lead source, AI setup, tech stack, contracts</small></summary>
+    ${scopeLockCard(c)}
+    <section class="crm-cards">
+      ${agreementCard(c)}
+      ${accessCard(c)}
+      ${hoursCard(c)}
+      ${(() => { const filled = !!(c.deal?.type || c.deal?.startDate || c.deal?.guarantee); return filled || clientPath(c) === "business" ? dealCard(c) : ""; })()}
+      ${hasModule(c, "intake") ? intakeCard(c) : ""}
+      ${leadCard(c)}
+      ${hasModule(c, "team_bots") ? aiSetupCard(c) : ""}
+    </section>
+    ${hasModule(c, "tech_stack") ? `<section class="panel"><div class="ph"><h2>Tech stack <small>as discovered · ${tech.length} ${tech.length === 1 ? "system" : "systems"}</small></h2><button class="btn sm ghost" data-tech="new">${ic("plus")}Add system</button></div><div class="pb">
+    ${tech.length ? `<div class="tech-bar"><i style="flex:${tc.confirmed || 0};background:var(--ok-fill)"></i><i style="flex:${tc.assumed || 0};background:repeating-linear-gradient(135deg,var(--warn-fill) 0 4px,transparent 4px 7px)"></i><i style="flex:${tc.unknown || 0};background:var(--line-strong)"></i></div>
+      <div class="tech-legend"><span>Confirmed <b>${tc.confirmed}</b></span><span>Assumed <b>${tc.assumed}</b></span><span>Unknown <b>${tc.unknown}</b></span></div>
+      <div class="techs">${tech.map((t, i) => `<button class="tech ${esc(t.status)}" data-tech="${i}"><span class="cat">${esc(t.category || "System")}</span><b>${esc(t.name)}</b>${t.source ? `<small>${esc(t.source)}</small>` : ""}<span class="st">${esc(TECH_ST[t.status] || t.status)}</span></button>`).join("")}</div>`
+      : `<div class="empty-note">Nothing discovered yet. Add the systems you learn about (CRM, phones, payments).<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-tech="new">${ic("plus")}Add a system</button></div></div>`}</div></section>` : ""}
+    <section class="grid g2">${hasModule(c, "vendors") ? `<div class="panel"><div class="ph"><h2>Contracts <small>vendors they're locked into</small></h2><button class="btn sm ghost" data-vendor="new">${ic("plus")}Add</button></div><div class="pb">
+      ${(c.vendors || []).length ? c.vendors.map((x, i) => contractHtml(x, i)).join("") : `<div class="empty-note">No contracts on file. If they're tied to a vendor (a marketing agency, a website company), note the end date and notice window here.<button class="btn sm" data-vendor="new">${ic("plus")}Add a contract</button></div>`}</div></div>` : ""}</section>
+  </details>
   <div style="display:flex;justify-content:center;padding-top:8px"><button class="btn sm ghost danger" id="delClient">${ic("trash")}Delete ${esc(short)}</button></div>`;
 
   // wiring
+  $$("[data-viewdash]", v).forEach((b) => (b.onclick = () => openCustomerDashboard(c)));
+  $$("[data-moredetails]", v).forEach((d) => d.addEventListener("toggle", () => { const k = c.id + (d.dataset.moredetails ? ":" + d.dataset.moredetails : ""); d.open ? moreOpenFor.add(k) : moreOpenFor.delete(k); }));
   $$("[data-publish]", v).forEach((b) => (b.onclick = () => { const [cid, rid] = String(b.dataset.publish || "").split("/"); if (cid && rid) publishReport(cid, rid); }));
   $$("[data-presence-open]", v).forEach((b) => (b.onclick = () => {
     const next = b.dataset.presenceOpen || "";
