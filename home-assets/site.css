@@ -694,3 +694,6 @@ h2 em{white-space:nowrap}
   .aq-more ul{grid-template-columns:1fr 1fr}
 }
 @media (prefers-reduced-motion:reduce){.aq-sheet{transition:none}}
+.price-l li:has(span){align-items:flex-start}.price-l li:has(span) .ico{margin-top:4px}
+.price-l b{color:#fff;font-weight:600}
+.price-d b{color:var(--ink);font-weight:600}
