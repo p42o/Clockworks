@@ -599,3 +599,22 @@ window.CW_MORE = (function () {
     new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) play(); else stop(); }); }, { threshold: 0.35 }).observe(root);
   }
 })();
+
+/* ---------- assessment stats: count up once when they come into view ---------- */
+(function () {
+  var nums = document.querySelectorAll('.as-stats [data-count]');
+  if (!nums.length || !('IntersectionObserver' in window) || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  nums.forEach(function (n) { n.textContent = '0'; });
+  new IntersectionObserver(function (es, io) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      var t0 = performance.now();
+      (function step(t) {
+        var k = Math.min(1, (t - t0) / 1200), ease = 1 - Math.pow(1 - k, 3);
+        nums.forEach(function (n) { n.textContent = Math.round(+n.dataset.count * ease); });
+        if (k < 1) requestAnimationFrame(step);
+      })(t0);
+    });
+  }, { threshold: 0.4 }).observe(document.querySelector('.as-stats'));
+})();
