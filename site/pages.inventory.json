@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-10-23",
+  "updated": "2026-10-28",
   "site": "https://mnclockworks.com",
   "ga": "G-PSNYLVG4V1",
   "eventsScript": "/cw-events.js",
@@ -385,19 +385,18 @@
       "path": "/portal/client/",
       "file": "portal/client/index.html",
       "class": "private",
-      "purpose": "Client portal v3 (login app). GA via ga.js on signed-out routes only (signin, privacy, terms, starter-terms, privacy-notice, reset, locked); off on signed-in, invite, verify, reset-confirm and privacy-request views",
-      "ga": true,
+      "purpose": "Client portal v3 (login app). GA off: ga.js was dropped from index.html in the Privacy Notice v2.0c bump (74e8d30)",
+      "ga": false,
       "index": false,
       "sitemap": false,
       "canonical": null,
-      "linkedFrom": "header 'Client login'",
-      "gaVia": "portal/client/ga.js"
+      "linkedFrom": "header 'Client login'"
     },
     {
       "path": "/portal/",
       "file": "portal/index.html",
       "class": "private",
-      "purpose": "Admin-only CRM (Parker). Every view is admin, so GA stays off by design",
+      "purpose": "Portal sign-in door (clients + Parker). GA off by design",
       "ga": false,
       "index": false,
       "sitemap": false,
@@ -568,6 +567,28 @@
       "sitemap": false,
       "canonical": null,
       "linkedFrom": "none (shared privately)"
+    },
+    {
+      "path": "/portal/admin/",
+      "file": "portal/admin/index.html",
+      "class": "private",
+      "purpose": "Admin CRM (PGS Google admins only). GA off by design",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (door hands admins off here)"
+    },
+    {
+      "path": "/portal/client/preview.html",
+      "file": "portal/client/preview.html",
+      "class": "private",
+      "purpose": "Admin-only read-only View Customer Dashboard iframe. GA off by design",
+      "ga": false,
+      "index": false,
+      "sitemap": false,
+      "canonical": null,
+      "linkedFrom": "none (admin iframe)"
     }
   ],
   "prefixes": [

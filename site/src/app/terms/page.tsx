@@ -34,7 +34,7 @@ export default function Terms() {
         <p>You accept the Starter Terms in the client portal before any paid work starts.</p>
         <p>Nothing on this site is a quote or a contract. Parker confirms everything in writing.</p>
         <p>
-          Current offers: a free 15-minute phone audit, an online presence assessment for $50, and a one-time deployment for $499, done together over screen share. Any other work is agreed separately in writing before it starts.
+          Current offers: a free 15-minute phone audit, an online presence assessment for $49, and a one-time deployment for $499, done together over screen share. Any other work is agreed separately in writing before it starts.
         </p>
         <p>After setup, your AI team runs on your own platform accounts.</p>
         <p>

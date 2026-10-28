@@ -42,8 +42,8 @@ Classes: public (served marketing page), error (404), redirect (file kept, .htac
 | `/learn/` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/mg-splash-2026-ca0816/` | private | Retired: July 14, 2026 splash pad recap, PIN-gated. No inbound links, not in sitemap or portal. Kept (no delete), noindex (meta + X-Robots-Tag), GA off | no | noindex | no | none | none (unlisted link shared directly) |
 | `/office/` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
-| `/portal/client/` | private | Client portal v3 (login app). GA via ga.js on signed-out routes only (signin, privacy, terms, starter-terms, privacy-notice, reset, locked); off on signed-in, invite, verify, reset-confirm and privacy-request views | yes | noindex | no | none | header 'Client login' |
-| `/portal/` | private | Admin-only CRM (Parker). Every view is admin, so GA stays off by design | no | noindex | no | none | none (admin bookmark) |
+| `/portal/client/` | private | Client portal v3 (login app). GA off: ga.js was dropped from index.html in the Privacy Notice v2.0c bump (74e8d30) | no | noindex | no | none | header 'Client login' |
+| `/portal/` | private | Portal sign-in door (clients + Parker). GA off by design | no | noindex | no | none | none (admin bookmark) |
 | `/privacy.html` | redirect | Legacy privacy page (already carries GA). Served 301 to /portal/client/#/privacy-notice, which GA covers via portal/client/ga.js | yes | noindex | no | none | none |
 | `/resources.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/results/` | redirect | Held: 301 to /how-it-works/ until Parker's tap (Counsel ruling 1) | no | noindex | no | none | none |
@@ -59,4 +59,6 @@ Classes: public (served marketing page), error (404), redirect (file kept, .htac
 | `/thenickel/` | private | The Nickel client report, PIN gate (gate.php) | no | noindex | no | none | none (shared privately) |
 | `/eicher/` | private | Eicher client report/playbook, PIN gate (gate.php) | no | noindex | no | none | none (shared privately) |
 | `/internal/timely-deploy/` | private | Internal Timely deploy prompt, PIN gate (gate.php) | no | noindex | no | none | none (shared privately) |
+| `/portal/admin/` | private | Admin CRM (PGS Google admins only). GA off by design | no | noindex | no | none | none (door hands admins off here) |
+| `/portal/client/preview.html` | private | Admin-only read-only View Customer Dashboard iframe. GA off by design | no | noindex | no | none | none (admin iframe) |
 | `/v3/*` | redirect | Old v3 preview export, whole tree 301 to / by .htaccess | no | noindex | no | none | none |
