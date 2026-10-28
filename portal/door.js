@@ -375,7 +375,8 @@ async function googleReturn(el, form, keep) {
   setBusy(btn, true);
   const bridge = passwordBridge();
   try {
-    await signOut(bridge.auth).catch(() => {});
+    // No await before signInWithPopup: the window must open inside the click. A new popup sign-in
+    // replaces any leftover helper session, so there is nothing to sign out first.
     let cred;
     const mode = isLocalDev() ? window.__cwGoogleMode : "";
     if (mode === "cancel" || mode === "blocked") {
@@ -930,6 +931,9 @@ async function boot() {
       <p class="lead">The portal only runs on mnclockworks.com. If Parker sent you a link, open it from that email or text.</p></div>`);
     return;
   }
+  // Warm the Google/Apple window helper now. Its auth frame loads on creation; if that happens on the
+  // first click, the popup opens after the click's user gesture has lapsed and the browser blocks it.
+  try { passwordBridge(); } catch { /* local-only guard; nothing to warm */ }
   const splash = new URLSearchParams(location.search).has("splash");
   if (!splash) {
     const [clientUser, adminUser] = await Promise.all([firstAuth(fb.auth), firstAuth(adminAuth)]);

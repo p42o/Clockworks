@@ -2,11 +2,12 @@
 // (ARCHITECTURE section 5). One module-level store; subscribe() to hear about changes.
 import {
   onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence,
-  signInWithCustomToken, signInWithEmailAndPassword, signOut,
+  signInWithCustomToken, signInWithEmailAndPassword, signInWithPopup, signInWithCredential,
+  GoogleAuthProvider, OAuthProvider, signOut,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 import { onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { fb, passwordBridge } from "./env.js";
+import { fb, passwordBridge, isLocalDev } from "./env.js";
 import * as api from "./api.js";
 import { clearDrafts } from "./drafts.js";
 import { showDevCode } from "./dev.js";
@@ -121,6 +122,107 @@ export async function signInWithPassword(email, password, keepSignedIn) {
     await signOut(bridge.auth).catch(() => {});
     throw e;
   }
+}
+
+/** Google or Apple on the side Auth app. Never the client session. */
+async function connectOAuthBridge(kind) {
+  const bridge = passwordBridge();
+  // No await before the popup below: it has to open inside the click or the browser blocks it.
+  const apple = kind === "apple";
+  const mode = isLocalDev() ? window[apple ? "__cwAppleMode" : "__cwGoogleMode"] : "";
+  if (mode === "cancel") {
+    const err = new Error("popup closed");
+    err.code = "auth/popup-closed-by-user";
+    throw err;
+  }
+  if (mode === "blocked") {
+    const err = new Error("popup blocked");
+    err.code = "auth/popup-blocked";
+    throw err;
+  }
+  const devEmail = isLocalDev() ? window[apple ? "__cwAppleEmail" : "__cwGoogleEmail"] : "";
+  if (devEmail) {
+    await signOut(bridge.auth).catch(() => {});
+    const email = String(devEmail).trim().toLowerCase();
+    const payload = JSON.stringify({
+      sub: (apple ? "test-apple-" : "test-") + email.replace(/\W/g, "-"),
+      email,
+      email_verified: true,
+    });
+    const cred = apple
+      ? new OAuthProvider("apple.com").credential({ idToken: payload })
+      : GoogleAuthProvider.credential(payload);
+    await signInWithCredential(bridge.auth, cred);
+    return bridge;
+  }
+  if (apple) {
+    const provider = new OAuthProvider("apple.com");
+    provider.addScope("email");
+    provider.addScope("name");
+    await signInWithPopup(bridge.auth, provider);
+    return bridge;
+  }
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  await signInWithPopup(bridge.auth, provider);
+  return bridge;
+}
+
+/** "cancel" or "blocked" when the Google or Apple window never finished. */
+export function googleWindowError(e) {
+  const code = String(e?.code || "");
+  if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return "cancel";
+  if (code === "auth/popup-blocked") return "blocked";
+  return "";
+}
+
+async function callBridge(kind, name, payload, { signIn = false, keepSignedIn = false, failCode = "sign_in_failed" } = {}) {
+  const bridge = await connectOAuthBridge(kind);
+  try {
+    const res = await httpsCallable(bridge.fns, name)(payload);
+    await signOut(bridge.auth).catch(() => {});
+    const data = res.data || {};
+    if (data.ok === false || !data.customToken) {
+      const err = new Error(data.code || failCode);
+      err.code = data.code || failCode;
+      err.details = data;
+      throw err;
+    }
+    if (signIn) await signInWith(data.customToken, keepSignedIn);
+    return data;
+  } catch (e) {
+    await signOut(bridge.auth).catch(() => {});
+    throw e;
+  }
+}
+
+/** After the invite email is proved. Returns the custom token. Does not sign the client in.
+ *  The invite screen signs in, so it can flag the bind before that session emit. */
+export function bindInviteGoogle(args) {
+  return callBridge("google", "inviteBindGoogle", {
+    proof: args.proof, agree: args.agree, label: args.label, keepSignedIn: !!args.keepSignedIn,
+  });
+}
+
+/** Same bind as Google. A private relay is accepted when the invite proof is still live. */
+export function bindInviteApple(args) {
+  return callBridge("apple", "inviteBindApple", {
+    proof: args.proof, agree: args.agree, label: args.label, keepSignedIn: !!args.keepSignedIn,
+  });
+}
+
+/** Return visit. Refuses when this Google email was never bound. Creates nothing. */
+export function signInWithGoogleReturn(keepSignedIn) {
+  return callBridge("google", "googleSignIn", { keepSignedIn: !!keepSignedIn }, {
+    signIn: true, keepSignedIn, failCode: "ask_parker",
+  });
+}
+
+/** Return visit. Refuses when this Apple id was never bound. Creates nothing. */
+export function signInWithAppleReturn(keepSignedIn) {
+  return callBridge("apple", "appleSignIn", { keepSignedIn: !!keepSignedIn }, {
+    signIn: true, keepSignedIn, failCode: "ask_parker",
+  });
 }
 
 /** Sign in with a custom token. Persistence MUST be chosen before the token is used. */
