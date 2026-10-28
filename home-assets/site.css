@@ -708,3 +708,6 @@ h2 em{white-space:nowrap}
   .step p{margin-top:6px;font-size:15px}
   .step-price{grid-column:2;margin-top:12px;justify-self:start}
 }
+.portal-beat{display:flex;align-items:flex-start;justify-content:center;gap:10px;max-width:560px;margin:14px auto 0;color:var(--soft);font-size:14.5px;line-height:1.5;text-align:left}
+.portal-beat .ico{width:16px;height:16px;flex:0 0 auto;margin-top:3px;color:var(--orange)}
+.portal-beat a{color:var(--rq-rust);font-weight:600;white-space:nowrap;text-underline-offset:3px}

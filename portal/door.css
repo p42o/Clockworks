@@ -149,8 +149,8 @@ form { display: grid; gap: 16px; }
 .label-row a { font-size: 14px; font-weight: 500; }
 .input { position: relative; }
 input[type=email], input[type=password], input[type=text] {
-  width: 100%; min-height: var(--tap); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line-strong);
-  background: var(--paper); color: var(--ink); font-size: 16px; transition: border-color .14s, box-shadow .14s, background .14s; }
+  width: 100%; min-height: var(--tap); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line-ink);
+  background: var(--surface); color: var(--ink); font-size: 16px; transition: border-color .14s, box-shadow .14s, background .14s; }
 input::placeholder { color: color-mix(in srgb, var(--ink-3) 70%, transparent); }
 input:hover { border-color: var(--line-ink); }
 input:focus { outline: none; border-color: var(--copper); background: var(--surface); box-shadow: 0 0 0 4px color-mix(in srgb, var(--copper) 18%, transparent); }
@@ -287,7 +287,28 @@ dialog.doc::backdrop { background: rgba(20,19,15,.55); backdrop-filter: blur(3px
   .top { padding-top: 14px; }
   .stage { padding: 14px 0 24px; align-content: start; }
   .sheet { box-shadow: 0 1px 0 rgba(26,25,22,.03), 0 18px 40px -26px rgba(26,25,22,.3); }
-  .first { flex-direction: column; align-items: stretch; }
-  .first .btn { width: 100%; }
 }
 @media (hover: none) { .btn:not([disabled]):active { background: var(--paper-2); } .btn.primary:not([disabled]):active { background: var(--copper-hover); } }
+
+/* ---------- Returning | First time ---------- */
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: var(--sunk); border: 1px solid var(--line); }
+.seg a { display: grid; place-items: center; min-height: 44px; border-radius: 10px; color: var(--ink-3); font: 600 15px/1 var(--ff); text-decoration: none;
+  transition: background .14s, color .14s, box-shadow .14s; }
+.seg a:hover { color: var(--ink); }
+.seg a[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(26,25,22,.08), 0 0 0 1px var(--line-strong); }
+.seg a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.panel-title { font: 400 30px/1.08 var(--fd); letter-spacing: -.015em; color: var(--ink); text-wrap: balance; }
+.panel-title em { font-style: italic; color: var(--copper); }
+.chooser h1 { font-size: 40px; }
+
+/* "I have a code": a real button, copper outline */
+.btn.outline { border-color: var(--copper-btn); color: var(--copper-ink); background: var(--surface); }
+.btn.outline:hover { border-color: var(--copper-hover); background: var(--copper-wash); color: var(--copper-ink); }
+
+@media (max-width: 640px) {
+  .first { flex-direction: column; align-items: stretch; }
+  .first .btn { width: 100%; }
+  /* The switch stays reachable while the form scrolls on a phone. */
+  .seg { position: sticky; top: 8px; z-index: 2; box-shadow: 0 6px 16px -10px rgba(26,25,22,.35); }
+}
+@media (max-width: 520px) { .chooser h1 { font-size: 34px; } .panel-title { font-size: 27px; } }

@@ -112,7 +112,7 @@ function presenceCard(pm) {
   if (!pm) {
     return html`<section class="card dash-card dash-pres" aria-labelledby="pres-h">
       ${cardHead("gauge", "Online Presence", "How your business looks online", "", "pres-h")}
-      <p class="dash-empty">Your score shows up here once your Online Presence Assessment is shared with you.</p>
+      <p class="dash-empty">Parker will share your Online Presence score here when it’s ready. Nothing to do on your side.</p>
     </section>`;
   }
   const chips = String(pm.last.summary || "").length ? html`<p class="dash-sum">${pm.last.summary}</p>` : "";
@@ -197,8 +197,7 @@ export function dashHtml(m) {
       <div class="dash-col c2">${m.showChangelog ? html`<div data-changelog-card class="changelog-card-host"></div>` : alsoCard(nm)}${filesCard(m.account?.files)}</div>
       <div class="dash-col c3">${newsletterCard(issue, m.ideas)}</div>
       ${m.showIris ? html`<div class="dash-col c4"><section data-iris-chat class="iris-card-host" aria-label="Iris support chat"></section></div>` : ""}
-    </div>
-    ${nm.ro ? "" : shopBanner()}`;
+    </div>`;
 }
 
 // When the changelog card is off, column two shows the to-do list instead of sitting empty.

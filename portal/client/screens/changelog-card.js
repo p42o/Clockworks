@@ -36,7 +36,7 @@ export function mountChangelogCard(hostEl, opts = {}) {
       <div class="dash-h"><span class="dash-ic">${ic("sparkle")}</span><div class="dash-ht"><h2 id="changelog-h">New Agent Capabilities</h2><p>What your Grok Bot team learned lately</p></div></div>
       <p class="caps-legend" aria-hidden="true"><span><i class="changelog-dot green"></i>For you</span><span><i class="changelog-dot yellow"></i>Maybe</span><span><i class="changelog-dot red"></i>Not for you</span></p>
       ${s.loading ? html`<p class="small muted" role="status">Looking up the latest updates…</p>` : ""}
-      ${!s.loading && !shown.length ? html`<p class="changelog-empty" role="status">Nothing new to show right now.</p>` : ""}
+      ${!s.loading && !shown.length ? html`<p class="changelog-empty" role="status">No new agent capabilities for your shop yet. Check back after Parker’s next update — or message him anytime.</p>` : ""}
       ${shown.length ? html`<ul class="changelog-list">${shown.map((item) => {
         const light = lightOf(item);
         return html`<li class="cap ${light}">

@@ -1,6 +1,7 @@
 // Door at /portal/. The one sign-in page for clients and Parker.
-//   #/            returning sign-in: email + password, Google, Apple (gated), "First time signing in?"
+//   #/            returning sign-in: email + password, Google, Apple (only when the gate allows it)
 //   #/first-time  invite code -> email code -> agree + create a sign-in (password, Google, or Apple)
+// A Returning | First time switch sits on both. A cold device (nothing remembered) opens on First time.
 // After any sign-in: a PGS admin Google session goes to /portal/admin/, a client goes to /portal/client/<cid>/.
 // Server contracts are the client app's (lib/session.js, lib/api.js). Cold sign-in creates nothing:
 // googleSignIn / appleSignIn / passwordSignIn refuse an identity that was never bound by an invite.
@@ -153,12 +154,26 @@ function clearError(host) { (host.querySelector("[data-err]") || host).querySele
 const steps = (at) => html`<ol class="steps" aria-label="Step ${at} of 3">
   ${["Code", "Verify", "Sign-in"].map((s, i) => html`<li ${raw(i < at ? "data-on" : "")} ${raw(i + 1 === at ? 'aria-current="step"' : "")}>${s}</li>`)}</ol>`;
 
+/** Returning | First time. Plain hash links, so the router stays the one place a view is chosen. */
+const segments = (at) => html`<div class="seg" role="tablist" aria-label="How are you signing in?">
+  ${[["returning", "#/", "Returning"], ["first", "#/first-time", "First time"]].map(([k, href, label]) =>
+    html`<a role="tab" href="${href}" data-seg="${k}" aria-selected="${k === at ? "true" : "false"}" tabindex="${k === at ? "0" : "-1"}">${label}</a>`)}</div>`;
+function wireSegments(root) {
+  const tabs = [...root.querySelectorAll(".seg [role=tab]")];
+  tabs.forEach((t, i) => t.addEventListener("keydown", (ev) => {
+    if (ev.key !== "ArrowLeft" && ev.key !== "ArrowRight") return;
+    ev.preventDefault();
+    const next = tabs[(i + 1) % tabs.length];
+    next.focus(); next.click();
+  }));
+}
+// No email, no last client, no hand-off note: this device has never signed in here.
+const coldDevice = () => !store.get(EMAIL_KEY, localStorage) && !store.get(LAST_CID_KEY, localStorage);
+
 const googleBtn = (label = "Continue with Google", disabled = false) =>
   html`<button type="button" class="btn block" data-google ${raw(disabled ? 'disabled aria-disabled="true"' : "")}>${GOOGLE_MARK}<span>${label}</span></button>`;
 function appleBtn(allowed, disabled = false) {
-  if (!allowed) {
-    return html`<button type="button" class="btn block apple" data-apple disabled aria-disabled="true" aria-describedby="apple-soon">${APPLE_MARK}<span>Apple</span><span class="soon" id="apple-soon">Coming soon</span></button>`;
-  }
+  if (!allowed) return "";
   return html`<button type="button" class="btn block apple" data-apple ${raw(disabled ? 'disabled aria-disabled="true"' : "")}>${APPLE_MARK}<span>Continue with Apple</span></button>`;
 }
 
@@ -299,15 +314,23 @@ function appleForReturn() {
 
 const EMAIL_KEY = "cw.door.email"; // only kept when "Keep me signed in" was ticked on this device
 
+/** Cold visitors get one page heading above the switch; the panel below keeps its own smaller title. */
+const chooserHead = () => html`<div class="head chooser">
+  <span class="eyebrow">Client portal</span>
+  <h1>Sign <em>in</em>.</h1>
+  <p class="lead">Intake, files, and messages with Parker.</p>
+</div>`;
+
 function signinView(note = "", { focus = false } = {}) {
   document.title = "Sign in · Clockworks";
   const apple = appleForReturn();
   const knownEmail = store.get(EMAIL_KEY, localStorage) || "";
   const el = paint(html`
+    ${knownEmail ? "" : chooserHead()}
+    ${segments("returning")}
     <div class="head">
-      <span class="eyebrow">${dayPart()} · Client portal</span>
-      <h1>Welcome <em>back</em>.</h1>
-      <p class="lead">Sign in to see your intake, files, and messages with Parker.</p>
+      ${knownEmail ? html`<span class="eyebrow">${dayPart()} · Client portal</span><h1>Welcome <em>back</em>.</h1>` : ""}
+      <p class="lead">Sign in with the email Parker has on file.</p>
     </div>
     ${note ? banner("info", note) : ""}
     <form id="signin" novalidate>
@@ -327,9 +350,10 @@ function signinView(note = "", { focus = false } = {}) {
     <div class="oauth">${googleBtn()}${appleBtn(apple)}</div>
     <div class="first">
       <p>First time signing in?<span>Use the invite code Parker sent you.</span></p>
-      <a class="btn" href="#/first-time" data-first>I have a code</a>
+      <a class="btn outline" href="#/first-time" data-first>I have a code</a>
     </div>`, { focus });
   wireReveal(el);
+  wireSegments(el);
   const form = el.querySelector("#signin");
   const keep = () => !!el.querySelector("#keep")?.checked;
   wireCaps(form.querySelector("#password"), form.querySelector("#caps"));
@@ -463,11 +487,15 @@ const prettyCode = (v) => {
 function codeView(note = "", prefill = "") {
   document.title = "Get set up · Clockworks";
   entry = null; info = null; proof = null; clearFlow();
+  const cold = !store.get(EMAIL_KEY, localStorage);
+  const title = html`Let's get you <em>set up</em>.`;
   const el = paint(html`
+    ${cold ? chooserHead() : ""}
+    ${segments("first")}
     ${steps(1)}
     <div class="head">
       <span class="eyebrow">First time here</span>
-      <h1>Let's get you <em>set up</em>.</h1>
+      ${cold ? html`<h2 class="panel-title">${title}</h2>` : html`<h1>${title}</h1>`}
       <p class="lead">Enter the invite code from Parker. It's in the email or text he sent and looks like <b>ABCD-2345</b>.</p>
     </div>
     ${note ? banner("info", note) : ""}
@@ -476,11 +504,16 @@ function codeView(note = "", prefill = "") {
       <div class="field"><label for="invite-code">Invite code</label>
         <input id="invite-code" class="code-in" type="text" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" maxlength="400" enterkeyhint="go" aria-describedby="code-hint" value="${prefill}">
         <span class="hint" id="code-hint">Got a link instead? Paste it here, or just open it.</span></div>
-      <button class="btn primary block" type="submit">Continue</button>
+      <button class="btn primary block" type="submit" disabled aria-disabled="true">Continue</button>
     </form>
     <p class="small center">Already set up? <a href="#/">Sign in</a></p>`);
+  wireSegments(el);
   const form = el.querySelector("#code-form");
   const input = form.querySelector("#invite-code");
+  const go = form.querySelector("button[type=submit]");
+  const syncGo = () => { const on = !!input.value.trim(); go.disabled = !on; go.setAttribute("aria-disabled", on ? "false" : "true"); };
+  input.addEventListener("input", syncGo);
+  syncGo();
   input.addEventListener("input", () => {
     // Format a short code as it is typed. Leave anything that looks like a pasted link alone.
     if (/[/:#?=.]/.test(input.value) || input.value.length > 12) return;
@@ -921,7 +954,14 @@ function route({ initial = false } = {}) {
     codeView();
     return;
   }
-  signinView(take(NOTE_KEY) || "", { focus: !initial });
+  const note = take(NOTE_KEY) || "";
+  // A cold device lands on First time. Only on the first paint: picking Returning (a hash change) sticks.
+  if (initial && !note && coldDevice()) {
+    history.replaceState(null, "", location.pathname + location.search + "#/first-time");
+    codeView();
+    return;
+  }
+  signinView(note, { focus: !initial });
 }
 window.addEventListener("hashchange", () => route());
 

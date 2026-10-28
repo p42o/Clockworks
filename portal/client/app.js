@@ -85,7 +85,6 @@ function renderTabs() {
   void intakeDone;
   const tabs = [
     { key: "home", hash: "#/home", label: "Home", icon: "home", n: unread.ideas },
-    { key: "shop-pass", hash: "#/shop-pass", label: "Shop Pass", icon: "store" },
     { key: "messages", hash: "#/messages", label: "Support", icon: "support", feature: "messages", n: unread.messages },
     { key: "account", hash: "#/account", label: "Settings", icon: "settings" },
   ].filter((t) => !t.feature || f[t.feature] !== false)

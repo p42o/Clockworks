@@ -18,7 +18,7 @@ function render(m) {
   const showIris = !!(SWAP.irisChat?.showOnHome && isIrisChatVisible({ cid: m.cid, stageKey: h.stageKey, portalEnabled }));
   const showChangelog = m.changelog?.visible !== false;
   const ro = h.access?.mode === "readonly";
-  const tabs = [["home", "Home", "home"], ["shop-pass", "Shop Pass", "store"], ["messages", "Support", "support"], ["account", "Settings", "settings"]]
+  const tabs = [["home", "Home", "home"], ["messages", "Support", "support"], ["account", "Settings", "settings"]]
     .filter(([k]) => !ro || k === "home" || k === "account");
   const name = m.firstName || "";
   mount(app, html`
