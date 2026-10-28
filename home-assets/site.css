@@ -697,3 +697,14 @@ h2 em{white-space:nowrap}
 .price-l li:has(span){align-items:flex-start}.price-l li:has(span) .ico{margin-top:4px}
 .price-l b{color:#fff;font-weight:600}
 .price-d b{color:var(--ink);font-weight:600}
+
+/* How it works: one card on phones, three steps inside it */
+@media (max-width:760px){
+  .steps{gap:0;background:#fff;border:1px solid var(--line);border-radius:22px;padding:6px 20px;box-shadow:0 1px 2px rgba(26,25,22,.04)}
+  .step{background:none;border:0;border-radius:0;padding:20px 0;display:grid;grid-template-columns:48px minmax(0,1fr);column-gap:12px;align-items:start}
+  .step+.step{border-top:1px dashed var(--line-2)}
+  .step-n{grid-row:1/4;font-size:38px;line-height:1}
+  .step h3{margin-top:2px;font-size:19px}
+  .step p{margin-top:6px;font-size:15px}
+  .step-price{grid-column:2;margin-top:12px;justify-self:start}
+}
