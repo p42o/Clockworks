@@ -1,9 +1,9 @@
-// #/invite — invite link or short code first, then Google, Apple, or a password.
+// #/invite — invite link or short code first, then Google or a password.
 // The long token stays in module memory. A mid-flow refresh keeps only the email proof, never the token.
 // A bind flags itself before sign-in so a remount cannot paint the bad-link screen.
 import { html, mount, skeleton, errorState, onRetry, ic, icon, setBusy, showErrors, fmtDateY } from "../lib/ui.js";
 import * as api from "../lib/api.js";
-import { signInWith, bindInviteGoogle, bindInviteApple, googleWindowError } from "../lib/session.js";
+import { signInWith, bindInviteGoogle, googleWindowError } from "../lib/session.js";
 import { inviteEntryPlan, isClientSession } from "../lib/inviteEntry.js";
 import { showDevCode } from "../lib/dev.js";
 import { renderCodeForm } from "./_codeform.js";
@@ -11,7 +11,6 @@ import { setInviteParties } from "../lib/legal.js";
 import { acceptanceLabelHtml } from "../lib/acceptanceLabel.js";
 import { PASSWORD_HINT, passwordProblem } from "../lib/clientCopy.js";
 import { SWAP } from "../swap-config.js";
-import { appleSignInAllowed, rememberAppleSignInContext } from "../lib/appleSignInGate.js";
 import { SUSPENDED_BODY, LOCAL_NOTICE_VARS, fillNotice } from "../lib/statusNotices.js";
 
 const FLOW_KEY = "cw.invite.flow";
@@ -124,7 +123,6 @@ export async function render(ctx) {
       expiresAt: next.expiresAt || info?.expiresAt || null,
       displayCode: next.displayCode || info?.displayCode || null,
     };
-    rememberAppleSignInContext(info);
     saveFlow({
       step: "choose",
       proof,
@@ -174,7 +172,7 @@ export async function render(ctx) {
     mount(el, html`
       <span class="eyebrow rule">Private · MN Clockworks</span>
       <h1>Ask Parker for an invite</h1>
-      <p>This portal is invite-only. Parker sends a link or a short code. That comes first. A Google, Apple, or password sign-in does not open an account on its own.</p>
+      <p>This portal is invite-only. Parker sends a link or a short code. That comes first. A Google or password sign-in does not open an account on its own.</p>
       ${note ? html`<div class="banner info" role="status">${ic("info")}<div>${note}</div></div>` : ""}
       <form class="stack" id="invite-entry" novalidate>
         <div class="field">
@@ -273,16 +271,11 @@ export async function render(ctx) {
     pw2?.addEventListener("input", sync);
     const box = el.querySelector("#agree");
     const google = el.querySelector("[data-google]");
-    const apple = el.querySelector("[data-apple]");
     const reveal = el.querySelector("[data-password]");
     const syncAgree = () => {
       const on = !!box?.checked;
-      for (const node of [google, apple]) {
-        if (!node) continue;
-        const enabled = on && (node !== apple || appleSignInAllowed(info));
-        node.disabled = !enabled;
-        node.setAttribute("aria-disabled", enabled ? "false" : "true");
-      }
+      google.disabled = !on;
+      google.setAttribute("aria-disabled", on ? "false" : "true");
       if (reveal) reveal.disabled = !on;
     };
     box?.addEventListener("change", syncAgree);
@@ -292,8 +285,7 @@ export async function render(ctx) {
       if (block) block.hidden = false;
       pw?.focus();
     });
-    google?.addEventListener("click", () => { bindOAuth("google"); });
-    apple?.addEventListener("click", () => { bindOAuth("apple"); });
+    google?.addEventListener("click", () => { bindOAuth(); });
     el.querySelector("#password-form")?.addEventListener("submit", async (ev) => {
       ev.preventDefault();
       if (!box?.checked) return;
@@ -328,17 +320,15 @@ export async function render(ctx) {
     });
   }
 
-  async function bindOAuth(kind) {
+  async function bindOAuth() {
     const box = el.querySelector("#agree");
     if (!box?.checked || !proof) return;
-    const apple = kind === "apple";
-    const btn = el.querySelector(apple ? "[data-apple]" : "[data-google]");
+    const btn = el.querySelector("[data-google]");
     setBusy(btn, true);
     const keep = !!el.querySelector("#keep")?.checked;
-    const label = apple ? "Apple" : "Google";
+    const label = "Google";
     try {
-      const run = apple ? bindInviteApple : bindInviteGoogle;
-      const r = await api.withTimeout(run({
+      const r = await api.withTimeout(bindInviteGoogle({
         proof, agree: true, label: SWAP.acceptance.label, keepSignedIn: keep,
       }));
       await enterCredential(r);
@@ -357,12 +347,8 @@ export async function render(ctx) {
         return;
       }
       const d = detailsOf(e);
-      if (e.code === "apple_email_missing" || d.code === "apple_email_missing") {
-        chooser("Apple didn't share an email address. Share the address on this invite, or set a password below.", { showPassword: true, agreed: true });
-        return;
-      }
       if (e.code === "email_mismatch" || d.code === "email_mismatch" || reasonOf(e) === "email_mismatch") {
-        const shown = apple ? (d.appleMasked || "another address") : (d.googleMasked || "another address");
+        const shown = d.googleMasked || "another address";
         const inviteMasked = d.inviteMasked || info?.maskedEmail || "this invite";
         chooser(`That ${label} account is ${shown}; this invite is for ${inviteMasked}. Switch accounts, or set a password below.`, { showPassword: true, agreed: true });
         return;
@@ -388,7 +374,7 @@ export async function render(ctx) {
     mount(el, html`
       <span class="eyebrow rule">Choose how to sign in</span>
       <h1>How do you want to sign in?</h1>
-      <p>${appleSignInAllowed(info) ? "Google, Apple, and a password are the same choice" : "Google and a password are your choices"} for <b>${info?.maskedEmail || "your email"}</b>. ${appleSignInAllowed(info) ? "Any one" : "Either"} finishes this invite.</p>
+      <p>Google and a password are your choices for <b>${info?.maskedEmail || "your email"}</b>. Either finishes this invite.</p>
       ${note ? html`<div class="banner info" id="invite-note" role="status">${ic("info")}<div>${note}</div></div>` : ""}
       <div class="check">
         <input class="agree-box" id="agree" type="checkbox" aria-labelledby="agree-label">
@@ -398,7 +384,6 @@ export async function render(ctx) {
         <span><b>Keep me signed in on this device</b><span class="hint" style="display:block">Leave this off on a shared or public computer.</span></span></label>
       <div class="method-choice">
         <button type="button" class="btn oauth-pill oauth-google" data-google disabled aria-disabled="true"><svg class="oauth-mark" width="20" height="20" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button>
-        <button type="button" class="btn oauth-pill oauth-apple" data-apple disabled aria-disabled="true"><svg class="oauth-mark" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>${appleSignInAllowed(info) ? "Continue with Apple" : "Apple · Coming soon"}</span></button>
         <button type="button" class="btn block" data-password disabled>Email and password</button>
       </div>
       <form class="stack card" id="password-form" novalidate hidden>
@@ -450,7 +435,7 @@ export async function render(ctx) {
   }
 
   function used(extra) {
-    const method = extra?.boundMethod === "google" ? "Google" : extra?.boundMethod === "apple" ? "Apple" : extra?.boundMethod === "password" ? "the password you set" : "the method you already set up";
+    const method = extra?.boundMethod === "google" ? "Google" : extra?.boundMethod === "password" ? "the password you set" : "the method you already set up";
     mount(el, html`
       <h1>This invite was already used</h1>
       <p>Already used. Sign in with ${method}. You do not need this code again.</p>
@@ -515,7 +500,6 @@ export async function render(ctx) {
       if (dead || leaveIfBound()) return;
       if (!opened || opened.ok === false) { cold("That code didn't match. Check it and try again."); return; }
       info = opened;
-      rememberAppleSignInContext(opened);
       if (entry?.token && opened.proof) {
         rememberProof(opened);
         chooser();

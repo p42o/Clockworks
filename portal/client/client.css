@@ -666,15 +666,12 @@ a[href^="mailto:"] { min-height: 44px; display: inline-flex; align-items: center
 .method-choice .btn { width: 100%; }
 .method-choice .btn[disabled] { opacity: .62; cursor: not-allowed; }
 
-/* OAuth brand pills. Google stays a light pill in both themes so the G keeps its colors.
-   Apple is black on the cream sheet and flips to a light pill in dark mode. */
+/* OAuth brand pills. Google stays a light pill in both themes so the G keeps its colors. */
 .oauth-pill { border-radius: var(--r-pill); min-height: 48px; padding: 0 18px; gap: 12px; font-weight: 600; font-size: 15px; letter-spacing: 0; justify-content: center; box-shadow: none; -webkit-text-fill-color: currentColor; }
 .oauth-pill span { white-space: nowrap; }
 .oauth-pill .oauth-mark { width: 20px; height: 20px; flex: 0 0 auto; display: block; }
 .oauth-pill.oauth-google { background: #fff; color: #1f1f1f; border: 1px solid #747775; }
 .oauth-pill.oauth-google:hover:not([disabled]):not([aria-disabled="true"]) { background: #f8f9fa; color: #1f1f1f; border-color: #747775; }
-.oauth-pill.oauth-apple { background: #000; color: #fff; border: 1px solid #000; }
-.oauth-pill.oauth-apple:hover:not([disabled]):not([aria-disabled="true"]) { background: #1a1916; color: #fff; border-color: #1a1916; }
 .method-choice .oauth-pill[disabled],
 .method-choice .oauth-pill[aria-disabled="true"] { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
 .oauth-pill[disabled]:hover,
@@ -682,16 +679,11 @@ a[href^="mailto:"] { min-height: 44px; display: inline-flex; align-items: center
 .method-choice .oauth-pill[aria-busy="true"] { opacity: 1; }
 .oauth-pill[aria-busy="true"] .oauth-mark { visibility: hidden; }
 .oauth-pill.oauth-google[aria-busy="true"]::before { border-color: #1f1f1f transparent #1f1f1f #1f1f1f; }
-.oauth-pill.oauth-apple[aria-busy="true"]::before { border-color: #fff transparent #fff #fff; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .oauth-pill.oauth-apple { background: #fff; color: #000; border-color: #fff; }
-  :root:not([data-theme="light"]) .oauth-pill.oauth-apple:hover:not([disabled]):not([aria-disabled="true"]) { background: #f5f1e8; color: #000; border-color: #f5f1e8; }
-  :root:not([data-theme="light"]) .oauth-pill.oauth-apple[aria-busy="true"]::before { border-color: #000 transparent #000 #000; }
   :root:not([data-theme="light"]) .oauth-pill.oauth-google { border-color: #8e918f; }
 }
 @media (forced-colors: active) {
   .oauth-pill.oauth-google { background: ButtonFace !important; color: ButtonText !important; border: 2px solid ButtonText !important; }
-  .oauth-pill.oauth-apple { background: ButtonText !important; color: ButtonFace !important; border: 2px solid ButtonText !important; }
 }
 .help-line { color: var(--ink-2); margin: 14px 0; }
 .big-code { margin: 8px 0 4px; font: 600 28px/1.2 var(--fm); letter-spacing: .16em; }

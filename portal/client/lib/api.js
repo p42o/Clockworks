@@ -63,10 +63,8 @@ export function friendlyError(e) {
   if (isLocalDev()) console.debug("[cw] error", errCode(e), e && e.message);
   const code = errCode(e);
   const msg = String((e && e.message) || "");
-  if (code === "failed-precondition" && /apple_not_live/.test(msg)) return "Apple sign-in is coming soon. Use Google or your password, or ask Parker for help.";
   if (code === "ask_parker" || /ask_parker/.test(msg)) return "This portal is invite-only. Ask Parker for an invite, then sign in with the method you set up.";
   if (code === "use_password" || /use_password/.test(msg)) return "That sign-in isn't the one on this account. Use your password, or ask Parker.";
-  if (code === "apple_email_missing" || /apple_email_missing/.test(msg)) return "Apple didn't share an email address. Share the address on this invite, or use a password.";
   if (code === "email_mismatch" || /email_mismatch/.test(msg)) return "That account doesn't match this invite. Switch accounts, or use a password.";
   if (/proof_expired|proof_required/.test(msg)) return "That step timed out. Enter your invite code again. The invite itself is still good until it expires.";
   if (/sign_in_failed/.test(msg)) return "That email or password didn't match.";

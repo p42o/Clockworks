@@ -1,10 +1,10 @@
 // Door at /portal/. The one sign-in page for clients and Parker.
-//   #/            returning sign-in: email + password, Google, Apple (only when the gate allows it)
-//   #/first-time  invite code -> email code -> agree + create a sign-in (password, Google, or Apple)
+//   #/            returning sign-in: email + password or Google
+//   #/first-time  invite code -> email code -> agree + create a sign-in (password or Google)
 // A Returning | First time switch sits on both. A cold device (nothing remembered) opens on First time.
 // After any sign-in: a PGS admin Google session goes to /portal/admin/, a client goes to /portal/client/<cid>/.
 // Server contracts are the client app's (lib/session.js, lib/api.js). Cold sign-in creates nothing:
-// googleSignIn / appleSignIn / passwordSignIn refuse an identity that was never bound by an invite.
+// googleSignIn / passwordSignIn refuse an identity that was never bound by an invite.
 // Opaque invite links (#/invite?t=) are forwarded to the client app by the inline script in index.html.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -19,11 +19,10 @@ import { firebaseConfig } from "./admin/config.js";
 import { fb, initFirebase, passwordBridge, isLocalDev, isLiveSite } from "./client/lib/env.js";
 import * as api from "./client/lib/api.js";
 import {
-  signInWith, signInWithPassword, signInWithAppleReturn, bindInviteGoogle, bindInviteApple, googleWindowError,
+  signInWith, signInWithPassword, bindInviteGoogle, googleWindowError,
 } from "./client/lib/session.js";
 import { html, raw, mount, setBusy, fmtDateY, dialTicks } from "./client/lib/ui.js";
 import { SWAP } from "./client/swap-config.js";
-import { appleSignInAllowed, rememberAppleSignInContext, savedAppleSignInContext } from "./client/lib/appleSignInGate.js";
 import { acceptanceLabelHtml } from "./client/lib/acceptanceLabel.js";
 import { setInviteParties, loadDocument, documentBody } from "./client/lib/legal.js";
 import { PASSWORD_HINT, passwordProblem } from "./client/lib/clientCopy.js";
@@ -66,7 +65,6 @@ const ICONS = {
 };
 const icon = (name) => raw(`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[name] || ""}</svg>`);
 const GOOGLE_MARK = raw('<svg class="mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>');
-const APPLE_MARK = raw('<svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>');
 const OPEN_MARK = raw('<svg class="go" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle class="rim" cx="32" cy="32" r="28"/><circle class="arc" cx="32" cy="32" r="28"/><line class="mm" x1="32" y1="32" x2="32" y2="13"/><line x1="32" y1="32" x2="43" y2="32"/><circle class="hub" cx="32" cy="32" r="3"/></svg>');
 const HELP_SHOW = "(763) 296-9777";
 
@@ -172,10 +170,7 @@ const coldDevice = () => !store.get(EMAIL_KEY, localStorage) && !store.get(LAST_
 
 const googleBtn = (label = "Continue with Google", disabled = false) =>
   html`<button type="button" class="btn block" data-google ${raw(disabled ? 'disabled aria-disabled="true"' : "")}>${GOOGLE_MARK}<span>${label}</span></button>`;
-function appleBtn(allowed, disabled = false) {
-  if (!allowed) return "";
-  return html`<button type="button" class="btn block apple" data-apple ${raw(disabled ? 'disabled aria-disabled="true"' : "")}>${APPLE_MARK}<span>Continue with Apple</span></button>`;
-}
+
 
 function wireReveal(root) {
   root.querySelectorAll(".reveal").forEach((b) => {
@@ -305,13 +300,6 @@ function signinProblem(e, label) {
 }
 
 // ---------- returning sign-in ----------
-function appleForReturn() {
-  const saved = savedAppleSignInContext();
-  if (saved) return appleSignInAllowed(saved);
-  const cid = store.get(LAST_CID_KEY, localStorage);
-  return appleSignInAllowed(cid ? { cid, fixture: false } : null);
-}
-
 const EMAIL_KEY = "cw.door.email"; // only kept when "Keep me signed in" was ticked on this device
 
 /** Cold visitors get one page heading above the switch; the panel below keeps its own smaller title. */
@@ -323,7 +311,6 @@ const chooserHead = () => html`<div class="head chooser">
 
 function signinView(note = "", { focus = false } = {}) {
   document.title = "Sign in · Clockworks";
-  const apple = appleForReturn();
   const knownEmail = store.get(EMAIL_KEY, localStorage) || "";
   const el = paint(html`
     ${knownEmail ? "" : chooserHead()}
@@ -347,7 +334,7 @@ function signinView(note = "", { focus = false } = {}) {
       <button class="btn primary block" type="submit">Sign in</button>
     </form>
     <div class="or" role="presentation">or</div>
-    <div class="oauth">${googleBtn()}${appleBtn(apple)}</div>
+    <div class="oauth">${googleBtn()}</div>
     <div class="first">
       <p>First time signing in?<span>Use the invite code Parker sent you.</span></p>
       <a class="btn outline" href="#/first-time" data-first>I have a code</a>
@@ -378,18 +365,6 @@ function signinView(note = "", { focus = false } = {}) {
     }
   });
   el.querySelector("[data-google]").addEventListener("click", () => googleReturn(el, form, keep()));
-  const appleNode = el.querySelector("[data-apple]");
-  if (apple) appleNode.addEventListener("click", async () => {
-    clearError(form);
-    setBusy(appleNode, true);
-    try {
-      await api.withTimeout(signInWithAppleReturn(keep()), 90000);
-      await enterClient();
-    } catch (e) {
-      setBusy(appleNode, false);
-      showError(form, signinProblem(e, "Apple"));
-    }
-  });
 }
 
 /** Google opens one window. A PGS admin goes to the CRM; anyone else needs a bound client account. */
@@ -474,7 +449,6 @@ function rememberProof(next) {
     expiresAt: next.expiresAt || info?.expiresAt || null,
     displayCode: next.displayCode || info?.displayCode || null,
   };
-  rememberAppleSignInContext(info);
   store.set(FLOW_KEY, JSON.stringify({ step: "choose", proof, proofExpiresAt: next.proofExpiresAt, ...info }));
 }
 
@@ -550,7 +524,6 @@ async function openEntry(btn) {
     const opened = await api.withTimeout(api.inviteOpen(locate()));
     if (!opened || opened.ok === false) { back("That code didn't match. Check it and try again."); return; }
     info = opened;
-    rememberAppleSignInContext(opened);
     proveView();
   } catch (e) {
     setBusy(btn, false);
@@ -666,7 +639,6 @@ function verifyView() {
 
 function signupView(note = "", { agreed = false } = {}) {
   setInviteParties({ businessName: info?.businessName, contactName: info?.contactName, email: info?.maskedEmail });
-  const apple = appleSignInAllowed(info);
   const el = paint(html`
     ${steps(3)}
     <div class="head">
@@ -682,7 +654,7 @@ function signupView(note = "", { agreed = false } = {}) {
     </div>
     <p class="small" id="agree-hint" data-agree-hint>Check the box to continue. Tap a document name to read it here.</p>
     <label class="check"><input type="checkbox" id="keep"><span><b>Keep me signed in on this device</b><br><span class="small">Leave this off on a shared computer.</span></span></label>
-    <div class="oauth">${googleBtn("Continue with Google", true)}${appleBtn(apple, true)}</div>
+    <div class="oauth">${googleBtn("Continue with Google", true)}</div>
     <div class="or" role="presentation">or set a password</div>
     <form id="password-form" novalidate>
       <div class="field"><label for="new-password">Password</label>
@@ -701,13 +673,12 @@ function signupView(note = "", { agreed = false } = {}) {
   const box = el.querySelector("#agree");
   const agreeWrap = el.querySelector("[data-agree]");
   const google = el.querySelector("[data-google]");
-  const appleNode = el.querySelector("[data-apple]");
   const create = el.querySelector("#password-form button[type=submit]");
   const hint = el.querySelector("[data-agree-hint]");
   const sync = () => {
     const on = box.checked;
     agreeWrap.classList.toggle("on", on);
-    for (const node of [google, apple ? appleNode : null, create]) {
+    for (const node of [google, create]) {
       if (!node) continue;
       node.disabled = !on;
       node.setAttribute("aria-disabled", on ? "false" : "true");
@@ -756,8 +727,7 @@ function signupView(note = "", { agreed = false } = {}) {
       bindProblem(e, "password");
     }
   });
-  google.addEventListener("click", () => bindOAuth("google", keep()));
-  if (apple) appleNode.addEventListener("click", () => bindOAuth("apple", keep()));
+  google.addEventListener("click", () => bindOAuth(keep()));
 }
 
 async function bindAndEnter(customToken, keep) {
@@ -769,19 +739,17 @@ async function bindAndEnter(customToken, keep) {
   await enterClient("#/home");
 }
 
-async function bindOAuth(kind, keep) {
+async function bindOAuth(keep) {
   if (!proof) return;
-  const apple = kind === "apple";
-  const btn = viewEl().querySelector(apple ? "[data-apple]" : "[data-google]");
+  const btn = viewEl().querySelector("[data-google]");
   clearError(viewEl());
   setBusy(btn, true);
   try {
-    const run = apple ? bindInviteApple : bindInviteGoogle;
-    const r = await api.withTimeout(run({ proof, agree: true, label: SWAP.acceptance.label, keepSignedIn: !!keep }), 180000);
+    const r = await api.withTimeout(bindInviteGoogle({ proof, agree: true, label: SWAP.acceptance.label, keepSignedIn: !!keep }), 180000);
     await bindAndEnter(r.customToken, keep);
   } catch (e) {
     setBusy(btn, false);
-    bindProblem(e, apple ? "Apple" : "Google");
+    bindProblem(e, "Google");
   }
 }
 
@@ -797,12 +765,8 @@ function bindProblem(e, label) {
       : `${label} was closed before it finished. Try again, or set a password below.`, { agreed: true });
     return;
   }
-  if (e?.code === "apple_email_missing" || d.code === "apple_email_missing") {
-    signupView("Apple didn't share an email address. Share the address on this invite, or set a password below.", { agreed: true });
-    return;
-  }
   if (e?.code === "email_mismatch" || d.code === "email_mismatch" || reason === "email_mismatch") {
-    const shown = label === "Apple" ? (d.appleMasked || "another address") : (d.googleMasked || "another address");
+    const shown = d.googleMasked || "another address";
     signupView(`That ${label} account is ${shown}, but this invite is for ${d.inviteMasked || info?.maskedEmail || "a different address"}. Switch accounts, or set a password below.`, { agreed: true });
     return;
   }
@@ -854,7 +818,7 @@ function stuck(e) {
     return true;
   }
   if (reason === "invite_used") {
-    const how = extra?.boundMethod === "google" ? "Google" : extra?.boundMethod === "apple" ? "Apple" : extra?.boundMethod === "password" ? "the password you set" : "the way you set up";
+    const how = extra?.boundMethod === "google" ? "Google" : extra?.boundMethod === "password" ? "the password you set" : "the way you set up";
     stuckSheet({ ic: "check", eyebrow: "Already set up", title: html`You're <em>already in</em>.`,
       body: html`<p class="lead">This invite was used to create your sign-in, so it won't work again. Sign in with ${how}.</p>`,
       actions: html`<a class="btn primary block" href="#/">Go to sign in</a>` });
@@ -971,7 +935,7 @@ async function boot() {
       <p class="lead">The portal only runs on mnclockworks.com. If Parker sent you a link, open it from that email or text.</p></div>`);
     return;
   }
-  // Warm the Google/Apple window helper now. Its auth frame loads on creation; if that happens on the
+  // Warm the Google window helper now. Its auth frame loads on creation; if that happens on the
   // first click, the popup opens after the click's user gesture has lapsed and the browser blocks it.
   try { passwordBridge(); } catch { /* local-only guard; nothing to warm */ }
   const splash = new URLSearchParams(location.search).has("splash");

@@ -19,10 +19,10 @@
 const INTAKE_COMPLETE_COPY = "Thanks, your intake is in. We'll get back to you. Submitting this intake does not start an engagement.";
 
 export const SWAP = Object.freeze({
-  // Apple identity is preview-only until Parker releases it for real clients.
+  // Apple sign-in was scrapped by Parker 2026-10-28.
   appleSignIn: Object.freeze({
     realClients: false,
-    allowClientIds: Object.freeze(["dev-smoke-apex"]),
+    allowClientIds: Object.freeze([]),
   }),
   irisChat: Object.freeze({
     enabled: true,
