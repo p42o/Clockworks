@@ -599,16 +599,20 @@ async function customerModel(cid) {
     firstName = u?.firstName || String(u?.contactName || u?.displayName || "").trim().split(/\s+/)[0] || ""; } catch { firstName = ""; }
   let changelog = { visible: true, items: [] };
   try { changelog = await callFn("adminChangelogPreview", { cid }); } catch { changelog = { visible: true, items: [], failed: true }; }
-  return { cid, home, account, profile, ideas, firstName, changelog };
+  // Shop Notes: only a PUBLISHED doc shows, same as the client's rules; anything else previews as the empty state.
+  let tailored = null;
+  try { const t = await getDoc(doc(db, "clients", cid, "tailored", "current")); tailored = t.exists() && t.data().status === "published" ? plainData(t.data()) : null; } catch { tailored = null; }
+  return { cid, home, account, profile, ideas, firstName, changelog, tailored };
 }
-async function openCustomerDashboard(c) {
+/** opts.tailoredDraft: render this draft as if published (Shop Notes review). */
+async function openCustomerDashboard(c, opts = {}) {
   document.querySelector(".cdash")?.remove();
   const wrap = document.createElement("div");
   wrap.className = "cdash"; wrap.setAttribute("role", "dialog"); wrap.setAttribute("aria-modal", "true"); wrap.setAttribute("aria-label", `Customer dashboard for ${c.name}`);
   wrap.innerHTML = `<header class="cdash-bar"><span class="chip ok"><span class="d"></span>Read only</span><b>What ${esc(c.name)} sees</b><small class="cdash-note">Loading…</small><span class="sp"></span>
     <div class="cdash-size" role="group" aria-label="Screen size"><button type="button" data-w="" aria-pressed="true">Desktop</button><button type="button" data-w="390" aria-pressed="false">Phone</button></div>
     <button type="button" class="btn sm" data-close>${ic("x")}Close</button></header>
-    <div class="cdash-stage"><iframe title="Customer dashboard preview" src="/portal/client/preview.html?v=dash-20261027"></iframe></div>`;
+    <div class="cdash-stage"><iframe title="Customer dashboard preview" src="/portal/client/preview.html?v=tailored-20261030"></iframe></div>`;
   document.body.appendChild(wrap); document.body.classList.add("cdash-open");
   const frame = wrap.querySelector("iframe"), note = wrap.querySelector(".cdash-note");
   const close = () => { removeEventListener("message", onMsg); removeEventListener("keydown", onKey); wrap.remove(); document.body.classList.remove("cdash-open"); };
@@ -624,9 +628,81 @@ async function openCustomerDashboard(c) {
   }));
   wrap.querySelector("[data-close]").focus();
   model = await customerModel(c.id);
-  note.textContent = !model.home ? "No portal yet: the client has not been set up, so they would see an empty Home."
+  if (opts.tailoredDraft) model = { ...model, tailored: { ...opts.tailoredDraft, status: "published" }, tailoredDraft: true };
+  note.textContent = opts.tailoredDraft ? "DRAFT Shop Notes shown as if published. The client cannot see this yet." : !model.home ? "No portal yet: the client has not been set up, so they would see an empty Home."
     : model.changelog?.failed ? "Capabilities list could not load; the rest is live." : "Live data, exactly as rendered for the client.";
   send();
+}
+
+// ------------------------------------------------------------------ Shop Notes + Things to try (tailored dashboard)
+// Reads clients/{cid}/tailored/{draft,current} with the admin's own sign-in (rules: admin read, no browser writes).
+// Every write is a Function: adminTailoredGenerate (draft) and adminTailoredPublish (published | hidden | draft).
+const tailoredSt = {};
+async function loadTailored(cid, force) {
+  const st = tailoredSt[cid];
+  if (st && !force && (st.loading || st.loaded)) return;
+  tailoredSt[cid] = { ...(st || {}), loading: true };
+  try {
+    const [d, cur] = await Promise.all([getDoc(doc(db, "clients", cid, "tailored", "draft")), getDoc(doc(db, "clients", cid, "tailored", "current"))]);
+    tailoredSt[cid] = { loaded: true, draft: d.exists() ? plainData(d.data()) : null, current: cur.exists() ? plainData(cur.data()) : null };
+  } catch (e) { tailoredSt[cid] = { loaded: true, err: callError(e) }; }
+  refresh();
+}
+const tlFlagOn = (cid) => { const a = SWAP.tailoredDashboard?.allowClientIds || []; return SWAP.tailoredDashboard?.showOnHome === true && (a.includes("*") || a.includes(cid)); };
+const TL_FB = { done: ["ok", "Done"], not_for_me: ["dash", "Not for me"] };
+function tailoredIssueHtml(d, live) {
+  const fb = d.feedback || {};
+  return `<div class="tl-issue">
+    <p class="tl-issue-h"><b>No. ${esc(d.issueNo)}</b> · ${esc(fmtDay(d.issueDate))} · <span class="mono">${esc(d.generator || "template")}</span>${d.polishNote ? ` · <span class="chip warn mini">${esc(d.polishNote.replace(/_/g, " "))}</span>` : ""}</p>
+    <ol class="tl-issue-secs">${(d.digest?.sections || []).map((x) => `<li><small>${esc(x.kicker)}</small><b>${esc(x.heading)}</b></li>`).join("")}</ol>
+    <p class="tl-issue-k">Things to try</p>
+    <ol class="tl-issue-tips">${(d.tips || []).map((t) => `<li><b>${esc(t.title)}</b> <span class="chip mini">${esc(t.category)}</span>${live && fb[t.id] ? ` <span class="chip mini ${TL_FB[fb[t.id].state]?.[0] || ""}">${esc(TL_FB[fb[t.id].state]?.[1] || fb[t.id].state)}</span>` : ""}</li>`).join("")}</ol>
+    ${d.sources ? `<details class="tl-src"><summary>Where each line came from</summary><dl>${d.sources.map((x) => `<dt class="mono">${esc(x.for)}</dt><dd class="mono">${x.paths.map(esc).join("<br>") || "—"}</dd>`).join("")}</dl></details>` : ""}
+  </div>`;
+}
+function tailoredPanelHtml(c) {
+  const st = tailoredSt[c.id];
+  const head = `<div class="ph"><h2 id="tl-admin-h">Shop Notes &amp; Things to try <small>in-dashboard only · nothing is emailed</small></h2>${st?.loaded ? `<button type="button" class="btn sm ghost" data-tl="reload">Reload</button>` : ""}</div>`;
+  if (!st?.loaded) { loadTailored(c.id); return `<section class="panel tl-admin" aria-labelledby="tl-admin-h" aria-busy="true">${head}<div class="pb"><div class="skel line w60"></div></div></section>`; }
+  if (st.err) return `<section class="panel tl-admin" aria-labelledby="tl-admin-h">${head}<div class="pb"><div class="empty-note">Couldn't load Shop Notes: ${esc(st.err)}</div></div></section>`;
+  const { draft, current } = st;
+  const busy = st.busy ? " disabled aria-busy=\"true\"" : "";
+  const liveChip = !current ? `<span class="chip dash">Nothing published</span>`
+    : current.status === "published" ? `<span class="chip ok"><span class="d"></span>Live on their Home · No. ${esc(current.issueNo)}</span>`
+    : `<span class="chip warn">Hidden · No. ${esc(current.issueNo)}</span>`;
+  return `<section class="panel tl-admin" id="tailored-admin" aria-labelledby="tl-admin-h">${head}<div class="pb">
+    <p class="tl-lead">Built only from this client's own record: CRM fields, published presence scans, intake answers, portal stage, and the shared changelog cache. Review, then publish. ${tlFlagOn(c.id) ? "" : `<b>Not switched on for this client</b> (swap-config <span class="mono">tailoredDashboard.allowClientIds</span>), so publishing stores it but their Home won't show it yet.`}</p>
+    <div class="tl-cols">
+      <div><p class="tl-col-k">Live ${liveChip}</p>
+        ${current ? tailoredIssueHtml(current, true) : `<div class="empty-note">They see a calm "not ready yet" card${tlFlagOn(c.id) ? "" : " (once switched on)"}.</div>`}
+        <div class="tl-acts">${current?.status === "published" ? `<button type="button" class="btn sm" data-tl="preview-live"${busy}>${ic("eye")}Preview</button><button type="button" class="btn sm" data-tl="hidden"${busy}>Hide</button><button type="button" class="btn sm ghost" data-tl="draft"${busy}>Back to draft</button>` : ""}${current && current.status !== "published" && !draft ? `<button type="button" class="btn sm p" data-tl="published"${busy}>Show again</button>` : ""}</div></div>
+      <div><p class="tl-col-k">Draft ${draft ? `<span class="chip data">Draft · No. ${esc(draft.issueNo)}</span>` : `<span class="chip dash">None</span>`}</p>
+        ${draft ? tailoredIssueHtml(draft, false) : `<div class="empty-note">Generate a draft from what's on file. It stays private until you publish.</div>`}
+        <div class="tl-acts"><button type="button" class="btn sm${draft ? "" : " p"}" data-tl="generate"${busy}>${ic("bolt")}${draft ? "Regenerate" : "Generate draft"}</button>
+          <label class="tl-polish"><input type="checkbox" data-tl-polish${st.polish ? " checked" : ""}> Wording pass (x.ai, if the key is bound)</label>
+          ${draft ? `<button type="button" class="btn sm" data-tl="preview-draft"${busy}>${ic("eye")}Preview draft</button><button type="button" class="btn sm p" data-tl="published"${busy}>${ic("check")}Publish</button>` : ""}</div></div>
+    </div>
+  </div></section>`;
+}
+async function tailoredAction(c, act) {
+  const st = tailoredSt[c.id] || {};
+  if (act === "reload") return loadTailored(c.id, true);
+  if (act === "preview-draft" && st.draft) return openCustomerDashboard(c, { tailoredDraft: st.draft });
+  if (act === "preview-live") return openCustomerDashboard(c);
+  const short = c.name.replace(/ \(.*\)/, "");
+  if (act === "published" && !window.confirm(`Publish these Shop Notes to ${short}'s Home? They can read them right away. Nothing is emailed.`)) return;
+  tailoredSt[c.id] = { ...st, busy: true }; refresh(true);
+  try {
+    if (act === "generate") {
+      const r = await callFn("adminTailoredGenerate", { cid: c.id, polish: !!st.polish });
+      toast(`Draft No. ${r.issueNo} ready · ${r.tips} things to try${r.polishNote ? " · wording pass skipped" : ""}`);
+    } else {
+      const r = await callFn("adminTailoredPublish", { cid: c.id, status: act });
+      toast(r.status === "published" ? `Live on ${short}'s Home.` : r.status === "hidden" ? "Hidden from their Home." : "Moved back to draft. Hidden from their Home.");
+    }
+  } catch (e) { toast(e.message || "Something went wrong."); }
+  tailoredSt[c.id] = { ...tailoredSt[c.id], busy: false };
+  await loadTailored(c.id, true);
 }
 
 // ------------------------------------------------------------------ dashboard
@@ -1513,6 +1589,8 @@ function viewClient(v) {
 
   ${onlinePresenceCardHtml(c.id, reps, presenceReader.cid === c.id ? presenceReader.id : "")}
 
+  ${c.portal?.enabled ? tailoredPanelHtml(c) : ""}
+
 
   ${(() => {
     const vis = REPORTS.filter((t) => hasModule(c, reportModule(t.type)));
@@ -1564,6 +1642,8 @@ function viewClient(v) {
 
   // wiring
   $$("[data-viewdash]", v).forEach((b) => (b.onclick = () => openCustomerDashboard(c)));
+  $$("[data-tl]", v).forEach((b) => (b.onclick = () => tailoredAction(c, b.dataset.tl)));
+  $$("[data-tl-polish]", v).forEach((x) => (x.onchange = () => { tailoredSt[c.id] = { ...(tailoredSt[c.id] || {}), polish: x.checked }; }));
   $$("[data-moredetails]", v).forEach((d) => d.addEventListener("toggle", () => { const k = c.id + (d.dataset.moredetails ? ":" + d.dataset.moredetails : ""); d.open ? moreOpenFor.add(k) : moreOpenFor.delete(k); }));
   $$("[data-publish]", v).forEach((b) => (b.onclick = () => { const [cid, rid] = String(b.dataset.publish || "").split("/"); if (cid && rid) publishReport(cid, rid); }));
   $$("[data-presence-open]", v).forEach((b) => (b.onclick = () => {

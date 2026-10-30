@@ -46,6 +46,13 @@ export const SWAP = Object.freeze({
     cacheMinutes: 30,
     maxItems: 16,
   }),
+  // Tailored dashboard: Shop Notes + Things to try (2026-10-30). Client-side only: who sees the two cards on Home.
+  // Content still shows only after Parker publishes it (rules: own cid, status 'published'). Allowlisted clients
+  // with nothing published see a calm empty state. "*" = every portal client. Parker opens it up.
+  tailoredDashboard: Object.freeze({
+    showOnHome: true,
+    allowClientIds: Object.freeze(["dev-smoke-apex"]),
+  }),
   // One hour of Parker's time. $125. Card stays on Account while offered is false.
   // No payment URL. Do not turn offered on until Counsel sellability and Parker go-live.
   workingSession: Object.freeze({

@@ -2,6 +2,7 @@
 // "View Customer Dashboard" preview both render through here, so Parker sees exactly what the client sees.
 import { html, ic, raw, fmtDate, dueText, toDate } from "./ui.js";
 import { clientPresenceRows, cleanPresenceScore, formatPresenceDate } from "./presenceCopy.js";
+import { tailoredHtml } from "./tailored.js";
 
 export const STAGE_STATE = { done: "Done", current: "Now", upcoming: "Coming up" };
 const isIntake = (n) => /^#\/intake/.test(n?.link || "");
@@ -182,8 +183,9 @@ export function shopBanner() {
 }
 
 /**
- * Whole dashboard. m = { home, account, profile, ideas, firstName, marked, showIris, showChangelog, preview }.
- * Live slots: [data-iris-chat] and [data-changelog-card] are filled by the caller.
+ * Whole dashboard. m = { home, account, profile, ideas, firstName, marked, showIris, showChangelog, showTailored, tailored, preview }.
+ * Live slots: [data-iris-chat], [data-changelog-card] and [data-tailored] are filled by the caller.
+ * m.tailored (admin preview only) renders Shop Notes + Things to try inline and inert.
  */
 export function dashHtml(m) {
   const h = m.home || {};
@@ -192,11 +194,12 @@ export function dashHtml(m) {
   const pm = presenceModel(m.account);
   const issue = newsletterIssue(m.profile, h.businessName);
   return html`
-    <div class="dash-grid${m.showIris ? "" : " no-iris"}">
+    <div class="dash-grid${m.showIris ? "" : " no-iris"}${m.showTailored ? " has-tl" : ""}">
       <div class="dash-col c1">${presenceCard(pm)}${!nm.ro ? nextCard(h, nm, steps) : ""}</div>
       <div class="dash-col c2">${m.showChangelog ? html`<div data-changelog-card class="changelog-card-host"></div>` : alsoCard(nm)}${filesCard(m.account?.files)}</div>
       <div class="dash-col c3">${newsletterCard(issue, m.ideas)}</div>
       ${m.showIris ? html`<div class="dash-col c4"><section data-iris-chat class="iris-card-host" aria-label="Iris support chat"></section></div>` : ""}
+      ${m.showTailored ? html`<div class="dash-col c5 dash-tl" data-tailored>${m.tailored !== undefined ? tailoredHtml(m.tailored, { readonly: true }) : ""}</div>` : ""}
     </div>`;
 }
 

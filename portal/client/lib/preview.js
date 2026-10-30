@@ -6,6 +6,7 @@ import { SWAP } from "../swap-config.js";
 import { LANDING_COPY } from "./clientCopy.js";
 import { isIrisChatVisible, IRIS_AVATAR } from "./irisChat.js";
 import { dashHtml, greetingFor, irisPreviewHtml } from "./dash.js";
+import { isTailoredVisible } from "./tailored.js";
 import { mountChangelogCard } from "../screens/changelog-card.js";
 
 const app = document.getElementById("app");
@@ -17,6 +18,9 @@ function render(m) {
   const portalEnabled = h.access?.enabled !== false;
   const showIris = !!(SWAP.irisChat?.showOnHome && isIrisChatVisible({ cid: m.cid, stageKey: h.stageKey, portalEnabled }));
   const showChangelog = m.changelog?.visible !== false;
+  // Shop Notes: the live (published) doc, or the draft when Parker opens "Preview draft". null = the empty state.
+  const showTailored = m.tailoredDraft === true || isTailoredVisible({ cid: m.cid, portalEnabled });
+  document.body.classList.toggle("dash-fit", !showTailored);
   const ro = h.access?.mode === "readonly";
   const tabs = [["home", "Home", "home"], ["messages", "Support", "support"], ["account", "Settings", "settings"]]
     .filter(([k]) => !ro || k === "home" || k === "account");
@@ -32,7 +36,7 @@ function render(m) {
       ${h.stageKey === "onhold" ? html`<div class="banner warn">${ic("clock")}<div>Things are paused. Message Parker any time.</div></div>` : ""}
       ${ro ? html`<div class="banner info">${ic("info")}<div>Our work together has wrapped up. You can still see your files and data here.</div></div>` : ""}
       ${(h.unread?.messages || 0) > 0 ? html`<div class="banner copper">${ic("chat")}<div><b>You have a reply</b>${h.unread.messages} new from Parker.</div></div>` : ""}
-      ${dashHtml({ home: { ...h, stageLabel: SWAP.stageLabels[h.stageKey] || SWAP.stageLabels.unknown }, account: m.account, profile: m.profile, ideas: m.ideas || [], firstName: name, showIris, showChangelog })}
+      ${dashHtml({ home: { ...h, stageLabel: SWAP.stageLabels[h.stageKey] || SWAP.stageLabels.unknown }, account: m.account, profile: m.profile, ideas: m.ideas || [], firstName: name, showIris, showChangelog, showTailored, tailored: m.tailored ?? null })}
       <p class="dash-landing">${LANDING_COPY}</p>
     </main>
     <nav class="tabbar" aria-label="Main">${tabs.map(([k, label, icon]) => html`<a href="#" data-tab="${k}"${k === "home" ? html` aria-current="page"` : ""}>${ic(icon)}<span>${label}</span></a>`)}</nav>`);

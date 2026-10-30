@@ -1051,4 +1051,102 @@ main > .banner, main > section.card[data-schedule] { margin-bottom: var(--s4); }
   .dash-price { margin-left: 0; }
   .news-paper-h, .news-paper-b { padding-left: 20px; padding-right: 20px; }
 }
-@media (prefers-reduced-motion: reduce) { .dash-gauge .val { animation: none; } .iris-typing i { animation: none; } }
+/* ======================================================================
+   Tailored dashboard (2026-10-30): Shop Notes (an issue written for this client) + Things to try.
+   Markup: lib/tailored.js. Phones: after the next step. Tablet and desktop: a full-width row on top.
+   ====================================================================== */
+.dash-tl > .card { min-width: 0; }
+.tl-notes, .tl-tips, .tl-empty { order: 2; }
+.tl-notes { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.tl-mast { position: relative; padding: 18px 20px 16px; background: var(--ground); color: var(--ground-ink); isolation: isolate; overflow: hidden; }
+.tl-mast::after { content: ""; position: absolute; z-index: -1; right: -60px; top: -80px; width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(212,88,42,.30), transparent 72%); }
+.tl-mast-k { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; font: 500 11.5px/1.3 var(--fm); letter-spacing: .12em; text-transform: uppercase; color: #F09A6F; }
+.tl-mast h2 { margin: 6px 0 0; font: 400 34px/1 var(--fd); letter-spacing: -.01em; color: var(--ground-ink); }
+.tl-mast-for { margin-top: 6px; font-size: 13.5px; color: var(--ground-ink-2); }
+.tl-notes-b { padding: 16px 20px 18px; display: grid; gap: 14px; }
+.tl-lede { font: italic 400 18px/1.35 var(--fd); color: var(--ink-2); }
+.tl-sec { padding-top: 14px; border-top: 1px dashed var(--line-strong); }
+.tl-k { font: 500 11px/1.3 var(--fm); letter-spacing: .12em; text-transform: uppercase; color: var(--copper-ink); margin: 0 0 4px; }
+.tl-sec h3 { font: 650 15.5px/1.3 var(--ff); letter-spacing: -.01em; margin: 0 0 4px; }
+.tl-sec p:not(.tl-k) { font-size: 14px; line-height: 1.55; color: var(--ink-2); max-width: 70ch; }
+.tl-sign { padding-top: 12px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--ink-3); }
+.tl-sign a { display: inline-flex; align-items: center; gap: 4px; min-height: var(--tap); font-weight: 600; color: var(--copper-ink); text-decoration: none; white-space: nowrap; }
+.tl-sign a svg.i { width: 15px; height: 15px; }
+
+.tl-tips { display: flex; flex-direction: column; }
+.tl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.tl-tip { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding: 12px 12px 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); transition: border-color var(--dur-1), background var(--dur-1), opacity var(--dur-2); }
+.tl-tip:hover { border-color: var(--line-strong); }
+.tl-n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font: 500 12px/1 var(--fm); color: var(--copper-ink); background: var(--copper-soft); }
+.tl-n svg.i { width: 16px; height: 16px; }
+.tl-tip-b { min-width: 0; }
+.tl-tip h3 { font: 650 14.5px/1.35 var(--ff); letter-spacing: -.005em; margin: 4px 0 4px; }
+.tl-tip-b > p:not(.tl-meta):not(.tl-state) { font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+.tl-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 12.5px; color: var(--ink-3); }
+.tl-meta span { display: inline-flex; align-items: center; gap: 5px; }
+.tl-meta svg.i { width: 14px; height: 14px; color: var(--ink-3); }
+.tl-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; margin-left: -8px; }
+.tl-acts .btn { min-height: var(--tap); font-size: 13.5px; padding: 0 10px; gap: 6px; }
+.tl-acts .btn svg.i { width: 15px; height: 15px; }
+.tl-state { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin-top: 6px; font-size: 13px; color: var(--ink-3); }
+.tl-undo { min-height: var(--tap); padding: 0 6px; border: 0; background: none; font: 600 13px var(--ff); color: var(--copper-ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.tl-undo[aria-busy="true"] { opacity: .5; cursor: progress; }
+.tl-tip.is-done { background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 30%, var(--line)); }
+.tl-tip.is-done .tl-n { background: var(--ok); color: #fff; }
+.tl-tip.is-done h3 { color: var(--ink-2); }
+.tl-tip.is-not-for-me { background: transparent; border-style: dashed; }
+.tl-tip.is-not-for-me h3 { color: var(--ink-3); font-weight: 550; }
+.tl-tip.is-not-for-me .tl-n { background: var(--sunk); color: var(--ink-3); }
+.tl-more { margin-top: 10px; width: 100%; min-height: 40px; border-radius: 12px; background: var(--paper-2); border: 0; color: var(--copper-ink); font-size: 14px; }
+.tl-foot { margin-top: 12px; font-size: 12.5px; color: var(--ink-3); }
+.tl-foot a { color: var(--copper-ink); font-weight: 600; }
+
+.tl-empty { display: flex; gap: 16px; align-items: flex-start; background: linear-gradient(160deg, var(--surface) 40%, var(--copper-wash)); }
+.tl-empty-art { flex: 0 0 auto; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--copper-soft); color: var(--copper-ink); }
+.tl-empty-art svg.i { width: 22px; height: 22px; }
+.tl-empty h2 { font: 400 26px/1.1 var(--fd); margin: 2px 0 6px; }
+.tl-empty p { font-size: 14px; color: var(--ink-2); max-width: 64ch; }
+.tl-empty .tl-empty-small { margin-top: 8px; font-size: 13px; color: var(--ink-3); }
+.tl-empty .tl-empty-small a { color: var(--copper-ink); font-weight: 600; }
+.tl-empty .btn { margin-top: 10px; }
+.tl-skel .tl-mast { display: grid; gap: 10px; }
+.tl-skel .tl-mast .skel { background: rgba(245,241,232,.12); animation: none; }
+.tl-skel .skel.tall { height: 30px; }
+.tl-skel .skel.w30 { width: 30%; } .tl-skel .skel.w40 { width: 40%; } .tl-skel .skel.w70 { width: 70%; } .tl-skel .skel.w80 { width: 80%; }
+.tl-tips.tl-skel { display: grid; gap: 10px; }
+.tl-tips.tl-skel .skel.block { height: 86px; }
+
+@media (max-width: 719px) {
+  .tl-mast h2 { font-size: 32px; }
+  .tl-notes-b { padding: 14px 16px 16px; }
+  .tl-mast { padding: 16px; }
+  .tl-empty { flex-direction: column; gap: 12px; }
+}
+/* tablet: the two cards side by side above everything else */
+@media (min-width: 720px) {
+  .dash-grid.has-tl .tl-notes, .dash-grid.has-tl .tl-empty { grid-column: 1; grid-row: 1; }
+  .dash-grid.has-tl .tl-tips { grid-column: 2; grid-row: 1; }
+  .dash-grid.has-tl .tl-empty { grid-column: 1 / -1; }
+  .dash-grid.has-tl .dash-pres, .dash-grid.has-tl .dash-news { grid-row: 2; }
+  .dash-grid.has-tl .dash-next, .dash-grid.has-tl .dash-col.c4 .iris-card-host { grid-row: 3; }
+}
+/* desktop: a full-width band on top (notes, then tips in a grid); the four columns sit underneath */
+@media (min-width: 1180px) {
+  .dash-grid.has-tl { grid-template-rows: auto auto minmax(0, 1fr); }
+  .dash-grid.has-tl .dash-col.c5 { grid-column: 1 / -1; grid-row: 1; }
+  .dash-grid.has-tl .dash-col.c1, .dash-grid.has-tl .dash-col.c2 { grid-row: 2 / 4; }
+  .dash-grid.has-tl .dash-col.c3 { grid-row: 2; } .dash-grid.has-tl .dash-col.c4 { grid-row: 3; }
+  .dash-grid.has-tl.no-iris .dash-col.c3 { grid-row: 2 / 4; }
+  .dash-col.c5 .tl-notes { flex-direction: row; }
+  .dash-col.c5 .tl-mast { flex: 0 0 248px; display: flex; flex-direction: column; justify-content: flex-end; padding: 22px 22px 20px; }
+  .dash-col.c5 .tl-mast h2 { font-size: 40px; }
+  .dash-col.c5 .tl-notes-b { flex: 1; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); column-gap: 24px; align-content: start; padding: 18px 22px; }
+  .dash-col.c5 .tl-lede, .dash-col.c5 .tl-sign { grid-column: 1 / -1; }
+  .dash-col.c5 .tl-notes-b:has(.tl-sec:nth-of-type(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dash-col.c5 .tl-sec { padding-top: 12px; }
+  .dash-col.c5 .tl-list { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); align-items: stretch; }
+  .dash-col.c5 .tl-tips.tl-skel { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dash-col.c5 .tl-tips.tl-skel .skel.block { height: 140px; }
+}
+@media (prefers-reduced-motion: reduce) { .dash-gauge .val { animation: none; } .tl-tip { transition: none; } .iris-typing i { animation: none; } }

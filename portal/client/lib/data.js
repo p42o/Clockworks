@@ -17,6 +17,8 @@ function watchDoc(ref, cb, onErr) {
 export const subscribeHome = (cb, err) => watchDoc(view("home"), cb, err);
 export const subscribeProfile = (cb, err) => watchDoc(view("profile"), cb, err);
 export const subscribeAccount = (cb, err) => watchDoc(view("account"), cb, err);
+/** Shop Notes + Things to try. Readable only once published (rules); a denied read means "nothing yet". */
+export const subscribeTailored = (cb, err) => watchDoc(doc(fb.db, "clients", cid(), "tailored", "current"), cb, err);
 
 function watchList(q, cb, onErr, map = snapData) {
   return onSnapshot(q, (s) => cb(s.docs.map(map)), (e) => onErr?.(e));

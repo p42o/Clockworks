@@ -35,6 +35,7 @@ export const irisChatSend = (text, history = []) => call("irisChatSend")({ text,
 export const irisChatAckDisclosure = () => call("irisChatAckDisclosure")({ bannerVersion: "A" });
 export const irisChatHandoffSubmit = (handoff) => call("irisChatHandoffSubmit")(handoff);
 export const changelogCardList = () => call("changelogCardList")();
+export const tailoredFeedback = (tipId, state) => call("tailoredFeedback")({ tipId, state });
 export const sessionTouch = () => call("sessionTouch")();
 export const reverifySend = () => call("reverifySend")();
 export const reverifyCheck = (code) => call("reverifyCheck")({ code });

@@ -1,4 +1,4 @@
-// #/home: the dashboard. Online Presence, next step, New Agent Capabilities, Agent Newsletter, Iris, files.
+// #/home: the dashboard. Online Presence, next step, Shop Notes + Things to try, New Agent Capabilities, Agent Newsletter, Iris, files.
 // Markup lives in lib/dash.js so the admin "View Customer Dashboard" preview renders the same thing.
 import { html, mount, ic, fmtDateY, toast, setBusy } from "../lib/ui.js";
 import * as data from "../lib/data.js";
@@ -14,6 +14,8 @@ import { mountIrisChatCard } from "./iris-chat-card.js";
 import { isChangelogCardVisible } from "../lib/changelogCard.js";
 import { mountChangelogCard } from "./changelog-card.js";
 import { dashHtml, greetingFor } from "../lib/dash.js";
+import { isTailoredVisible } from "../lib/tailored.js";
+import { mountTailoredCards } from "./tailored-cards.js";
 
 const fDay = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", weekday: "long", month: "short", day: "numeric" });
 
@@ -47,7 +49,7 @@ export function render(ctx) {
     }
   } catch { irisWelcome = null; }
   const marked = new Set();    // needs the client just marked done in this visit
-  let irisUnmount = null, irisCid = null, changelogUnmount = null;
+  let irisUnmount = null, irisCid = null, changelogUnmount = null, tailoredUnmount = null, tailoredRo = null;
   let last = null, account = null, profile = null, ideas = [];
   document.body.classList.add("dash-fit");
 
@@ -57,10 +59,13 @@ export function render(ctx) {
     preservedIris?.remove();
     const preservedChangelog = el.querySelector("[data-changelog-card]");
     preservedChangelog?.remove();
+    const preservedTailored = el.querySelector("[data-tailored]");
+    preservedTailored?.remove();
     const h = last;
     if (!h) {
       irisUnmount?.(); irisUnmount = null; irisCid = null;
       changelogUnmount?.(); changelogUnmount = null;
+      tailoredUnmount?.(); tailoredUnmount = null;
       mount(el, html`<h1>Home</h1>${emptyState("Nothing here yet.", "Parker will set up your home page soon.")}`);
       return;
     }
@@ -70,6 +75,9 @@ export function render(ctx) {
     const portalEnabled = h.access?.enabled !== false;
     const showIris = !!(SWAP.irisChat?.showOnHome && isIrisChatVisible({ cid: state.me?.cid, stageKey: h.stageKey, portalEnabled }));
     const showChangelog = isChangelogCardVisible({ cid: state.me?.cid, stageKey: h.stageKey, portalEnabled });
+    const showTailored = isTailoredVisible({ cid: state.me?.cid, portalEnabled });
+    // Two more cards do not fit one desktop screen: let Home scroll when they are on.
+    document.body.classList.toggle("dash-fit", !showTailored);
     const welcomeName = irisWelcome?.name || name;
     mount(el, html`
       ${irisWelcome ? html`<div class="banner info" id="iris-welcome" role="status">${ic("info")}<div>Iris here. Welcome, ${welcomeName || "you"}.</div></div>` : ""}
@@ -83,7 +91,7 @@ export function render(ctx) {
       ${ro ? html`<div class="banner info">${ic("info")}<div>Our work together has wrapped up. You can still see your files and data ${h.access.readOnlyUntil ? html`until ${fmtDateY(h.access.readOnlyUntil)} (${Math.max(0, Math.ceil(((h.access.readOnlyUntil?.toMillis?.() || new Date(h.access.readOnlyUntil).getTime()) - Date.now()) / 86400000))} days left)` : "here"}.</div></div>` : ""}
       ${(h.access?.state === "archived" || (ro && h.access?.closedAt)) ? html`<section class="card" aria-labelledby="arch-h"><h2 id="arch-h">Your account is ARCHIVED</h2>${fillNotice(ARCHIVED_BODY, { close_date: h.access.closedAt ? fmtDateY(h.access.closedAt) : "", export_window_end_date: h.access.readOnlyUntil ? fmtDateY(h.access.readOnlyUntil) : "" }).split("\n\n").map((p) => html`<p>${p}</p>`)}</section>` : ""}
       ${unread.messages > 0 ? html`<a class="banner copper" href="${h.latestUnread?.threadId ? `#/m/${h.latestUnread.threadId}` : "#/messages"}" style="text-decoration:none;color:inherit">${ic("chat")}<div><b>${h.latestUnread?.subject ? `Parker replied to ${h.latestUnread.subject}` : "You have a reply"}</b>${unread.messages} new ${unread.messages === 1 ? "message" : "messages"} from Parker.</div></a>` : ""}
-      ${dashHtml({ home: { ...h, stageLabel: SWAP.stageLabels[h.stageKey] || SWAP.stageLabels.unknown }, account, profile, ideas, firstName: name, marked, showIris, showChangelog })}
+      ${dashHtml({ home: { ...h, stageLabel: SWAP.stageLabels[h.stageKey] || SWAP.stageLabels.unknown }, account, profile, ideas, firstName: name, marked, showIris, showChangelog, showTailored })}
       ${scheduleCard(h)}
       <p class="dash-landing" data-landing>${LANDING_COPY}</p>`);
 
@@ -107,6 +115,14 @@ export function render(ctx) {
     } else {
       changelogUnmount?.(); changelogUnmount = null;
       if (changelogHost) changelogUnmount = mountChangelogCard(changelogHost);
+    }
+
+    const tailoredHost = el.querySelector("[data-tailored]");
+    if (tailoredHost && preservedTailored && tailoredRo === ro) {
+      tailoredHost.replaceWith(preservedTailored);
+    } else {
+      tailoredUnmount?.(); tailoredUnmount = null;
+      if (tailoredHost) { tailoredRo = ro; tailoredUnmount = mountTailoredCards(tailoredHost, { readonly: ro }); }
     }
 
     el.querySelector("[data-new-time]")?.addEventListener("submit", async (ev) => {
@@ -143,7 +159,7 @@ export function render(ctx) {
 
   const teardownLive = live(el, "Home", data.subscribeHome, (h) => { last = h; paint(); });
   return () => {
-    teardownLive(); unAccount?.(); unProfile?.(); unIdeas?.(); irisUnmount?.(); changelogUnmount?.();
+    teardownLive(); unAccount?.(); unProfile?.(); unIdeas?.(); irisUnmount?.(); changelogUnmount?.(); tailoredUnmount?.();
     document.body.classList.remove("dash-fit");
   };
 }
