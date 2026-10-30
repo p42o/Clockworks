@@ -1,4 +1,5 @@
-// #/home: the dashboard. Online Presence, next step, Shop Notes + Things to try, New Agent Capabilities, Agent Newsletter, Iris, files.
+// #/home: the dashboard. A compact grid of preview tiles (next step, Shop Notes, Things to try, Online Presence,
+// New Agent Capabilities, Agent Newsletter, Iris, files); each opens its full content in a sheet (lib/modular.js).
 // Markup lives in lib/dash.js so the admin "View Customer Dashboard" preview renders the same thing.
 import { html, mount, ic, fmtDateY, toast, setBusy } from "../lib/ui.js";
 import * as data from "../lib/data.js";
@@ -13,8 +14,10 @@ import { isIrisChatVisible } from "../lib/irisChat.js";
 import { mountIrisChatCard } from "./iris-chat-card.js";
 import { isChangelogCardVisible } from "../lib/changelogCard.js";
 import { mountChangelogCard } from "./changelog-card.js";
-import { dashHtml, greetingFor } from "../lib/dash.js";
+import { dashHtml, greetingFor, capsTile, notesTile, tipsTile } from "../lib/dash.js";
 import { isTailoredVisible } from "../lib/tailored.js";
+import { createSheet, paintTile } from "../lib/modular.js";
+import { intakeTopicsOff } from "../lib/intakeTopics.js";
 import { mountTailoredCards } from "./tailored-cards.js";
 
 const fDay = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", weekday: "long", month: "short", day: "numeric" });
@@ -51,18 +54,22 @@ export function render(ctx) {
   const marked = new Set();    // needs the client just marked done in this visit
   let irisUnmount = null, irisCid = null, changelogUnmount = null, tailoredUnmount = null, tailoredRo = null;
   let last = null, account = null, profile = null, ideas = [];
-  document.body.classList.add("dash-fit");
+  // live tile state, kept so a redraw shows the newest preview straight away
+  let tlState = "loading", caps = undefined, topics = undefined, topicsAsked = false;
+  let sheet = null;
+  const LIVE = ["[data-iris-chat]", "[data-changelog-card]", "[data-tl-notes]", "[data-tl-tips]"];
 
   function paint() {
-    // Keep the live Iris chat and the changelog list when Home redraws for a stage or need update.
-    const preservedIris = el.querySelector("[data-iris-chat]");
-    preservedIris?.remove();
-    const preservedChangelog = el.querySelector("[data-changelog-card]");
-    preservedChangelog?.remove();
-    const preservedTailored = el.querySelector("[data-tailored]");
-    preservedTailored?.remove();
+    // Keep the live Iris chat, the changelog list and Shop Notes when Home redraws for a stage or need update.
+    // They may sit in the hidden panels or, while open, in the sheet.
+    const sheetEl = document.querySelector(".mod-sheet");
+    const hadFocus = sheetEl?.contains(document.activeElement) ? document.activeElement : null;
+    const findLive = (sel) => el.querySelector(sel) || sheetEl?.querySelector(sel) || null;
+    const [preservedIris, preservedChangelog, preservedNotes, preservedTips] = LIVE.map(findLive);
+    [preservedIris, preservedChangelog, preservedNotes, preservedTips].forEach((n) => n?.remove());
     const h = last;
     if (!h) {
+      sheet?.destroy(); sheet = null;
       irisUnmount?.(); irisUnmount = null; irisCid = null;
       changelogUnmount?.(); changelogUnmount = null;
       tailoredUnmount?.(); tailoredUnmount = null;
@@ -76,8 +83,11 @@ export function render(ctx) {
     const showIris = !!(SWAP.irisChat?.showOnHome && isIrisChatVisible({ cid: state.me?.cid, stageKey: h.stageKey, portalEnabled }));
     const showChangelog = isChangelogCardVisible({ cid: state.me?.cid, stageKey: h.stageKey, portalEnabled });
     const showTailored = isTailoredVisible({ cid: state.me?.cid, portalEnabled });
-    // Two more cards do not fit one desktop screen: let Home scroll when they are on.
-    document.body.classList.toggle("dash-fit", !showTailored);
+    if (!topicsAsked) {
+      // Agent Newsletter gating: the client's own "do not touch" answer, via the intake callable they already use.
+      topicsAsked = true;
+      intakeTopicsOff(state.me?.cid, h).then((t) => { topics = t; if (last) paint(); });
+    }
     const welcomeName = irisWelcome?.name || name;
     mount(el, html`
       ${irisWelcome ? html`<div class="banner info" id="iris-welcome" role="status">${ic("info")}<div>Iris here. Welcome, ${welcomeName || "you"}.</div></div>` : ""}
@@ -91,7 +101,7 @@ export function render(ctx) {
       ${ro ? html`<div class="banner info">${ic("info")}<div>Our work together has wrapped up. You can still see your files and data ${h.access.readOnlyUntil ? html`until ${fmtDateY(h.access.readOnlyUntil)} (${Math.max(0, Math.ceil(((h.access.readOnlyUntil?.toMillis?.() || new Date(h.access.readOnlyUntil).getTime()) - Date.now()) / 86400000))} days left)` : "here"}.</div></div>` : ""}
       ${(h.access?.state === "archived" || (ro && h.access?.closedAt)) ? html`<section class="card" aria-labelledby="arch-h"><h2 id="arch-h">Your account is ARCHIVED</h2>${fillNotice(ARCHIVED_BODY, { close_date: h.access.closedAt ? fmtDateY(h.access.closedAt) : "", export_window_end_date: h.access.readOnlyUntil ? fmtDateY(h.access.readOnlyUntil) : "" }).split("\n\n").map((p) => html`<p>${p}</p>`)}</section>` : ""}
       ${unread.messages > 0 ? html`<a class="banner copper" href="${h.latestUnread?.threadId ? `#/m/${h.latestUnread.threadId}` : "#/messages"}" style="text-decoration:none;color:inherit">${ic("chat")}<div><b>${h.latestUnread?.subject ? `Parker replied to ${h.latestUnread.subject}` : "You have a reply"}</b>${unread.messages} new ${unread.messages === 1 ? "message" : "messages"} from Parker.</div></a>` : ""}
-      ${dashHtml({ home: { ...h, stageLabel: SWAP.stageLabels[h.stageKey] || SWAP.stageLabels.unknown }, account, profile, ideas, firstName: name, marked, showIris, showChangelog, showTailored })}
+      ${dashHtml({ home: { ...h, stageLabel: SWAP.stageLabels[h.stageKey] || SWAP.stageLabels.unknown }, account, profile, ideas, firstName: name, marked, showIris, showChangelog, showTailored, topicsOff: topics, tlState, caps })}
       ${scheduleCard(h)}
       <p class="dash-landing" data-landing>${LANDING_COPY}</p>`);
 
@@ -109,20 +119,29 @@ export function render(ctx) {
       }
     }
 
+    const grid = el.querySelector("[data-mod]");
     const changelogHost = el.querySelector("[data-changelog-card]");
     if (changelogHost && preservedChangelog) {
       changelogHost.replaceWith(preservedChangelog);
     } else {
-      changelogUnmount?.(); changelogUnmount = null;
-      if (changelogHost) changelogUnmount = mountChangelogCard(changelogHost);
+      changelogUnmount?.(); changelogUnmount = null; caps = undefined;
+      if (changelogHost) changelogUnmount = mountChangelogCard(changelogHost, { expanded: true, bare: true,
+        onItems: (cs) => { caps = cs; paintTile(el.querySelector("[data-mod]"), capsTile(cs)); } });
     }
 
-    const tailoredHost = el.querySelector("[data-tailored]");
-    if (tailoredHost && preservedTailored && tailoredRo === ro) {
-      tailoredHost.replaceWith(preservedTailored);
+    const notesHost = el.querySelector("[data-tl-notes]"), tipsHost = el.querySelector("[data-tl-tips]");
+    if (notesHost && tipsHost && preservedNotes && preservedTips && tailoredRo === ro) {
+      notesHost.replaceWith(preservedNotes); tipsHost.replaceWith(preservedTips);
     } else {
-      tailoredUnmount?.(); tailoredUnmount = null;
-      if (tailoredHost) { tailoredRo = ro; tailoredUnmount = mountTailoredCards(tailoredHost, { readonly: ro }); }
+      tailoredUnmount?.(); tailoredUnmount = null; tlState = "loading";
+      if (notesHost && tipsHost) {
+        tailoredRo = ro;
+        tailoredUnmount = mountTailoredCards({ notes: notesHost, tips: tipsHost }, { readonly: ro, onState: (st) => {
+          tlState = st;
+          const g = el.querySelector("[data-mod]");
+          paintTile(g, notesTile(st)); paintTile(g, tipsTile(st));
+        } });
+      }
     }
 
     el.querySelector("[data-new-time]")?.addEventListener("submit", async (ev) => {
@@ -148,6 +167,10 @@ export function render(ctx) {
         b.replaceWith(p);
       } catch (e) { setBusy(b, false); toast("Something went wrong. Please try again."); }
     }));
+
+    // the sheet: one per Home visit. A redraw re-points it, and an open card stays open with its new panel.
+    if (sheet) sheet.rebind(grid); else sheet = createSheet(grid);
+    if (hadFocus && sheet.openKey) (hadFocus.isConnected ? hadFocus : document.getElementById("mod-sheet-t"))?.focus({ preventScroll: true });
   }
 
   // Side data. Each is optional: a missing view or a feature that is off just leaves its card in the empty state.
@@ -159,7 +182,7 @@ export function render(ctx) {
 
   const teardownLive = live(el, "Home", data.subscribeHome, (h) => { last = h; paint(); });
   return () => {
+    sheet?.destroy(); sheet = null;
     teardownLive(); unAccount?.(); unProfile?.(); unIdeas?.(); irisUnmount?.(); changelogUnmount?.(); tailoredUnmount?.();
-    document.body.classList.remove("dash-fit");
   };
 }

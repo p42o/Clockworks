@@ -1,8 +1,10 @@
-// Home dashboard markup. Pure: no Firebase, no session. The client Home and the admin
+// Home dashboard markup (modular: preview tiles + full panels). Pure: no Firebase, no session. The client Home and the admin
 // "View Customer Dashboard" preview both render through here, so Parker sees exactly what the client sees.
 import { html, ic, raw, fmtDate, dueText, toDate } from "./ui.js";
 import { clientPresenceRows, cleanPresenceScore, formatPresenceDate } from "./presenceCopy.js";
-import { tailoredHtml } from "./tailored.js";
+import { tailoredModel, notesPanelHtml, tipsPanelHtml, notesTile, tipsTile } from "./tailored.js";
+import { tileHtml, panelHtml } from "./modular.js";
+import { newsletterIssue } from "./newsletter.js";
 
 export const STAGE_STATE = { done: "Done", current: "Now", upcoming: "Coming up" };
 const isIntake = (n) => /^#\/intake/.test(n?.link || "");
@@ -39,54 +41,8 @@ export function presenceModel(account) {
   return { last, first, rows, score: s, delta: rows.length > 1 ? s - first.score : null, verdict };
 }
 
-// First Agent Newsletter. A real generator replaces this later; until then every client gets
-// issue 1, worded for their trade. Plain ideas only: no prices, no promises.
-const PLAYBOOKS = [
-  { re: /drywall|plaster|paint|roof|siding|gutter|remodel|construct|contract|carpent|floor|tile|concrete|deck|fence|window|insulat|handyman/i, items: [
-    ["Follow up on quiet quotes", "Your agents can draft a short, friendly check-in two days after a quote goes out. You approve every text."],
-    ["Turn job photos into Google posts", "Send before and after shots. Your agents write the caption and queue the post for your OK."],
-    ["Answer every review", "A drafted reply waits for each new Google review, so nothing sits unanswered."],
-  ] },
-  { re: /plumb|hvac|heat|cool|furnace|electric|septic|well|water|drain|appliance|garage door|locksmith/i, items: [
-    ["Text back every missed call", "When a call goes unanswered, your agents send a quick text so the job does not go to the next number on the list."],
-    ["Remind past customers about seasonal service", "A short note before the season turns brings back the customers who already trust you."],
-    ["Answer every review", "A drafted reply waits for each new Google review, so nothing sits unanswered."],
-  ] },
-  { re: /lawn|landscap|tree|snow|pool|pest|clean|maid|window wash|pressure|junk|moving/i, items: [
-    ["Confirm tomorrow's route by text", "Your agents can send a short heads-up the day before, so fewer gates are locked when your crew shows up."],
-    ["Fill gaps from the waitlist", "When a job cancels, your agents can offer the slot to the next customer waiting."],
-    ["Answer every review", "A drafted reply waits for each new Google review, so nothing sits unanswered."],
-  ] },
-  { re: /restaurant|cafe|coffee|bar|tavern|grill|pizza|bakery|food|catering|brew|diner|kitchen/i, items: [
-    ["Post this week's specials", "Tell your agents the special once. They draft the Google and Facebook posts for your OK."],
-    ["Catch catering and event requests fast", "Your agents can reply to inquiries with your menu and the next step, even after hours."],
-    ["Answer every review", "A drafted reply waits for each new Google review, so nothing sits unanswered."],
-  ] },
-  { re: /salon|barber|spa|nail|beauty|fitness|gym|yoga|massage|studio|tattoo|groom/i, items: [
-    ["Rebook before they leave", "Your agents can send a short rebooking nudge a few weeks after each visit."],
-    ["Fill slow days", "Tell your agents which days run light. They draft an offer for regulars, and you approve it."],
-    ["Answer every review", "A drafted reply waits for each new Google review, so nothing sits unanswered."],
-  ] },
-];
-const GENERAL = [
-  ["Text back every missed call", "When a call goes unanswered, your agents send a quick text so the customer does not move on."],
-  ["Post to Google once a week", "Tell your agents what happened this week. They draft the post and wait for your OK."],
-  ["Answer every review", "A drafted reply waits for each new Google review, so nothing sits unanswered."],
-];
-
-export function newsletterIssue(profile, businessName) {
-  const name = String(businessName || profile?.businessName || "").trim();
-  // Trade first; the business name is a fair hint when the trade is not filled in yet ("Timely Drywall").
-  const pick = PLAYBOOKS.find((p) => p.re.test(String(profile?.trade || ""))) || PLAYBOOKS.find((p) => p.re.test(name));
-  return {
-    no: 1,
-    title: "Ideas for putting your agent team to work",
-    lede: name ? `Three things your agent team could take off ${name}'s plate.` : "Three things your agent team could take off your plate.",
-    madeFor: name || "your business",
-    tailored: !!pick,
-    items: (pick ? pick.items : GENERAL).map(([t, p]) => ({ t, p })),
-  };
-}
+// Agent Newsletter, issue 1: lib/newsletter.js (pure, topic-gated by the client's own "do not touch" answer).
+export { newsletterIssue };
 
 // ---------- pieces ----------
 
@@ -105,29 +61,24 @@ function sparkSvg(pts, w = 150, h = 44) {
   const d = xy.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
   return raw(`<svg class="dash-spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><path class="f" d="${d} L${w} ${h} L0 ${h}Z"/><path class="l" d="${d}"/>${xy.map((p, i) => `<circle class="${i === xy.length - 1 ? "now" : ""}" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5"/>`).join("")}</svg>`);
 }
-const cardHead = (icon, title, sub, more, id) => html`<div class="dash-h"><span class="dash-ic">${ic(icon)}</span>
-  <div class="dash-ht"><h2 ${id ? raw(`id="${id}"`) : ""}>${title}</h2>${sub ? html`<p>${sub}</p>` : ""}</div>${more || ""}</div>`;
 const moreLink = (href, label) => html`<a class="dash-more" href="${href}">${label} ${ic("arrow-right")}</a>`;
+const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
-function presenceCard(pm) {
-  if (!pm) {
-    return html`<section class="card dash-card dash-pres" aria-labelledby="pres-h">
-      ${cardHead("gauge", "Online Presence", "How your business looks online", "", "pres-h")}
-      <p class="dash-empty">Parker will share your Online Presence score here when it’s ready. Nothing to do on your side.</p>
-    </section>`;
-  }
-  const chips = String(pm.last.summary || "").length ? html`<p class="dash-sum">${pm.last.summary}</p>` : "";
-  return html`<section class="card dash-card dash-pres" aria-labelledby="pres-h">
-    ${cardHead("gauge", "Online Presence", `From your assessment${pm.last.date ? ` · ${formatPresenceDate(pm.last.date)}` : ""}`, moreLink(`#/account/presence/${encodeURIComponent(pm.last.id)}`, "Details"), "pres-h")}
+// ---------- full content: the sheet panels ----------
+
+function presenceBody(pm) {
+  if (!pm) return html`<p class="dash-empty">Parker will share your Online Presence score here when it’s ready. Nothing to do on your side.</p>`;
+  return html`<div class="dash-pres">
     <div class="dash-pres-top"><div class="dash-score">${pm.score}<small>/100</small></div>${gaugeSvg(pm.score)}</div>
     <p class="dash-verdict">${pm.verdict}</p>
     ${pm.delta != null ? html`<p class="dash-delta ${pm.delta < 0 ? "down" : ""}">${pm.delta >= 0 ? "↑ +" : "↓ "}${pm.delta} since your first check</p>` : ""}
-    ${chips}
+    ${String(pm.last.summary || "").length ? html`<p class="dash-sum">${pm.last.summary}</p>` : ""}
     ${pm.rows.length > 1 ? html`<div class="dash-trend"><div><b>Trend</b><span>${pm.rows.map((r) => r.score).join(" → ")}</span></div>${sparkSvg(pm.rows.map((r) => r.score))}</div>` : ""}
-  </section>`;
+    <p class="mod-panel-more">${moreLink(`#/account/presence/${encodeURIComponent(pm.last.id)}`, "Open the full assessment")}</p>
+  </div>`;
 }
 
-function nextCard(h, nm, steps) {
+function nextBody(h, nm, steps) {
   const { top, rest, intakeIn, prog, pct } = nm;
   const cur = steps.find((s) => s.state === "current");
   const curIdx = steps.indexOf(cur);
@@ -135,15 +86,15 @@ function nextCard(h, nm, steps) {
     ? html`<p class="dash-due over">${ic("alert")} Overdue by ${dueText(n.due).replace("overdue by ", "")}</p>`
     : html`<p class="dash-due">Due ${fmtDate(n.due)} · ${dueText(n.due)}</p>`) : "";
   const goLabel = (n) => isIntake(n) ? (pct ? "Continue your intake" : "Start your intake") : "Open";
-  return html`<section class="card dash-card dash-next" aria-labelledby="next-step-h">
+  return html`<div class="dash-next">
     <div class="dash-next-top"><p class="dash-stage" id="stage-h">${h.stageLabel}</p>${steps.length && cur ? html`<span class="dash-stepof">Step ${curIdx + 1} of ${steps.length}</span>` : ""}</div>
     ${top ? html`
-      <h2 id="next-step-h">Your next step: ${top.text}</h2>
+      <h3 id="next-step-h">Your next step: ${top.text}</h3>
       ${dueLine(top)}
       ${isIntake(top) && !intakeIn ? html`<p>About 20 minutes, mostly taps. It saves as you go, so you can stop and come back.</p>` : h.nextText ? html`<p>${h.nextText}</p>` : ""}
       ${isIntake(top) && pct ? html`<div class="meter"><span>${prog.answered} of ${prog.total} answered</span><div class="progress" role="progressbar" aria-label="Intake progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div></div>` : ""}`
-    : intakeIn ? html`<h2 id="next-step-h">Your intake is <em>in</em>.</h2><p>Parker is reviewing it now. You'll see the next step here, and you can message him any time.</p>`
-    : html`<h2 id="next-step-h">You're all set <em>for now</em>.</h2><p>Parker will add anything he needs here.</p>${h.nextText ? html`<p>${h.nextText}</p>` : ""}`}
+    : intakeIn ? html`<h3 id="next-step-h">Your intake is <em>in</em>.</h3><p>Parker is reviewing it now. You'll see the next step here, and you can message him any time.</p>`
+    : html`<h3 id="next-step-h">You're all set <em>for now</em>.</h3><p>Parker will add anything he needs here.</p>${h.nextText ? html`<p>${h.nextText}</p>` : ""}`}
     ${steps.length ? html`<ol class="dash-steps" aria-label="Where things stand">${steps.map((s) => html`<li class="${s.state}"${s.state === "current" ? raw(' aria-current="step"') : ""}><span class="sr">${STAGE_STATE[s.state] || ""}: </span>${s.label}</li>`)}</ol>` : ""}
     ${rest.length ? html`<div class="dash-also"><p class="dash-eyebrow">Also on your list</p><ul>${rest.map((n) => html`<li><span>${n.text}</span>${n.clientDoneAt ? html`<small>Sent</small>` : n.due ? html`<small>${dueText(n.due)}</small>` : ""}</li>`)}</ul></div>` : ""}
     <div class="row-actions">
@@ -151,29 +102,104 @@ function nextCard(h, nm, steps) {
       ${top && !isIntake(top) ? html`<button type="button" class="btn" data-done="${top.id}">I've done this</button>` : ""}
       ${!top ? html`<a class="btn primary" href="#/messages">Message Parker <span class="arrow">${ic("arrow-right")}</span></a>` : ""}
     </div>
-  </section>`;
+  </div>`;
 }
 
-function newsletterCard(issue, ideas) {
+function newsBody(issue, ideas) {
+  if (!issue) return html`<div aria-busy="true"><span class="sr">Loading…</span><div class="skel line w40"></div><div class="skel block"></div></div>`;
   const latestIdea = ideas?.[0];
-  return html`<section class="card dash-card dash-news" aria-labelledby="news-h">
-    ${cardHead("paper", "Agent Newsletter", html`Issue ${issue.no} · <span class="dash-new">New</span>`, moreLink("#/newsletter", "Read it"), "news-h")}
+  return html`<div class="dash-news">
     <div class="dash-issue"><div class="dash-issue-h"><b>Issue ${issue.no}</b><span>${issue.tailored ? "Picked for your trade" : "Your first issue"}</span></div>
+      <p class="dash-issue-lede">${issue.lede}</p>
       <ol>${issue.items.map((it) => html`<li><b>${it.t}</b><span>${it.p}</span></li>`)}</ol>
-      <div class="dash-issue-f"><small>Made for ${issue.madeFor}</small></div></div>
+      <div class="dash-issue-f"><small>Made for ${issue.madeFor}</small>${issue.gated ? html`<small>Leaves out anything you asked us not to touch.</small>` : ""}</div></div>
     ${latestIdea ? html`<a class="dash-idea" href="#/i/${latestIdea.id}">${ic("lightbulb")}<span><small>Latest idea from Parker</small><b>${latestIdea.title || "See Parker's latest idea"}</b></span></a>` : ""}
-  </section>`;
+    <p class="mod-panel-more">${moreLink("#/newsletter", "Open the newsletter page")}</p>
+  </div>`;
 }
 
-function filesCard(files) {
-  const list = (files || []).slice(0, 3);
-  return html`<section class="card dash-card dash-files" aria-labelledby="files-h">
-    ${cardHead("folder", "Files & assets", "", moreLink("#/account/files", "All files"), "files-h")}
+function filesBody(files) {
+  const list = (files || []).slice(0, 12);
+  return html`<div class="dash-files">
+    ${list.length ? "" : html`<p class="dash-empty">No files here yet. Anything Parker shares with you, and anything you send him, shows up here.</p>`}
     <div class="dash-file-grid">
       ${list.map((f) => html`<a class="dash-file" href="#/account/files"><span class="fi k-${f.kind}">${ic("file")}</span><span><b>${f.title}</b><small>${fmtDate(f.at)}</small></span></a>`)}
       <a class="dash-file dash-upload" href="#/messages">${ic("upload")}<span><b>Send Parker a file</b><small>Logo, job photos, price sheet</small></span></a>
     </div>
-  </section>`;
+    <p class="mod-panel-more">${moreLink("#/account/files", "All files")}</p>
+  </div>`;
+}
+
+function todoBody(nm) {
+  return nm.rest.length ? html`<ul class="dash-todo">${nm.rest.map((n) => html`<li><b>${n.text}</b>${n.due ? html`<small>${dueText(n.due)}</small>` : ""}</li>`)}</ul>`
+    : html`<p class="dash-empty">Nothing else right now.</p>`;
+}
+
+// ---------- previews: the tiles ----------
+
+function presenceTile(pm) {
+  const t = { key: "presence", icon: "gauge", title: "Online Presence", cta: "See your score" };
+  if (!pm) return { ...t, state: "empty", count: "Not yet", headline: "Your score isn't ready yet", line: "Parker will share it here when it's ready. Nothing to do on your side.", cta: "How it works" };
+  return { ...t, count: `${pm.score}/100`, kicker: pm.last.date ? `Your ${formatPresenceDate(pm.last.date)} scan` : "From your assessment", headline: pm.verdict,
+    line: pm.delta != null ? `${pm.delta >= 0 ? "Up" : "Down"} ${Math.abs(pm.delta)} since your first check` : "Your first check",
+    extra: html`<span class="mod-meter" aria-hidden="true"><i style="width:${Math.max(0, Math.min(100, pm.score))}%"></i></span>` };
+}
+
+function nextTile(h, nm, steps) {
+  const cur = steps.find((s) => s.state === "current");
+  const t = { key: "next", icon: "check", title: "Your next step", wide: true, cta: "See the details",
+    count: steps.length && cur ? `Step ${steps.indexOf(cur) + 1} of ${steps.length}` : h.stageLabel || "",
+    kicker: h.stageLabel || "",
+    extra: steps.length ? html`<span class="mod-steps" aria-hidden="true">${steps.map((s) => html`<i class="${s.state}"></i>`)}</span>` : "" };
+  const { top, intakeIn, pct } = nm;
+  if (top) {
+    const due = top.due && top.state !== "done" ? dueText(top.due) : "";
+    return { ...t, headline: top.text, line: due ? (due.startsWith("overdue") ? `Overdue by ${due.replace("overdue by ", "")}` : `Due ${fmtDate(top.due)} · ${due}`)
+      : isIntake(top) && pct ? `${pct}% answered` : h.nextText || "", cta: isIntake(top) ? (pct ? "Continue your intake" : "Start your intake") : "See the details" };
+  }
+  if (intakeIn) return { ...t, headline: "Your intake is in", line: "Parker is reviewing it now." };
+  return { ...t, state: "empty", headline: "You're all set for now", line: h.nextText || "Parker will add anything he needs here." };
+}
+
+function newsTile(issue) {
+  const t = { key: "news", icon: "paper", title: "Agent Newsletter", cta: "Read the issue" };
+  if (!issue) return { ...t, state: "loading" };
+  return { ...t, count: plural(issue.items.length, "idea"), kicker: `Issue ${issue.no} · ${issue.tailored ? "Picked for your trade" : "Your first issue"}`,
+    headline: issue.items[0]?.t || "", line: issue.items.slice(1).map((x) => x.t).join(" · ") };
+}
+
+function filesTile(files) {
+  const list = files || [];
+  const t = { key: "files", icon: "folder", title: "Files & assets", cta: "Open files" };
+  if (!list.length) return { ...t, state: "empty", count: "No files yet", headline: "Send Parker a file", line: "Logo, job photos, price sheet." };
+  return { ...t, count: plural(list.length, "file"), kicker: "Latest", headline: list[0].title, line: fmtDate(list[0].at) };
+}
+
+function todoTile(nm) {
+  const t = { key: "todo", icon: "check", title: "What we need from you", cta: "See the list" };
+  if (!nm.rest.length) return { ...t, state: "empty", count: "All clear", headline: "Nothing else right now", line: "Checked off as you go." };
+  const n = nm.rest[0];
+  return { ...t, count: `${nm.rest.length} open`, headline: n.text, line: n.due ? dueText(n.due) : "Checked off as you go." };
+}
+
+const SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const shortYmd = (iso) => { const x = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ""); return x ? `${SHORT[Number(x[2]) - 1]} ${Number(x[3])}` : ""; };
+
+/** cs: { loading, items } from the changelog mount (or undefined while it starts). */
+export function capsTile(cs) {
+  const t = { key: "caps", icon: "sparkle", title: "New Agent Capabilities", cta: "See what's new" };
+  if (!cs || cs.loading) return { ...t, state: "loading" };
+  const items = cs.items || [];
+  if (!items.length) return { ...t, state: "empty", count: "None yet", headline: "Nothing new for your shop yet", line: "Check back after Parker's next update." };
+  const green = items.filter((x) => x.trafficLight === "green").length;
+  const first = items[0];
+  return { ...t, count: green ? `${green} for you` : plural(items.length, "update"), kicker: first.date ? `Latest · ${shortYmd(first.date)}` : "Latest",
+    headline: first.title, line: items.length > 1 ? `+${items.length - 1} more` : "" };
+}
+
+function irisTile() {
+  return { key: "iris", icon: "chat", title: "Iris", count: "AI assistant", kicker: "Clockworks support",
+    headline: "Questions about your portal?", line: "Ask Iris. You can ask for a human any time.", cta: "Start chat" };
 }
 
 export function shopBanner() {
@@ -183,34 +209,44 @@ export function shopBanner() {
 }
 
 /**
- * Whole dashboard. m = { home, account, profile, ideas, firstName, marked, showIris, showChangelog, showTailored, tailored, preview }.
- * Live slots: [data-iris-chat], [data-changelog-card] and [data-tailored] are filled by the caller.
+ * Whole dashboard: a grid of preview tiles plus the hidden panels the sheet (lib/modular.js) opens.
+ * m = { home, account, profile, ideas, firstName, marked, showIris, showChangelog, showTailored, topicsOff,
+ *       tailored, tlState, caps }.
+ * topicsOff: newsletter gating (lib/topicGate.js keys; null = unknown; undefined = still loading).
+ * Live slots ([data-iris-chat], [data-changelog-card], [data-tl-notes], [data-tl-tips]) are filled by the caller.
  * m.tailored (admin preview only) renders Shop Notes + Things to try inline and inert.
+ * m.tlState / m.caps: the latest live state, so a redraw keeps the tiles current.
  */
 export function dashHtml(m) {
   const h = m.home || {};
   const nm = nextModel(h, m.marked);
   const steps = h.steps || [];
   const pm = presenceModel(m.account);
-  const issue = newsletterIssue(m.profile, h.businessName);
-  return html`
-    <div class="dash-grid${m.showIris ? "" : " no-iris"}${m.showTailored ? " has-tl" : ""}">
-      <div class="dash-col c1">${presenceCard(pm)}${!nm.ro ? nextCard(h, nm, steps) : ""}</div>
-      <div class="dash-col c2">${m.showChangelog ? html`<div data-changelog-card class="changelog-card-host"></div>` : alsoCard(nm)}${filesCard(m.account?.files)}</div>
-      <div class="dash-col c3">${newsletterCard(issue, m.ideas)}</div>
-      ${m.showIris ? html`<div class="dash-col c4"><section data-iris-chat class="iris-card-host" aria-label="Iris support chat"></section></div>` : ""}
-      ${m.showTailored ? html`<div class="dash-col c5 dash-tl" data-tailored>${m.tailored !== undefined ? tailoredHtml(m.tailored, { readonly: true }) : ""}</div>` : ""}
+  const issue = m.topicsOff === undefined ? null : newsletterIssue(m.profile, h.businessName, { topicsOff: m.topicsOff });
+  const pre = m.tailored !== undefined; // admin preview: static Shop Notes
+  const tl = pre ? (tailoredModel(m.tailored) || "empty") : (m.tlState || "loading");
+  const cells = [], panels = [];
+  const add = (tile, title, sub, body) => { cells.push(tileHtml(tile)); panels.push(panelHtml(tile.key, title, sub, body)); };
+  if (!nm.ro) add(nextTile(h, nm, steps), "Your next step", h.stageLabel, nextBody(h, nm, steps));
+  if (m.showTailored) {
+    add(notesTile(tl), "Shop Notes", "A short note written for your shop", pre ? notesPanelHtml(tl) : html`<div data-tl-notes class="tl-host"></div>`);
+    add(tipsTile(tl), "Things to try", "Mark each one done, or tell us it's not for you", pre ? tipsPanelHtml(tl, { readonly: true }) : html`<div data-tl-tips class="tl-host"></div>`);
+  }
+  add(presenceTile(pm), "Online Presence", pm?.last.date ? `From your assessment · ${formatPresenceDate(pm.last.date)}` : "How your business looks online", presenceBody(pm));
+  if (m.showChangelog) add(capsTile(m.caps), "New Agent Capabilities", "What your Grok Bot team learned lately", html`<div data-changelog-card class="changelog-card-host"></div>`);
+  else add(todoTile(nm), "What we need from you", "Checked off as you go", todoBody(nm));
+  add(newsTile(issue), "Agent Newsletter", issue ? `Issue ${issue.no} · Made for ${issue.madeFor}` : "", newsBody(issue, m.ideas));
+  if (m.showIris) add(irisTile(), "Iris", "Clockworks support chat", html`<div data-iris-chat class="iris-card-host" aria-label="Iris support chat"></div>`);
+  add(filesTile(m.account?.files), "Files & assets", "", filesBody(m.account?.files));
+  return html`<div class="mod" data-mod>
+      <h2 class="sr">Your dashboard</h2>
+      <ul class="mod-grid" role="list">${cells}</ul>
+      <div class="mod-panels" data-panels hidden>${panels}</div>
     </div>`;
 }
 
-// When the changelog card is off, column two shows the to-do list instead of sitting empty.
-function alsoCard(nm) {
-  return html`<section class="card dash-card dash-caps" aria-labelledby="todo-h">
-    ${cardHead("check", "What we need from you", "Checked off as you go", "", "todo-h")}
-    ${nm.rest.length ? html`<ul class="dash-todo">${nm.rest.map((n) => html`<li><b>${n.text}</b>${n.due ? html`<small>${dueText(n.due)}</small>` : ""}</li>`)}</ul>`
-      : html`<p class="dash-empty">Nothing else right now.</p>`}
-  </section>`;
-}
+/** Tiles that live data redraws: Home calls these with the newest state. */
+export { notesTile, tipsTile };
 
 /** Static Iris thread for the admin preview: shows the slot without opening a real chat session. */
 export function irisPreviewHtml(firstName, avatar) {

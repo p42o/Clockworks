@@ -14,6 +14,7 @@ import { SWAP } from "../client/swap-config.js";
 import { DEFAULT_FOLLOW_UP_GRACE_DAYS, followUpGraceDecision, graceAdminLine, shopPassKeepsPortalOpen, ymdChicago } from "../client/lib/followUpGrace.js";
 import { onlinePresenceCardHtml } from "../client/lib/presenceAdmin.js";
 import { fillPresenceFrame } from "../client/lib/presenceView.js";
+import { topicsOff as intakeTopicsOff } from "../client/lib/topicGate.js";
 
 const LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
 const EMU = LOCAL && !new URLSearchParams(location.search).has("prod");
@@ -602,7 +603,15 @@ async function customerModel(cid) {
   // Shop Notes: only a PUBLISHED doc shows, same as the client's rules; anything else previews as the empty state.
   let tailored = null;
   try { const t = await getDoc(doc(db, "clients", cid, "tailored", "current")); tailored = t.exists() && t.data().status === "published" ? plainData(t.data()) : null; } catch { tailored = null; }
-  return { cid, home, account, profile, ideas, firstName, changelog, tailored };
+  // Agent Newsletter gating, same as the client's Home: topic keys from the newest intake's "do not touch" answer
+  // (admin read). Only the keys go into the preview, never the answer text. null = could not read (preview shows neutral ideas).
+  let topicsOff = [];
+  try {
+    const ins = (await getDocs(collection(db, "clients", cid, "intakes"))).docs
+      .sort((a, b) => (b.data().createdAt?.toMillis?.() || 0) - (a.data().createdAt?.toMillis?.() || 0));
+    if (ins[0]) { const a = await getDoc(doc(db, "clients", cid, "intakes", ins[0].id, "answers", "d_never")); topicsOff = intakeTopicsOff(a.exists() ? a.data().value : ""); }
+  } catch { topicsOff = null; }
+  return { cid, home, account, profile, ideas, firstName, changelog, tailored, topicsOff };
 }
 /** opts.tailoredDraft: render this draft as if published (Shop Notes review). */
 async function openCustomerDashboard(c, opts = {}) {
@@ -612,7 +621,7 @@ async function openCustomerDashboard(c, opts = {}) {
   wrap.innerHTML = `<header class="cdash-bar"><span class="chip ok"><span class="d"></span>Read only</span><b>What ${esc(c.name)} sees</b><small class="cdash-note">Loading…</small><span class="sp"></span>
     <div class="cdash-size" role="group" aria-label="Screen size"><button type="button" data-w="" aria-pressed="true">Desktop</button><button type="button" data-w="390" aria-pressed="false">Phone</button></div>
     <button type="button" class="btn sm" data-close>${ic("x")}Close</button></header>
-    <div class="cdash-stage"><iframe title="Customer dashboard preview" src="/portal/client/preview.html?v=tailored-20261030"></iframe></div>`;
+    <div class="cdash-stage"><iframe title="Customer dashboard preview" src="/portal/client/preview.html?v=modular-20261030"></iframe></div>`;
   document.body.appendChild(wrap); document.body.classList.add("cdash-open");
   const frame = wrap.querySelector("iframe"), note = wrap.querySelector(".cdash-note");
   const close = () => { removeEventListener("message", onMsg); removeEventListener("keydown", onKey); wrap.remove(); document.body.classList.remove("cdash-open"); };
