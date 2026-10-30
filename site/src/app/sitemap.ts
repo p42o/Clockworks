@@ -17,6 +17,7 @@ const staticDates: Record<string, string> = {
   "book/": "2026-10-23",
   "terms/": "2026-10-23",
   "blog/": "2026-10-23",
+  "grok/": "2026-10-30",
 };
 const menuPaths = new Set(["what-i-do/", "your-own-agent/", "contact/"]);
 

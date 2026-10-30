@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-10-28",
+  "updated": "2026-10-30",
   "site": "https://mnclockworks.com",
   "ga": "G-PSNYLVG4V1",
   "eventsScript": "/cw-events.js",
@@ -314,6 +314,17 @@
       "sitemap": true,
       "canonical": "https://mnclockworks.com/",
       "linkedFrom": "every page header logo"
+    },
+    {
+      "path": "/grok/",
+      "file": "grok/index.html",
+      "class": "public",
+      "purpose": "Grok Bot referral invite (hand-built, Counsel redlines 2026-10-30)",
+      "ga": true,
+      "index": true,
+      "sitemap": true,
+      "canonical": "https://mnclockworks.com/grok/",
+      "linkedFrom": "home FAQ line + home footer band"
     },
     {
       "path": "/lab/",

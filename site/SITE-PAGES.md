@@ -36,6 +36,7 @@ Classes: public (served marketing page), error (404), redirect (file kept, .htac
 | `/cowork/` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/how-it-works/` | public | How setup works, steps, FAQ | yes | index | yes | `https://mnclockworks.com/how-it-works/` | header nav + footer |
 | `/` | public | Home (Parker's 2026-10-23 facelift, hand-built index.html) | yes | index | yes | `https://mnclockworks.com/` | every page header logo |
+| `/grok/` | public | Grok Bot referral invite (hand-built, Counsel redlines 2026-10-30) | yes | index | yes | `https://mnclockworks.com/grok/` | home FAQ line + home footer band |
 | `/lab/` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/lab/next.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/learn/index.backup.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
