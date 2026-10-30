@@ -261,30 +261,7 @@
     .empty-state i { font-size: 40px; display: block; margin-bottom: 12px; }
     .empty-state p { font-size: 13px; }
 
-    /* ════════════════════════════════
-       TESTIMONIALS
-    ════════════════════════════════ */
-    .test-list { margin-top: 16px; }
-    .test-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px 14px; border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.018);
-      margin-bottom: 6px; cursor: default;
-      transition: border-color 0.2s;
-    }
-    .test-item:hover { border-color: rgba(255,255,255,0.1); }
-    .test-item.dragging { opacity: 0.4; border-style: dashed; }
-    .test-item.drag-over { border-top: 2px solid var(--orange); }
-    .drag-handle { cursor: grab; color: var(--text-dimmer); font-size: 18px; flex-shrink: 0; }
-    .drag-handle:active { cursor: grabbing; }
-    .test-info { flex: 1; min-width: 0; }
-    .test-name { font-size: 13px; font-weight: 600; color: #f1f5f9; }
-    .test-biz  { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
-    .test-quote-preview { font-size: 11px; color: var(--text-dimmer); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 340px; }
-    .test-actions { display: flex; align-items: center; gap: 6px; }
-
-    /* testimonial edit modal */
+    /* modal styles */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 2000;
       background: rgba(8,10,18,0.82); backdrop-filter: blur(6px);
@@ -485,9 +462,6 @@
         <i class="ti ti-layout-dashboard"></i> Dashboard
       </button>
       <div class="nav-section-label" style="margin-top:10px;">Content</div>
-      <button class="nav-item" data-panel="testimonials">
-        <i class="ti ti-quote"></i> Testimonials
-      </button>
       <button class="nav-item" id="comms-toggle">
         <i class="ti ti-message-2"></i> Communications
         <i class="ti ti-chevron-right nav-chevron"></i>
@@ -529,11 +503,6 @@
 
         <!-- Site stats -->
         <div class="stats-grid" id="dash-stats">
-          <div class="stat-card">
-            <div class="stat-label">Testimonials</div>
-            <div class="stat-val" id="stat-testimonials">—</div>
-            <div class="stat-hint">live on site</div>
-          </div>
           <div class="stat-card">
             <div class="stat-label">Blog Posts</div>
             <div class="stat-val" id="stat-posts">—</div>
@@ -605,36 +574,6 @@
           </div>
         </div>
 
-      </div>
-
-      <!-- ── TESTIMONIALS ── -->
-      <div class="panel" id="panel-testimonials">
-        <div class="panel-title">Testimonials</div>
-        <div class="panel-sub">Manage client reviews shown on the homepage.</div>
-        <div class="card">
-          <div class="card-title"><i class="ti ti-eye"></i> Section Visibility</div>
-          <div class="toggle-row">
-            <div class="toggle-label">
-              Show testimonials section on homepage
-              <small>Disabling this hides the entire section and nav link</small>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="testimonials-enabled" />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-          <div style="margin-top:16px;display:flex;justify-content:flex-end;">
-            <button class="btn btn-primary" id="save-section-toggle"><i class="ti ti-check"></i> Save</button>
-          </div>
-        </div>
-        <div class="card" style="margin-top:16px;">
-          <div class="card-title" style="justify-content:space-between;">
-            <span style="display:flex;align-items:center;gap:8px;"><i class="ti ti-list"></i> Reviews</span>
-            <button class="btn btn-primary btn-sm" id="add-testimonial-btn"><i class="ti ti-plus"></i> Add</button>
-          </div>
-          <div id="test-list-loading" class="spinner-center"><div class="spinner"></div></div>
-          <div id="test-list" class="test-list"></div>
-        </div>
       </div>
 
       <!-- ── CONTACT INFO ── -->
@@ -785,45 +724,6 @@
     </div><!-- /main-body -->
   </div><!-- /main-content -->
 </div><!-- /admin-shell -->
-
-<!-- TESTIMONIAL EDIT MODAL -->
-<div class="modal-overlay hidden" id="test-modal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <span class="modal-title" id="test-modal-title">Add Testimonial</span>
-      <button class="modal-close" id="test-modal-close">&times;</button>
-    </div>
-    <div class="form-grid-2">
-      <div class="field">
-        <label>Name <span style="color:var(--red)">*</span></label>
-        <input class="inp" id="test-name" type="text" placeholder="Jane Smith" />
-      </div>
-      <div class="field">
-        <label>Business / Role</label>
-        <input class="inp" id="test-business" type="text" placeholder="Acme Co." />
-      </div>
-    </div>
-    <div class="field">
-      <label>Quote <span style="color:var(--red)">*</span></label>
-      <textarea class="inp" id="test-quote" rows="4" placeholder="What they said…"></textarea>
-    </div>
-    <div class="field">
-      <label>Google Review URL</label>
-      <input class="inp" id="test-google-url" type="url" placeholder="https://g.page/r/…" />
-    </div>
-    <div class="toggle-row" style="margin-top:4px;">
-      <div class="toggle-label">Live on site<small>Show this review to visitors</small></div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="test-live" checked />
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" id="test-modal-cancel">Cancel</button>
-      <button class="btn btn-primary" id="test-modal-save"><i class="ti ti-check"></i> Save</button>
-    </div>
-  </div>
-</div>
 
 <!-- BLOG EDITOR PANEL -->
 <div class="blog-editor-overlay hidden" id="blog-editor-overlay">
@@ -1019,7 +919,6 @@ auth.onAuthStateChanged(user => {
 
     // Load initial data
     loadDashboard();
-    loadTestimonials();
   } else {
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('admin-shell').classList.remove('visible');
@@ -1032,7 +931,6 @@ auth.onAuthStateChanged(user => {
 
 const PANEL_LABELS = {
   'dashboard':    ['Dashboard', 'Overview of your site'],
-  'testimonials': ['Testimonials', 'Manage client reviews'],
   'contact-info': ['Contact Info', 'Social links & contact details'],
   'form-settings':['Form Settings', 'Submission routing & activity log'],
   'blog':         ['Blog', 'Upload, schedule, and manage blog posts'],
@@ -1080,15 +978,10 @@ commsToggle.addEventListener('click', () => {
 async function loadDashboard() {
   // Site stats from Firestore
   try {
-    const [testimonialsDoc, logsSnap, blogSnap] = await Promise.all([
-      db.collection('siteContent').doc('testimonials').get(),
+    const [logsSnap, blogSnap] = await Promise.all([
       db.collection('formLogs').orderBy('timestamp','desc').limit(20).get(),
       db.collection('blogPosts').where('status','==','published').get(),
     ]);
-
-    const liveCount = testimonialsDoc.exists
-      ? (testimonialsDoc.data().items || []).filter(t => t.live).length : 0;
-    document.getElementById('stat-testimonials').textContent = liveCount;
     document.getElementById('stat-posts').textContent = blogSnap.size;
     document.getElementById('stat-submissions').textContent = logsSnap.size;
 
@@ -1251,144 +1144,6 @@ document.getElementById('ga-reconnect-btn').addEventListener('click', async () =
     toast('Could not reconnect: ' + e.message, 'error');
   }
 });
-
-/* ═══════════════════════════════════════════════════
-   TESTIMONIALS
-   ═══════════════════════════════════════════════════ */
-
-let _testimonials = { sectionEnabled: false, items: [] };
-let _editingTestIdx = null;
-
-async function loadTestimonials() {
-  try {
-    const doc = await db.collection('siteContent').doc('testimonials').get();
-    if (doc.exists) {
-      _testimonials = { sectionEnabled: false, items: [], ...doc.data() };
-    }
-  } catch(e) {
-    console.error(e);
-  }
-  document.getElementById('testimonials-enabled').checked = !!_testimonials.sectionEnabled;
-  document.getElementById('test-list-loading').style.display = 'none';
-  renderTestList();
-}
-
-function renderTestList() {
-  const el = document.getElementById('test-list');
-  const items = _testimonials.items || [];
-  if (!items.length) {
-    el.innerHTML = '<div class="empty-state"><i class="ti ti-quote-off"></i><p>No testimonials yet. Add your first one!</p></div>';
-    return;
-  }
-  el.innerHTML = items.map((t, i) => `
-    <div class="test-item" draggable="true" data-idx="${i}">
-      <span class="drag-handle"><i class="ti ti-grip-vertical"></i></span>
-      <div class="test-info">
-        <div class="test-name">${esc(t.name)}</div>
-        ${t.business ? `<div class="test-biz">${esc(t.business)}</div>` : ''}
-        <div class="test-quote-preview">${esc(t.quote)}</div>
-      </div>
-      <span class="pill ${t.live ? 'pill-green' : 'pill-gray'}">${t.live ? 'LIVE' : 'HIDDEN'}</span>
-      <div class="test-actions">
-        <button class="btn btn-ghost btn-xs" onclick="openTestModal(${i})"><i class="ti ti-pencil"></i></button>
-        <button class="btn btn-danger btn-xs" onclick="deleteTestimonial(${i})"><i class="ti ti-trash"></i></button>
-      </div>
-    </div>
-  `).join('');
-
-  // Drag & drop reorder
-  el.querySelectorAll('.test-item').forEach(item => {
-    item.addEventListener('dragstart', e => {
-      item.classList.add('dragging');
-      e.dataTransfer.setData('text/plain', item.dataset.idx);
-    });
-    item.addEventListener('dragend', () => item.classList.remove('dragging'));
-    item.addEventListener('dragover', e => { e.preventDefault(); item.classList.add('drag-over'); });
-    item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
-    item.addEventListener('drop', e => {
-      e.preventDefault();
-      item.classList.remove('drag-over');
-      const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
-      const toIdx   = parseInt(item.dataset.idx);
-      if (fromIdx === toIdx) return;
-      const arr = [..._testimonials.items];
-      const [moved] = arr.splice(fromIdx, 1);
-      arr.splice(toIdx, 0, moved);
-      _testimonials.items = arr;
-      renderTestList();
-      saveTestimonialsToFirestore(false);
-    });
-  });
-}
-
-document.getElementById('save-section-toggle').addEventListener('click', async () => {
-  _testimonials.sectionEnabled = document.getElementById('testimonials-enabled').checked;
-  await saveTestimonialsToFirestore(true);
-});
-
-async function saveTestimonialsToFirestore(showToast = true) {
-  try {
-    await db.collection('siteContent').doc('testimonials').set(_testimonials, { merge: true });
-    if (showToast) toast('✅ Testimonials saved');
-  } catch(e) {
-    toast('❌ Save failed: ' + e.message, 'error');
-  }
-}
-
-// Modal
-function openTestModal(idx = null) {
-  _editingTestIdx = idx;
-  const isEdit = idx !== null;
-  document.getElementById('test-modal-title').textContent = isEdit ? 'Edit Testimonial' : 'Add Testimonial';
-  const t = isEdit ? _testimonials.items[idx] : {};
-  document.getElementById('test-name').value       = t.name || '';
-  document.getElementById('test-business').value   = t.business || '';
-  document.getElementById('test-quote').value      = t.quote || '';
-  document.getElementById('test-google-url').value = t.googleReviewUrl || '';
-  document.getElementById('test-live').checked     = isEdit ? !!t.live : true;
-  document.getElementById('test-modal').classList.remove('hidden');
-}
-
-function closeTestModal() {
-  document.getElementById('test-modal').classList.add('hidden');
-  _editingTestIdx = null;
-}
-
-document.getElementById('add-testimonial-btn').addEventListener('click', () => openTestModal(null));
-document.getElementById('test-modal-close').addEventListener('click', closeTestModal);
-document.getElementById('test-modal-cancel').addEventListener('click', closeTestModal);
-document.getElementById('test-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeTestModal(); });
-
-document.getElementById('test-modal-save').addEventListener('click', async () => {
-  const name  = document.getElementById('test-name').value.trim();
-  const quote = document.getElementById('test-quote').value.trim();
-  if (!name || !quote) { toast('Name and quote are required', 'error'); return; }
-
-  const item = {
-    name,
-    business:       document.getElementById('test-business').value.trim(),
-    quote,
-    googleReviewUrl:document.getElementById('test-google-url').value.trim(),
-    live:           document.getElementById('test-live').checked,
-  };
-
-  if (_editingTestIdx !== null) {
-    _testimonials.items[_editingTestIdx] = item;
-  } else {
-    _testimonials.items = [...(_testimonials.items || []), item];
-  }
-
-  await saveTestimonialsToFirestore(true);
-  renderTestList();
-  closeTestModal();
-});
-
-function deleteTestimonial(idx) {
-  if (!confirm('Delete this testimonial?')) return;
-  _testimonials.items.splice(idx, 1);
-  saveTestimonialsToFirestore(true);
-  renderTestList();
-}
 
 /* ═══════════════════════════════════════════════════
    CONTACT INFO

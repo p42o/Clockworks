@@ -189,7 +189,7 @@ export default function AuditFlow() {
             <a href={phone.tel} className="font-medium text-ink underline underline-offset-2">
               {phone.display}
             </a>{" "}
-            for the free 15-minute phone audit.
+            for the free 30-min phone audit.
           </p>
         </div>
         <p className="mt-6 font-mono text-[0.75rem] text-ink-faint">

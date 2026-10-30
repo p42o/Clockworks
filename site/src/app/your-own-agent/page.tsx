@@ -90,7 +90,7 @@ export default function YourOwnAgent() {
           Estimate, not a quote. Provider rates can change. Based on public rates as of Oct 2026. Taxes extra. Optional texting and 911 address service cost extra.
         </p>
       </Section>
-      <Section n="06" eyebrow="Setup" heading="Setup is $499 one time">
+      <Section n="06" eyebrow="Setup" heading="Included in the $499 package">
         {/* PARKER CONFIRM: is the Answer Line inside the $499 deployment or its own scope? */}
         <p data-setup-mode="screen-share">I set it up with you over screen share, test it together and walk you through using it.</p>
       </Section>
@@ -111,7 +111,7 @@ export default function YourOwnAgent() {
           </Link>
         </div>
       </Section>
-      <PhoneCTA button="Hear Iris answer" sub="Ask for the free 15-minute phone audit to discuss your line." />
+      <PhoneCTA button="Hear Iris answer" sub="Ask for the free 30-min phone audit to discuss your line." />
     </>
   );
 }

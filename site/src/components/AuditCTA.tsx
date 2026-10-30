@@ -3,7 +3,7 @@ import { phone, primaryCta } from "@/lib/copy";
 
 export default function AuditCTA({
   title = "Start with a phone call.",
-  context = `The audit is a free 15-minute phone call. Call ${phone.display}.`,
+  context = `The audit is a free 30-min phone call. Call ${phone.display}.`,
 }: {
   title?: string;
   context?: string;

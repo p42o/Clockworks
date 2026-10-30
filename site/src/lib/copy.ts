@@ -2,7 +2,7 @@
  * Approved V2 marketing copy. Homepage and subpages render these strings
  * so visible FAQ text and FAQPage JSON-LD stay identical.
  * Homepage hero = Sprocket "Setup together" (presence/2026-10-21-homepage-copy-angles.md).
- * Public prices: free 15-min / $49 / $499 only. No Membership on Site.
+ * Public ladder: free 30-minute phone audit / $499 package / $99/mo Shop Pass (starts only after you accept its own written terms).
  * No em dashes, no en dashes.
  */
 
@@ -57,10 +57,10 @@ export const ownershipLine =
   "Your business information, your instructions and the content we write for you are yours, and your AI team runs on your own platform account.";
 
 export const deploymentLine =
-  "The deployment is $499, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it.";
+  "The $499 package includes an online presence scan, intake, deployment over screen share, and 30 days of support and portal access.";
 
 export const assessmentLine =
-  "The online presence assessment is $49. We check how your business shows up across search, AI assistants, and ratings and review sites. You get the exact searches and prompts we ran, plus an interactive report showing where you showed up that day and what we'd recommend improving. It's a snapshot, since search results and AI answers change on their own, but it gives you a baseline to compare against later.";
+  "The online presence scan is included in the $499 package.";
 
 export const agreementLine =
   "Simple written terms, in plain English. Please read the Starter Terms and Privacy Notice before you buy.";
@@ -74,8 +74,7 @@ export const cancelLine =
 export const formHonestLine =
   "I can't book a time from this form. Parker will reach out.";
 
-export const primaryCta = "Get my free 15-minute phone audit";
-export const assessmentCta = "Get the $49 Online Presence Assessment";
+export const primaryCta = "Get my free 30-min phone audit";
 export const chatCta = "Talk to the Front Desk";
 
 export const hero = {
@@ -264,18 +263,18 @@ export const industries: Industry[] = [
 export const steps = [
   {
     n: "1",
-    title: "Free 15-minute phone audit",
+    title: "Free 30-min phone audit",
     body: `Call ${phone.display}. Iris, our AI phone assistant, takes your details for Parker. We look at missed calls, quiet quotes, open invoices, review asks, and the questions you answer over and over.`,
   },
   {
     n: "2",
-    title: "Optional $49 online presence assessment",
-    body: assessmentLine,
+    title: "$499 package (scan + intake + deploy + 30 days)",
+    body: "$499 package includes online presence scan, intake, deployment over screen share, and 30 days of support and portal access.",
   },
   {
     n: "3",
-    title: "$499 one-time deployment, done together over screen share",
-    body: "We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. You watch it get built.",
+    title: "$99/mo Shop Pass",
+    body: "Ongoing portal access and support after your first 30 days, which starts only after you accept its own written terms.",
   },
   {
     n: "4",
@@ -300,7 +299,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "How does setup work?",
-    a: `You call ${phone.display} for a free 15-minute phone audit. If you want it, the online presence assessment is $49. Then the deployment is $499, one time. We do it together on a call with screen share, and video if you like. We set up your AI team with you, test it together, and walk you through how to use it. After that it runs on your own account.`,
+    a: "You start with a free 30-min phone audit. The $499 package includes the online presence scan, intake, deployment over screen share, and 30 days of support and portal access. After your first 30 days, Shop Pass is $99 a month for ongoing portal access and support, which starts only after you accept its own written terms.",
   },
   {
     q: "Whose account does it run on?",
@@ -328,7 +327,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: "What does it cost?",
-    a: `The phone audit is free and takes 15 minutes. ${assessmentLine} ${deploymentLine} ${quoteLine}`,
+    a: "Free 30-minute phone audit. $499 package (online presence scan, intake, deployment over screen share, 30 days of support and portal access). After your first 30 days, Shop Pass is $99 a month for ongoing portal access and support, which starts only after you accept its own written terms.",
   },
   {
     q: "Can I talk to a person?",

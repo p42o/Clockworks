@@ -2508,7 +2508,7 @@ function viewQuote(v) {
     <section class="panel qdoc">
       <div class="qhead-row">
         <div class="qtitle"><div class="lbl">${isInv ? "Invoice" : "Quote"} · <span class="mono">${esc(q.number)}</span> · <a href="#/c/${esc(cid)}" style="color:var(--accent-ink);text-decoration:none">${esc(c.name)}</a></div>
-          <input class="input" id="qt" value="${esc(q.title)}" placeholder="What's this for? e.g. AI Time & Lead Audit + 3-month pilot"></div>
+          <input class="input" id="qt" value="${esc(q.title)}" placeholder="What's this for? e.g. $499 package + Shop Pass"></div>
         <div class="life">${life.map((s, i) => `<span class="${i < li ? "done" : i === li ? "cur" : ""}"><i></i>${esc(s)}</span>`).join("")}</div>
       </div>
       <div class="items"><div class="qline qhead lbl"><span>Item</span><span>Qty</span><span>Price</span><span style="text-align:right" class="qtot-h">Total</span><span></span></div>

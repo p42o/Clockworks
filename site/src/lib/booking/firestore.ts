@@ -23,7 +23,7 @@ function fields(req: AuditRequest): Record<string, FsValue> {
   return {
     name: { stringValue: `${req.name} (${req.business})` },
     email: { stringValue: req.email },
-    subject: { stringValue: "AI Time & Lead Audit request" },
+    subject: { stringValue: "Free 30-min phone audit request" },
     message: { stringValue: summarize(req) },
     destination: { stringValue: "discord" },
     status: { stringValue: "sent" },

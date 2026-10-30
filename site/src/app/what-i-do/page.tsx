@@ -83,10 +83,10 @@ export default function WhatIDo() {
       </Section>
       <Section n="04" eyebrow="Setup" heading="Start with a phone conversation">
         <p>
-          The free 15-minute phone audit is a place to talk through the work that piles up: missed callers, unanswered questions, quiet quotes and paperwork. If you want a separate look at how your business appears online, the optional $49 Online Presence Assessment checks search, AI assistants and review sites. It includes the exact searches and prompts and an interactive report.
+          The free 30-min phone audit is a place to talk through the work that piles up: missed callers, unanswered questions, quiet quotes and paperwork.
         </p>
         <p data-setup-mode="screen-share">
-          The deployment is $499 one time, over screen share. You share your screen while I build the team with you, explain the setup, test it with you and walk you through using it. Video is available if you like. The account belongs to you after setup.
+          The $499 package includes an online presence scan, intake, deployment over screen share, and 30 days of support and portal access. You share your screen while I build the team with you, explain the setup, test it with you and walk you through using it. The account belongs to you after setup.
         </p>
       </Section>
       <Section n="05" eyebrow="Ownership" heading="Your information and your account">

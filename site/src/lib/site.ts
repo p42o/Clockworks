@@ -12,7 +12,7 @@ export const site = {
   description:
     "I'm Parker, in Maple Grove. I set up an AI team of agents for the messages, quotes, and paperwork that pile up while you're working. You share your screen. I do the setup and explain what I'm doing.",
   cta: {
-    label: "Get my free 15-minute phone audit",
+    label: "Get my free 30-min phone audit",
     sub: `Call ${phone.display}`,
   },
 } as const;

@@ -1,5 +1,5 @@
 import { Link } from "next-view-transitions";
-import { assessmentCta, chatCta, formHonestLine, phone, primaryCta } from "@/lib/copy";
+import { chatCta, formHonestLine, phone, primaryCta } from "@/lib/copy";
 
 export default function FinalBand() {
   return (
@@ -10,7 +10,7 @@ export default function FinalBand() {
           Call me. Or try the Front Desk.
         </h2>
         <p className="mt-5 max-w-xl text-lg leading-relaxed text-paper/80">
-          The free 15-minute phone audit starts with a call to {phone.display}.
+          The free 30-min phone audit starts with a call to {phone.display}.
         </p>
         <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap">
           <a
@@ -23,7 +23,7 @@ export default function FinalBand() {
             href={phone.tel}
             className="btn-press inline-flex min-h-11 items-center justify-center rounded-[3px] border border-paper/30 px-5 py-3 font-medium text-paper hover:border-paper"
           >
-            {assessmentCta}
+            Ask about the $499 package
           </a>
           <button
             type="button"

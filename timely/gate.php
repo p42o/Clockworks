@@ -307,7 +307,7 @@ function render_gate(string $error, bool $playbook): void {
   <h1>Timely <em>Playbook</em></h1>
   <p class="sub">Parker’s operating plan: actions, costs, expected lift and how we measure it. Enter the PIN to open it.</p>
 <?php else: ?>
-  <p class="kicker">Online Presence Assessment</p>
+  <p class="kicker">Online presence report</p>
   <h1>Timely <em>Drywall</em></h1>
   <p class="sub">This report is private. Enter the <?= PIN_LEN ?>-digit PIN to view it.</p>
   <p style="margin:0 0 24px;color:var(--muted);font-size:12px;line-height:1.5"><?= htmlspecialchars("This page records when it's opened (time, " . (IP_MODE === 'hashed' ? 'a scrambled IP' : 'IP address') . " and device type) for security and so Parker can follow up. Parker can also open it. Records are deleted after 90 days. Your PIN is never stored. You can change your PIN anytime. Just ask Parker.", ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?> <a href="/timely/privacy">Privacy details</a></p>

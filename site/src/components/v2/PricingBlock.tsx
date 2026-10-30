@@ -1,9 +1,6 @@
 import { Link } from "next-view-transitions";
 import {
   agreementLine,
-  assessmentCta,
-  assessmentLine,
-  deploymentLine,
   phone,
   primaryCta,
   quoteLine,
@@ -12,23 +9,23 @@ import {
 const cards = [
   {
     kicker: "Start here",
-    title: "Free 15-minute phone audit",
-    body: `A phone call. Call ${phone.display} and Iris, our AI phone assistant, takes a message for Parker.`,
+    title: "Free 30-min phone audit",
+    body: `A free 30-minute phone call about your workload. Call ${phone.display} and Iris takes a message for Parker.`,
     action: primaryCta,
     href: phone.tel,
   },
   {
-    kicker: "Optional",
-    title: "$49 online presence assessment",
-    body: assessmentLine,
-    action: assessmentCta,
+    kicker: "The package",
+    title: "$499 package",
+    body: "Online presence scan, intake, deployment over screen share, and 30 days of support and portal access.",
+    action: "Ask about the $499 package",
     href: phone.tel,
   },
   {
-    kicker: "The setup",
-    title: "$499 one-time deployment",
-    body: deploymentLine,
-    action: "Call about the deployment",
+    kicker: "After 30 days",
+    title: "$99/mo Shop Pass",
+    body: "Ongoing portal access and support after your first 30 days, which starts only after you accept its own written terms.",
+    action: "Get my free 30-min phone audit",
     href: phone.tel,
   },
 ] as const;

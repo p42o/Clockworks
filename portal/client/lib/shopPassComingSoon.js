@@ -18,7 +18,7 @@ export function shopPassComingSoonHtml(swap) {
     <button type="button" class="shop-pass-modal__close" data-sp-close aria-label="Close">×</button>
     <p class="shop-pass-modal__eyebrow">Shop Pass · Coming soon</p>
     <h2 id="shop-pass-coming-soon-h" class="shop-pass-modal__hero">Keep your AI team current with Shop Pass.</h2>
-    <p class="shop-pass-modal__price">$99 a month after the $499 deploy.</p>
+    <p class="shop-pass-modal__price">$99/mo Shop Pass (coming soon) after the $499 package.</p>
     <ol class="shop-pass-modal__features">
       <li class="shop-pass-modal__feature">
         <span class="shop-pass-modal__num" aria-hidden="true">1</span>

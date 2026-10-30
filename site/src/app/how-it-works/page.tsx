@@ -8,7 +8,7 @@ import { pageSocial } from "@/lib/site";
 
 const title = "How it works";
 const description =
-  "A free 15-minute phone audit, an optional $49 online presence assessment, and a $499 one-time deployment done together on a screen-share call.";
+  "A free 30-minute phone audit, a $499 package (scan, intake, deploy, 30 days of support), and a $99/mo Shop Pass after your first 30 days, which starts only after you accept its own written terms.";
 
 export const metadata: Metadata = {
   title,
@@ -25,7 +25,7 @@ export default function HowItWorks() {
         <p className="eyebrow section-rule">The steps</p>
         <h1 className="display mt-4 max-w-3xl text-5xl sm:text-7xl">Here is exactly how it goes.</h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
-          A phone call, an optional assessment, then a screen-share setup. You watch it get built, test it with me, and walk away knowing how to use it.
+          A free call, the $499 package, then Shop Pass at $99/mo if you want ongoing help, which starts only after you accept its own written terms.
         </p>
         <a
           href={phone.tel}

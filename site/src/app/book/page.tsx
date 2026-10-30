@@ -4,9 +4,9 @@ import AuditFlow from "@/components/AuditFlow";
 import { formHonestLine, phone } from "@/lib/copy";
 import { pageSocial } from "@/lib/site";
 
-const title = "Free 15-minute phone audit";
+const title = "Free 30-min phone audit";
 const description =
-  `Ask for a free 15-minute phone audit. This form does not book a time. Parker will reach out. Or call ${phone.display}.`;
+  `Ask for a free 30-min phone audit. This form does not book a time. Parker will reach out. Or call ${phone.display}.`;
 
 export const metadata: Metadata = {
   title,
@@ -22,7 +22,7 @@ export default function Book() {
         <div>
           <Reveal>
             <p className="eyebrow section-rule">A note, not a calendar</p>
-            <h1 className="display mt-4 text-5xl sm:text-6xl">Free 15-minute phone audit.</h1>
+            <h1 className="display mt-4 text-5xl sm:text-6xl">Free 30-min phone audit.</h1>
           </Reveal>
           <Reveal delay={0.08}>
             <div className="mt-6 max-w-md space-y-4 text-[1.05rem] leading-relaxed text-ink-soft">

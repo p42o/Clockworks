@@ -1,7 +1,6 @@
 User-Agent: *
 Allow: /
 Disallow: /admin.html
-Disallow: /v3/
 Disallow: /portal/
 Disallow: /internal/
 Disallow: /docs/

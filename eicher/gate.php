@@ -214,7 +214,7 @@ function render_gate(string $error, bool $playbook): void {
   <h1>Eicher <em>Playbook</em></h1>
   <p class="sub">Parker’s operating plan: actions, costs, expected lift and how we measure it. Enter the PIN to open it.</p>
 <?php else: ?>
-  <p class="kicker">Online Presence Assessment</p>
+  <p class="kicker">Online presence report</p>
   <h1>Eicher <em>Plumbing</em></h1>
   <p class="sub">This report is private. Enter the 5-digit PIN to view it.</p>
 <?php endif; ?>

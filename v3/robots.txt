@@ -1,6 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /admin.html
-Disallow: /v3/
-
-Sitemap: https://mnclockworks.com/sitemap.xml

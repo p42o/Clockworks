@@ -12,7 +12,7 @@ test('Coming soon modal HTML has Shop Pass, Coming soon, all five features, Coun
   assert.match(markup, /Shop Pass/);
   assert.match(markup, /Coming soon/);
   assert.match(markup, /Keep your AI team current with Shop Pass\./);
-  assert.match(markup, /\$99 a month after the \$499 deploy\./);
+  assert.match(markup, /\$99\/mo Shop Pass \(coming soon\) after the \$499 package\./);
   assert.match(markup, /Portal stays open after the grace window for your shop/);
   assert.match(markup, /Agent Newsletter tailored to your business and your agent team/);
   assert.match(markup, /specific updates you can hand them, not a general blast/);
@@ -31,7 +31,7 @@ test('Coming soon modal never includes Stripe, Care Plan, Running Order, or Draf
   assert.ok(!/\bDraft\b/.test(markup));
 });
 
-test('extend card when offered false still says not offered yet and adds See what’s in Shop Pass', () => {
+test('extend card when offered false remains on hold and adds See what’s in Shop Pass', () => {
   const held = String(shopPassUpgradeHtml({
     ...SWAP,
     shopPass: {

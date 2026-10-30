@@ -17,7 +17,7 @@ export function shopPassUpgradeHtml(swap) {
   return html`<section class="card shop-pass" aria-labelledby="shop-pass-h">
     <h2 id="shop-pass-h">Keep your Shop Pass.</h2>
     <p>Your setup is done. Shop Pass keeps the portal open and your monthly tune-up on the calendar.</p>
-    <p>$99/mo after the $499 deploy.</p>
+    <p>$99/mo Shop Pass (coming soon) after the $499 package.</p>
     <p>Priority support: members' questions are answered before non-member requests, usually within one business day.</p>
     ${upgrade
       ? html`<a class="btn primary" href="${upgrade}" target="_blank" rel="noopener noreferrer">Get Shop Pass</a>`

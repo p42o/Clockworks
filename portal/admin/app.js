@@ -57,7 +57,7 @@ const STAGE_SHORT = { "Deployment Prepped": "Prepped", "Deployment Complete": "C
 const REPORTS = [
   { type: "agent-free", name: "Agent Team · Free", fam: "agent", cost: "~$0.50", time: "~2 min", desc: "From public signals: likely systems, likely tasks and hours, a compliance heads-up, a starter team sketch." },
   { type: "agent-full", name: "Agent Team · Full", fam: "agent", cost: "intake + call", time: "1–2 sessions", desc: "Intake + discovery: integration gap matrix, real-number ROI, full compliance review, roster proposal." },
-  { type: "presence-full", name: "Online Presence Assessment", fam: "presence", cost: "$49", time: "30–60 min", desc: "16 towns, 4 AI assistants, listings, website, domain, top fixes, receipts." },
+  { type: "presence-full", name: "Online presence scan", fam: "presence", cost: "incl. in $499", time: "30–60 min", desc: "16 towns, 4 AI assistants, listings, website, domain, top fixes, receipts." },
 ];
 const RTYPE = Object.fromEntries(REPORTS.map((r) => [r.type, r]));
 const PILLARS = [["maps", "Maps"], ["reviews", "Reviews"], ["ai", "AI"], ["search", "Search"], ["listings", "Listings"], ["website", "Website"]];
@@ -687,7 +687,7 @@ function viewDash(v) {
   const q = S.clients.filter((c) => c.next && c.next.what).map((c) => ({ c, d: dueInfo(c.next) })).sort((a, b) => a.d.rank - b.d.rank || (a.c.next.due || "").localeCompare(b.c.next.due || ""));
   const ideas = [];
   const noScan = S.clients.find((c) => hasModule(c, "presence") && c.website && !clientReports(c.id).some((r) => r.type.startsWith("presence")));
-  if (noScan) ideas.push({ t: `Run an Online Presence Assessment for ${noScan.name}`, sub: "The $49 Online Presence Assessment is available for this client.", act: `<a class="btn sm" href="#/assess?client=${esc(noScan.id)}&type=presence-full">Open</a>` });
+  if (noScan) ideas.push({ t: `Online presence scan included for ${noScan.name}`, sub: "The online presence scan is included in the $499 package.", act: `<a class="btn sm" href="#/assess?client=${esc(noScan.id)}&type=presence-full">Open</a>` });
   if (S.clients.length < 5) ideas.push({ t: `Add prospect #${S.clients.length + 1}`, sub: "A plumber, electrician or HVAC shop you already know. Warm intros win.", act: `<button class="btn sm" data-add>Add</button>` });
   const noInt = S.clients.find((c) => !(c.interests || []).length);
   if (noInt && ideas.length < 2) ideas.push({ t: `Note what ${noInt.name.replace(/ \(.*\)/, "")} cares about`, sub: "Even one line helps you walk in prepared.", act: `<a class="btn sm" href="#/c/${esc(noInt.id)}">Open</a>` });
@@ -698,7 +698,7 @@ function viewDash(v) {
   v.innerHTML = `
   <section class="hello dash-hello">
     <div><div class="date">${DAYS[d.getDay()]} · ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}</div><h1>${greet}, <em>${esc(first)}</em>.</h1><p>${esc(summary)}</p></div>
-    <div class="acts"><a class="btn p" href="#/assess">${ic("spark")}Start an agent crew</a><button class="btn" data-add>${ic("plus")}Add a prospect</button>${S.clients.some((c) => hasModule(c, "presence")) ? `<a class="btn ghost" href="#/assess?type=presence-full">${ic("globe")}Online Presence Assessment</a>` : ""}</div>
+    <div class="acts"><a class="btn p" href="#/assess">${ic("spark")}Start an agent crew</a><button class="btn" data-add>${ic("plus")}Add a prospect</button>${S.clients.some((c) => hasModule(c, "presence")) ? `<a class="btn ghost" href="#/assess?type=presence-full">${ic("globe")}Online presence scan</a>` : ""}</div>
   </section>
 
   <section class="tiles">
@@ -2692,7 +2692,7 @@ function viewQuote(v) {
     <section class="panel qdoc">
       <div class="qhead-row">
         <div class="qtitle"><div class="lbl">${isInv ? "Invoice" : "Quote"} · <span class="mono">${esc(q.number)}</span> · <a href="#/c/${esc(cid)}" style="color:var(--accent-ink);text-decoration:none">${esc(c.name)}</a></div>
-          <input class="input" id="qt" value="${esc(q.title)}" placeholder="What's this for? e.g. AI Time & Lead Audit + 3-month pilot"></div>
+          <input class="input" id="qt" value="${esc(q.title)}" placeholder="What's this for? e.g. $499 package + Shop Pass"></div>
         <div class="life">${life.map((s, i) => `<span class="${i < li ? "done" : i === li ? "cur" : ""}"><i></i>${esc(s)}</span>`).join("")}</div>
       </div>
       <div class="items"><div class="qline qhead lbl"><span>Item</span><span>Qty</span><span>Price</span><span style="text-align:right" class="qtot-h">Total</span><span></span></div>

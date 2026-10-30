@@ -85,17 +85,6 @@
       "linkedFrom": ""
     },
     {
-      "path": "/blog/2026-06/anatomy-of-a-context-vault.html",
-      "file": "blog/2026-06/anatomy-of-a-context-vault.html",
-      "class": "redirect",
-      "purpose": "Legacy file, served 301 by .htaccess",
-      "ga": false,
-      "index": false,
-      "sitemap": false,
-      "canonical": null,
-      "linkedFrom": ""
-    },
-    {
       "path": "/blog/30-day-challenge.html",
       "file": "blog/30-day-challenge.html",
       "class": "gone",
@@ -483,17 +472,6 @@
     {
       "path": "/sprocket/",
       "file": "sprocket/index.html",
-      "class": "redirect",
-      "purpose": "Legacy file, served 301 by .htaccess",
-      "ga": false,
-      "index": false,
-      "sitemap": false,
-      "canonical": null,
-      "linkedFrom": ""
-    },
-    {
-      "path": "/terms.html",
-      "file": "terms.html",
       "class": "redirect",
       "purpose": "Legacy file, served 301 by .htaccess",
       "ga": false,

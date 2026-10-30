@@ -8,15 +8,15 @@ export const dynamic = "force-static";
  * /blog/ is indexable (2026-10-23). Posts join only when listed: dated today or earlier (UTC), not held, not unlisted.
  * The posts pulled 2026-10-21 stay unlisted and noindex until Sprocket relists them. */
 const staticDates: Record<string, string> = {
-  "": "2026-10-23",
-  "what-i-do/": "2026-10-23",
-  "your-own-agent/": "2026-10-23",
-  "how-it-works/": "2026-10-23",
-  "about/": "2026-10-23",
-  "contact/": "2026-10-23",
-  "book/": "2026-10-23",
-  "terms/": "2026-10-23",
-  "blog/": "2026-10-23",
+  "": "2026-10-30",
+  "what-i-do/": "2026-10-30",
+  "your-own-agent/": "2026-10-30",
+  "how-it-works/": "2026-10-30",
+  "about/": "2026-10-30",
+  "contact/": "2026-10-30",
+  "book/": "2026-10-30",
+  "terms/": "2026-10-30",
+  "blog/": "2026-10-30",
   "grok/": "2026-10-30",
 };
 const menuPaths = new Set(["what-i-do/", "your-own-agent/", "contact/"]);
@@ -30,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     ...getListedPosts().map((post) => ({
       url: `${site.url}/blog/${post.slug}/`,
-      lastModified: post.updated && post.updated > post.date ? post.updated : post.date,
+      lastModified: "2026-10-30",
       priority: 0.6,
     })),
   ];

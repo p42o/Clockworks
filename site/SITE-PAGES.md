@@ -15,7 +15,6 @@ Classes: public (served marketing page), error (404), redirect (file kept, .htac
 | `/admin-bot.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/admin.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/blog/2026-05/your-ai-doesnt-know-you.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
-| `/blog/2026-06/anatomy-of-a-context-vault.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/blog/30-day-challenge.html` | gone | Legacy file, served 410 Gone by .htaccess | no | noindex | no | none | none |
 | `/blog/30-day-challenge/` | gone | Legacy file, served 410 Gone by .htaccess | no | noindex | no | none | none |
 | `/blog/ai-tools-ranked.html` | gone | Legacy file, served 410 Gone by .htaccess | no | noindex | no | none | none |
@@ -52,7 +51,6 @@ Classes: public (served marketing page), error (404), redirect (file kept, .htac
 | `/sniper/` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/sniper/thank-you.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/sprocket/` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
-| `/terms.html` | redirect | Legacy file, served 301 by .htaccess | no | noindex | no | none | none |
 | `/terms/` | public | Public Starter Terms summary + links | yes | index | yes | `https://mnclockworks.com/terms/` | home 'Plain written terms' + every footer |
 | `/what-i-do/` | public | Split page: the offers and the AI team | yes | index | yes | `https://mnclockworks.com/what-i-do/` | header nav + footer |
 | `/your-own-agent/` | public | Split page: Front Desk / your own agent | yes | index | yes | `https://mnclockworks.com/your-own-agent/` | header nav + footer |
