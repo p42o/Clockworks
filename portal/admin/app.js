@@ -621,7 +621,7 @@ async function openCustomerDashboard(c, opts = {}) {
   wrap.innerHTML = `<header class="cdash-bar"><span class="chip ok"><span class="d"></span>Read only</span><b>What ${esc(c.name)} sees</b><small class="cdash-note">Loading…</small><span class="sp"></span>
     <div class="cdash-size" role="group" aria-label="Screen size"><button type="button" data-w="" aria-pressed="true">Desktop</button><button type="button" data-w="390" aria-pressed="false">Phone</button></div>
     <button type="button" class="btn sm" data-close>${ic("x")}Close</button></header>
-    <div class="cdash-stage"><iframe title="Customer dashboard preview" src="/portal/client/preview.html?v=modular-20261030"></iframe></div>`;
+    <div class="cdash-stage"><iframe title="Customer dashboard preview" src="/portal/client/preview.html?v=iriscard-20261030"></iframe></div>`;
   document.body.appendChild(wrap); document.body.classList.add("cdash-open");
   const frame = wrap.querySelector("iframe"), note = wrap.querySelector(".cdash-note");
   const close = () => { removeEventListener("message", onMsg); removeEventListener("keydown", onKey); wrap.remove(); document.body.classList.remove("cdash-open"); };

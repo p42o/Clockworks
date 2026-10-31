@@ -924,14 +924,6 @@ main > .banner, main > section.card[data-schedule] { margin-bottom: var(--s4); }
 .dash-upload > svg.i { color: var(--copper); }
 
 /* shop pass banner */
-.dash-shop { display: flex; align-items: center; gap: 14px; margin-top: 16px; padding: 16px 18px; border-radius: 16px; background: var(--ground); border-color: var(--ground); color: var(--ground-ink); text-decoration: none; overflow: hidden; isolation: isolate; }
-.dash-shop::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(400px 160px at 80% 50%, rgba(212,88,42,.28), transparent 70%); }
-.dash-shop .dash-ic { width: 38px; height: 38px; background: var(--copper-btn); color: #fff; }
-.dash-shop-t b { display: block; font-size: 15px; color: var(--ground-ink); }
-.dash-shop-t small { display: block; font-size: 13.5px; color: var(--ground-ink-2); }
-.dash-price { margin-left: auto; font: 650 22px/1 var(--ff); color: #F09A6F; white-space: nowrap; }
-.dash-price small { font-size: 13px; color: var(--ground-ink-2); font-weight: 500; }
-.dash-shop .btn { min-height: 34px; font-size: 13px; padding: 0 12px; background: transparent; border-color: rgba(245,241,232,.25); color: var(--ground-ink); }
 .shop-pass-page .shop-pass-modal__close { display: none; }
 .shop-pass-page .shop-pass-modal__card { position: static; transform: none; max-width: 720px; margin: 0; box-shadow: var(--shadow-1); }
 
@@ -949,23 +941,27 @@ main > .banner, main > section.card[data-schedule] { margin-bottom: var(--s4); }
 .news-paper-b > p { margin-top: 16px; }
 
 /* Iris as a message thread */
-.mod-sheet .iris-card { gap: 10px; padding: 0; height: 100%; display: flex; flex-direction: column; }
-.mod-sheet .iris-head { padding: 10px 12px 10px 14px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
-@media (min-width: 720px) { .mod-sheet .iris-head { flex-wrap: nowrap; } }
+/* In the sheet the card is the whole pane: the log takes the free height and scrolls, the composer stays at the
+   bottom. If the disclosure or a handoff step is taller than the pane, the pane scrolls and the composer sticks. */
+.mod-sheet .iris-card { gap: 10px; padding: 0; flex: 1; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain;
+  border: 0; border-radius: 0; background: transparent; }
+.mod-sheet .iris-card > * { flex: none; }
+.mod-sheet .iris-head { flex-wrap: nowrap; padding: 10px 12px 10px 14px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.mod-sheet .iris-human { width: auto; white-space: nowrap; }
 .mod-sheet .iris-brand { min-width: 0; }
 .mod-sheet .iris-brand .eyebrow { font-size: 10.5px; letter-spacing: .1em; }
 .mod-sheet .iris-avatar { width: 40px; height: 40px; }
 .mod-sheet .iris-card h2 { font: 650 15px/1.2 var(--ff); }
 .mod-sheet .iris-card h2 small { font-size: 10.5px; }
 .mod-sheet .iris-human { min-height: 34px; font-size: 13px; padding: 0 12px; }
-.mod-sheet .iris-bubbles { padding: 6px 14px; gap: 4px; flex: 1; min-height: 120px; align-content: start; }
+.mod-sheet .iris-bubbles { padding: 6px 14px; gap: 4px; flex: 1 1 auto; min-height: 96px; max-height: none; align-content: start; scroll-behavior: auto; }
 .mod-sheet .iris-bubbles .bubble { border: 0; border-radius: 17px; padding: 7px 12px; font-size: 14px; line-height: 1.4; max-width: 82%; }
 .mod-sheet .iris-bubbles .bubble.iris { background: var(--sunk); border-bottom-left-radius: 6px; }
 .mod-sheet .iris-bubbles .bubble.me { background: var(--copper-btn); color: var(--on-copper); border-bottom-right-radius: 6px; }
 .mod-sheet .iris-bubbles .bubble.me .meta { color: color-mix(in srgb, var(--on-copper) 70%, transparent); }
 .mod-sheet .iris-bubbles .bubble .meta { font-size: 10.5px; margin-top: 3px; }
 .mod-sheet .iris-disclosure, .mod-sheet .iris-flow, .mod-sheet .iris-review, .mod-sheet .iris-confirm, .mod-sheet .iris-error { margin: 0 14px; font-size: 12.5px; padding: 12px; }
-.mod-sheet .iris-composer { margin: 0 12px; border-radius: 999px; padding: 3px 4px 3px 12px; }
+.mod-sheet .iris-composer { position: sticky; bottom: 6px; z-index: 1; margin: 0 12px; border-radius: 999px; padding: 3px 4px 3px 12px; box-shadow: 0 6px 0 var(--paper); }
 .mod-sheet .iris-composer textarea { min-height: 38px; padding: 8px 4px; font-size: 16px; }
 .mod-sheet .iris-composer .btn { min-height: 34px; border-radius: 999px; padding: 0 14px; font-size: 13px; }
 .mod-sheet .iris-footer { padding: 0 14px 12px; font-size: 11.5px; }
@@ -994,8 +990,6 @@ main > .banner, main > section.card[data-schedule] { margin-bottom: var(--s4); }
 @media (max-width: 719px) {
   .dash-hello { flex-direction: column; align-items: flex-start; gap: 4px; }
   .dash-hello h1 { font-size: 32px; }
-  .dash-shop { flex-wrap: wrap; }
-  .dash-price { margin-left: 0; }
   .news-paper-h, .news-paper-b { padding-left: 20px; padding-right: 20px; }
 }
 /* ======================================================================
@@ -1153,6 +1147,8 @@ html.mod-locked { overflow: hidden; }
 .mod-panel-more { margin-top: 14px; padding-top: 6px; border-top: 1px solid var(--line); }
 .mod-panel-more .dash-more { margin-left: 0; min-height: var(--tap); }
 .mod-panel-iris .iris-card { box-shadow: none; }
+.mod-sheet[data-key="iris"] .mod-sheet-b { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.mod-sheet[data-key="iris"] .mod-panel, .mod-sheet[data-key="iris"] .iris-card-host { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .mod-panel-news .dash-issue-lede { padding: 12px 14px 0; font: italic 400 17px/1.35 var(--fd); color: var(--ink-2); }
 .mod-panel-news .dash-issue-f { display: flex; flex-direction: column; gap: 2px; }
 .mod-sheet .tl-tips-sum { margin-bottom: 12px; font-size: 13.5px; color: var(--ink-3); }
@@ -1162,7 +1158,8 @@ html.mod-locked { overflow: hidden; }
 /* desktop: a centered modal */
 @media (min-width: 720px) {
   .mod-sheet { margin: auto; width: min(760px, calc(100vw - 48px)); max-height: min(86dvh, 900px); }
-  .mod-sheet[data-key="iris"] { width: min(560px, calc(100vw - 48px)); }
+  .mod-sheet[data-key="iris"] { width: min(560px, calc(100vw - 48px)); height: min(720px, 86dvh); }
+  .mod-sheet[data-key="iris"] .mod-sheet-in { height: 100%; }
   .mod-sheet[data-key="notes"] { width: min(880px, calc(100vw - 48px)); }
   .mod-sheet-in { border-radius: 22px; border: 1px solid var(--line); max-height: min(86dvh, 900px); }
   .mod-sheet[open] .mod-sheet-in { animation: modIn var(--dur-2) var(--ease-out) both; }
@@ -1172,8 +1169,10 @@ html.mod-locked { overflow: hidden; }
 }
 /* phones: a bottom sheet, full height when the content needs it */
 @media (max-width: 719px) {
-  .mod-sheet { margin: auto 0 0; width: 100%; max-width: 100%; max-height: 94dvh; }
-  .mod-sheet-in { border-radius: 22px 22px 0 0; max-height: 94dvh; padding-bottom: env(safe-area-inset-bottom); }
+  /* --vvh / --kb come from visualViewport while the sheet is open (lib/modular.js): above the keyboard, never under it */
+  .mod-sheet { --sheet-max: min(94dvh, calc(var(--vvh, 100dvh) - 8px)); margin: auto 0 var(--kb, 0px); width: 100%; max-width: 100%; max-height: var(--sheet-max); }
+  .mod-sheet-in { border-radius: 22px 22px 0 0; max-height: var(--sheet-max); padding-bottom: max(0px, env(safe-area-inset-bottom, 0px) - var(--kb, 0px)); }
+  .mod-sheet[data-key="iris"], .mod-sheet[data-key="iris"] .mod-sheet-in { height: var(--sheet-max); }
   .mod-sheet[open] .mod-sheet-in { animation: modUp var(--dur-3) var(--ease-out) both; }
   .mod-sheet[open]::backdrop { animation: modFade var(--dur-2) ease both; }
   .mod-grab { display: block; position: absolute; top: 7px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 4px; background: var(--line-strong); }
@@ -1182,6 +1181,14 @@ html.mod-locked { overflow: hidden; }
   .mod-sheet-b { padding: 14px 16px 22px; }
   .mod-tile { padding: 12px 14px 11px; }
   .mod-line { -webkit-line-clamp: 1; }
+}
+/* short screens (a phone with the keyboard up; .is-short = visual viewport under 600px): give the Iris log the room */
+@media (max-width: 719px) {
+  .mod-sheet[data-key="iris"].is-short .mod-sheet-h { padding-top: 16px; padding-bottom: 8px; }
+  .mod-sheet[data-key="iris"].is-short .mod-sheet-h h2 { font-size: 22px; }
+  .mod-sheet[data-key="iris"].is-short #mod-sheet-s, .mod-sheet[data-key="iris"].is-short .iris-avatar { display: none; }
+  .mod-sheet[data-key="iris"].is-short .mod-x { width: 40px; height: 40px; }
+  .mod-sheet.is-short .iris-head { padding-top: 6px; padding-bottom: 6px; }
 }
 @keyframes modIn { from { opacity: 0; transform: translateY(12px) scale(.985); } }
 @keyframes modUp { from { transform: translateY(100%); } }

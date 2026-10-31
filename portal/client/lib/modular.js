@@ -46,6 +46,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), selec
  * The sheet. One per screen. root holds the tiles ([data-open]) and the panels ([data-panel]).
  * Desktop: a centered modal. Phones (<720px): a bottom sheet, full height when the content needs it.
  * Esc, the close button and a backdrop click close it; focus is trapped inside and goes back to the tile.
+ * opts: onOpen(key), onClose(key), onFit(key) (the visible viewport changed while open, e.g. the keyboard).
  * Returns { open(key), close(), rebind(root), destroy(), get openKey() }.
  */
 export function createSheet(root, opts = {}) {
@@ -65,6 +66,26 @@ export function createSheet(root, opts = {}) {
 
   // body scroll lock while open (html overflow; the sheet body scrolls on its own)
   const lock = (on) => document.documentElement.classList.toggle("mod-locked", on);
+
+  // On-screen keyboard: the layout viewport keeps its height, the visual viewport shrinks (and may scroll).
+  // --vvh = the height you can see, --kb = how much of the bottom is covered. The phone CSS lifts the sheet by
+  // --kb and caps it at --vvh, so the Iris composer stays above the keyboard. Desktop ignores both.
+  const fit = () => {
+    const vv = window.visualViewport;
+    if (!vv || !dlg.open) return;
+    const kb = Math.max(0, Math.round(document.documentElement.clientHeight - vv.offsetTop - vv.height));
+    dlg.style.setProperty("--vvh", `${Math.round(vv.height)}px`);
+    dlg.style.setProperty("--kb", `${kb}px`);
+    dlg.classList.toggle("is-short", vv.height < 600);
+    // the new height settles a frame later (seen in Chromium); tell the caller after that
+    const k = key;
+    requestAnimationFrame(() => requestAnimationFrame(() => { if (key === k) opts.onFit?.(k); }));
+  };
+  const watch = (on) => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    for (const ev of ["resize", "scroll"]) vv[on ? "addEventListener" : "removeEventListener"](ev, fit);
+  };
   function open(k, from) {
     const p = root.querySelector(`[data-panel="${k}"]`);
     if (!p) return;
@@ -80,6 +101,7 @@ export function createSheet(root, opts = {}) {
     body.scrollTop = 0;
     lock(true);
     if (!dlg.open) dlg.showModal();
+    fit(); watch(true);
     dlg.querySelector("#mod-sheet-t").focus({ preventScroll: true });
     opts.onOpen?.(k);
   }
@@ -91,6 +113,7 @@ export function createSheet(root, opts = {}) {
     if (panel && home && root.isConnected) home.appendChild(panel); else panel?.remove();
     key = null; panel = null;
     if (dlg.open) dlg.close();
+    watch(false);
     lock(false);
     if (restore) {
       const back = opener?.isConnected ? opener : root.querySelector(`[data-open="${k}"]`);

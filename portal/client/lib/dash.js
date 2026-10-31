@@ -5,6 +5,7 @@ import { clientPresenceRows, cleanPresenceScore, formatPresenceDate } from "./pr
 import { tailoredModel, notesPanelHtml, tipsPanelHtml, notesTile, tipsTile } from "./tailored.js";
 import { tileHtml, panelHtml } from "./modular.js";
 import { newsletterIssue } from "./newsletter.js";
+import { irisTileModel } from "./irisPreview.js";
 
 export const STAGE_STATE = { done: "Done", current: "Now", upcoming: "Coming up" };
 const isIntake = (n) => /^#\/intake/.test(n?.link || "");
@@ -197,25 +198,17 @@ export function capsTile(cs) {
     headline: first.title, line: items.length > 1 ? `+${items.length - 1} more` : "" };
 }
 
-function irisTile() {
-  return { key: "iris", icon: "chat", title: "Iris", count: "AI assistant", kicker: "Clockworks support",
-    headline: "Questions about your portal?", line: "Ask Iris. You can ask for a human any time.", cta: "Start chat" };
-}
-
-export function shopBanner() {
-  return html`<a class="card dash-shop" href="#/shop-pass"><span class="dash-ic">${ic("store")}</span>
-    <span class="dash-shop-t"><b>Shop Pass</b><small>Keep your portal, Iris and the Agent Newsletter after your follow-up period.</small></span>
-    <span class="dash-price">$99<small>/mo</small></span><span class="btn">Coming soon</span></a>`;
-}
+/** Iris card: the greeting, or the last message once a chat exists (lib/irisPreview.js). st: the chat's live state. */
+export const irisTile = (st) => irisTileModel(st);
 
 /**
  * Whole dashboard: a grid of preview tiles plus the hidden panels the sheet (lib/modular.js) opens.
  * m = { home, account, profile, ideas, firstName, marked, showIris, showChangelog, showTailored, topicsOff,
- *       tailored, tlState, caps }.
+ *       tailored, tlState, caps, iris }.
  * topicsOff: newsletter gating (lib/topicGate.js keys; null = unknown; undefined = still loading).
  * Live slots ([data-iris-chat], [data-changelog-card], [data-tl-notes], [data-tl-tips]) are filled by the caller.
  * m.tailored (admin preview only) renders Shop Notes + Things to try inline and inert.
- * m.tlState / m.caps: the latest live state, so a redraw keeps the tiles current.
+ * m.tlState / m.caps / m.iris: the latest live state, so a redraw keeps the tiles current.
  */
 export function dashHtml(m) {
   const h = m.home || {};
@@ -236,7 +229,7 @@ export function dashHtml(m) {
   if (m.showChangelog) add(capsTile(m.caps), "New Agent Capabilities", "What your Grok Bot team learned lately", html`<div data-changelog-card class="changelog-card-host"></div>`);
   else add(todoTile(nm), "What we need from you", "Checked off as you go", todoBody(nm));
   add(newsTile(issue), "Agent Newsletter", issue ? `Issue ${issue.no} · Made for ${issue.madeFor}` : "", newsBody(issue, m.ideas));
-  if (m.showIris) add(irisTile(), "Iris", "Clockworks support chat", html`<div data-iris-chat class="iris-card-host" aria-label="Iris support chat"></div>`);
+  if (m.showIris) add(irisTile(m.iris), "Iris", "Clockworks support chat", html`<div data-iris-chat class="iris-card-host" aria-label="Iris support chat"></div>`);
   add(filesTile(m.account?.files), "Files & assets", "", filesBody(m.account?.files));
   return html`<div class="mod" data-mod>
       <h2 class="sr">Your dashboard</h2>

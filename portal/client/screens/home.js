@@ -14,7 +14,8 @@ import { isIrisChatVisible } from "../lib/irisChat.js";
 import { mountIrisChatCard } from "./iris-chat-card.js";
 import { isChangelogCardVisible } from "../lib/changelogCard.js";
 import { mountChangelogCard } from "./changelog-card.js";
-import { dashHtml, greetingFor, capsTile, notesTile, tipsTile } from "../lib/dash.js";
+import { dashHtml, greetingFor, capsTile, notesTile, tipsTile, irisTile } from "../lib/dash.js";
+import { irisHasChat } from "../lib/irisPreview.js";
 import { isTailoredVisible } from "../lib/tailored.js";
 import { createSheet, paintTile } from "../lib/modular.js";
 import { intakeTopicsOff } from "../lib/intakeTopics.js";
@@ -55,7 +56,7 @@ export function render(ctx) {
   let irisUnmount = null, irisCid = null, changelogUnmount = null, tailoredUnmount = null, tailoredRo = null;
   let last = null, account = null, profile = null, ideas = [];
   // live tile state, kept so a redraw shows the newest preview straight away
-  let tlState = "loading", caps = undefined, topics = undefined, topicsAsked = false;
+  let tlState = "loading", caps = undefined, topics = undefined, topicsAsked = false, iris = undefined;
   let sheet = null;
   const LIVE = ["[data-iris-chat]", "[data-changelog-card]", "[data-tl-notes]", "[data-tl-tips]"];
 
@@ -101,7 +102,7 @@ export function render(ctx) {
       ${ro ? html`<div class="banner info">${ic("info")}<div>Our work together has wrapped up. You can still see your files and data ${h.access.readOnlyUntil ? html`until ${fmtDateY(h.access.readOnlyUntil)} (${Math.max(0, Math.ceil(((h.access.readOnlyUntil?.toMillis?.() || new Date(h.access.readOnlyUntil).getTime()) - Date.now()) / 86400000))} days left)` : "here"}.</div></div>` : ""}
       ${(h.access?.state === "archived" || (ro && h.access?.closedAt)) ? html`<section class="card" aria-labelledby="arch-h"><h2 id="arch-h">Your account is ARCHIVED</h2>${fillNotice(ARCHIVED_BODY, { close_date: h.access.closedAt ? fmtDateY(h.access.closedAt) : "", export_window_end_date: h.access.readOnlyUntil ? fmtDateY(h.access.readOnlyUntil) : "" }).split("\n\n").map((p) => html`<p>${p}</p>`)}</section>` : ""}
       ${unread.messages > 0 ? html`<a class="banner copper" href="${h.latestUnread?.threadId ? `#/m/${h.latestUnread.threadId}` : "#/messages"}" style="text-decoration:none;color:inherit">${ic("chat")}<div><b>${h.latestUnread?.subject ? `Parker replied to ${h.latestUnread.subject}` : "You have a reply"}</b>${unread.messages} new ${unread.messages === 1 ? "message" : "messages"} from Parker.</div></a>` : ""}
-      ${dashHtml({ home: { ...h, stageLabel: SWAP.stageLabels[h.stageKey] || SWAP.stageLabels.unknown }, account, profile, ideas, firstName: name, marked, showIris, showChangelog, showTailored, topicsOff: topics, tlState, caps })}
+      ${dashHtml({ home: { ...h, stageLabel: SWAP.stageLabels[h.stageKey] || SWAP.stageLabels.unknown }, account, profile, ideas, firstName: name, marked, showIris, showChangelog, showTailored, topicsOff: topics, tlState, caps, iris })}
       ${scheduleCard(h)}
       <p class="dash-landing" data-landing>${LANDING_COPY}</p>`);
 
@@ -109,12 +110,14 @@ export function render(ctx) {
     if (irisHost && preservedIris && irisCid === state.me?.cid) {
       irisHost.replaceWith(preservedIris);
     } else {
-      irisUnmount?.(); irisUnmount = null; irisCid = null;
+      irisUnmount?.(); irisUnmount = null; irisCid = null; iris = undefined;
       if (irisHost) {
         irisCid = state.me?.cid;
+        // One chat per Home visit: the sheet moves this node in and out, so the session and messages persist.
         irisUnmount = mountIrisChatCard(irisHost, {
           cid: state.me?.cid, clientName: h.businessName || state.me?.businessName || state.me?.displayName,
           email: state.me?.email, phone: state.me?.phone,
+          onState: (st) => { iris = st; paintTile(el.querySelector("[data-mod]"), irisTile(st)); },
         });
       }
     }
@@ -169,8 +172,22 @@ export function render(ctx) {
     }));
 
     // the sheet: one per Home visit. A redraw re-points it, and an open card stays open with its new panel.
-    if (sheet) sheet.rebind(grid); else sheet = createSheet(grid);
+    if (sheet) sheet.rebind(grid); else sheet = createSheet(grid, { onOpen: onSheetOpen, onFit: irisToLatest });
     if (hadFocus && sheet.openKey) (hadFocus.isConnected ? hadFocus : document.getElementById("mod-sheet-t"))?.focus({ preventScroll: true });
+  }
+
+  // Iris opens on the newest message. With a chat going (and a mouse/keyboard), focus goes to the composer;
+  // on touch it stays on the title so the keyboard doesn't cover the conversation the moment it opens.
+  // ...and when the keyboard opens or closes, the newest message stays in view.
+  function irisToLatest(k) {
+    const log = k === "iris" && document.querySelector(".mod-sheet .iris-bubbles");
+    if (log) log.scrollTop = log.scrollHeight;
+  }
+  function onSheetOpen(k) {
+    if (k !== "iris") return;
+    irisToLatest(k);
+    const box = document.querySelector(".mod-sheet #iris-message");
+    if (box && !box.disabled && irisHasChat(iris) && matchMedia("(pointer: fine)").matches) box.focus({ preventScroll: true });
   }
 
   // Side data. Each is optional: a missing view or a feature that is off just leaves its card in the empty state.

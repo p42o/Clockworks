@@ -46,8 +46,17 @@ export function mountIrisChatCard(hostEl, ctx = {}) {
   const summary = () => s.messages.filter((m) => m.by === "client").slice(-5)
     .map((m) => m.text).join(" · ").slice(0, 1000) || "Client requested a Parker follow-up.";
 
+  // Every paint rebuilds the card. Keep focus inside it (the same field, else the log) so it never drops out of the sheet.
+  const keepFocus = (had) => {
+    if (!had) return;
+    const same = had.id ? hostEl.querySelector(`#${had.id}`) : null;
+    (same && !same.disabled ? same : hostEl.querySelector(".iris-bubbles"))?.focus({ preventScroll: true });
+  };
+  const toComposer = () => { if (hostEl.contains(document.activeElement)) hostEl.querySelector("#iris-message:not([disabled])")?.focus({ preventScroll: true }); };
+
   function paint() {
     if (!alive || !hostEl.isConnected) return;
+    const had = hostEl.contains(document.activeElement) ? document.activeElement : null;
     mount(hostEl, html`<div class="iris-card card" aria-labelledby="iris-heading">
       <div class="iris-head">
         <div class="iris-brand"><img src="${IRIS_AVATAR}" alt="" aria-hidden="true" class="iris-avatar"><div><span class="eyebrow">Clockworks support</span><h2 id="iris-heading">Iris <small>AI assistant</small></h2></div></div>
@@ -76,6 +85,12 @@ export function mountIrisChatCard(hostEl, ctx = {}) {
       <p class="iris-footer">Iris (AI)${s.loading ? "" : html` · ${s.loggingEnabled ? "chat stored" : "chat transcript not saved"}`} · <a href="#/privacy-notice">Privacy Notice</a></p>
     </div>`);
 
+    // newest message in view (the log is rebuilt on every paint), then tell Home so the Iris tile can follow
+    const log = hostEl.querySelector(".iris-bubbles");
+    if (log) log.scrollTop = log.scrollHeight;
+    keepFocus(had);
+    ctx.onState?.({ loading: s.loading, error: s.error, typing: s.typing, messages: s.messages.slice() });
+
     hostEl.querySelectorAll("[data-cos]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const brief = chiefOfStaffBrief(s.messages[Number(btn.dataset.cos)]?.text);
@@ -97,7 +112,7 @@ export function mountIrisChatCard(hostEl, ctx = {}) {
       s.busy = true; s.error = ""; paint();
       try { await api.irisChatAckDisclosure(); s.disclosureNeeded = false; }
       catch { s.error = "Could not start chat. Please try again."; }
-      finally { s.busy = false; paint(); }
+      finally { s.busy = false; paint(); toComposer(); }
     });
     hostEl.querySelector("[data-notes]")?.addEventListener("submit", (e) => {
       e.preventDefault(); s.notes = hostEl.querySelector("#iris-notes").value.trim();
@@ -147,7 +162,7 @@ export function mountIrisChatCard(hostEl, ctx = {}) {
         s.messages = s.messages.filter((m) => m !== optimistic);
         s.draft = text;
         s.error = "That message did not send. Please try again.";
-      } finally { s.busy = false; s.typing = false; paint(); }
+      } finally { s.busy = false; s.typing = false; paint(); toComposer(); }
     });
     composer?.querySelector("textarea")?.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); composer.requestSubmit(); }
