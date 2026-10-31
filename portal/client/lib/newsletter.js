@@ -13,7 +13,7 @@ const PLAYBOOKS = [
     REVIEWS,
   ] },
   { re: /plumb|hvac|heat|cool|furnace|electric|septic|well|water|drain|appliance|garage door|locksmith/i, items: [
-    ["Text back every missed call", "When a call goes unanswered, your agents send a quick text so the job does not go to the next number on the list.", ["texts"]],
+    ["Text back every missed call", "A short, friendly text when you can't pick up lets the caller know you'll get back to them. Keep it to one reply about their call, with no promotions, and stop if they reply STOP.", ["texts"]],
     ["Remind past customers about seasonal service", "A short note before the season turns brings back the customers who already trust you.", ["email", "texts"]],
     REVIEWS,
   ] },
@@ -34,7 +34,7 @@ const PLAYBOOKS = [
   ] },
 ];
 const GENERAL = [
-  ["Text back every missed call", "When a call goes unanswered, your agents send a quick text so the customer does not move on.", ["texts"]],
+  ["Text back every missed call", "A short, friendly text when you can't pick up lets the caller know you'll get back to them. Keep it to one reply about their call, with no promotions, and stop if they reply STOP.", ["texts"]],
   ["Post to Google once a week", "Tell your agents what happened this week. They draft the post and wait for your OK.", ["google", "social"]],
   REVIEWS,
 ];

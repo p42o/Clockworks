@@ -151,7 +151,7 @@ export function notesTile(st) {
   const base = { key: "notes", icon: "paper", title: "Shop Notes", cta: "Read your notes" };
   if (st === "loading") return { ...base, state: "loading" };
   if (st === "error") return { ...base, state: "error", headline: "We couldn't load your Shop Notes", line: "Open to try again.", cta: "Open" };
-  if (!st || st === "empty" || !st.sections.length) return { ...base, state: "empty", count: "Not ready yet", headline: "Your Shop Notes aren't ready yet", line: "Parker writes them from your scan and intake. Nothing to do on your side.", cta: "How it works" };
+  if (!st || st === "empty" || !st.sections.length) return { ...base, state: "empty", count: "Not ready yet", headline: "Your Shop Notes aren't ready yet", line: "Made from your scan and intake, and reviewed by Parker before you see them. Nothing to do on your side.", cta: "How it works" };
   const lead = st.sections[0];
   return { ...base, state: "ready", count: `${st.sections.length} ${st.sections.length === 1 ? "section" : "sections"}`,
     kicker: `No. ${st.issueNo}${st.date ? ` · ${st.date}` : ""}`, headline: lead.heading, line: clip(lead.body, 140) };

@@ -113,7 +113,7 @@ function newsBody(issue, ideas) {
     <div class="dash-issue"><div class="dash-issue-h"><b>Issue ${issue.no}</b><span>${issue.tailored ? "Picked for your trade" : "Your first issue"}</span></div>
       <p class="dash-issue-lede">${issue.lede}</p>
       <ol>${issue.items.map((it) => html`<li><b>${it.t}</b><span>${it.p}</span></li>`)}</ol>
-      <div class="dash-issue-f"><small>Made for ${issue.madeFor}</small>${issue.gated ? html`<small>Leaves out anything you asked us not to touch.</small>` : ""}</div></div>
+      <div class="dash-issue-f"><small>Made for ${issue.madeFor}</small>${issue.gated ? html`<small>Skips topics you asked us to leave alone. If we missed one, tell us in Support.</small>` : ""}</div></div>
     ${latestIdea ? html`<a class="dash-idea" href="#/i/${latestIdea.id}">${ic("lightbulb")}<span><small>Latest idea from Parker</small><b>${latestIdea.title || "See Parker's latest idea"}</b></span></a>` : ""}
     <p class="mod-panel-more">${moreLink("#/newsletter", "Open the newsletter page")}</p>
   </div>`;

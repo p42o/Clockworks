@@ -3,7 +3,7 @@
 // The chat itself (screens/iris-chat-card.js) reports its state; this turns that state into tile fields.
 
 export const IRIS_SNIPPET_MAX = 120;
-const HUMAN_LINE = "You can ask for a human any time.";
+const HUMAN_LINE = "Want a person? Tap I need a human.";
 
 /** One line of a message for the tile: whitespace collapsed, cut at a word, an ellipsis when cut. Emoji-safe. */
 export function irisSnippet(text, max = IRIS_SNIPPET_MAX) {
@@ -28,7 +28,7 @@ export const irisHasChat = (st) => !!st && !st.loading && saidOf(st).some((m) =>
  */
 export function irisTileModel(st) {
   const t = { key: "iris", icon: "chat", title: "Iris", count: "AI assistant", kicker: "Clockworks support" };
-  if (!st || st.loading) return { ...t, headline: "Questions about your portal?", line: "Ask Iris. You can ask for a human any time.", cta: "Ask Iris anything" };
+  if (!st || st.loading) return { ...t, headline: "Questions about your portal?", line: "Ask Iris. Want a person? Tap I need a human any time.", cta: "Ask Iris anything" };
   const msgs = saidOf(st);
   if (st.error && !msgs.length) return { ...t, state: "error", headline: st.error, line: "", cta: "Open" };
   if (!irisHasChat(st)) {

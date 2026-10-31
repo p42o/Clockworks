@@ -17,7 +17,7 @@ export function render(ctx) {
       <article class="card news-paper">
         <header class="news-paper-h"><small>Issue ${issue.no}</small><h2>${issue.title}</h2><p>${issue.lede}</p></header>
         <div class="news-paper-b">${issue.items.map((it, i) => html`<section class="news-story"><span class="k">Idea ${i + 1}</span><h3>${it.t}</h3><p>${it.p}</p></section>`)}
-          ${issue.gated ? html`<p class="small muted">Leaves out anything you asked us not to touch.</p>` : ""}
+          ${issue.gated ? html`<p class="small muted">Skips topics you asked us to leave alone. If we missed one, tell us in Support.</p>` : ""}
           <p class="small muted">Want one of these set up? <a href="#/messages">Ask in Support</a>.</p></div>
       </article>
       ${ideas.length ? html`<section class="card" aria-labelledby="ideas-h" style="margin-top:20px"><h2 id="ideas-h">Ideas from Parker</h2>
